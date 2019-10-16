@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 
 import axios from 'axios'
-import FileDownload from 'js-file-download'
+import { saveAs } from 'file-saver'
 
 import Loader from '../loader'
 import Menu from '../menu'
@@ -19,10 +19,12 @@ class Home extends PureComponent {
 
   downloadFile () {
     this.setState({ loading: true })
-    axios.get('https://jlcsolutionscr.com/puntoventa/PuntoventaWCF.svc/descargaractualizacion')
+    axios.get('https://jlcsolutionscr.com/puntoventa/PuntoventaWCF.svc/descargaractualizacion',
+    {responseType: 'blob'})
       .then((response) => {
-      FileDownload(response.data, 'puntoventaJLC.msi')
-      this.setState({ loading: false })
+        const blob = new Blob([response.data], {type: "application/octet-stream"})
+        saveAs(blob, 'puntoventaJLC.msi')
+        this.setState({ loading: false })
       });
   }
   

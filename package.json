@@ -4,9 +4,9 @@
   "private": true,
   "homepage": "https://jlcsolutionscr.github.com/WebSite",
   "dependencies": {
-    "axios": "^0.19.0",
-    "gh-pages": "^2.1.1",
-    "js-file-download": "^0.4.8",
+    "axios": "0.19.0",
+    "file-saver": "2.0.2",
+    "gh-pages": "2.1.1",
     "react": "16.10.2",
     "react-dom": "16.10.2",
     "react-scripts": "3.2.0"
