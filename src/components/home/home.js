@@ -29,7 +29,7 @@ class Home extends PureComponent {
   render () {
     return (
       <div id='id_app_content' className="home">
-        <Loader loaderText={this.state.message} isLoaderActive={this.state.loading}/>
+        {this.state.loading && <Loader loaderText={this.state.message} isLoaderActive={this.state.loading}/>}
         <Menu onClick={this.downloadFile.bind(this)}/>
       </div>
     )

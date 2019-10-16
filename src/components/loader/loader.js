@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import styles from './loader.css'
 
 function Loader ({ loaderText, isLoaderActive }) {
-  const divStyle = { display: isLoaderActive ? 'block' : 'none' }
+  const style = isLoaderActive ? 'hidden' : 'shown'
   return (
-    <div id='id_loader' className='loader__background' style={divStyle}>
+    <div id='id_loader' className='loader__background' style={{style}}>
       <div className='loader__container'>
         <div className='loader__text'>{loaderText}</div>
         <div className='loader__dots__div'>
