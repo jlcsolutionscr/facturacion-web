@@ -19,7 +19,7 @@ class Home extends PureComponent {
 
   downloadFile () {
     this.setState({ loading: true })
-    axios.get('https://jlcsolutionscr.com/dev-puntoventa/PuntoventaWCF.svc/descargaractualizacion')
+    axios.get('https://jlcsolutionscr.com/puntoventa/PuntoventaWCF.svc/descargaractualizacion')
       .then((response) => {
       FileDownload(response.data, 'puntoventaJLC.msi')
       this.setState({ loading: false })
