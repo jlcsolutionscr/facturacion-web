@@ -49,5 +49,8 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)'
+  },
+  button: {
+    color: 'inherit'
   }
 }))

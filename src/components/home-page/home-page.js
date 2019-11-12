@@ -11,13 +11,13 @@ const style = {
   color: 'white'
 }
 
-function HomePage() {
+function HomePage(props) {
   const classes = createStyle('white')
   return (
     <div className={classes.root} style={style}>
-      <MobileAppCard />
-      <WindowsAppCard />
-      <PlatformCard />
+      <MobileAppCard onClick={props.onClick} />
+      <WindowsAppCard onClick={props.onClick}/>
+      <PlatformCard onClick={props.onClick}/>
     </div>
   )
 }

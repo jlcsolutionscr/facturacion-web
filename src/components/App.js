@@ -15,7 +15,7 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div style={{minWidth: `${window.innerWidth / 4 * 3}px`}} >
+      <div style={{minWidth: `${window.innerWidth / 8 * 7}px`}} >
         <Menu />
       </div>
     </ThemeProvider>

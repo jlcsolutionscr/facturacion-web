@@ -99,7 +99,7 @@ function Menu() {
     setState({ ...state, drawerOpen: open })
   }
 
-  const toggleCurrentPage = (pageId) => event => {
+  const toggleCurrentPage = (pageId) => {
     let title = 'Página de inicio'
     switch(pageId) {
       case 0:
@@ -132,19 +132,19 @@ function Menu() {
       role='presentation'
     >
       <List>
-        <ListItem button key='0' onClick={toggleCurrentPage(0)}>
+        <ListItem button key='0' onClick={() => toggleCurrentPage(0)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Página de inicio'} />
         </ListItem>
-        <ListItem button key='1' onClick={toggleCurrentPage(1)}>
+        <ListItem button key='1' onClick={() => toggleCurrentPage(1)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Android'}/>
         </ListItem>
-        <ListItem button key='2' onClick={toggleCurrentPage(2)}>
+        <ListItem button key='2' onClick={() => toggleCurrentPage(2)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Windows'} />
         </ListItem>
-        <ListItem button key='3' onClick={toggleCurrentPage(3)}>
+        <ListItem button key='3' onClick={() => toggleCurrentPage(3)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Plataforma de Servicios'} />
         </ListItem>
-        <ListItem button key='4' onClick={toggleCurrentPage(4)}>
+        <ListItem button key='4' onClick={() => toggleCurrentPage(4)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Descargas'} />
         </ListItem>
       </List>
@@ -177,7 +177,7 @@ function Menu() {
         </Typography>
       </Paper>
       <Paper className={classes.paperCenter}>
-        {state.currentPage === 0 && <HomePage />}
+        {state.currentPage === 0 && <HomePage onClick={toggleCurrentPage} />}
         {state.currentPage === 1 && <MobileAppPage />}
       </Paper>
       <Paper className={classes.paperBottom} />
