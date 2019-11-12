@@ -1,44 +1,41 @@
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 export const createStyle = makeStyles(theme => createStyles({
+  root: {
+    paddingTop: '4%',
+    backgroundColor: '#FAFAFA'
+  },
   card: {
     backgroundColor: '#595959',
-    maxWidth: '30%'
+    maxWidth: '30%',
+    color: 'inherit'
   },
   media: {
     height: 0,
     paddingTop: '66.25%'
   },
-  body2: {
-    marginTop: theme.spacing(2),
-    color: '#E7F2F8',
-    fontFamily: 'RussoOne',
-    fontStyle: 'italic',
-    fontSize: 70,
-    textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
-  },
-  cardHeader: {
+  title: {
     marginBottom: theme.spacing(1),
     fontFamily: 'PT Sans',
     fontSize: 26,
     fontWeight: '700',
-    color: 'white'
+    color: 'inherit'
   },
-  title: {
+  subTitle: {
     fontFamily: 'PT Sans',
     fontSize: 18,
-    color: 'white'
+    color: 'inherit'
   },
-  pTop: {
-    paddingTop: theme.spacing(4),
+  paragraphTop: {
+    paddingTop: theme.spacing(2),
     fontFamily: 'PT Sans',
     fontSize: 16,
-    color: 'white'
+    color: 'inherit'
   },
-  p: {
+  paragraph: {
     fontFamily: 'PT Sans',
     fontSize: 16,
-    color: 'white'
+    color: 'inherit'
   },
   expand: {
     position: 'relative',

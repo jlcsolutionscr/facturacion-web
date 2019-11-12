@@ -6,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 
 import appImage from '../../assets/img/plataforma.png'
-import { createStyle } from './styles'
+import { createStyle } from '../styles'
 
 export default function PlatformCard() {
   const classes = createStyle()
@@ -17,16 +17,16 @@ export default function PlatformCard() {
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.cardHeader} color="textSecondary" component="p">
+        <Typography className={classes.title} color="textSecondary" component="p">
           Plataforma de servicios
         </Typography>
-        <Typography className={classes.title} color="textSecondary" component="p">
+        <Typography className={classes.subTitle} color="textSecondary" component="p">
           Nuestro servicio web implementado en la nube y accesible desde cualquiera de nuestras aplicaciones
         </Typography>
-        <Typography className={classes.pTop} paragraph>
+        <Typography className={classes.paragraphTop} paragraph>
           Le brinda almacenamiento global y resguardo de su información con respaldo periódicos
         </Typography>
-        <Typography className={classes.p} paragraph>
+        <Typography className={classes.paragraph} paragraph>
           Nuestro buzón para recibir sus facturas de gastos le permite agilizar su proceso de recepción de documentos: recepcion@jlcsolutionscr.com (IVA acreditable) y recepciongasto@jlcsolutionscr.com
         </Typography>
       </CardContent>

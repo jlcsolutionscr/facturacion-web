@@ -6,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 
 import appImage from '../../assets/img/mobile-app.jpeg'
-import { createStyle } from './styles'
+import { createStyle } from '../styles'
 
 export default function MobileAppCard() {
   const classes = createStyle()
@@ -17,13 +17,13 @@ export default function MobileAppCard() {
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.cardHeader} color="textSecondary" component="p">
+        <Typography className={classes.title} color="textSecondary" component="p">
           Aplicación Android
         </Typography>
-        <Typography className={classes.title} color="textSecondary" component="p">
+        <Typography className={classes.subTitle} color="textSecondary" component="p">
           Utiliza nuestra aplicación móbil ya disponible en la tienda de Google Store
         </Typography>
-        <Typography className={classes.pTop} paragraph>
+        <Typography className={classes.paragraphTop} paragraph>
           Esta herramienta le permite realizar la gestión de sus documentos electrónicos desde cualquier sitio donde usted se encuentre
         </Typography>
       </CardContent>

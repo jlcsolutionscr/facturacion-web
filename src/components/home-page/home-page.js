@@ -1,24 +1,20 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 
 import MobileAppCard from './mobile-app-card'
 import PlatformCard from './platform-card'
 import WindowsAppCard from './windows-app-card'
+import { createStyle } from '../styles'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    paddingTop: '4%',
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: '#FAFAFA'
-  }
-}))
+const style = {
+  display: 'flex',
+  flexDirection: 'row',
+  color: 'white'
+}
 
 function HomePage() {
-  const classes = useStyles()
+  const classes = createStyle('white')
   return (
-    <div id='id_app_content' className={classes.root}>
+    <div className={classes.root} style={style}>
       <MobileAppCard />
       <WindowsAppCard />
       <PlatformCard />

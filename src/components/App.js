@@ -1,6 +1,6 @@
 import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-import Menu from './menu'
+import Menu from './menu/menu'
 
 const theme = createMuiTheme({
   overrides: {

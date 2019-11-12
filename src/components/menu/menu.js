@@ -18,19 +18,20 @@ import bannerImage from '../../assets/img/banner.png'
 
 import Loader from '../loader'
 import HomePage from '../home-page/home-page'
+import MobileAppPage from '../mobile-app/mobile-app-page'
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
-  appBarBackgroundColor: {
-    backgroundColor: 'rgba(0,0,0,0.85)',
+  appBar: {
+    backgroundColor: '#262626',
     color: 'white'
   },
   menuButton: {
     marginRight: theme.spacing(1)
   },
-  title: {
+  headerTitle: {
     flexGrow: 1,
     fontFamily: 'PT Sans',
     fontSize: 20
@@ -43,6 +44,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18
   },
   paperTop: {
+    marginTop: '64px',
     borderRadius: 0,
     width: window.width,
     height: '126px',
@@ -54,10 +56,11 @@ const useStyles = makeStyles(theme => ({
   },
   paperCenter: {
     borderRadius: 0,
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    backgroundColor: '#FAFAFA'
   },
   paperBottom: {
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: '#262626',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     width: window.width,
@@ -85,7 +88,8 @@ function Menu() {
   const [state, setState] = React.useState({
     loading: false,
     drawerOpen: false,
-    currentPage: 'inicio'
+    currentPage: 1,
+    pageTitle: 'Aplicación Android'
   })
 
   const toggleDrawer = (open) => event => {
@@ -95,43 +99,68 @@ function Menu() {
     setState({ ...state, drawerOpen: open })
   }
 
+  const toggleCurrentPage = (pageId) => event => {
+    let title = 'Página de inicio'
+    switch(pageId) {
+      case 0:
+        title = 'Página de inicio'
+        break;
+      case 1:
+        title = 'Aplicación Android'
+        break;
+      case 2:
+        title = 'Aplicación Windows'
+        break;
+      case 3:
+        title = 'Plataforma de Servicios'
+        break;
+      case 4:
+        title = 'Plataforma de Servicios'
+        break;
+      case 5:
+        title = 'Descargas'
+        break;
+      default:
+        title = ''
+    }
+    setState({ ...state, pageTitle: title, currentPage: pageId, drawerOpen: false })
+  }
+
   const sideList = side => (
     <div
       className={classes.list}
       role='presentation'
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
     >
       <List>
-        <ListItem button key='0'>
+        <ListItem button key='0' onClick={toggleCurrentPage(0)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Página de inicio'} />
         </ListItem>
-        <ListItem button key='1'>
-          <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Android'} />
+        <ListItem button key='1' onClick={toggleCurrentPage(1)}>
+          <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Android'}/>
         </ListItem>
-        <ListItem button key='1'>
+        <ListItem button key='2' onClick={toggleCurrentPage(2)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Windows'} />
         </ListItem>
-        <ListItem button key='2'>
+        <ListItem button key='3' onClick={toggleCurrentPage(3)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Plataforma de Servicios'} />
         </ListItem>
-        <ListItem button key='3'>
+        <ListItem button key='4' onClick={toggleCurrentPage(4)}>
           <ListItemText classes={{primary: classes.listItemText}} primary={'Descargas'} />
         </ListItem>
       </List>
     </div>
   );
-
+  console.log('state', state)
   return (
     <div id='id_app_content' className={classes.root}>
       {state.loading && <Loader loaderText={this.state.message} isLoaderActive={state.loading}/>}
-      <AppBar classes={{colorDefault: classes.appBarBackgroundColor}} position='static' color='default'>
+      <AppBar classes={{colorDefault: classes.appBar}} position='fixed' color='default'>
         <Toolbar>
           <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={toggleDrawer(true)}>
             <ListIcon />
           </IconButton>
-          <Typography variant='h6' className={classes.title}>
-            Página de inicio
+          <Typography variant='h6' className={classes.headerTitle}>
+            {state.pageTitle}
           </Typography>
           <Button variant='outlined' color='inherit'>Cerrar sesion</Button>
         </Toolbar>
@@ -148,7 +177,8 @@ function Menu() {
         </Typography>
       </Paper>
       <Paper className={classes.paperCenter}>
-        <HomePage />
+        {state.currentPage === 0 && <HomePage />}
+        {state.currentPage === 1 && <MobileAppPage />}
       </Paper>
       <Paper className={classes.paperBottom} />
     </div>
