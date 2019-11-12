@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 
-import logo from '../../assets/logo.png'
+import logo from '../../assets/img/logo.png'
 import styles from './menu.css'
 
 class Menu extends PureComponent {

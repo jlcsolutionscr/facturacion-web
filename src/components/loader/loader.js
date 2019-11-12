@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './loader.css'
 
 function Loader ({ loaderText, isLoaderActive }) {
   const style = isLoaderActive ? 'hidden' : 'shown'
