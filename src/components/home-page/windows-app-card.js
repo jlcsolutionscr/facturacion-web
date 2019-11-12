@@ -5,26 +5,26 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 
-import appImage from '../../../assets/img/mobile-app.jpeg'
+import appImage from '../../assets/img/windows-app.jpeg'
 import { createStyle } from './styles'
 
-export default function MobileAppCard() {
+export default function WindowsAppCard() {
   const classes = createStyle()
   return (
-    <Card className={classes.card}>
+    <Card style={{marginLeft: '5%'}} className={classes.card}>
       <CardMedia
         className={classes.media}
         image={appImage}
       />
       <CardContent>
         <Typography className={classes.cardHeader} color="textSecondary" component="p">
-          Aplicación Android
+          Aplicacion Windows
         </Typography>
         <Typography className={classes.title} color="textSecondary" component="p">
-          Utiliza nuestra aplicación móbil ya disponible en la tienda de Google Store
+          Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible
         </Typography>
         <Typography className={classes.pTop} paragraph>
-          Esta herramienta le permite realizar la gestión de sus documentos electrónicos desde cualquier sitio donde usted se encuentre
+          Administre su negocio mediante nuestra aplicación de escritorio para Windows la cual le permite llevar el control de su negocio de forma ágil y segura
         </Typography>
       </CardContent>
     </Card>

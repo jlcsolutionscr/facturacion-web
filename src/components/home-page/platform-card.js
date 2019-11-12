@@ -5,10 +5,10 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 
-import appImage from '../../../assets/img/windows-app.jpeg'
+import appImage from '../../assets/img/plataforma.png'
 import { createStyle } from './styles'
 
-export default function WindowsAppCard() {
+export default function PlatformCard() {
   const classes = createStyle()
   return (
     <Card style={{marginLeft: '5%'}} className={classes.card}>
@@ -18,13 +18,16 @@ export default function WindowsAppCard() {
       />
       <CardContent>
         <Typography className={classes.cardHeader} color="textSecondary" component="p">
-          Aplicacion Windows
+          Plataforma de servicios
         </Typography>
         <Typography className={classes.title} color="textSecondary" component="p">
-          Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible
+          Nuestro servicio web implementado en la nube y accesible desde cualquiera de nuestras aplicaciones
         </Typography>
         <Typography className={classes.pTop} paragraph>
-          Administre su negocio mediante nuestra aplicación de escritorio para Windows la cual le permite llevar el control de su negocio de forma ágil y segura
+          Le brinda almacenamiento global y resguardo de su información con respaldo periódicos
+        </Typography>
+        <Typography className={classes.p} paragraph>
+          Nuestro buzón para recibir sus facturas de gastos le permite agilizar su proceso de recepción de documentos: recepcion@jlcsolutionscr.com (IVA acreditable) y recepciongasto@jlcsolutionscr.com
         </Typography>
       </CardContent>
     </Card>

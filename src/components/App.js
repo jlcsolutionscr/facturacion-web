@@ -1,6 +1,6 @@
 import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-import Home from './home'
+import Menu from './menu'
 
 const theme = createMuiTheme({
   overrides: {
@@ -16,7 +16,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <div style={{minWidth: `${window.innerWidth / 4 * 3}px`}} >
-        <Home />
+        <Menu />
       </div>
     </ThemeProvider>
   );
