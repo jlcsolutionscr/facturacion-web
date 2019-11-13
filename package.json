@@ -1,8 +1,16 @@
 {
-  "name": "jlc_web_site",
-  "version": "0.1.0",
+  "name": "JLCSolutions",
+  "version": "1.0.0",
   "private": true,
   "homepage": "https://jlcsolutionscr.github.com/WebSite",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "@material-ui/core": "4.6.1",
     "@material-ui/pickers": "3.2.7",
@@ -19,14 +27,6 @@
     "redux": "4.0.4",
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
