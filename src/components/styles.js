@@ -46,6 +46,12 @@ export const createStyle = makeStyles(theme => createStyles({
     fontSize: theme.typography.pxToRem(16),
     color: 'inherit'
   },
+  paragraphError: {
+    marginTop: '10px',
+    fontFamily: 'PT Sans',
+    fontSize: theme.typography.pxToRem(16),
+    color: 'red'
+  },
   paragraphList: {
     marginLeft: '20px',
     marginTop: '10px',

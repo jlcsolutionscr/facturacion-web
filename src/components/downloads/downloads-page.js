@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
+import { downloadWindowsAppFromWebSite } from '../../store/ui/actions'
 
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-import Icon from '@material-ui/core/Icon'
 
 import { CloudDownloadIcon } from '../../icons/icon'
 import { createStyle } from '../styles'
@@ -20,10 +22,19 @@ const style = {
   }
 }
 
-function DownloadsPage() {
+function DownloadsPage(props) {
   const classes = createStyle()
+
+  const downloadFile = () => {
+    props.downloadWindowsAppFromWebSite()
+  }
   return (
     <div id='id_download_page' className={classes.root} style={{height: window.innerHeight - 364}}>
+      {props.downloadError != '' &&
+        <Typography style={{textAlign: 'center', margin: '2%'}} className={classes.paragraphError} component="p">
+          props.downloadError
+        </Typography>
+      }
       <Typography style={{textAlign: 'center', marginBottom: '2%'}} className={classes.title} color="textSecondary" component="p">
         Nuestros productos
       </Typography>
@@ -31,7 +42,7 @@ function DownloadsPage() {
         <Typography className={classes.paragraphList} paragraph>
           Aplicación Windows: Le permite gestionar sus operaciones mediante una aplicación ágil, segura y eficiente
         </Typography>
-        <Button variant="contained" style={style.button} startIcon={<CloudDownloadIcon />}>
+        <Button variant="contained" style={style.button} startIcon={<CloudDownloadIcon />} onClick={() => downloadFile()}>
           Descargar
         </Button>
       </div>
@@ -39,4 +50,12 @@ function DownloadsPage() {
   )
 }
 
-export default DownloadsPage
+const mapStateToProps = (state) => {
+  return {
+    downloadError: state.ui.downloadError
+  }
+}
+
+const mapDispatchToProps = { downloadWindowsAppFromWebSite }
+
+export default connect(mapStateToProps, mapDispatchToProps)(DownloadsPage)
