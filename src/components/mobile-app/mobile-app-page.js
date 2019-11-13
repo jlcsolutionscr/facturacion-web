@@ -89,7 +89,7 @@ function MobileAppPage() {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography className={classes.subTitle}>Genere su facturación</Typography>
+          <Typography className={classes.subTitle}>Genere su factura</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{display: 'block'}}>
           <Typography className={classes.paragraph}>
