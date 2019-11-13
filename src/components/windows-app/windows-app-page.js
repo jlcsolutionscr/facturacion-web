@@ -1,62 +1,17 @@
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
+import React from 'react'
 
-import { CheckIcon } from '../../../icons/icon'
-import appImage from '../../../assets/img/windows-app.jpeg'
+import Typography from '@material-ui/core/Typography'
+import { createStyle } from '../styles'
 
-export default function WindowsApp() {
+function WindowsAppPage() {
+  const classes = createStyle()
   return (
-    <List>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Facturación electrónica como para regimen simplificado" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Ingreso de compras de mercadería" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Control de inventario" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Catálogo de sus clientes" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Mantenimiento de categorías y productos" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Gestión de sus cuentas por cobrar" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Administración de sus cuentas por pagar" />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-        <CheckIcon />
-        </ListItemIcon>
-        <ListItemText primary="Gestión de sus cuentas por cobrar" />
-      </ListItem>
-    </List>
+    <div id='id_windows_app_page' style={{height: window.innerHeight - 364}} className={classes.root}>
+      <Typography style={{textAlign: 'center', marginBottom: '2%'}} className={classes.title} color="textSecondary" component="p">
+        Under construction
+      </Typography>
+    </div>
   )
 }
+
+export default WindowsAppPage

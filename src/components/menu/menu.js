@@ -19,6 +19,9 @@ import bannerImage from '../../assets/img/banner.png'
 import Loader from '../loader'
 import HomePage from '../home-page/home-page'
 import MobileAppPage from '../mobile-app/mobile-app-page'
+import WindowsAppPage from '../windows-app/windows-app-page.js'
+import PlatformPage from '../platform/platform-page'
+import DownloadsPage from '../downloads/downloads-page'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,14 +37,14 @@ const useStyles = makeStyles(theme => ({
   headerTitle: {
     flexGrow: 1,
     fontFamily: 'PT Sans',
-    fontSize: 20
+    fontSize: theme.typography.pxToRem(20)
   },
   list: {
     width: 250
   },
   listItemText: {
     fontFamily: 'PT Sans',
-    fontSize: 18
+    fontSize: theme.typography.pxToRem(18)
   },
   paperTop: {
     marginTop: '64px',
@@ -71,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     color: '#E7F2F8',
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
-    fontSize: 70,
+    fontSize: theme.typography.pxToRem(70),
     textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
   },
   h4: {
@@ -88,8 +91,8 @@ function Menu() {
   const [state, setState] = React.useState({
     loading: false,
     drawerOpen: false,
-    currentPage: 1,
-    pageTitle: 'Aplicación Android'
+    currentPage: 0,
+    pageTitle: 'Página de inicio'
   })
 
   const toggleDrawer = (open) => event => {
@@ -115,9 +118,6 @@ function Menu() {
         title = 'Plataforma de Servicios'
         break;
       case 4:
-        title = 'Plataforma de Servicios'
-        break;
-      case 5:
         title = 'Descargas'
         break;
       default:
@@ -162,7 +162,7 @@ function Menu() {
           <Typography variant='h6' className={classes.headerTitle}>
             {state.pageTitle}
           </Typography>
-          <Button variant='outlined' color='inherit'>Cerrar sesion</Button>
+          <Button variant='outlined' color='inherit'>Iniciar sesión</Button>
         </Toolbar>
       </AppBar>
       <Drawer open={state.drawerOpen} onClose={toggleDrawer(false)}>
@@ -179,6 +179,9 @@ function Menu() {
       <Paper className={classes.paperCenter}>
         {state.currentPage === 0 && <HomePage onClick={toggleCurrentPage} />}
         {state.currentPage === 1 && <MobileAppPage />}
+        {state.currentPage === 2 && <WindowsAppPage />}
+        {state.currentPage === 3 && <PlatformPage />}
+        {state.currentPage === 4 && <DownloadsPage />}
       </Paper>
       <Paper className={classes.paperBottom} />
     </div>

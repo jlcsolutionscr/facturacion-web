@@ -23,13 +23,7 @@ export default function PlatformCard(props) {
           Plataforma de servicios
         </Typography>
         <Typography className={classes.subTitle} color="textSecondary" component="p">
-          Nuestro servicio web implementado en la nube y accesible desde cualquiera de nuestras aplicaciones
-        </Typography>
-        <Typography className={classes.paragraphTop} paragraph>
-          Le brinda almacenamiento global y resguardo de su información con respaldo periódicos
-        </Typography>
-        <Typography className={classes.paragraph} paragraph>
-          Nuestro buzón para recibir sus facturas de gastos le permite agilizar su proceso de recepción de documentos: recepcion@jlcsolutionscr.com (IVA acreditable) y recepciongasto@jlcsolutionscr.com
+          Nuestro servicio web implementado en la nube y accesible desde cualquiera de nuestras aplicaciones, desarrollado con tecnología .NET Framework de Microsoft con un rendimiento optimizado para responder a sus necesidades de negocio de la mejor forma.
         </Typography>
       </CardContent>
       <CardActions>
