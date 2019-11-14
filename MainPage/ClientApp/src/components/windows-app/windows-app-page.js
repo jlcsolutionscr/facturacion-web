@@ -37,7 +37,7 @@ function WindowsAppPage() {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography className={classes.subTitle}>Registre su ordenador</Typography>
+            <Typography className={classes.expantionTitle}>Registre su ordenador</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{display: 'block'}}>
             <Typography className={classes.paragraph}>
@@ -65,7 +65,7 @@ function WindowsAppPage() {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography className={classes.subTitle}>Ingrese a la aplicación</Typography>
+            <Typography className={classes.expantionTitle}>Ingrese a la aplicación</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{display: 'block'}}>
             <Typography className={classes.paragraph}>
@@ -83,7 +83,7 @@ function WindowsAppPage() {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography className={classes.subTitle}>Genere su factura</Typography>
+            <Typography className={classes.expantionTitle}>Genere su factura</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{display: 'block'}}>
             <Typography className={classes.paragraph}>
@@ -110,7 +110,7 @@ function WindowsAppPage() {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography className={classes.subTitle}>Administre sus facturas</Typography>
+            <Typography className={classes.expantionTitle}>Administre sus facturas</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{display: 'block'}}>
             <Typography>
@@ -140,7 +140,7 @@ function WindowsAppPage() {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography className={classes.subTitle}>Gestione sus documentos electrónicos</Typography>
+            <Typography className={classes.expantionTitle}>Gestione sus documentos electrónicos</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{display: 'block'}}>
             <Typography>
@@ -167,7 +167,7 @@ function WindowsAppPage() {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography className={classes.subTitle}>Envíe sus reportes a su correo</Typography>
+            <Typography className={classes.expantionTitle}>Envíe sus reportes a su correo</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{display: 'block'}}>
             <Typography>

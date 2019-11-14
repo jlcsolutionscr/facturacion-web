@@ -15,6 +15,10 @@ export const createStyle = makeStyles(theme => createStyles({
     backgroundColor: '#E2EBF1',
     color: 'black'
   },
+  expantionTitle: {
+    fontSize: theme.typography.pxToRem(20),
+    color: 'inherit'
+  },
   margin5: {
     marginLeft: theme.spacing(5),
     marginRight: theme.spacing(5)

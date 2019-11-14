@@ -20,7 +20,7 @@ export default function WindowsAppCard(props) {
       />
       <CardContent>
         <Typography className={classes.title} color='textSecondary' component='p'>
-          Aplicacion Windows
+          Aplicación Windows
         </Typography>
         <Typography className={classes.subTitle} paragraph>
           Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible. Administre su negocio mediante nuestra aplicación de escritorio para Windows la cual le permite llevar el control de su negocio de forma ágil y segura.
