@@ -37,14 +37,12 @@ const useStyles = makeStyles(theme => ({
   },
   headerTitle: {
     flexGrow: 1,
-    fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(20)
   },
   list: {
     width: 250
   },
   listItemText: {
-    fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(18)
   },
   paperTop: {

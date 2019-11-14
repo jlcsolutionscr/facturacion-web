@@ -28,26 +28,22 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   title: {
     marginBottom: theme.spacing(1),
-    fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(26),
     fontWeight: '700',
     color: 'inherit'
   },
   subTitle: {
     marginTop: theme.spacing(2),
-    fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(20),
     color: 'inherit'
   },
   paragraph: {
     marginTop: theme.spacing(2),
-    fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(16),
     color: 'inherit'
   },
   paragraphError: {
     marginTop: theme.spacing(2),
-    fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(16),
     color: 'red'
   },
