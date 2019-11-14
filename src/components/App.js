@@ -59,16 +59,10 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2)
   },
   paperCenter: {
+    marginBottom: '64px',
     borderRadius: 0,
     padding: theme.spacing(2),
     backgroundColor: '#FAFAFA'
-  },
-  paperBottom: {
-    backgroundColor: '#262626',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    width: window.width,
-    height: '96px'
   },
   h2: {
     marginTop: theme.spacing(2),
@@ -84,7 +78,13 @@ const useStyles = makeStyles(theme => ({
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
     textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
-  }
+  },
+  appBottomBar: {
+    backgroundColor: '#262626',
+    color: 'white',
+    top: 'auto',
+    bottom: 0
+  },
 }))
 
 function App(props) {
@@ -153,7 +153,7 @@ function App(props) {
     </div>
   )
   return (
-    <div id='id_app_content' className={classes.root}>
+    <div id='id_app_content'>
       {props.loaderVisible && <Loader loaderText={state.loadingMessage} isLoaderActive={props.loaderVisible}/>}
       <AppBar classes={{colorDefault: classes.appBar}} position='fixed' color='default'>
         <Toolbar>
@@ -170,10 +170,10 @@ function App(props) {
         {sideList('left')}
       </Drawer>
       <Paper className={classes.paperTop}>
-        <Typography classes={{h2: classes.h2}} variant="h2" align='center' component="h2">
+        <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
           JLC Solutions
         </Typography>
-        <Typography classes={{h4: classes.h4}} variant="h4" align='center' component="h4">
+        <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
           A software development company
         </Typography>
       </Paper>
@@ -184,7 +184,9 @@ function App(props) {
         {state.currentPage === 3 && <PlatformPage />}
         {state.currentPage === 4 && <DownloadsPage />}
       </Paper>
-      <Paper className={classes.paperBottom} />
+      <AppBar classes={{colorDefault: classes.appBottomBar}} position='fixed' color='default'>
+        <Toolbar />
+      </AppBar>
     </div>
   )
 }

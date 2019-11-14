@@ -3,21 +3,21 @@ import { connect } from 'react-redux'
 
 import { downloadWindowsAppFromWebSite } from '../../store/ui/actions'
 
+import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
 import { CloudDownloadIcon } from '../../icons/icon'
+import MobileAppQRCodeImage from '../../assets/img/mobile-app-QR-code.png'
 import { createStyle } from '../styles'
 
 const style = {
   columns: {
-    marginLeft: '5%',
     display: 'flex',
     flexDirection: 'row'
   },
   button: {
-    backgroundColor: 'white',
-    marginLeft: '2%',
+    backgroundColor: '#E2EBF1',
     height: '40px'
   }
 }
@@ -29,23 +29,29 @@ function DownloadsPage(props) {
     props.downloadWindowsAppFromWebSite()
   }
   return (
-    <div id='id_download_page' className={classes.root} style={{height: window.innerHeight - 364}}>
-      {props.downloadError != '' &&
-        <Typography style={{textAlign: 'center', margin: '2%'}} className={classes.paragraphError} component="p">
-          props.downloadError
+    <div id='id_download_page' style={{height: window.innerHeight - 318}}>
+      <Container className={[classes.container, classes.margin5]}>
+        {props.downloadError != '' &&
+          <Typography style={{textAlign: 'center', margin: '2%'}} className={classes.paragraphError} component='p'>
+            props.downloadError
+          </Typography>
+        }
+        <Typography style={{textAlign: 'center', marginBottom: '2%'}} className={classes.title} color='textSecondary' component='p'>
+          Productos disponibles
         </Typography>
-      }
-      <Typography style={{textAlign: 'center', marginBottom: '2%'}} className={classes.title} color="textSecondary" component="p">
-        Nuestros productos
-      </Typography>
-      <div style={style.columns}>
-        <Typography className={classes.paragraphList} paragraph>
-          Aplicación Windows: Le permite gestionar sus operaciones mediante una aplicación ágil, segura y eficiente
-        </Typography>
-        <Button variant="contained" style={style.button} startIcon={<CloudDownloadIcon />} onClick={() => downloadFile()}>
-          Descargar
-        </Button>
-      </div>
+        <div style={{textAlign: 'center', width: '100%'}}>
+          <Typography className={classes.subTitle} paragraph>
+            La aplicación para sistemas Windows le permite gestionar sus operaciones mediante una aplicación ágil, segura y eficiente
+          </Typography>
+          <Button variant='contained' style={style.button} startIcon={<CloudDownloadIcon />} onClick={() => downloadFile()}>
+            Descargar
+          </Button>
+          <Typography className={classes.subTitle} paragraph>
+            Instale nuestra aplicación para dispositivos Android disponible en la Google App Store mediante el siguiente enlace
+          </Typography>
+          <img src={MobileAppQRCodeImage} style={{width: '15%'}} />
+        </div>
+      </Container>
     </div>
   )
 }

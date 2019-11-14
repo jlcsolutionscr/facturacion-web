@@ -1,8 +1,8 @@
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 export const createStyle = makeStyles(theme => createStyles({
-  root: {
-    paddingTop: '1%',
+  container: {
+    paddingTop: theme.spacing(5),
     backgroundColor: '#FAFAFA'
   },
   card: {
@@ -12,8 +12,12 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   expantionPanel: {
     justifyContent: 'center',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#E2EBF1',
     color: 'black'
+  },
+  margin5: {
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(5)
   },
   expantionIcon: {
     color: 'black'
@@ -30,34 +34,25 @@ export const createStyle = makeStyles(theme => createStyles({
     color: 'inherit'
   },
   subTitle: {
+    marginTop: theme.spacing(2),
     fontFamily: 'PT Sans',
-    fontSize: theme.typography.pxToRem(18),
-    color: 'inherit'
-  },
-  paragraphTop: {
-    paddingTop: theme.spacing(2),
-    fontFamily: 'PT Sans',
-    fontSize: theme.typography.pxToRem(16),
+    fontSize: theme.typography.pxToRem(20),
     color: 'inherit'
   },
   paragraph: {
-    marginTop: '10px',
+    marginTop: theme.spacing(2),
     fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(16),
     color: 'inherit'
   },
   paragraphError: {
-    marginTop: '10px',
+    marginTop: theme.spacing(2),
     fontFamily: 'PT Sans',
     fontSize: theme.typography.pxToRem(16),
     color: 'red'
   },
-  paragraphList: {
-    marginLeft: '20px',
-    marginTop: '10px',
-    fontFamily: 'PT Sans',
-    fontSize: theme.typography.pxToRem(16),
-    color: 'inherit'
+  enumerate: {
+    marginLeft: theme.spacing(3)
   },
   link: {
     margin: theme.spacing(1)

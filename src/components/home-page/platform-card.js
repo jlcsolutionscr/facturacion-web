@@ -19,10 +19,10 @@ export default function PlatformCard(props) {
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.title} color="textSecondary" component="p">
+        <Typography className={classes.title} color='textSecondary' component='p'>
           Plataforma de servicios
         </Typography>
-        <Typography className={classes.subTitle} color="textSecondary" component="p">
+        <Typography className={classes.subTitle} paragraph>
           Nuestro servicio web implementado en la nube y accesible desde cualquiera de nuestras aplicaciones, desarrollado con tecnología .NET Framework de Microsoft con un rendimiento optimizado para responder a sus necesidades de negocio de la mejor forma.
         </Typography>
       </CardContent>

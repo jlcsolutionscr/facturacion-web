@@ -19,14 +19,12 @@ export default function MobileAppCard(props) {
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.title} color="textSecondary" component="p">
+        <Typography className={classes.title} color='textSecondary' component='p'>
           Aplicación Android
         </Typography>
-        <Typography className={classes.subTitle} color="textSecondary" component="p">
-          Utiliza nuestra aplicación móbil ya disponible en la tienda de Google Store
-        </Typography>
-        <Typography className={classes.paragraphTop} paragraph>
-          Esta herramienta le permite realizar la gestión de sus documentos electrónicos desde cualquier sitio donde usted se encuentre
+        <Typography className={classes.subTitle} paragraph>
+          Utiliza nuestra aplicación móbil ya disponible en la tienda de Google Store.
+          Esta herramienta le permite realizar la gestión de sus documentos electrónicos desde cualquier sitio donde usted se encuentre.
         </Typography>
       </CardContent>
       <CardActions>

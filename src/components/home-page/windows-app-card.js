@@ -19,14 +19,11 @@ export default function WindowsAppCard(props) {
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.title} color="textSecondary" component="p">
+        <Typography className={classes.title} color='textSecondary' component='p'>
           Aplicacion Windows
         </Typography>
-        <Typography className={classes.subTitle} color="textSecondary" component="p">
-          Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible
-        </Typography>
-        <Typography className={classes.paragraphTop} paragraph>
-          Administre su negocio mediante nuestra aplicación de escritorio para Windows la cual le permite llevar el control de su negocio de forma ágil y segura
+        <Typography className={classes.subTitle} paragraph>
+          Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible. Administre su negocio mediante nuestra aplicación de escritorio para Windows la cual le permite llevar el control de su negocio de forma ágil y segura.
         </Typography>
       </CardContent>
       <CardActions>
