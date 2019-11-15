@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { ListIcon } from '../icons/icon'
+import { ListIcon } from 'utils/iconHelper'
 
 import bannerImage from '../assets/img/banner.png'
 
@@ -62,6 +62,13 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     backgroundColor: '#FAFAFA'
   },
+  paperBottom: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    padding: theme.spacing(2),
+    backgroundColor: '#262626',
+    color: 'white'
+  },
   h2: {
     marginTop: theme.spacing(2),
     color: '#E7F2F8',
@@ -76,13 +83,7 @@ const useStyles = makeStyles(theme => ({
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
     textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
-  },
-  appBottomBar: {
-    backgroundColor: '#262626',
-    color: 'white',
-    top: 'auto',
-    bottom: 0
-  },
+  }
 }))
 
 function App(props) {
@@ -151,7 +152,7 @@ function App(props) {
     </div>
   )
   return (
-    <div id='id_app_content'>
+    <div id='id_app_content' style={{minWidth: `${window.innerWidth / 8 * 7}px`}} >
       {props.loaderVisible && <Loader loaderText={state.loadingMessage} isLoaderActive={props.loaderVisible}/>}
       <AppBar classes={{colorDefault: classes.appBar}} position='fixed' color='default'>
         <Toolbar>
@@ -182,9 +183,7 @@ function App(props) {
         {state.currentPage === 3 && <PlatformPage />}
         {state.currentPage === 4 && <DownloadsPage />}
       </Paper>
-      <AppBar classes={{colorDefault: classes.appBottomBar}} position='fixed' color='default'>
-        <Toolbar />
-      </AppBar>
+      <Paper className={classes.paperBottom}/>
     </div>
   )
 }

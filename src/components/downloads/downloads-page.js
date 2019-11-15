@@ -7,7 +7,7 @@ import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
-import { CloudDownloadIcon } from '../../icons/icon'
+import { CloudDownloadIcon } from '../../utils/iconHelper'
 import MobileAppQRCodeImage from '../../assets/img/mobile-app-QR-code.png'
 import { createStyle } from '../styles'
 

@@ -7,7 +7,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core/Typography'
 import { createStyle } from '../styles'
 
-import { ExpandMoreIcon } from '../../icons/icon'
+import { ExpandMoreIcon } from '../../utils/iconHelper'
 import LoginImage from '../../assets/img/windows-login.png'
 import FirstSignInStepImage from '../../assets/img/windows-signin-1.png'
 import SecondSignInStepImage from '../../assets/img/windows-signin-2.png'
