@@ -1,3 +1,5 @@
 export const START_LOADER = 'ui/START_LOADER'
 export const STOP_LOADER = 'ui/STOP_LOADER'
+export const SET_MENU_DRAWER_OPEN = 'ui/SET_MENU_DRAWER_OPEN'
+export const SET_MENU_PAGE = 'ui/SET_MENU_PAGE'
 export const SET_DOWNLOAD_ERROR = 'ui/SET_DOWNLOAD_ERROR'

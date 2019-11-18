@@ -7,8 +7,8 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
-import appImage from '../../assets/img/mobile-app.jpeg'
-import { createStyle } from '../styles'
+import appImage from 'assets/img/mobile-app.jpeg'
+import { createStyle } from 'components/styles'
 
 export default function MobileAppCard(props) {
   const classes = createStyle()
@@ -19,12 +19,11 @@ export default function MobileAppCard(props) {
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.title} color='textSecondary' component='p'>
+        <Typography className={classes.subTitle} style={{fontWeight: '700'}} color='textSecondary' component='p'>
           Aplicación Android
         </Typography>
-        <Typography className={classes.subTitle} paragraph>
-          Utiliza nuestra aplicación móbil ya disponible en la tienda de Google Store.
-          Esta herramienta le permite realizar la gestión de sus documentos electrónicos desde cualquier sitio donde usted se encuentre.
+        <Typography className={classes.paragraph} paragraph>
+          Facture desde cualquier lugar. Disponible en la tienda de Google App Store.
         </Typography>
       </CardContent>
       <CardActions>

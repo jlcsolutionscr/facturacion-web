@@ -12,7 +12,8 @@ import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/styles'
-import Logo from 'assets/'
+import Loader from 'components/loader/loader'
+import Logo from 'assets/img/Logo.png'
 
 const styles = theme => ({
   root: {
@@ -78,12 +79,6 @@ export class LoginPage extends Component {
     }
   }
 
-  componentDidMount () {
-    if (!this.props.verifiedSession) {
-      this.props.verifySessionExpirationStatus()
-    }
-  }
-
   render () {
     return (
       <>
@@ -124,7 +119,7 @@ export class LoginPage extends Component {
         <Grid item xs={12} sm={6} md={3} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
-              <Logo className={{ logo: classes.logo, image: classes.logoImage }} />
+              <img src={Logo} style={{marginLeft: '10%', width: '35%'}} alt='not available' />
             </Avatar>
             <Typography component='h1' variant='h5'>
               JLC Solutions
@@ -169,7 +164,7 @@ export class LoginPage extends Component {
           </div>
         </Grid>
         <Grid item xs={false} sm={6} md={9} className={classes.image} />
-        <Spinner isRunning={this.props.isAuthenticating} />
+        <Loader isLoaderActive={this.props.isLoaderActive} loaderText={this.props.loaderText} />
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',

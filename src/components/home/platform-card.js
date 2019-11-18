@@ -7,23 +7,23 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
-import appImage from '../../assets/img/plataforma.png'
-import { createStyle } from '../styles'
+import appImage from 'assets/img/plataforma.png'
+import { createStyle } from 'components/styles'
 
 export default function PlatformCard(props) {
   const classes = createStyle()
   return (
-    <Card style={{marginLeft: '5%'}} className={classes.card}>
+    <Card className={classes.card}>
       <CardMedia
         className={classes.media}
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.title} color='textSecondary' component='p'>
+        <Typography className={classes.subTitle} style={{fontWeight: '700'}} color='textSecondary' component='p'>
           Plataforma de servicios
         </Typography>
-        <Typography className={classes.subTitle} paragraph>
-          Nuestro servicio web implementado en la nube y accesible desde cualquiera de nuestras aplicaciones, desarrollado con tecnología .NET Framework de Microsoft con un rendimiento optimizado para responder a sus necesidades de negocio de la mejor forma.
+        <Typography className={classes.paragraph} paragraph>
+          Nuestro servicio web implementado en la nube le garantiza la seguridad de su información.
         </Typography>
       </CardContent>
       <CardActions>

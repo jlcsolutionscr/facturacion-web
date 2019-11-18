@@ -2,12 +2,15 @@ import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 export const createStyle = makeStyles(theme => createStyles({
   container: {
-    paddingTop: theme.spacing(5),
-    backgroundColor: '#FAFAFA'
+    paddingTop: '4%',
+    paddingBottom: '4%',
+    paddingLeft: '5%',
+    paddingRight: '5%',
+    backgroundColor: '#EFF7F7'
   },
   card: {
-    backgroundColor: '#595959',
-    maxWidth: '30%',
+    backgroundColor: '#CCE7F9',
+    maxWidth: '70%',
     color: 'inherit'
   },
   expantionPanel: {
@@ -16,7 +19,8 @@ export const createStyle = makeStyles(theme => createStyles({
     color: 'black'
   },
   expantionTitle: {
-    fontSize: theme.typography.pxToRem(20),
+    fontSize: theme.typography.pxToRem(18),
+    fontWeight: '600',
     color: 'inherit'
   },
   margin5: {
@@ -28,7 +32,7 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   media: {
     height: 0,
-    paddingTop: '66.25%'
+    paddingTop: '56.25%'
   },
   title: {
     marginBottom: theme.spacing(1),

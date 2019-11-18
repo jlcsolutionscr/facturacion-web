@@ -14,10 +14,10 @@ import { INITIAL_STATE } from './store/InitialState'
 
 import './index.css'
 
-import App from './components/App'
-import LoginPage from './components/login-page/login-page'
-import CompanyPage from './components/company-page'
-import ReportsPage from './components/reports-page'
+import App from 'components/app'
+import LoginPage from 'components/login/login-page'
+import CompanyPage from 'components/company/company-page'
+import ReportsPage from 'components/reports/reports-page'
 
 import * as serviceWorker from './serviceWorker'
 import './fonts/RussoOne-Regular.ttf'
@@ -29,8 +29,8 @@ const history = syncHistoryWithStore(browserHistory, store)
 const theme = createMuiTheme({
     overrides: {
       MuiButton: {
-        outlined: {
-          borderRadius: 2
+        root: {
+          borderRadius: 8
         }
       }
     }
@@ -41,11 +41,11 @@ ReactDOM.render(
     <Router history={history}>
       <ThemeProvider theme={theme}>
         <Switch>
-          <Redirect from="*" to="/home" />
           <Route exact path='/home' component={App} />
-          <Route exact path='/signin' component={LoginPage} />
+          <Route exact path='/login' component={LoginPage} />
           <Route exact path='/company' component={CompanyPage} />
           <Route exact path='/reports' component={ReportsPage} />
+          <Redirect from="/" to="/home" />
         </Switch>
       </ThemeProvider>
     </Router>

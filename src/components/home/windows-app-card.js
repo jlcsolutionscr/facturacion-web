@@ -7,23 +7,23 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
-import appImage from '../../assets/img/windows-app.jpeg'
-import { createStyle } from '../styles'
+import appImage from 'assets/img/windows-app.jpeg'
+import { createStyle } from 'components/styles'
 
 export default function WindowsAppCard(props) {
   const classes = createStyle()
   return (
-    <Card style={{marginLeft: '5%'}} className={classes.card}>
+    <Card className={classes.card}>
       <CardMedia
         className={classes.media}
         image={appImage}
       />
       <CardContent>
-        <Typography className={classes.title} color='textSecondary' component='p'>
+        <Typography className={classes.subTitle} style={{fontWeight: '700'}} color='textSecondary' component='p'>
           Aplicación Windows
         </Typography>
-        <Typography className={classes.subTitle} paragraph>
-          Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible. Administre su negocio mediante nuestra aplicación de escritorio para Windows la cual le permite llevar el control de su negocio de forma ágil y segura.
+        <Typography className={classes.paragraph} paragraph>
+          Aplicación de escritorio desarrollada con la última tecnología .NET Framework disponible.
         </Typography>
       </CardContent>
       <CardActions>

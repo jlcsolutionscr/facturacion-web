@@ -1,10 +1,12 @@
 import {
   START_LOADER,
   STOP_LOADER,
+  SET_MENU_DRAWER_OPEN,
+  SET_MENU_PAGE,
   SET_DOWNLOAD_ERROR
 } from './types'
 
-import { downloadWindowsApp } from '../../utils/utilities'
+import { downloadWindowsApp } from 'utils/utilities'
 
 export const startLoader = () => {
   return {
@@ -15,6 +17,20 @@ export const startLoader = () => {
 export const stopLoader = () => {
   return {
     type: STOP_LOADER
+  }
+}
+
+export const setMenuDrawerOpen = (open) => {
+  return {
+    type: SET_MENU_DRAWER_OPEN,
+    payload: { open }
+  }
+}
+
+export const setMenuPage = (pageId) => {
+  return {
+    type: SET_MENU_PAGE,
+    payload: { pageId }
   }
 }
 

@@ -1,80 +1,63 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
+
+import { setMenuDrawerOpen, setMenuPage } from 'store/ui/actions'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import Paper from '@material-ui/core/Paper'
-
-import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import { ListIcon } from 'utils/iconHelper'
 
-import bannerImage from '../assets/img/banner.png'
+import Loader from 'components/loader/loader'
+import HomePage from 'components/home/home-page'
+import MobileAppPage from 'components/mobile-app/mobile-app-page'
+import WindowsAppPage from 'components/windows-app/windows-app-page.js'
+import PlatformPage from 'components/platform/platform-page'
+import DownloadsPage from 'components/downloads/downloads-page'
 
-import Loader from './loader'
-import HomePage from './home-page/home-page'
-import MobileAppPage from './mobile-app/mobile-app-page'
-import WindowsAppPage from './windows-app/windows-app-page.js'
-import PlatformPage from './platform/platform-page'
-import DownloadsPage from './downloads/downloads-page'
+import bannerImage from 'assets/img/banner.png'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    height: '500px'
   },
   appBar: {
-    backgroundColor: '#262626',
+    backgroundColor: 'rgba(0,0,0,0.65)',
     color: 'white'
   },
   menuButton: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(2),
+    width: theme.spacing(20),
+    backgroundColor: 'rgba(0,0,0,0.25)'
   },
-  headerTitle: {
-    flexGrow: 1,
-    fontSize: theme.typography.pxToRem(20)
-  },
-  list: {
-    width: 250
-  },
-  listItemText: {
-    fontSize: theme.typography.pxToRem(18)
-  },
-  paperTop: {
-    marginTop: '64px',
-    borderRadius: 0,
-    width: window.width,
-    height: '126px',
+  titleContainer: {
     backgroundImage: `url(${bannerImage})`,
-    backgroundPosition: 'top',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    padding: theme.spacing(2)
+    backgroundSize: `${window.innerWidth}px 205px`,
+    minWidth: `${window.innerWidth / 8 * 7}px`,
+    height: '205px',
+    top: 0,
+    left: 0,
+    right: 0,
+    position: 'fixed',
+    paddingTop: '60px',
+    zIndex: 9999,
   },
-  paperCenter: {
-    marginBottom: '64px',
-    borderRadius: 0,
-    padding: theme.spacing(2),
-    backgroundColor: '#FAFAFA'
-  },
-  paperBottom: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    padding: theme.spacing(2),
+  panelBottom: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
     backgroundColor: '#262626',
-    color: 'white'
+    color: 'white',
+    height: '200px'
   },
   h2: {
     marginTop: theme.spacing(2),
     color: '#E7F2F8',
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(70),
+    fontSize: theme.typography.pxToRem(65),
     textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
   },
   h4: {
@@ -82,116 +65,76 @@ const useStyles = makeStyles(theme => ({
     color: '#E7F2F8',
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
+    fontSize: theme.typography.pxToRem(25),
     textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
   }
 }))
 
 function App(props) {
   const classes = useStyles()
-  const [state, setState] = React.useState({
-    loadingMessage: 'Downloading',
-    drawerOpen: false,
-    currentPage: 0,
-    pageTitle: 'Página de inicio'
-  })
-
-  const toggleDrawer = (open) => event => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return
-    }
-    setState({ ...state, drawerOpen: open })
-  }
 
   const toggleCurrentPage = (pageId) => {
-    let title = 'Página de inicio'
-    switch(pageId) {
-      case 0:
-        title = 'Página de inicio'
-        break
-      case 1:
-        title = 'Aplicación Android'
-        break
-      case 2:
-        title = 'Aplicación Windows'
-        break
-      case 3:
-        title = 'Plataforma de Servicios'
-        break
-      case 4:
-        title = 'Descargas'
-        break
-      default:
-        title = ''
-    }
-    setState({ ...state, pageTitle: title, currentPage: pageId, drawerOpen: false })
+    props.setMenuPage(pageId)
     window.scrollTo(0, 0)
   }
 
-  const sideList = side => (
-    <div
-      className={classes.list}
-      role='presentation'
-    >
-      <List>
-        <ListItem button key='0' onClick={() => toggleCurrentPage(0)}>
-          <ListItemText classes={{primary: classes.listItemText}} primary={'Página de inicio'} />
-        </ListItem>
-        <ListItem button key='1' onClick={() => toggleCurrentPage(1)}>
-          <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Android'}/>
-        </ListItem>
-        <ListItem button key='2' onClick={() => toggleCurrentPage(2)}>
-          <ListItemText classes={{primary: classes.listItemText}} primary={'Aplicación Windows'} />
-        </ListItem>
-        <ListItem button key='3' onClick={() => toggleCurrentPage(3)}>
-          <ListItemText classes={{primary: classes.listItemText}} primary={'Plataforma de Servicios'} />
-        </ListItem>
-        <ListItem button key='4' onClick={() => toggleCurrentPage(4)}>
-          <ListItemText classes={{primary: classes.listItemText}} primary={'Descargas'} />
-        </ListItem>
-      </List>
-    </div>
-  )
+  const style = {
+    root: {
+      minWidth: `${window.innerWidth / 8 * 7}px`
+    }
+  }
+
   return (
-    <div id='id_app_content' style={{minWidth: `${window.innerWidth / 8 * 7}px`}} >
-      {props.loaderVisible && <Loader loaderText={state.loadingMessage} isLoaderActive={props.loaderVisible}/>}
-      <AppBar classes={{colorDefault: classes.appBar}} position='fixed' color='default'>
-        <Toolbar>
-          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={toggleDrawer(true)}>
-            <ListIcon />
-          </IconButton>
-          <Typography variant='h6' className={classes.headerTitle}>
-            {state.pageTitle}
+    <div id='id_app_content' style={style.root} >
+      <div className={classes.root}>
+        <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
+        <div className={classes.titleContainer}>
+          <AppBar classes={{colorDefault: classes.appBar}} color='default'>
+            <Toolbar>
+              <div style={{marginLeft: '8%'}}>
+                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
+                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
+                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
+                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
+              </div>
+              <div style={{width: '20%', textAlign: 'end'}}>
+                <Button className={classes.menuButton} style={{backgroundColor: 'white'}} color='black' disableRipple>Iniciar sesión</Button>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
+            JLC Solutions
           </Typography>
-          <Button variant='outlined' color='inherit'>Iniciar sesión</Button>
-        </Toolbar>
-      </AppBar>
-      <Drawer open={state.drawerOpen} onClose={toggleDrawer(false)}>
-        {sideList('left')}
-      </Drawer>
-      <Paper className={classes.paperTop}>
-        <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
-          JLC Solutions
-        </Typography>
-        <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
-          A software development company
-        </Typography>
-      </Paper>
-      <Paper className={classes.paperCenter}>
-        {state.currentPage === 0 && <HomePage onClick={toggleCurrentPage} />}
-        {state.currentPage === 1 && <MobileAppPage />}
-        {state.currentPage === 2 && <WindowsAppPage />}
-        {state.currentPage === 3 && <PlatformPage />}
-        {state.currentPage === 4 && <DownloadsPage />}
-      </Paper>
-      <Paper className={classes.paperBottom}/>
+          <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
+            A software development company
+          </Typography>
+        </div>
+        <div style={{marginTop: '205px'}}>
+          {props.activeMenuPage === 0 && <HomePage onClick={toggleCurrentPage} />}
+          {props.activeMenuPage === 1 && <MobileAppPage />}
+          {props.activeMenuPage === 2 && <WindowsAppPage />}
+          {props.activeMenuPage === 3 && <PlatformPage />}
+          {props.activeMenuPage === 4 && <DownloadsPage />}
+          <div className={classes.panelBottom}/>
+        </div>
+      </div>
     </div>
   )
 }
 
 const mapStateToProps = (state) => {
   return {
-    loaderVisible: state.ui.loaderVisible
+    isLoaderActive: state.ui.isLoaderActive,
+    loaderText: state.ui.loaderText,
+    menuDrawerOpen: state.ui.menuDrawerOpen,
+    menuPageTitle: state.ui.menuPageTitle,
+    activeMenuPage: state.ui.activeMenuPage
   }
 }
 
-export default connect(mapStateToProps, null)(App)
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ setMenuDrawerOpen, setMenuPage }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
