@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
@@ -8,28 +7,29 @@ import Grid from '@material-ui/core/Grid'
 import Snackbar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import { ErrorIcon } from 'utils/iconsHelper'
-import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/styles'
 import Loader from 'components/loader/loader'
-import Logo from 'assets/img/Logo.png'
+import LogoImage from 'assets/img/login-logo2.png'
+import BackgroundImage from 'assets/img/login-background.jpg'
 
 const styles = theme => ({
   root: {
-    height: '100vh'
+    height: `${window.innerHeight}px`,
+    backgroundColor: '#EFF7F7'
   },
   image: {
-    backgroundImage: 'url(http://blog.digitalglobe.com/wp-content/uploads/2018/02/maxar_linkedin_cover-1024x512.jpg)',
+    backgroundImage: `url(${BackgroundImage})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundPosition: 'center'
+    backgroundPosition: 'top'
   },
   avatar: {
     margin: theme.spacing(3),
     width: '180px',
     height: '180px',
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: '#00729f'
   },
   paper: {
     margin: theme.spacing(8, 4),
@@ -49,9 +49,6 @@ const styles = theme => ({
   form: {
     width: '100%',
     marginTop: theme.spacing(1)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
   },
   margin: {
     margin: theme.spacing(1)
@@ -114,16 +111,12 @@ export class LoginPage extends Component {
     const isLoginFailure = this.props.authenticationError !== ''
 
     return (
-      <Grid container component='main' className={classes.root}>
-        <CssBaseline />
-        <Grid item xs={12} sm={6} md={3} component={Paper} elevation={6} square>
+      <Grid container component='main'>
+        <Grid item xs={12} sm={6} md={3} classes={{root: classes.root}} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
-              <img src={Logo} style={{marginLeft: '10%', width: '35%'}} alt='not available' />
+              <img src={LogoImage} style={{width: '80%'}} alt='not available' />
             </Avatar>
-            <Typography component='h1' variant='h5'>
-              JLC Solutions
-            </Typography>
             <form className={classes.form} noValidate>
               <TextField
                 margin='normal'
@@ -151,14 +144,13 @@ export class LoginPage extends Component {
               />
               <Box mt={5}>
                 <Button
-                  className={classes.submit}
                   disabled={isSubmitButtonDisabled}
-                  id='id_action_signin_proceed'
-                  variant='contained'
-                  label='Sign In'
+                  variant="contained"
+                  color="secondary"
                   fullWidth
-                  onClick={this.handleOnClick}
-                  color='secondary' />
+                  onClick={this.handleOnClick}>
+                  Inicio
+                </Button>
               </Box>
             </form>
           </div>

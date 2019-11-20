@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux'
 
 import { downloadWindowsAppFromWebSite } from 'store/ui/actions'
 
-import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 

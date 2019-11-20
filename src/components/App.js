@@ -17,7 +17,7 @@ import WindowsAppPage from 'components/windows-app/windows-app-page.js'
 import PlatformPage from 'components/platform/platform-page'
 import DownloadsPage from 'components/downloads/downloads-page'
 
-import bannerImage from 'assets/img/banner.png'
+import BannerImage from 'assets/img/banner.png'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'rgba(0,0,0,0.25)'
   },
   titleContainer: {
-    backgroundImage: `url(${bannerImage})`,
+    backgroundImage: `url(${BannerImage})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: `${window.innerWidth}px 205px`,
     minWidth: `${window.innerWidth / 8 * 7}px`,
@@ -83,7 +83,7 @@ function App(props) {
       minWidth: `${window.innerWidth / 8 * 7}px`
     }
   }
-
+  console.log('process.env', process.env)
   return (
     <div id='id_app_content' style={style.root} >
       <div className={classes.root}>
@@ -99,7 +99,7 @@ function App(props) {
                 <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
               </div>
               <div style={{width: '20%', textAlign: 'end'}}>
-                <Button className={classes.menuButton} style={{backgroundColor: 'white'}} color='black' disableRipple>Iniciar sesión</Button>
+                <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
               </div>
             </Toolbar>
           </AppBar>
