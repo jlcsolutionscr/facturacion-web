@@ -18,7 +18,8 @@ const style = {
   },
   button: {
     backgroundColor: '#E2EBF1',
-    height: '40px'
+    height: '40px',
+    boxShadow: '6px 6px 10px #888888'
   }
 }
 
@@ -48,7 +49,7 @@ function DownloadsPage(props) {
         <Typography className={classes.subTitle} paragraph>
           Instale nuestra aplicación para dispositivos Android disponible en la Google App Store mediante el siguiente enlace
         </Typography>
-        <img src={MobileAppQRCodeImage} style={{width: '15%'}} alt='not available' />
+        <img src={MobileAppQRCodeImage} style={{width: '15%', boxShadow: '6px 6px 10px #888888'}} alt='not available' />
       </div>
     </div>
   )

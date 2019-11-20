@@ -17,7 +17,7 @@ import WindowsAppPage from 'components/windows-app/windows-app-page.js'
 import PlatformPage from 'components/platform/platform-page'
 import DownloadsPage from 'components/downloads/downloads-page'
 
-import BannerImage from 'assets/img/banner.png'
+import BannerImage from 'assets/img/banner1.jpg'
 
 function App(props) {
   const useStyles = makeStyles(theme => ({
@@ -51,11 +51,11 @@ function App(props) {
       borderTopRightRadius: 0,
       backgroundColor: '#262626',
       color: 'white',
-      height: '200px'
+      height: '150px'
     },
     h2: {
       marginTop: theme.spacing(2),
-      color: '#E7F2F8',
+      color: '#247BA0',
       fontFamily: 'RussoOne',
       fontStyle: 'italic',
       fontSize: theme.typography.pxToRem(65),
@@ -63,7 +63,7 @@ function App(props) {
     },
     h4: {
       marginTop: theme.spacing(1),
-      color: '#E7F2F8',
+      color: '#E2EBF1',
       fontFamily: 'RussoOne',
       fontStyle: 'italic',
       fontSize: theme.typography.pxToRem(25),

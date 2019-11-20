@@ -12,7 +12,7 @@ const style = {
   alignontent: 'space-between',
   paddingLeft: '6%',
   color: 'black',
-  backgroundColor: '#B1DBF9'
+  backgroundColor: 'white'
 }
 
 const item = {

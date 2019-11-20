@@ -6,17 +6,19 @@ export const createStyle = makeStyles(theme => createStyles({
     paddingBottom: '4%',
     paddingLeft: '5%',
     paddingRight: '5%',
-    backgroundColor: '#EFF7F7'
+    backgroundColor: 'white'
   },
   card: {
-    backgroundColor: '#CCE7F9',
-    maxWidth: '70%',
-    color: 'inherit'
+    backgroundColor: '#E2EBF1',
+    maxWidth: '80%',
+    color: 'inherit',
+    boxShadow: '10px 10px 10px #888888'
   },
   expantionPanel: {
     justifyContent: 'center',
     backgroundColor: '#E2EBF1',
-    color: 'black'
+    color: 'black',
+    boxShadow: '10px 10px 10px #888888'
   },
   expantionTitle: {
     fontSize: theme.typography.pxToRem(18),
