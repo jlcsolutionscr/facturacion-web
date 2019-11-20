@@ -1,17 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './loader.css'
+import './loader.css'
 
 function Loader ({ loaderText, isLoaderActive }) {
   const divStyle = { display: isLoaderActive ? 'block' : 'none' }
   return (
-    <div id='id_loader' className={styles.loader__background} style={divStyle}>
-      <div className={styles.loader__container}>
-        <div className={styles.loader__text}>{loaderText}</div>
-        <div className={styles.loader__dots__div}>
-          <div className={`${styles.loader__dots} ${styles.bounce1}`} />
-          <div className={`${styles.loader__dots} ${styles.bounce2}`} />
-          <div className={styles.loader__dots} />
+    <div id='id_loader' className="loaderBackground" style={divStyle}>
+      <div className="loaderContainer">
+        <div className="loaderText">{loaderText}</div>
+        <div className="loaderDotsDiv">
+          <div className="loaderDots bounce1" />
+          <div className="loaderDots bounce2" />
+          <div className="loaderDots" />
         </div>
       </div>
     </div>

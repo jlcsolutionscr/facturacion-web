@@ -9,9 +9,9 @@ import {
 const configReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case START_LOADER:
-      return { ...state, loaderVisible: true }
+      return { ...state, isLoaderActive: true, loaderText: payload.text }
     case STOP_LOADER:
-      return { ...state, loaderVisible: false }
+      return { ...state, isLoaderActive: false, loaderText: '' }
     case SET_MENU_DRAWER_OPEN:
       return { ...state, menuDrawerOpen: payload.open }
     case SET_MENU_PAGE:

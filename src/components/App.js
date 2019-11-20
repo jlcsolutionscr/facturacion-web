@@ -19,58 +19,57 @@ import DownloadsPage from 'components/downloads/downloads-page'
 
 import BannerImage from 'assets/img/banner.png'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: '500px'
-  },
-  appBar: {
-    backgroundColor: 'rgba(0,0,0,0.65)',
-    color: 'white'
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    width: theme.spacing(20),
-    backgroundColor: 'rgba(0,0,0,0.25)'
-  },
-  titleContainer: {
-    backgroundImage: `url(${BannerImage})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: `${window.innerWidth}px 205px`,
-    minWidth: `${window.innerWidth / 8 * 7}px`,
-    height: '205px',
-    top: 0,
-    left: 0,
-    right: 0,
-    position: 'fixed',
-    paddingTop: '60px',
-    zIndex: 9999,
-  },
-  panelBottom: {
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    backgroundColor: '#262626',
-    color: 'white',
-    height: '200px'
-  },
-  h2: {
-    marginTop: theme.spacing(2),
-    color: '#E7F2F8',
-    fontFamily: 'RussoOne',
-    fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(65),
-    textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
-  },
-  h4: {
-    marginTop: theme.spacing(1),
-    color: '#E7F2F8',
-    fontFamily: 'RussoOne',
-    fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(25),
-    textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
-  }
-}))
-
 function App(props) {
+  const useStyles = makeStyles(theme => ({
+    root: {
+      height: '500px'
+    },
+    appBar: {
+      backgroundColor: 'rgba(0,0,0,0.65)',
+      color: 'white'
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+      width: theme.spacing(17),
+      backgroundColor: 'rgba(255,255,255,0.25)'
+    },
+    titleContainer: {
+      backgroundImage: `url(${BannerImage})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: `100% 78%`,
+      minWidth: `${window.innerWidth / 8 * 7}px`,
+      height: '205px',
+      top: 0,
+      left: 0,
+      right: 0,
+      position: 'fixed',
+      paddingTop: '60px',
+      zIndex: 100,
+    },
+    panelBottom: {
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      backgroundColor: '#262626',
+      color: 'white',
+      height: '200px'
+    },
+    h2: {
+      marginTop: theme.spacing(2),
+      color: '#E7F2F8',
+      fontFamily: 'RussoOne',
+      fontStyle: 'italic',
+      fontSize: theme.typography.pxToRem(65),
+      textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
+    },
+    h4: {
+      marginTop: theme.spacing(1),
+      color: '#E7F2F8',
+      fontFamily: 'RussoOne',
+      fontStyle: 'italic',
+      fontSize: theme.typography.pxToRem(25),
+      textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
+    }
+  }))
   const classes = useStyles()
 
   const toggleCurrentPage = (pageId) => {
@@ -83,7 +82,6 @@ function App(props) {
       minWidth: `${window.innerWidth / 8 * 7}px`
     }
   }
-  console.log('process.env', process.env)
   return (
     <div id='id_app_content' style={style.root} >
       <div className={classes.root}>
@@ -92,13 +90,13 @@ function App(props) {
           <AppBar classes={{colorDefault: classes.appBar}} color='default'>
             <Toolbar>
               <div style={{marginLeft: '8%'}}>
-                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
-                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
-                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
-                <Button className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
+                <Button disabled={props.activeMenuPage === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+                <Button disabled={props.activeMenuPage === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
+                <Button disabled={props.activeMenuPage === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
+                <Button disabled={props.activeMenuPage === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
+                <Button disabled={props.activeMenuPage === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
               </div>
-              <div style={{width: '20%', textAlign: 'end'}}>
+              <div style={{width: '37%', textAlign: 'end'}}>
                 <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
               </div>
             </Toolbar>
@@ -127,7 +125,6 @@ const mapStateToProps = (state) => {
   return {
     isLoaderActive: state.ui.isLoaderActive,
     loaderText: state.ui.loaderText,
-    menuDrawerOpen: state.ui.menuDrawerOpen,
     menuPageTitle: state.ui.menuPageTitle,
     activeMenuPage: state.ui.activeMenuPage
   }

@@ -1,20 +1,30 @@
+import { downloadFile, get, getWithResponse, post, postWithResponse } from './utilities'
+import CryptoJS from 'crypto-js'
 const API_SERVICE = process.env.API_SERVICE
-import { get, getWithResponse, post, postWithResponse } from './utilities'
+
+export async function downloadWindowsApp() {
+  try {
+    const endpointURL = API_SERVICE + '/descargaractualizacion'
+    await downloadFile(endpointURL)
+  } catch (e) {
+    throw e.message
+  }
+}
 
 export async function validateCredentials(user, password, id) {
   try {
     const ecryptedPass = encryptString(password)
-    const endpoint = API_SERVICE + "/validarcredenciales?usuario=" + user + "&clave=" + ecryptedPass + "&identificacion=" + id
-    company = await getWithResponse(endpoint)
+    const endpoint = API_SERVICE + "/validarcredenciales?usuario=" + user + "&clave=" + ecryptedPass + "&id=" + id
+    const company = await getWithResponse(endpoint)
     return company
   } catch (e) {
     throw e.message
   }
 }
 
-export async function getCompanyEntity(deviceId) {
+export async function getCompanyEntity(idCompany) {
   try {
-    const endpoint = API_SERVICE + "/obtenerempresa?idempresa=" + deviceId
+    const endpoint = API_SERVICE + "/obtenerempresa?idempresa=" + idCompany
     const response = await getWithResponse(endpoint)
     if (response === null) return []
     return response
@@ -23,10 +33,32 @@ export async function getCompanyEntity(deviceId) {
   }
 }
 
-export async function saveCompanyEntity(entity) {
+export async function getCompanyBranchList(idCompany) {
+  try {
+    const endpoint = API_SERVICE + "/obtenerlistadosucursales?idempresa=" + idCompany
+    const response = await getWithResponse(endpoint)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function getCompanyTerminalList(idCompany, idBranch) {
+  try {
+    const endpoint = API_SERVICE + "/obtenerlistadoterminales?idempresa=" + idCompany + "&idsucursal=" + idBranch
+    const response = await getWithResponse(endpoint)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function addCompanyEntity(entity, token) {
   try {
     const strData = entity
-    const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: " + strData + "}"
+    const data = "{NombreMetodo: 'AgregarEmpresa', Entidad: " + strData + "}"
     const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
@@ -35,13 +67,62 @@ export async function saveCompanyEntity(entity) {
   }
 }
 
-export async function saveCompanyLogo(idCompany, strLogo) {
+export async function updateCompanyEntity(entity, token) {
   try {
     const strData = entity
-    const data = "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + idCompany + ", Logotipo: " + strLogo + "}}"
+    const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" + strData + "'}"
+    await post(API_SERVICE + "/ejecutarconsulta", token, data)
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function saveCompanyLogo(idCompany, strLogo, token) {
+  try {
+    const data = "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {Id: " + idCompany + ", Datos: '" + strLogo + "'}}"
     const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function removeCompanyLogo(idCompany, token) {
+  try {
+    const endpoint = API_SERVICE + "/removerlogoempresa?idempresa=" + idCompany
+    await get(endpoint, token)
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function updateCompanyCertificate(idCompany, strCertificate, token) {
+  try {
+    const data = "{NombreMetodo: 'ActualizarCertificadoEmpresa', Parametros: {Id: " + idCompany + ", Datos: '" + strCertificate + "'}}"
+    const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function updateCompanyBranch(entity, token) {
+  try {
+    const strData = entity
+    const data = "{NombreMetodo: 'ActualizarSucursalPorEmpresa', Entidad: '" + strData + "'}"
+    await post(API_SERVICE + "/ejecutarconsulta", token, data)
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function updateCompanyTerminal(entity, token) {
+  try {
+    const strData = entity
+    const data = "{NombreMetodo: 'ActualizarTerminalPorSucursal', Entidad: '" + strData + "'}"
+    await post(API_SERVICE + "/ejecutarconsulta", token, data)
   } catch (e) {
     throw e.message
   }
@@ -49,8 +130,7 @@ export async function saveCompanyLogo(idCompany, strLogo) {
 
 export async function getProvinciaList(token) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoProvincias'}"
-    const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
+    const response = await getWithResponse(API_SERVICE + "/obtenerlistadoprovincias", token)
     if (response === null) return []
     return response
   } catch (e) {
@@ -58,10 +138,9 @@ export async function getProvinciaList(token) {
   }
 }
 
-export async function getCantonList(token, idProvincia) {
+export async function getCantonList(idProvincia, token) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " + idProvincia + "}}"
-    const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
+    const response = await getWithResponse(API_SERVICE + "/obtenerlistadocantones?idprovincia=" + idProvincia, token)
     if (response === null) return []
     return response
   } catch (e) {
@@ -69,10 +148,9 @@ export async function getCantonList(token, idProvincia) {
   }
 }
 
-export async function getDistritoList(token, idProvincia, idCanton) {
+export async function getDistritoList(idProvincia, idCanton, token) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoDistritos', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + "}}"
-    const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
+    const response = await getWithResponse(API_SERVICE + "/obtenerlistadodistritos?idprovincia=" + idProvincia + "&idcanton=" + idCanton, token)
     if (response === null) return []
     return response
   } catch (e) {
@@ -80,10 +158,9 @@ export async function getDistritoList(token, idProvincia, idCanton) {
   }
 }
 
-export async function getBarrioList(token, idProvincia, idCanton, idDistrito) {
+export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoBarrios', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + ", IdDistrito: " + idDistrito + "}}"
-    const response = await postWithResponse(API_SERVICE + "/ejecutarconsulta", token, data)
+    const response = await getWithResponse(API_SERVICE + "/obtenerlistadobarrios?idprovincia=" + idProvincia + "&idcanton=" + idCanton + "&iddistrito=" + idDistrito, token)
     if (response === null) return []
     return response
   } catch (e) {

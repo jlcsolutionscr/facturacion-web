@@ -1,24 +1,29 @@
 import axios from 'axios'
 import { saveAs } from 'file-saver'
 
-export async function downloadWindowsApp (endpointURL) {
-  axios.get(endpointURL, {responseType: 'blob'})
-    .then(async (response) => {
-      const blob = new Blob([response.data], {type: 'application/octet-stream'})
-      await saveAs(blob, 'puntoventaJLC.msi')
-    })
-    .catch(error => {
-      throw error.message
-    })
+export function downloadFile (endpointURL) {
+  return new Promise((resolve, reject) => {
+    axios.get(endpointURL, {responseType: 'blob'})
+      .then(async (response) => {
+        const blob = new Blob([response.data], {type: 'application/octet-stream'})
+        saveAs(blob, 'puntoventaJLC.msi')
+        resolve(true)
+      })
+      .catch(error => {
+        reject(error.message)
+      })
+  })
 }
 
-export async function get(endpointURL) {
+export async function get(endpointURL, token) {
   try {
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+    if (token !== '') headers['Authorization'] = 'bearer ' + token
     const response = await axios.get(endpointURL, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+      headers
     })
     if (!response.ok) {
       let error = ""
@@ -35,13 +40,15 @@ export async function get(endpointURL) {
   }
 }
 
-export async function getWithResponse(endpointURL) {
+export async function getWithResponse(endpointURL, token) {
   try {
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+    if (token !== '') headers['Authorization'] = 'bearer ' + token
     const response = await axios.get(endpointURL, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+      headers
     })
     if (!response.ok) {
       let error = ""
@@ -73,7 +80,8 @@ export async function post(endpointURL, token, datos) {
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
     const response = await axios.post(endpointURL, {
-      headers
+      headers,
+      body: JSON.stringify(datos)
     })
     if (!response.ok) {
       let error = ""
@@ -98,7 +106,8 @@ export async function postWithResponse(endpointURL, token, datos) {
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
     const response = await axios.post(endpointURL, {
-      headers
+      headers,
+      body: JSON.stringify(datos)
     })
     if (!response.ok) {
       let error = ""

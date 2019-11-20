@@ -30,7 +30,10 @@ const theme = createMuiTheme({
     overrides: {
       MuiButton: {
         root: {
-          borderRadius: 8
+          borderRadius: 25,
+          '&$disabled': {
+            color: 'rgba(255,255,255,0.65)'
+          }
         }
       }
     }

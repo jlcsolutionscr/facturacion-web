@@ -6,11 +6,12 @@ import {
   SET_DOWNLOAD_ERROR
 } from './types'
 
-import { downloadWindowsApp } from 'utils/utilities'
+import { downloadWindowsApp } from 'utils/domainHelper'
 
-export const startLoader = () => {
+export const startLoader = (text) => {
   return {
-    type: START_LOADER
+    type: START_LOADER,
+    payload: { text }
   }
 }
 
@@ -43,11 +44,17 @@ export const setDownloadError = (error) => {
 
 export function downloadWindowsAppFromWebSite () {
   return async (dispatch) => {
+    console.log('startLoader dispatched')
     dispatch(setDownloadError(''))
+    dispatch(startLoader('Descargando'))
     try {
       await downloadWindowsApp()
+      console.log('stopLoader dispatched')
+      dispatch(stopLoader())
     } catch (error) {
       dispatch(setDownloadError(error))
+      console.log('stopLoader dispatched')
+      dispatch(stopLoader())
       console.log('Exepción en el procesamiento de la descarga:', error)
     }
   }
