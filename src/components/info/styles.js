@@ -10,7 +10,6 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   card: {
     backgroundColor: '#E2EBF1',
-    maxWidth: '80%',
     color: 'inherit',
     boxShadow: '10px 10px 10px #888888'
   },

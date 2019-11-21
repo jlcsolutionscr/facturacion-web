@@ -5,9 +5,7 @@ import LoginPage from 'components/enterprise/login/login-page'
 import HomePage from 'components/enterprise/home/home-page'
 
 const style = {
-  display: 'flex',
-  flexDirection: 'row',
-  color: 'black'
+  display: 'flex'
 }
 
 function EnterprisePage(props) {

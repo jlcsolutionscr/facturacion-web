@@ -21,9 +21,6 @@ import BannerImage from 'assets/img/banner.jpg'
 
 function InfoPage(props) {
   const useStyles = makeStyles(theme => ({
-    root: {
-      height: '500px'
-    },
     titleContainer: {
       backgroundImage: `url(${BannerImage})`,
       backgroundRepeat: 'no-repeat',
@@ -83,39 +80,37 @@ function InfoPage(props) {
     }
   }
   return (
-    <div id='id_app_content' style={style.root} >
-      <div className={classes.root}>
-        <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
-        <div className={classes.titleContainer}>
-          <AppBar classes={{colorDefault: classes.appBar}} color='default'>
-            <Toolbar>
-              <div style={{marginLeft: '8%'}}>
-                <Button disabled={props.activeHomeSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-                <Button disabled={props.activeHomeSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
-                <Button disabled={props.activeHomeSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
-                <Button disabled={props.activeHomeSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
-                <Button disabled={props.activeHomeSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
-              </div>
-              <div style={{width: '37%', textAlign: 'end'}}>
-                <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
-              </div>
-            </Toolbar>
-          </AppBar>
-          <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
-            JLC Solutions
-          </Typography>
-          <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
-            A software development company
-          </Typography>
-        </div>
-        <div style={{marginTop: '205px'}}>
-          {props.activeHomeSection === 0 && <HomePage onClick={toggleCurrentPage} />}
-          {props.activeHomeSection === 1 && <MobileAppPage />}
-          {props.activeHomeSection === 2 && <WindowsAppPage />}
-          {props.activeHomeSection === 3 && <PlatformPage />}
-          {props.activeHomeSection === 4 && <DownloadsPage />}
-          <div className={classes.panelBottom}/>
-        </div>
+    <div id='id_app_content' className={classes.root} >
+      <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
+      <div className={classes.titleContainer}>
+        <AppBar classes={{colorDefault: classes.appBar}} color='default'>
+          <Toolbar>
+            <div style={{marginLeft: '8%'}}>
+              <Button disabled={props.activeHomeSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+              <Button disabled={props.activeHomeSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
+              <Button disabled={props.activeHomeSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
+              <Button disabled={props.activeHomeSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
+              <Button disabled={props.activeHomeSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
+            </div>
+            <div style={{width: '37%', textAlign: 'end'}}>
+              <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
+            </div>
+          </Toolbar>
+        </AppBar>
+        <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
+          JLC Solutions
+        </Typography>
+        <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
+          A software development company
+        </Typography>
+      </div>
+      <div style={{marginTop: '205px'}}>
+        {props.activeHomeSection === 0 && <HomePage onClick={toggleCurrentPage} />}
+        {props.activeHomeSection === 1 && <MobileAppPage />}
+        {props.activeHomeSection === 2 && <WindowsAppPage />}
+        {props.activeHomeSection === 3 && <PlatformPage />}
+        {props.activeHomeSection === 4 && <DownloadsPage />}
+        <div className={classes.panelBottom}/>
       </div>
     </div>
   )

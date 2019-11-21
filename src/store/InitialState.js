@@ -6,7 +6,7 @@ export const INITIAL_STATE = {
     downloadError: ''
   },
   session: {
-    authenticated: false,
+    authenticated: true,
     company: null,
     branchList: [],
     terminalList: [],

@@ -2,7 +2,7 @@ import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
 import Link from '@material-ui/core/Link'
-import { createStyle } from 'components/styles'
+import { createStyle } from 'components/info/styles'
 
 function PlatformPage() {
   const classes = createStyle()

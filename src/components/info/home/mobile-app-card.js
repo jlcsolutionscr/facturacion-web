@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
 import appImage from 'assets/img/mobile-app.jpeg'
-import { createStyle } from 'components/styles'
+import { createStyle } from 'components/info/styles'
 
 export default function MobileAppCard(props) {
   const classes = createStyle()

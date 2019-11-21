@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button'
 
 import { CloudDownloadIcon } from 'utils/iconsHelper'
 import MobileAppQRCodeImage from 'assets/img/mobile-app-QR-code.png'
-import { createStyle } from 'components/styles'
+import { createStyle } from 'components/info/styles'
 
 const style = {
   columns: {
