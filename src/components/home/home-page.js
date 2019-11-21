@@ -5,7 +5,7 @@ import PlatformCard from './platform-card'
 import WindowsAppCard from './windows-app-card'
 
 const style = {
-  paddingTop: '4%',
+  paddingTop: '1%',
   paddingBottom: '4%',
   display: 'flex',
   flexDirection: 'row',

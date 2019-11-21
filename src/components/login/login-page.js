@@ -11,7 +11,7 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/styles'
 import Loader from 'components/loader/loader'
-import LogoImage from 'assets/img/login-logo2.png'
+import LogoImage from 'assets/img/login-logo.png'
 import BackgroundImage from 'assets/img/login-background.jpg'
 
 const styles = theme => ({

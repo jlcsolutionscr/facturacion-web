@@ -1,8 +1,7 @@
 import {
   START_LOADER,
   STOP_LOADER,
-  SET_MENU_DRAWER_OPEN,
-  SET_MENU_PAGE,
+  SET_ACTIVE_HOME_SECTION,
   SET_DOWNLOAD_ERROR
 } from './types'
 
@@ -21,16 +20,9 @@ export const stopLoader = () => {
   }
 }
 
-export const setMenuDrawerOpen = (open) => {
+export const setActionHomeSection = (pageId) => {
   return {
-    type: SET_MENU_DRAWER_OPEN,
-    payload: { open }
-  }
-}
-
-export const setMenuPage = (pageId) => {
-  return {
-    type: SET_MENU_PAGE,
+    type: SET_ACTIVE_HOME_SECTION,
     payload: { pageId }
   }
 }

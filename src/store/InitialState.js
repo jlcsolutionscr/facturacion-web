@@ -2,8 +2,7 @@ export const INITIAL_STATE = {
   ui: {
     isLoaderActive: false,
     loaderText: '',
-    activeMenuPage: 0,
-    menuPageTitle: 'Página de inicio',
+    activeHomeSection: 0,
     downloadError: ''
   },
   session: {

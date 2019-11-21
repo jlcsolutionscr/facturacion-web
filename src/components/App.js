@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setMenuDrawerOpen, setMenuPage } from 'store/ui/actions'
+import { setActionHomeSection } from 'store/ui/actions'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -17,12 +17,25 @@ import WindowsAppPage from 'components/windows-app/windows-app-page.js'
 import PlatformPage from 'components/platform/platform-page'
 import DownloadsPage from 'components/downloads/downloads-page'
 
-import BannerImage from 'assets/img/banner1.jpg'
+import BannerImage from 'assets/img/banner.jpg'
 
 function App(props) {
   const useStyles = makeStyles(theme => ({
     root: {
       height: '500px'
+    },
+    titleContainer: {
+      backgroundImage: `url(${BannerImage})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: `100% 78%`,
+      minWidth: `${window.innerWidth / 8 * 7}px`,
+      height: '185px',
+      top: 0,
+      left: 0,
+      right: 0,
+      position: 'fixed',
+      paddingTop: '60px',
+      zIndex: 100,
     },
     appBar: {
       backgroundColor: 'rgba(0,0,0,0.65)',
@@ -32,19 +45,6 @@ function App(props) {
       marginRight: theme.spacing(2),
       width: theme.spacing(17),
       backgroundColor: 'rgba(255,255,255,0.25)'
-    },
-    titleContainer: {
-      backgroundImage: `url(${BannerImage})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: `100% 78%`,
-      minWidth: `${window.innerWidth / 8 * 7}px`,
-      height: '205px',
-      top: 0,
-      left: 0,
-      right: 0,
-      position: 'fixed',
-      paddingTop: '60px',
-      zIndex: 100,
     },
     panelBottom: {
       borderTopLeftRadius: 0,
@@ -73,7 +73,7 @@ function App(props) {
   const classes = useStyles()
 
   const toggleCurrentPage = (pageId) => {
-    props.setMenuPage(pageId)
+    props.setActionHomeSection(pageId)
     window.scrollTo(0, 0)
   }
 
@@ -90,11 +90,11 @@ function App(props) {
           <AppBar classes={{colorDefault: classes.appBar}} color='default'>
             <Toolbar>
               <div style={{marginLeft: '8%'}}>
-                <Button disabled={props.activeMenuPage === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-                <Button disabled={props.activeMenuPage === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
-                <Button disabled={props.activeMenuPage === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
-                <Button disabled={props.activeMenuPage === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
-                <Button disabled={props.activeMenuPage === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
+                <Button disabled={props.activeHomeSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+                <Button disabled={props.activeHomeSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
+                <Button disabled={props.activeHomeSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
+                <Button disabled={props.activeHomeSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
+                <Button disabled={props.activeHomeSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
               </div>
               <div style={{width: '37%', textAlign: 'end'}}>
                 <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
@@ -109,11 +109,11 @@ function App(props) {
           </Typography>
         </div>
         <div style={{marginTop: '205px'}}>
-          {props.activeMenuPage === 0 && <HomePage onClick={toggleCurrentPage} />}
-          {props.activeMenuPage === 1 && <MobileAppPage />}
-          {props.activeMenuPage === 2 && <WindowsAppPage />}
-          {props.activeMenuPage === 3 && <PlatformPage />}
-          {props.activeMenuPage === 4 && <DownloadsPage />}
+          {props.activeHomeSection === 0 && <HomePage onClick={toggleCurrentPage} />}
+          {props.activeHomeSection === 1 && <MobileAppPage />}
+          {props.activeHomeSection === 2 && <WindowsAppPage />}
+          {props.activeHomeSection === 3 && <PlatformPage />}
+          {props.activeHomeSection === 4 && <DownloadsPage />}
           <div className={classes.panelBottom}/>
         </div>
       </div>
@@ -125,13 +125,12 @@ const mapStateToProps = (state) => {
   return {
     isLoaderActive: state.ui.isLoaderActive,
     loaderText: state.ui.loaderText,
-    menuPageTitle: state.ui.menuPageTitle,
-    activeMenuPage: state.ui.activeMenuPage
+    activeHomeSection: state.ui.activeHomeSection
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setMenuDrawerOpen, setMenuPage }, dispatch)
+  return bindActionCreators({ setActionHomeSection }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
