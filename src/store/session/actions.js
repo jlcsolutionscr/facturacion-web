@@ -9,8 +9,7 @@ import {
 } from './types'
 
 import { startLoader, stopLoader } from 'store/ui/actions'
-
-import { downloadWindowsApp } from 'utils/utilities'
+import { validateCredentials } from 'utils/domainHelper'
 
 export const logIn = (company) => {
   return {
@@ -65,11 +64,13 @@ export function authenticateSession (username, password, id) {
     dispatch(setLoginError(''))
     dispatch(startLoader())
     try {
-      await downloadWindowsApp()
-      dispatch(startLoader())
+      const company = await validateCredentials(username, password, id)
+      dispatch(logIn(company))
+      dispatch(stopLoader())
     } catch (error) {
-      dispatch(setDownloadError(error))
-      dispatch(startLoader())
+      dispatch(LogOut())
+      dispatch(setLoginError(error))
+      dispatch(stopLoader())
       console.error('Exeption authenticating session', error)
     }
   }

@@ -25,7 +25,7 @@ export async function get(endpointURL, token) {
     const response = await axios.get(endpointURL, {
       headers
     })
-    if (!response.ok) {
+    if (response.status !== 200) {
       let error = ""
       try {
         error = await response.json()
@@ -50,7 +50,7 @@ export async function getWithResponse(endpointURL, token) {
     const response = await axios.get(endpointURL, {
       headers
     })
-    if (!response.ok) {
+    if (response.status !== 200) {
       let error = ""
       try {
         error = await response.json()
@@ -60,9 +60,8 @@ export async function getWithResponse(endpointURL, token) {
       }
       throw new Error(error)
     } else {
-      const data = await response.json()
-      if (data !== '') {
-        return JSON.parse(data)
+      if (response.data !== '') {
+        return JSON.parse(response.data)
       } else {
         return null
       }
@@ -83,7 +82,7 @@ export async function post(endpointURL, token, datos) {
       headers,
       body: JSON.stringify(datos)
     })
-    if (!response.ok) {
+    if (response.status !== 200) {
       let error = ""
       try {
         error = await response.json()
@@ -109,7 +108,7 @@ export async function postWithResponse(endpointURL, token, datos) {
       headers,
       body: JSON.stringify(datos)
     })
-    if (!response.ok) {
+    if (response.status !== 200) {
       let error = ""
       try {
         error = await response.json()
@@ -119,9 +118,8 @@ export async function postWithResponse(endpointURL, token, datos) {
       }
       throw new Error(error)
     } else {
-      const data = await response.json()
-      if (data !== '') {
-        return JSON.parse(data)
+      if (response.data !== '') {
+        return JSON.parse(response.data)
       } else {
         return null
       }

@@ -11,15 +11,15 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
 import Loader from 'components/loader/loader'
-import HomePage from 'components/home/home-page'
-import MobileAppPage from 'components/mobile-app/mobile-app-page'
-import WindowsAppPage from 'components/windows-app/windows-app-page.js'
-import PlatformPage from 'components/platform/platform-page'
-import DownloadsPage from 'components/downloads/downloads-page'
+import HomePage from 'components/info/home/home-page'
+import MobileAppPage from 'components/info/mobile-app/mobile-app-page'
+import WindowsAppPage from 'components/info/windows-app/windows-app-page.js'
+import PlatformPage from 'components/info/platform/platform-page'
+import DownloadsPage from 'components/info/downloads/downloads-page'
 
 import BannerImage from 'assets/img/banner.jpg'
 
-function App(props) {
+function InfoPage(props) {
   const useStyles = makeStyles(theme => ({
     root: {
       height: '500px'
@@ -133,4 +133,4 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ setActionHomeSection }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(InfoPage)

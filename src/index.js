@@ -14,10 +14,8 @@ import { INITIAL_STATE } from './store/InitialState'
 
 import './index.css'
 
-import App from 'components/app'
-import LoginPage from 'components/login/login-page'
-import CompanyPage from 'components/company/company-page'
-import ReportsPage from 'components/reports/reports-page'
+import InfoPage from 'components/info/info-page'
+import EnterprisePage from 'components/enterprise/enterprise-page'
 
 import * as serviceWorker from './serviceWorker'
 import './fonts/RussoOne-Regular.ttf'
@@ -44,11 +42,9 @@ ReactDOM.render(
     <Router history={history}>
       <ThemeProvider theme={theme}>
         <Switch>
-          <Route exact path='/home' component={App} />
-          <Route exact path='/login' component={LoginPage} />
-          <Route exact path='/company' component={CompanyPage} />
-          <Route exact path='/reports' component={ReportsPage} />
-          <Redirect from="/" to="/home" />
+          <Route exact path='/info' component={InfoPage} />
+          <Route exact path='/enterprise' component={EnterprisePage} />
+          <Redirect from="/" to="/info" />
         </Switch>
       </ThemeProvider>
     </Router>

@@ -3,10 +3,10 @@ import React from 'react'
 const style = {
   display: 'flex',
   flexDirection: 'row',
-  color: 'white'
+  color: 'black'
 }
 
-function CompanyPage(props) {
+function HomePage(props) {
   return (
     <div style={style}>
       Under construction.
@@ -14,4 +14,4 @@ function CompanyPage(props) {
   )
 }
 
-export default CompanyPage
+export default HomePage
