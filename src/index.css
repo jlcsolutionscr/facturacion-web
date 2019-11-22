@@ -3,6 +3,8 @@
   src: local('RussoOne'), url(./fonts/RussoOne-Regular.ttf) format('truetype');
 }
 
+@import url('https://fonts.googleapis.com/css?family=Exo+2&display=swap');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",

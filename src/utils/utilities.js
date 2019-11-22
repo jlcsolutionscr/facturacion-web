@@ -22,18 +22,12 @@ export async function get(endpointURL, token) {
       'Content-Type': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios.get(endpointURL, {
-      headers
-    })
-    if (response.status !== 200) {
-      let error = ""
-      try {
-        error = await response.json()
-      }
-      catch {
-        error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos."
-      }
-      throw new Error(error)
+    try {
+      await axios.get(endpointURL, {
+        headers
+      })
+    } catch (error) {
+      throw new Error(error.response.data)
     }
   } catch (error) {
     throw error
@@ -47,24 +41,18 @@ export async function getWithResponse(endpointURL, token) {
       'Content-Type': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios.get(endpointURL, {
-      headers
-    })
-    if (response.status !== 200) {
-      let error = ""
-      try {
-        error = await response.json()
-      }
-      catch {
-        error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos."
-      }
-      throw new Error(error)
-    } else {
+    try {
+      const response = await axios.get(endpointURL, {
+        headers
+      })
       if (response.data !== '') {
         return JSON.parse(response.data)
       } else {
         return null
       }
+    }
+    catch (error) {
+      throw new Error(error.response.data)
     }
   } catch (error) {
     throw error
@@ -78,19 +66,12 @@ export async function post(endpointURL, token, datos) {
       'Content-Type': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios.post(endpointURL, {
-      headers,
-      body: JSON.stringify(datos)
-    })
-    if (response.status !== 200) {
-      let error = ""
-      try {
-        error = await response.json()
-      }
-      catch {
-        error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos."
-      }
-      throw new Error(error)
+    try {
+      await axios.post(endpointURL, {
+        headers
+      })
+    } catch (error) {
+      throw new Error(error.response.data)
     }
   } catch (error) {
     throw error
@@ -104,25 +85,19 @@ export async function postWithResponse(endpointURL, token, datos) {
       'Content-Type': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios.post(endpointURL, {
-      headers,
-      body: JSON.stringify(datos)
-    })
-    if (response.status !== 200) {
-      let error = ""
-      try {
-        error = await response.json()
-      }
-      catch {
-        error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos."
-      }
-      throw new Error(error)
-    } else {
+    try {
+      const response = await axios.post(endpointURL, {
+        headers,
+        body: JSON.stringify(datos)
+      })
       if (response.data !== '') {
         return JSON.parse(response.data)
       } else {
         return null
       }
+    }
+    catch (error) {
+      throw new Error(error.response.data)
     }
   } catch (error) {
     throw error

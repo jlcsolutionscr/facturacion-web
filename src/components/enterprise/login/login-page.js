@@ -29,12 +29,6 @@ function LoginPage(props) {
     if (field === 'id') setId(event.target.value)
   }
 
-  const handleKeyPress = (e) => {
-    if (e.keyCode === 13 && username !== '' && password !== '') {
-      handleOnClick()
-    }
-  }
-
   const handleOnClick = () => {
     props.authenticateSession(username, password, id)
   }
@@ -112,7 +106,6 @@ function LoginPage(props) {
                 name='username'
                 value={username}
                 onChange={handleOnChange('username')}
-                onKeyDown={handleKeyPress}
                 autoFocus
               />
               <TextField
@@ -125,7 +118,6 @@ function LoginPage(props) {
                 id='password'
                 value={password}
                 onChange={handleOnChange('password')}
-                onKeyDown={handleKeyPress}
               />
               <TextField
                 margin='normal'
@@ -136,7 +128,6 @@ function LoginPage(props) {
                 id='id'
                 value={id}
                 onChange={handleOnChange('id')}
-                onKeyDown={handleKeyPress}
               />
               <Box mt={5}>
                 <Button
@@ -149,9 +140,9 @@ function LoginPage(props) {
                 </Button>
               </Box>
               <Grid container>
-              <Grid item xs={12} style={{marginTop: '2%', textAlign: 'center'}}>
+              <Grid item xs={12} style={{marginTop: '5%', textAlign: 'center'}}>
                 <Link onClick={preventDefault} variant="body2">
-                  Forgot password?
+                  Olvido su contraseña?
                 </Link>
               </Grid>
             </Grid>

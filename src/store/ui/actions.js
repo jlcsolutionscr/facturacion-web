@@ -20,7 +20,7 @@ export const stopLoader = () => {
   }
 }
 
-export const setActionHomeSection = (pageId) => {
+export const setActiveHomeSection = (pageId) => {
   return {
     type: SET_ACTIVE_HOME_SECTION,
     payload: { pageId }

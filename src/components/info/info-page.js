@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setActionHomeSection } from 'store/ui/actions'
+import { setActiveHomeSection } from 'store/ui/actions'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -25,7 +25,7 @@ function InfoPage(props) {
       backgroundImage: `url(${BannerImage})`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: `100% 78%`,
-      minWidth: `${window.innerWidth / 8 * 7}px`,
+      minWidth: `${window.innerWidth / 8 * 7.5}px`,
       height: '185px',
       top: 0,
       left: 0,
@@ -70,15 +70,10 @@ function InfoPage(props) {
   const classes = useStyles()
 
   const toggleCurrentPage = (pageId) => {
-    props.setActionHomeSection(pageId)
+    props.setActiveHomeSection(pageId)
     window.scrollTo(0, 0)
   }
 
-  const style = {
-    root: {
-      minWidth: `${window.innerWidth / 8 * 7}px`
-    }
-  }
   return (
     <div id='id_app_content' className={classes.root} >
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
@@ -125,7 +120,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActionHomeSection }, dispatch)
+  return bindActionCreators({ setActiveHomeSection }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InfoPage)

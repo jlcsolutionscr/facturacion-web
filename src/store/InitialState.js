@@ -1,3 +1,5 @@
+import companyJson from './company.json'
+
 export const INITIAL_STATE = {
   ui: {
     isLoaderActive: false,
@@ -7,7 +9,8 @@ export const INITIAL_STATE = {
   },
   session: {
     authenticated: true,
-    company: null,
+    activeHomeSection: 0,
+    company: companyJson,
     branchList: [],
     terminalList: [],
     branch: null,

@@ -2,6 +2,7 @@ import {
   LOGIN,
   LOGOUT,
   SET_LOGIN_ERROR,
+  SET_ACTIVE_HOME_SECTION,
   SET_BRANCH_LIST,
   SET_TERMINAL_LIST,
   SET_BRANCH,
@@ -28,6 +29,13 @@ export const setLoginError = (error) => {
   return {
     type: SET_LOGIN_ERROR,
     payload: { error }
+  }
+}
+
+export const setActiveHomeSection = (pageId) => {
+  return {
+    type: SET_ACTIVE_HOME_SECTION,
+    payload: { pageId }
   }
 }
 

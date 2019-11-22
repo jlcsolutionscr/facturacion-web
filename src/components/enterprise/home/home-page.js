@@ -1,91 +1,116 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
+import { setActiveHomeSection } from 'store/session/actions'
 
-import BannerImage from 'assets/img/banner.jpg'
-import ButtonCard from './button-card'
+import Typography from '@material-ui/core/Typography'
+import MenuPage from './menu/menu-page'
+import BannerImage from 'assets/img/menu-background.jpg'
+import LogoImage from 'assets/img/company-logo.png'
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    paddingTop: '2%',
-    padding: '4%'
-  },
-  titleContainer: {
+    minWidth: `${window.innerWidth / 8 * 7.5}px`,
+    height: `${window.innerHeight}px`,
     backgroundImage: `url(${BannerImage})`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: `100% 78%`,
-    minWidth: `${window.innerWidth / 8 * 7}px`,
-    height: '245px',
-    top: 0,
-    left: 0,
-    right: 0,
-    position: 'fixed',
-    zIndex: 100,
+    backgroundSize: `120% ${window.innerHeight}px`
+  },
+  titleContainer: {
+    backgroundColor: 'transparent',
+    backgroundImage: `url(${LogoImage})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '105px 105px',
+    backgroundPosition: '55% 0px',
+    backgroundColor: 'transparent',
+    paddingTop: '110px',
+    paddingLeft: '10px',
+    marginBottom: '40px',
+    width: '210px',
+    height: '85px',
+    position: 'absolute',
+    top: '30px',
+    left: '35px'
   },
   h2: {
-    paddingTop: '40px',
-    color: '#247BA0',
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(65),
-    textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
+    fontSize: theme.typography.pxToRem(30),
+    textShadow: '4px 4px 6px rgba(0,0,0,0.45)'
   },
   h4: {
-    marginTop: theme.spacing(1),
+    marginTop: '8px',
     color: '#E2EBF1',
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(25),
-    textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
-  }
+    fontSize: theme.typography.pxToRem(11.5),
+    textShadow: '2px 2px 3px rgba(0,0,0,0.85)'
+  },
+  title: {
+    fontFamily: '"Exo 2", sans-serif',
+    fontSize: theme.typography.pxToRem(40),
+    fontStyle: 'italic',
+    fontWeight: 600,
+    textShadow: '4px 4px 6px rgba(0,0,0,0.45)'
+  },
+  subTitle: {
+    fontFamily: '"Exo 2", sans-serif',
+    fontSize: theme.typography.pxToRem(35),
+    fontStyle: 'italic',
+    fontWeight: 500,
+    textShadow: '4px 4px 6px rgba(0,0,0,0.45)'
+  },
 }))
 
 function HomePage(props) {
-  const classes = useStyles();
+  const classes = useStyles()
+  const title = props.company ? props.company.NombreComercial : 'Tamalera Santa Cecilia'
+  let identification = '3-101-123456'
+  if (props.company) {
+    const id = props.company.Identificacion
+    identification = props.company.IdTipoIdentificacion === 0
+      ? id.substring(0,1) + '-' + id.substring(1,5) + '-' + id.substring(5)
+      : props.company.IdTipoIdentificacion === 1
+        ? id.substring(0,1) + '-' + id.substring(1,4) + '-' + id.substring(4)
+        : id
+  }
   return (
-    <div id='id_app_content' className={classes.root} >
+    <div id='id_enterprise_content' className={classes.root} >
       <div className={classes.titleContainer}>
-        <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
+        <Typography classes={{h2: classes.h2}} variant='h2' align='start' component='h2'>
           JLC Solutions
         </Typography>
-        <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
+        <Typography classes={{h4: classes.h4}} variant='h4' align='start' component='h4'>
           A software development company
         </Typography>
       </div>
-      <div style={{marginTop: '205px'}}>
-        <Grid container className={classes.root} spacing={2}>
-          <Grid item xs={12}>
-            <Grid container justify="center" spacing={8}>
-              <Grid item xs={4}>
-                <ButtonCard
-                  title='Datos de su empresa'
-                  description='Mantenga actualizada la información de su empresa.'
-                  buttonText='Actualizar'
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <ButtonCard
-                  title='Logotipo personalizado'
-                  description='Incluya el logotipo de su empresa e incremente su visibilidad.'
-                  buttonText='Adicionar'
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <ButtonCard
-                  title='Configure su usuario ATV'
-                  description='Valide sus credenciales y certificado para iniciar su facturación.'
-                  buttonText='Configurar'
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
+      <div style={{marginTop: '70px'}}>
+        <Typography className={classes.title} align='center' paragraph>
+          {title}
+        </Typography>
+        <Typography className={classes.subTitle} align='center' paragraph>
+          {identification}
+        </Typography>
+      </div>
+      <div style={{paddingTop: '40px', height: `${window.innerHeight - 261}px`}}>
+        {props.activeHomeSection === 0 && <MenuPage company={props.company} onClick={props.setActiveHomeSection} />}
       </div>
     </div>
   )
 }
 
-export default HomePage
+const mapStateToProps = (state) => {
+  return {
+    activeHomeSection: state.session.activeHomeSection,
+    company: state.session.company
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ setActiveHomeSection }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

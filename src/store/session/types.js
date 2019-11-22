@@ -1,6 +1,7 @@
 export const LOGIN = 'session/LOGIN'
 export const LOGOUT = 'session/LOGOUT'
 export const SET_LOGIN_ERROR = 'session/SET_LOGIN_ERROR'
+export const SET_ACTIVE_HOME_SECTION = 'session/SET_ACTIVE_HOME_SECTION'
 export const SET_BRANCH_LIST = 'session/SET_BRANCH_LIST'
 export const SET_TERMINAL_LIST = 'session/SET_TERMINAL_LIST'
 export const SET_BRANCH = 'session/SET_BRANCH'

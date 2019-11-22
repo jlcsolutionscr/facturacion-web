@@ -2,6 +2,7 @@ import {
   LOGIN,
   LOGOUT,
   SET_LOGIN_ERROR,
+  SET_ACTIVE_HOME_SECTION,
   SET_BRANCH_LIST,
   SET_TERMINAL_LIST,
   SET_BRANCH,
@@ -16,6 +17,8 @@ const configReducer = (state = {}, { type, payload }) => {
       return { ...state, authenticated: false, company: null, token: null, branchList: [], terminalList: [] }
     case SET_LOGIN_ERROR:
       return { ...state, loginError: payload.error }
+    case SET_ACTIVE_HOME_SECTION:
+      return { ...state, activeHomeSection: payload.pageId }
     case SET_BRANCH_LIST:
       return { ...state, branchList: payload.list }
     case SET_TERMINAL_LIST:
