@@ -71,8 +71,8 @@ const useStyles = makeStyles(theme => ({
 
 function HomePage(props) {
   const classes = useStyles()
-  const title = props.company ? props.company.NombreComercial : 'Tamalera Santa Cecilia'
-  let identification = '3-101-123456'
+  const title = props.company.NombreComercial ? props.company.NombreComercial : props.company.NombreEmpresa
+  let identification = props.company.Identificacion
   if (props.company) {
     const id = props.company.Identificacion
     identification = props.company.IdTipoIdentificacion === 0
@@ -101,8 +101,8 @@ function HomePage(props) {
       </div>
       <div style={{paddingTop: '40px', height: `${window.innerHeight - 261}px`}}>
         {props.activeHomeSection === 0 && <MenuPage company={props.company} onClick={props.setActiveHomeSection} />}
-        {props.activeHomeSection === 1 && <CompanyPage />}
-        {props.activeHomeSection === 2 && <CertificatePage />}
+        {props.activeHomeSection === 1 && <CompanyPage company={props.company} />}
+        {props.activeHomeSection === 2 && <CertificatePage company={props.company} />}
       </div>
     </div>
   )
