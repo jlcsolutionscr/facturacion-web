@@ -39,38 +39,38 @@ const tiers = [
   {
     title: 'SP 20',
     price: '5,000.00',
-    description: ['1 Usuario', '20 Facturas', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['1 Usuario', '20 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: 'SP 50',
     price: '10,000.00',
-    description: ['1 Usuario', '50 Facturas', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['1 Usuario', '50 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: 'PYMES 1',
     subheader: 'Most popular',
     price: '5,000.00',
-    description: ['10 Usuarios', '200 Facturas por mes', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['10 Usuarios', '200 Facturas por mes', '2 Terminales (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES 2',
     price: '10,000.00',
-    description: ['Usuarios ilimitados', '500 Facturas por mes', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '500 Facturas por mes', '4 Terminales (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES 3',
     price: '17,500.00',
-    description: ['Usuarios ilimitados', '1,000 Facturas', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '1,000 Facturas', 'Terminales ilimitadas (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES PRO',
     price: '30,000.00',
-    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: true
   }
 ]
