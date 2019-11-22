@@ -6,9 +6,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveHomeSection } from 'store/session/actions'
 
 import Typography from '@material-ui/core/Typography'
-import MenuPage from './menu/menu-page'
 import BannerImage from 'assets/img/menu-background.jpg'
 import LogoImage from 'assets/img/company-logo.png'
+
+import MenuPage from './menu/menu-page'
+import CompanyPage from './company/company-page'
+import CertificatePage from './company/certificate-page'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,10 +20,11 @@ const useStyles = makeStyles(theme => ({
     height: `${window.innerHeight}px`,
     backgroundImage: `url(${BannerImage})`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: `120% ${window.innerHeight}px`
+    backgroundSize: `120% ${window.innerHeight}px`,
+    overflowY: 'hidden',
+    overflowX: 'hidden'
   },
   titleContainer: {
-    backgroundColor: 'transparent',
     backgroundImage: `url(${LogoImage})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: '105px 105px',
@@ -80,10 +84,10 @@ function HomePage(props) {
   return (
     <div id='id_enterprise_content' className={classes.root} >
       <div className={classes.titleContainer}>
-        <Typography classes={{h2: classes.h2}} variant='h2' align='start' component='h2'>
+        <Typography classes={{h2: classes.h2}} variant='h2' component='h2'>
           JLC Solutions
         </Typography>
-        <Typography classes={{h4: classes.h4}} variant='h4' align='start' component='h4'>
+        <Typography classes={{h4: classes.h4}} variant='h4' component='h4'>
           A software development company
         </Typography>
       </div>
@@ -97,6 +101,8 @@ function HomePage(props) {
       </div>
       <div style={{paddingTop: '40px', height: `${window.innerHeight - 261}px`}}>
         {props.activeHomeSection === 0 && <MenuPage company={props.company} onClick={props.setActiveHomeSection} />}
+        {props.activeHomeSection === 1 && <CompanyPage />}
+        {props.activeHomeSection === 2 && <CertificatePage />}
       </div>
     </div>
   )

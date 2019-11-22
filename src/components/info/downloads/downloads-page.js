@@ -36,7 +36,7 @@ function DownloadsPage(props) {
           props.downloadError
         </Typography>
       }
-      <Typography style={{textAlign: 'center', marginBottom: '2%'}} className={classes.title} color='textSecondary' component='p'>
+      <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
         Productos disponibles
       </Typography>
       <div style={{textAlign: 'center', width: '100%'}}>

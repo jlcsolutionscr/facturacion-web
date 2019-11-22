@@ -28,7 +28,7 @@ function MobileAppPage() {
   }
   return (
     <div id='id_mobile_app_page' className={classes.container}>
-      <Typography style={{textAlign: 'center'}} className={classes.title} component='p'>
+      <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
         Aplicación para móbiles Android
       </Typography>
       <Typography className={classes.subTitle} paragraph>

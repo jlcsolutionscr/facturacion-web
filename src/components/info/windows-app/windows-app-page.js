@@ -22,7 +22,7 @@ function WindowsAppPage() {
   }
   return (
     <div id='id_mobile_app_page' className={classes.container}>
-      <Typography style={{textAlign: 'center'}} className={classes.title} color='textSecondary' component='p'>
+      <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
         Aplicación de escritorio para Windows
       </Typography>
       <Typography className={classes.subTitle} paragraph>

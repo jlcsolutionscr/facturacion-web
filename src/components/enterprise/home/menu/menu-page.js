@@ -18,17 +18,17 @@ const useStyles = makeStyles(theme => ({
     border: '0.6px solid',
     boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
     '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.45)'
+      backgroundColor: 'rgba(0,0,0,0.45)',
+      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
     }
   },
 }))
 
 function HomePage(props) {
-  console.log(props.company)
   const classes = useStyles()
   return (
     <div className={classes.container}>
-      <Grid container align="center" spacing={3}>
+      <Grid container align='center' spacing={3}>
         <Grid item xs={12}>
           <Button classes={{root: classes.button}} onClick={() => props.onClick(1)}>Actualice su información</Button>
         </Grid>

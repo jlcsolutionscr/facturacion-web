@@ -5,6 +5,10 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveHomeSection } from 'store/ui/actions'
 
+import Container from '@material-ui/core/Container'
+import Grid from '@material-ui/core/Grid'
+import Link from '@material-ui/core/Link'
+import Box from '@material-ui/core/Box'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -15,9 +19,38 @@ import HomePage from 'components/info/home/home-page'
 import MobileAppPage from 'components/info/mobile-app/mobile-app-page'
 import WindowsAppPage from 'components/info/windows-app/windows-app-page.js'
 import PlatformPage from 'components/info/platform/platform-page'
+import PricingPage from 'components/info/pricing/pricing-page'
 import DownloadsPage from 'components/info/downloads/downloads-page'
 
 import BannerImage from 'assets/img/banner.jpg'
+
+function Copyright() {
+  return (
+    <Typography variant='body2' color='inherit' align='center'>
+      {'Copyright © '}
+      <Link color='inherit' href='https://material-ui.com/'>
+        JLC Solutions CR
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  )
+}
+
+const footers = [
+  {
+    title: 'Aplicaciones disponibles',
+    description: ['Aplicación de escritorio Windows', 'Aplicación para dispositivos mobiles Android', 'Disponibles en nuestra sección de DESCARGAS']
+  },
+  {
+    title: 'Nuestros servicios',
+    description: ['Facturación electrónica', 'Registro de visitas de clientes', 'Buzón de recepción de gastos']
+  },
+  {
+    title: 'Contactenos',
+    description: ['ventas@jlcsolutionscr.com', 'whatsapp: (506) 8334-8641']
+  },
+]
 
 function InfoPage(props) {
   const useStyles = makeStyles(theme => ({
@@ -41,14 +74,18 @@ function InfoPage(props) {
     menuButton: {
       marginRight: theme.spacing(2),
       width: theme.spacing(17),
-      backgroundColor: 'rgba(255,255,255,0.25)'
+      backgroundColor: 'rgba(255,255,255,0.25)',
+      '&:disabled': {
+        color: 'rgba(255,255,255,0.65)',
+        backgroundColor: 'rgba(255,255,255,0.15)'
+      }
     },
     panelBottom: {
       borderTopLeftRadius: 0,
       borderTopRightRadius: 0,
       backgroundColor: '#262626',
       color: 'white',
-      height: '150px'
+      height: '220px'
     },
     h2: {
       marginTop: theme.spacing(2),
@@ -65,6 +102,9 @@ function InfoPage(props) {
       fontStyle: 'italic',
       fontSize: theme.typography.pxToRem(25),
       textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
+    },
+    footer: {
+      color: 'inherit'
     }
   }))
   const classes = useStyles()
@@ -82,12 +122,14 @@ function InfoPage(props) {
           <Toolbar>
             <div style={{marginLeft: '8%'}}>
               <Button disabled={props.activeHomeSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-              <Button disabled={props.activeHomeSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>App Android</Button>
-              <Button disabled={props.activeHomeSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Windows</Button>
-              <Button disabled={props.activeHomeSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Plataforma</Button>
-              <Button disabled={props.activeHomeSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Descargas</Button>
+              <Button disabled={props.activeHomeSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
+              <Button disabled={props.activeHomeSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
+              <Button disabled={props.activeHomeSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>App Windows</Button>
+              <Button disabled={props.activeHomeSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
+              <Button disabled={props.activeHomeSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
+
             </div>
-            <div style={{width: '37%', textAlign: 'end'}}>
+            <div style={{width: '26%', textAlign: 'end'}}>
               <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
             </div>
           </Toolbar>
@@ -101,11 +143,36 @@ function InfoPage(props) {
       </div>
       <div style={{marginTop: '205px'}}>
         {props.activeHomeSection === 0 && <HomePage onClick={toggleCurrentPage} />}
-        {props.activeHomeSection === 1 && <MobileAppPage />}
-        {props.activeHomeSection === 2 && <WindowsAppPage />}
-        {props.activeHomeSection === 3 && <PlatformPage />}
-        {props.activeHomeSection === 4 && <DownloadsPage />}
-        <div className={classes.panelBottom}/>
+        {props.activeHomeSection === 1 && <PricingPage />}
+        {props.activeHomeSection === 2 && <MobileAppPage />}
+        {props.activeHomeSection === 3 && <WindowsAppPage />}
+        {props.activeHomeSection === 4 && <PlatformPage />}
+        {props.activeHomeSection === 5 && <DownloadsPage />}
+        <div className={classes.panelBottom}>
+          <Container className={classes.footer}>
+            <Grid container spacing={8} justify='space-evenly'>
+              {footers.map(footer => (
+                <Grid item key={footer.title}>
+                  <Typography variant='h6' color='inherit' gutterBottom>
+                    {footer.title}
+                  </Typography>
+                  <ul>
+                    {footer.description.map(item => (
+                      <li key={item}>
+                        <Link href='#' variant='subtitle1' color='inherit'>
+                          {item}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </Grid>
+              ))}
+            </Grid>
+            <Box mt={1}>
+              <Copyright />
+            </Box>
+          </Container>
+        </div>
       </div>
     </div>
   )
