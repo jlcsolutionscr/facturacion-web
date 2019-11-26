@@ -1,0 +1,281 @@
+{
+    "Token": "cjbX4RhlF96zn7r6j77Tm4MfpRamiLlcQRddNrB816vLpFBoqio9lVA04xgYcE0r",
+    "IdUsuario": 1,
+    "CodigoUsuario": "JASLOP",
+    "Clave": "\/SOHlDytfCDqqGitmLZJgw==",
+    "Modifica": true,
+    "PermiteRegistrarDispositivo": true,
+    "RolePorUsuario": [
+        {
+            "IdUsuario": 1,
+            "IdRole": 52,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 52,
+                "Nombre": "Mantenimiento de Líneas",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantLinea",
+                "Descripcion": "Permite acceder al módulo de Mantenimiento de Líneas"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 3,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 3,
+                "Nombre": "Menu de Reportes",
+                "MenuPadre": "MnuArchivo",
+                "MenuItem": "MnuArchivoReporte",
+                "Descripcion": "Permite visualizar los reportes del sistema"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 101,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 101,
+                "Nombre": "Módulo de Facturación",
+                "MenuPadre": "MnuCaptura",
+                "MenuItem": "MnuCapturaFactura",
+                "Descripcion": "Permite registrar la Facturación"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 53,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 53,
+                "Nombre": "Mantenimiento de Proveedores",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantProveedor",
+                "Descripcion": "Permite acceder al módulo de Mantenimiento de Proveedores"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 5,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 5,
+                "Nombre": "Parametrización de Bancos Adquirientes",
+                "MenuPadre": "MnuParam",
+                "MenuItem": "MnuParamBA",
+                "Descripcion": "Permite parametrizar los bancos adquirientes"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 109,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 109,
+                "Nombre": "Módulo de Registro de Egresos",
+                "MenuPadre": "MnuCaptura",
+                "MenuItem": "MnuCapturaEgreso",
+                "Descripcion": "Permite registrar los movimientos de Egresos"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 54,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 54,
+                "Nombre": "Mantenimiento de Productos",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantProducto",
+                "Descripcion": "Permite acceder al módulo de Mantenimiento de Productos"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 6,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 6,
+                "Nombre": "Parámetros Empresa",
+                "MenuPadre": "MnuParam",
+                "MenuItem": "MnuParamEmpresa",
+                "Descripcion": "Permite configurar la información de la empresa"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 125,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 125,
+                "Nombre": "Consulta documentos electrónicos pendientes",
+                "MenuPadre": "MnuDocElect",
+                "MenuItem": "MnuDocElectCDE",
+                "Descripcion": "Permite consultar documentos electrónicos pendientes de procesar"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 55,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 55,
+                "Nombre": "Mantenimiento de Usuarios",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantUsuario",
+                "Descripcion": "Permite acceder al módulo de Mantenimiento de Usuarios"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 7,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 7,
+                "Nombre": "Registro de Terminal",
+                "MenuPadre": "MnuParam",
+                "MenuItem": "MnuParamRegistro",
+                "Descripcion": "Permite registrar el equipo en una terminal disponible"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 126,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 126,
+                "Nombre": "Recepción de facturas electrónicas",
+                "MenuPadre": "MnuDocElect",
+                "MenuItem": "MnuDocElectADE",
+                "Descripcion": "Permite registrar facturas electrónicas recibidas"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 57,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 57,
+                "Nombre": "Mantenimiento de Cuentas de Egreso",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantCE",
+                "Descripcion": "Permite acceder al módulo de Mantenimiento de Cuenta de Egresos"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 127,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 127,
+                "Nombre": "Lista de documentos electrónicos procesados",
+                "MenuPadre": "MnuDocElect",
+                "MenuItem": "MnuDocElectRDE",
+                "Descripcion": "Permite revisar documentos electrónicos procesados"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 59,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 59,
+                "Nombre": "Mantenimiento de Cuentas Bancarias",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantCB",
+                "Descripcion": "Permite actualizar los saldos de las cuentas de bancos"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 50,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 50,
+                "Nombre": "Mantenimiento de Clientes",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantCliente",
+                "Descripcion": "Permite acceder al módulo de Mantenimiento de Clientes"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 1,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 1,
+                "Nombre": "Administrador",
+                "MenuPadre": "",
+                "MenuItem": "",
+                "Descripcion": "Super role de administrador del sistema"
+            }
+        },
+        {
+            "IdUsuario": 1,
+            "IdRole": 61,
+            "Usuario": null,
+            "Role": {
+                "IdRole": 61,
+                "Nombre": "Mantenimiento de Vendedores",
+                "MenuPadre": "MnuMant",
+                "MenuItem": "MnuMantVend",
+                "Descripcion": "Permite actualizar los datos de los vendedores de la empresa"
+            }
+        }
+    ],
+    "UsuarioPorEmpresa": [
+        {
+            "IdEmpresa": 1,
+            "IdUsuario": 1,
+            "Empresa": {
+                "Usuario": null,
+                "EquipoRegistrado": null,
+                "IdEmpresa": 0,
+                "NombreEmpresa": "JASON LEANDRO LOPEZ CORDOBA",
+                "NombreComercial": null,
+                "IdTipoIdentificacion": 0,
+                "Identificacion": "110940211",
+                "CodigoActividad": null,
+                "IdProvincia": 0,
+                "IdCanton": 0,
+                "IdDistrito": 0,
+                "IdBarrio": 0,
+                "IdTipoMoneda": 0,
+                "Direccion": null,
+                "Telefono": null,
+                "TipoContrato": 0,
+                "CantidadDisponible": 0,
+                "FechaVence": null,
+                "LineasPorFactura": 0,
+                "Contabiliza": false,
+                "AutoCompletaProducto": false,
+                "ModificaDescProducto": false,
+                "DesglosaServicioInst": false,
+                "PorcentajeInstalacion": 0,
+                "CodigoServicioInst": 0,
+                "IncluyeInsumosEnFactura": false,
+                "CierrePorTurnos": false,
+                "CierreEnEjecucion": false,
+                "RegimenSimplificado": false,
+                "PermiteFacturar": false,
+                "Certificado": null,
+                "NombreCertificado": null,
+                "PinCertificado": null,
+                "UsuarioHacienda": null,
+                "ClaveHacienda": null,
+                "CorreoNotificacion": null,
+                "Logotipo": null,
+                "AccessToken": null,
+                "ExpiresIn": null,
+                "RefreshExpiresIn": null,
+                "RefreshToken": null,
+                "EmitedAt": null,
+                "TipoIdentificacion": null,
+                "TipoMoneda": null,
+                "Barrio": null,
+                "ReportePorEmpresa": []
+            },
+            "Usuario": null
+        }
+    ]
+}

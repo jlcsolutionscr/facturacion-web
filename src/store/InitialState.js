@@ -1,4 +1,4 @@
-import companyJson from './company.json'
+import sessionJson from './session.json'
 
 export const INITIAL_STATE = {
   ui: {
@@ -9,13 +9,17 @@ export const INITIAL_STATE = {
   },
   session: {
     authenticated: true,
+    rolesPerUser: sessionJson.RolePorUsuario,
     activeHomeSection: 0,
-    company: companyJson,
-    branchList: [],
-    terminalList: [],
-    branch: null,
-    terminal: null,
-    token: null,
-    loginError: ''
+    companyId: sessionJson.UsuarioPorEmpresa[0].IdEmpresa,
+    companyIdentifier: sessionJson.UsuarioPorEmpresa[0].Empresa.Identificacion,
+    companyName: sessionJson.UsuarioPorEmpresa[0].Empresa.NombreEmpresa,
+    company: null,
+    cantonList: [],
+    distritoList: [],
+    barrioList: [],
+    token: sessionJson.Token,
+    loginError: '',
+    companyPageError: ''
   }
 }

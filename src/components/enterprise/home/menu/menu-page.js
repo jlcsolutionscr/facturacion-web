@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 const useStyles = makeStyles(theme => ({
   container: {
     flexGrow: 1,
+    paddingTop: '50px',
     height: 'inherit'
   },
   button: {
@@ -25,19 +26,36 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function HomePage(props) {
+  let updateCompanyInfo = false
+  let reportingMenu = false
+  const isAdministrator = props.rolesPerUser.filter(role => role.IdRole === 1).length > 0
+  const isAccounting = props.rolesPerUser.filter(role => role.IdRole === 2).length > 0
+  if (isAdministrator) {
+    updateCompanyInfo = true
+    reportingMenu = true
+  } else if(isAccounting) {
+    reportingMenu = true
+  } else {
+    props.rolesPerUser.forEach(item => {
+      if (item.Role.MenuItem === 'MnuParamEmpresa') {
+        updateCompanyInfo = true
+      }
+      if (item.Role.MenuItem === 'MnuArchivoReporte') reportingMenu = true
+    })
+  }
   const classes = useStyles()
   return (
     <div className={classes.container}>
-      <Grid container align='center' spacing={3}>
-        <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.onClick(1)}>Actualice su información</Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.onClick(2)}>Incluya su logotipo</Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.onClick(3)}>Configure su usuario ATV</Button>
-        </Grid>
+      <Grid container align='center' spacing={3} >
+        {updateCompanyInfo && <Grid item xs={12}>
+          <Button classes={{root: classes.button}} onClick={() => props.getCompany()}>Actualice su información</Button>
+        </Grid>}
+        {updateCompanyInfo && <Grid item xs={12}>
+          <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(2)}>Incluya su logotipo</Button>
+        </Grid>}
+        {reportingMenu && <Grid item xs={12}>
+          <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(3)}>Menu de reportes</Button>
+        </Grid>}
       </Grid>
     </div>
   )

@@ -15,30 +15,11 @@ export function downloadFile (endpointURL) {
   })
 }
 
-export async function get(endpointURL, token) {
-  try {
-    const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-    if (token !== '') headers['Authorization'] = 'bearer ' + token
-    try {
-      await axios.get(endpointURL, {
-        headers
-      })
-    } catch (error) {
-      throw new Error(error.response.data)
-    }
-  } catch (error) {
-    throw error
-  }
-}
-
 export async function getWithResponse(endpointURL, token) {
   try {
     const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
     try {
@@ -52,52 +33,29 @@ export async function getWithResponse(endpointURL, token) {
       }
     }
     catch (error) {
-      throw new Error(error.response.data)
+      throw new Error(error.message)
     }
   } catch (error) {
     throw error
   }
 }
 
-export async function post(endpointURL, token, datos) {
+export async function post(endpointURL, datos, token) {
   try {
     const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
     try {
-      await axios.post(endpointURL, {
-        headers
+      await axios({
+        method: 'post',
+        url: endpointURL,
+        headers,
+        data: datos
       })
     } catch (error) {
-      throw new Error(error.response.data)
-    }
-  } catch (error) {
-    throw error
-  }
-}
-
-export async function postWithResponse(endpointURL, token, datos) {
-  try {
-    const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-    if (token !== '') headers['Authorization'] = 'bearer ' + token
-    try {
-      const response = await axios.post(endpointURL, {
-        headers,
-        body: JSON.stringify(datos)
-      })
-      if (response.data !== '') {
-        return JSON.parse(response.data)
-      } else {
-        return null
-      }
-    }
-    catch (error) {
-      throw new Error(error.response.data)
+      throw new Error(error.message)
     }
   } catch (error) {
     throw error

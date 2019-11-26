@@ -1,6 +1,7 @@
 import React from 'react'
-import Grid from '@material-ui/core/Grid'
+
 import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -12,12 +13,13 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles(theme => ({
   container: {
     flexGrow: 1,
+    borderRadius: '8px',
     overflowY: 'auto',
     marginLeft: '150px',
     marginRight: '150px',
     padding: '25px',
-    maxHeight: `${window.innerHeight - 320}px`,
-    backgroundColor: 'rgba(255,255,255,0.75)'
+    maxHeight: `${window.innerHeight - 302}px`,
+    backgroundColor: 'rgba(255,255,255,0.55)'
   },
   button: {
     padding: '5px 15px',
@@ -32,155 +34,216 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function CompanyPage(props) {
-  const classes = useStyles()
+  const classes = useStyles()  
+  const disabled = props.company.NombreEmpresa === ''
+    || props.company.Identificacion === ''
+    || props.company.CodigoActividad === ''
+    || props.company.Direccion === ''
+    || props.company.Telefono === ''
+    || props.company.CorreoNotificacion === ''
+  const handleChange = event => {
+    props.setCompanyAttribute(event.target.id, event.target.value)
+  }
+  const handleSelectChange = (id, value) => {
+    if (id === 'IdProvincia') {
+      props.updateCantonList(value)
+    } else if (id === 'IdCanton') {
+      props.updateDistritoList(props.company.IdProvincia, value)
+    } else if (id === 'IdDistrito') {
+      props.updateBarrioList(props.company.IdProvincia, props.company.IdCanton, value)
+    } else {
+      props.setCompanyAttribute(id, value)
+    }
+  }
+  const cantonList = props.cantonList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const distritoList = props.distritoList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const barrioList = props.barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
-      <Typography component="h1" variant="h5" gutterBottom align='center'>
-        Actualice la información de su empresa
-      </Typography>
+      {props.companyPageError !== '' && <Typography className={classes.subTitle} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+        {props.companyPageError}
+      </Typography>}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <TextField
-            required
-            id="NombreEmpresa"
-            value={props.company.NombreEmpresa}
-            label="Nombre de empresa"
-            fullWidth
-            autoComplete="fname"
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            required
-            id="NombreComercial"
+            id='NombreComercial'
             value={props.company.NombreComercial}
-            label="Nombre comercial"
+            label='Nombre comercial'
             fullWidth
-            autoComplete="lname"
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Tipo de identificación</InputLabel>
-            <Select
-              id="IdTipoIdentificacion"
-              value={props.company.IdTipoIdentificacion}
-              label="Tipo de identificación"
-            >
-              <MenuItem value={0}>Identificación física</MenuItem>
-              <MenuItem value={1}>Identificación jurídica</MenuItem>
-              <MenuItem value={2}>DIMEX</MenuItem>
-              <MenuItem value={3}>DITE</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            required
-            id="Identificacion"
-            value={props.company.Identificacion}
-            label="Identificación"
-            fullWidth
-            autoComplete="lname"
+            autoComplete='lname'
+            variant='outlined'
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
-            id="CodigoActividad"
+            id='CodigoActividad'
             value={props.company.CodigoActividad}
-            label="Codigo actividad"
+            label='Codigo actividad'
             fullWidth
+            variant='outlined'
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={6} sm={3}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Provincia</InputLabel>
+            <InputLabel id='demo-simple-select-label'>Provincia</InputLabel>
             <Select
-              id="IdProvincia"
+              id='IdProvincia'
               value={props.company.IdProvincia}
+              onChange={(event) => handleSelectChange('IdProvincia', event.target.value)}
             >
-              <MenuItem value={1}>San José</MenuItem>
-              <MenuItem value={2}>Cartago</MenuItem>
-              <MenuItem value={3}>Heredia</MenuItem>
-              <MenuItem value={4}>Alajuela</MenuItem>
-              <MenuItem value={5}>Puntarenas</MenuItem>
-              <MenuItem value={6}>Guanacaste</MenuItem>
-              <MenuItem value={7}>Limón</MenuItem>
+              <MenuItem value={1}>SAN JOSE</MenuItem>
+              <MenuItem value={2}>ALAJUELA</MenuItem>
+              <MenuItem value={3}>CARTAGO</MenuItem>
+              <MenuItem value={4}>HEREDIA</MenuItem>
+              <MenuItem value={5}>GUANACASTE</MenuItem>
+              <MenuItem value={6}>PUNTARENAS</MenuItem>
+              <MenuItem value={7}>LIMON</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={3}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Cantón</InputLabel>
+            <InputLabel id='demo-simple-select-label'>Cantón</InputLabel>
             <Select
-              id="IdCanton"
+              id='IdCanton'
               value={props.company.IdCanton}
+              onChange={(event) => handleSelectChange('IdCanton', event.target.value)}
             >
-              <MenuItem value={6}>Aserri</MenuItem>
-              <MenuItem value={1}>Identificación jurídica</MenuItem>
-              <MenuItem value={2}>DIMEX</MenuItem>
-              <MenuItem value={3}>DITE</MenuItem>
+              {cantonList}
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={3}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Distrito</InputLabel>
+            <InputLabel id='demo-simple-select-label'>Distrito</InputLabel>
             <Select
-              id="IdDistrito"
+              id='IdDistrito'
               value={props.company.IdDistrito}
+              onChange={(event) => handleSelectChange('IdDistrito', event.target.value)}
             >
-              <MenuItem value={0}>Identificación física</MenuItem>
-              <MenuItem value={1}>Aserrí</MenuItem>
-              <MenuItem value={2}>DIMEX</MenuItem>
-              <MenuItem value={3}>DITE</MenuItem>
+              {distritoList}
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={3}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Barrio</InputLabel>
+            <InputLabel id='demo-simple-select-label'>Barrio</InputLabel>
             <Select
-              id="IdBarrio"
+              id='IdBarrio'
               value={props.company.IdBarrio}
+              onChange={(event) => handleSelectChange('IdBarrio', event.target.value)}
             >
-              <MenuItem value={4}>Barrio Corazón de Jesús</MenuItem>
-              <MenuItem value={1}>Identificación jurídica</MenuItem>
-              <MenuItem value={2}>DIMEX</MenuItem>
-              <MenuItem value={3}>DITE</MenuItem>
+              {barrioList}
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
             required
-            id="Direccion"
+            id='Direccion'
             value={props.company.Direccion}
-            label="Dirección"
+            label='Dirección'
             fullWidth
+            variant='outlined'
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
             required
-            id="Telefono"
+            id='Telefono'
             value={props.company.Telefono}
-            label="Teléfono"
+            label='Teléfono'
             fullWidth
+            variant='outlined'
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
             required
-            id="CorreoNotificacion"
+            id='CorreoNotificacion'
             value={props.company.CorreoNotificacion}
-            label="Correo para notificaciones"
+            label='Correo para notificaciones'
             fullWidth
+            variant='outlined'
+            onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Button variant='contained' className={classes.button} onClick={() => console.log('Guardado')}>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            disabled={props.company.RegimenSimplificado}
+            id='UsuarioHacienda'
+            value={props.company.UsuarioHacienda}
+            label='Usuario ATV'
+            fullWidth
+            variant='outlined'
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            disabled={props.company.RegimenSimplificado}
+            id='ClaveHacienda'
+            value={props.company.ClaveHacienda}
+            label='Clave ATV'
+            fullWidth
+            variant='outlined'
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={10} sm={10}>
+          <TextField
+            disabled={props.company.RegimenSimplificado}
+            id='NombreCertificado'
+            value={props.company.NombreCertificado}
+            label='Llave criptográfica'
+            fullWidth
+            variant='outlined'
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={2} sm={2}>
+          <input
+            accept="p12/*"
+            style={{display: 'none'}}
+            id="contained-button-file"
+            multiple
+            type="file"
+          />
+          <label htmlFor="contained-button-file">
+            <Button
+              disabled={props.company.RegimenSimplificado}
+              component='span'
+              variant='contained'
+              className={classes.button}
+              style={{marginTop: '11px'}}
+            >
+              Cargar
+            </Button>
+          </label>
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            disabled={props.company.RegimenSimplificado}
+            id='PinCertificado'
+            value={props.company.PinCertificado}
+            label='Pin de llave criptográfica'
+            fullWidth
+            variant='outlined'
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveCompany()}>
             Guardar
+          </Button>
+        </Grid>
+        <Grid item xs={2}>
+          <Button variant='contained' className={classes.button} onClick={() => props.setActiveHomeSection(0)}>
+            Regresar
           </Button>
         </Grid>
       </Grid>

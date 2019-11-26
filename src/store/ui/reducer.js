@@ -8,7 +8,7 @@ import {
 const configReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case START_LOADER:
-      return { ...state, isLoaderActive: true, loaderText: payload.text }
+      return { ...state, isLoaderActive: true, loaderText: payload.text !== undefined ? payload.text : 'Procesando' }
     case STOP_LOADER:
       return { ...state, isLoaderActive: false, loaderText: '' }
     case SET_ACTIVE_HOME_SECTION:
