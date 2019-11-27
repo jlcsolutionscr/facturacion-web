@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function HomePage(props) {
+function MenuPage(props) {
   let updateCompanyInfo = false
   let reportingMenu = false
   const isAdministrator = props.rolesPerUser.filter(role => role.IdRole === 1).length > 0
@@ -56,9 +56,12 @@ function HomePage(props) {
         {reportingMenu && <Grid item xs={12}>
           <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(3)}>Menu de reportes</Button>
         </Grid>}
+        <Grid item xs={12}>
+          <Button classes={{root: classes.button}} onClick={() => props.LogOut()}>Cerrar sesión</Button>
+        </Grid>
       </Grid>
     </div>
   )
 }
 
-export default HomePage
+export default MenuPage

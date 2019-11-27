@@ -22,21 +22,17 @@ export async function getWithResponse(endpointURL, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    try {
-      const response = await axios.get(endpointURL, {
-        headers
-      })
-      if (response.data !== '') {
-        return JSON.parse(response.data)
-      } else {
-        return null
-      }
-    }
-    catch (error) {
-      throw new Error(error.message)
+    const response = await axios.get(endpointURL, {
+      headers
+    })
+    if (response.data !== '') {
+      return JSON.parse(response.data)
+    } else {
+      return null
     }
   } catch (error) {
-    throw error
+    const message = error.response.data ? error.response.data : error.message
+    throw new Error(message)
   }
 }
 
@@ -47,17 +43,14 @@ export async function post(endpointURL, datos, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    try {
-      await axios({
-        method: 'post',
-        url: endpointURL,
-        headers,
-        data: datos
-      })
-    } catch (error) {
-      throw new Error(error.message)
-    }
+    await axios({
+      method: 'post',
+      url: endpointURL,
+      headers,
+      data: JSON.stringify(datos)
+    })
   } catch (error) {
-    throw error
+    const message = error.response.data ? error.response.data : error.message
+    throw new Error(message)
   }
 }

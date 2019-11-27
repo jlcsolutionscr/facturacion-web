@@ -12,7 +12,8 @@ import {
   SET_BARRIO_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
-  SET_COMPANY_PAGE_ERROR
+  SET_COMPANY_PAGE_ERROR,
+  SET_LOGO_PAGE_ERROR
 } from './types'
 
 import { startLoader, stopLoader } from 'store/ui/actions'
@@ -22,7 +23,9 @@ import {
   getCantonList,
   getDistritoList,
   getBarrioList,
-  saveCompanyEntity
+  saveCompanyEntity,
+  saveCompanyCertificate,
+  saveCompanyLogo
 } from 'utils/domainHelper'
 
 export const logIn = (user) => {
@@ -122,6 +125,13 @@ export const setCompanyPageError = (error) => {
   }
 }
 
+export const setLogoPageError = (error) => {
+  return {
+    type: SET_LOGO_PAGE_ERROR,
+    payload: { error }
+  }
+}
+
 export function authenticateSession (username, password, id) {
   return async (dispatch) => {
     dispatch(setLoginError(''))
@@ -132,7 +142,7 @@ export function authenticateSession (username, password, id) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(LogOut())
-      dispatch(setLoginError(error))
+      dispatch(setLoginError(error.message))
       dispatch(stopLoader())
       console.error('Exeption authenticating session', error)
     }
@@ -145,6 +155,7 @@ export function getCompany () {
     dispatch(startLoader())
     dispatch(setCompanyPageError(''))
     try {
+      dispatch(setActiveHomeSection(1))
       const company = await getCompanyEntity(companyId, token)
       dispatch(setCompany(company))
       const cantonList = await getCantonList(company.IdProvincia, token)
@@ -154,9 +165,8 @@ export function getCompany () {
       const barrioList = await getBarrioList(company.IdProvincia, company.IdCanton, company.IdDistrito, token)
       dispatch(setBarrioList(barrioList))
       dispatch(stopLoader())
-      dispatch(setActiveHomeSection(1))
     } catch (error) {
-      dispatch(setCompanyPageError(error))
+      dispatch(setCompanyPageError(error.message))
       dispatch(stopLoader())
     }
   }
@@ -179,7 +189,7 @@ export function updateCantonList (idProvincia) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setCompanyPageError(error))
+        dispatch(setCompanyPageError(error.message))
         dispatch(stopLoader())
       }
     }
@@ -201,7 +211,7 @@ export function updateDistritoList (idProvincia, idCanton) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setCompanyPageError(error))
+        dispatch(setCompanyPageError(error.message))
         dispatch(stopLoader())
       }
     }
@@ -221,26 +231,46 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setCompanyPageError(error))
+        dispatch(setCompanyPageError(error.message))
         dispatch(stopLoader())
       }
     }
   }
 }
 
-export function saveCompany () {
+export function saveCompany (certificate) {
   return async (dispatch, getState) => {
-    const { company, token } = getState().session
-    dispatch(setCompanyPageError('Procesando'))
+    const { companyId, company, token } = getState().session
+    dispatch(setCompanyPageError(''))
     dispatch(startLoader())
     try {
       await saveCompanyEntity(company, token)
-      dispatch(logIn(company))
+      if (certificate !== '') {
+        await saveCompanyCertificate(companyId, certificate, token)
+      }
+      dispatch(setActiveHomeSection(0))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setCompanyPageError(error))
+      dispatch(setCompanyPageError(error.message))
       dispatch(stopLoader())
-      console.error('Exeption authenticating session', error)
+    }
+  }
+}
+
+export function saveLogo (logo) {
+  return async (dispatch, getState) => {
+    const { companyId, token } = getState().session
+    dispatch(setCompanyPageError(''))
+    dispatch(startLoader())
+    try {
+      if (logo !== '') {
+        await saveCompanyLogo(companyId, logo, token)
+      }
+      dispatch(setActiveHomeSection(0))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setCompanyPageError(error.message))
+      dispatch(stopLoader())
     }
   }
 }

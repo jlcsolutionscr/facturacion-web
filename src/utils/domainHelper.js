@@ -9,7 +9,7 @@ export async function downloadWindowsApp() {
     const endpointURL = DOWNLOAD_URL + '/descargaractualizacion'
     await downloadFile(endpointURL)
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
@@ -20,7 +20,7 @@ export async function validateCredentials(user, password, id) {
     const company = await getWithResponse(endpoint, '')
     return company
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
@@ -30,38 +30,38 @@ export async function getCompanyEntity(idCompany, token) {
     const response = await getWithResponse(endpoint, token)
     if (response === null) return []
     return response
-  } catch (e) {
-    throw e.message
+  } catch {
+    throw new Error('Error al comunicarse con el servicio web. Intente más tarde. . .')
   }
 }
 
 export async function saveCompanyEntity(entity, token) {
   try {
-    const datos = "{Entidad: " + JSON.stringify(entity) + "}"
+    const datos = '{"Entidad": ' + JSON.stringify(entity) + '}'
     const endpoint = ADMIN_URL + '/actualizarempresa'
     await post(endpoint, datos, token)
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
 export async function saveCompanyLogo(idCompany, strLogo, token) {
   try {
-    const datos = "{Id: " + idCompany + ", Datos: " + JSON.stringify(strLogo) + "}"
+    const datos = '{"Id": ' + idCompany + ', "Datos": ' + JSON.stringify(strLogo) + '}'
     const endpoint = ADMIN_URL + '/actualizarlogoempresa'
     await post(endpoint, datos, token)
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
 export async function saveCompanyCertificate(idCompany, strCertificate, token) {
   try {
-    const datos = "{Id: " + idCompany + ", Datos: " + JSON.stringify(strCertificate) + "}"
+    const datos = '{"Id": ' + idCompany + ', "Datos": ' + JSON.stringify(strCertificate) + '}'
     const endpoint = ADMIN_URL + '/actualizarcertificadoempresa'
     await post(endpoint, datos, token)
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
@@ -71,7 +71,7 @@ export async function getCantonList(idProvincia, token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
@@ -81,7 +81,7 @@ export async function getDistritoList(idProvincia, idCanton, token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 
@@ -91,7 +91,7 @@ export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e
   }
 }
 

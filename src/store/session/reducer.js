@@ -12,7 +12,8 @@ import {
   SET_BARRIO_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
-  SET_COMPANY_PAGE_ERROR
+  SET_COMPANY_PAGE_ERROR,
+  SET_LOGO_PAGE_ERROR
 } from './types'
 
 const configReducer = (state = {}, { type, payload }) => {
@@ -65,6 +66,8 @@ const configReducer = (state = {}, { type, payload }) => {
       return { ...state, company: {...state.company, [payload.attribute]: payload.value }}
     case SET_COMPANY_PAGE_ERROR:
       return { ...state, companyPageError: payload.error }
+    case SET_LOGO_PAGE_ERROR:
+      return { ...state, logoPageError: payload.error }
     default:
       return state
   }

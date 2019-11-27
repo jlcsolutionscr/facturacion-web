@@ -1,5 +1,3 @@
-import sessionJson from './session.json'
-
 export const INITIAL_STATE = {
   ui: {
     isLoaderActive: false,
@@ -8,18 +6,20 @@ export const INITIAL_STATE = {
     downloadError: ''
   },
   session: {
-    authenticated: true,
-    rolesPerUser: sessionJson.RolePorUsuario,
+    authenticated: false,
+    rolesPerUser: [],
     activeHomeSection: 0,
-    companyId: sessionJson.UsuarioPorEmpresa[0].IdEmpresa,
-    companyIdentifier: sessionJson.UsuarioPorEmpresa[0].Empresa.Identificacion,
-    companyName: sessionJson.UsuarioPorEmpresa[0].Empresa.NombreEmpresa,
+    companyId: null,
+    companyIdentifier: '',
+    companyName: '',
     company: null,
     cantonList: [],
     distritoList: [],
     barrioList: [],
-    token: sessionJson.Token,
+    token: null,
     loginError: '',
-    companyPageError: ''
+    companyPageError: '',
+    logoPageError: '',
+    reportsPageError: ''
   }
 }

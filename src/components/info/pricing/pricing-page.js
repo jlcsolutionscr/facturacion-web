@@ -37,40 +37,64 @@ const useStyles = makeStyles(theme => ({
 
 const tiers = [
   {
-    title: 'SP 20',
+    title: '20 documentos',
     price: '5,000.00',
     description: ['1 Usuario', '20 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
-    title: 'SP 50',
+    title: '50 documentos',
     price: '10,000.00',
     description: ['1 Usuario', '50 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
-    title: 'PYMES 1',
+    title: '100 documentos',
+    price: '17,500.00',
+    description: ['1 Usuario', '100 Facturas', '2 Terminales (Android o Windows)', 'Soporte técnico'],
+    monthlyPayment: false
+  },
+  {
+    title: '1000 documentos',
+    price: '40,000.00',
+    description: ['1 Usuario', '1,000 Facturas', '2 Terminales (Android o Windows)', 'Soporte técnico'],
+    monthlyPayment: false
+  },
+  {
+    title: 'PYMES 1 *',
     subheader: 'Most popular',
     price: '5,000.00',
-    description: ['10 Usuarios', '200 Facturas por mes', '2 Terminales (Android o Windows)', 'Soporte técnico'],
+    description: ['10 Usuarios', '500 Facturas por mes', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
-    title: 'PYMES 2',
+    title: 'PYMES 2 *',
     price: '10,000.00',
-    description: ['Usuarios ilimitados', '500 Facturas por mes', '4 Terminales (Android o Windows)', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '1000 Facturas por mes', '4 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
-    title: 'PYMES 3',
-    price: '17,500.00',
-    description: ['Usuarios ilimitados', '1,000 Facturas', 'Terminales ilimitadas (Android o Windows)', 'Soporte técnico'],
+    title: 'EMPRESARIAL 1 *',
+    price: '20,000.00',
+    description: ['Usuarios ilimitados', '2500 Facturas por mes', '4 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
-    title: 'PYMES PRO',
-    price: '30,000.00',
-    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Soporte técnico'],
+    title: 'EMPRESARIAL 2 *',
+    price: '35,000.00',
+    description: ['Usuarios ilimitados', '5,000 Facturas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    monthlyPayment: true
+  },
+  {
+    title: 'EMPRESARIAL 3 *',
+    price: '65,000.00',
+    description: ['Usuarios ilimitados', '7,500 Facturas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    monthlyPayment: true
+  },
+  {
+    title: 'EMPRESARIAL PRO *',
+    price: '80,000.00',
+    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
   }
 ]
@@ -84,12 +108,10 @@ function PricingPage() {
           Nuestros planes
         </Typography>
       </Container>
-      {/* End hero unit */}
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
           {tiers.map(tier => (
-            // Enterprise card is full width at sm breakpoint
-            <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={4}>
+            <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={6}>
               <Card>
                 <CardHeader
                   title={tier.title}
@@ -103,6 +125,9 @@ function PricingPage() {
                   <div className={classes.cardPricing}>
                     <Typography component="h2" variant="h4" color="textPrimary">
                       {tier.price}
+                    </Typography>
+                    <Typography component="h2" variant="h5" color="textPrimary">
+                      + I.V.A.
                     </Typography>
                     {tier.monthlyPayment && <Typography variant="h6" color="textSecondary">
                       /mensual
@@ -125,6 +150,9 @@ function PricingPage() {
             </Grid>
           ))}
         </Grid>
+        <Typography style={{marginTop: '50px'}} component="h1" variant="h6" align="center" color="textPrimary" gutterBottom>
+          * Al adquirir un plan anual recibirá un descuento equivalente a dos mensualidades.
+        </Typography>
       </Container>
     </div>
   )

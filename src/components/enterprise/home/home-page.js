@@ -4,13 +4,15 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import {
+  LogOut,
   setActiveHomeSection,
   getCompany,
   updateCantonList,
   updateDistritoList,
   updateBarrioList,
   setCompanyAttribute,
-  saveCompany
+  saveCompany,
+  saveLogo
 } from 'store/session/actions'
 
 import Typography from '@material-ui/core/Typography'
@@ -20,7 +22,8 @@ import LogoImage from 'assets/img/company-logo.png'
 import Loader from 'components/loader/loader'
 import MenuPage from './menu/menu-page'
 import CompanyPage from './company/company-page'
-import CertificatePage from './company/certificate-page'
+import LogoPage from './company/logo-page'
+import ReportsPage from './company/reports-page'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,7 +80,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
     marginBottom: 0
-  },
+  }
 }))
 
 function HomePage(props) {
@@ -113,7 +116,8 @@ function HomePage(props) {
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
         {props.activeHomeSection === 0 && <MenuPage {...props} />}
         {props.activeHomeSection === 1 && <CompanyPage {...props} />}
-        {props.activeHomeSection === 2 && <CertificatePage {...props} />}
+        {props.activeHomeSection === 2 && <LogoPage {...props} />}
+        {props.activeHomeSection === 3 && <ReportsPage {...props} />}
       </div>
     </div>
   )
@@ -130,19 +134,24 @@ const mapStateToProps = (state) => {
     company: state.session.company,
     cantonList: state.session.cantonList,
     distritoList: state.session.distritoList,
-    barrioList: state.session.barrioList
+    barrioList: state.session.barrioList,
+    companyPageError: state.session.companyPageError,
+    logoPageError: state.session.logoPageError,
+    reportsPageError: state.session.reportsPageError
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
+    LogOut,
     setActiveHomeSection,
     getCompany,
     updateCantonList,
     updateDistritoList,
     updateBarrioList,
     setCompanyAttribute,
-    saveCompany
+    saveCompany,
+    saveLogo
   }, dispatch)
 }
 

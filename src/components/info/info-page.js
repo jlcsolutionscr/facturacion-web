@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -114,6 +115,10 @@ function InfoPage(props) {
     window.scrollTo(0, 0)
   }
 
+  const redirectToLoginPage = () => {
+    props.history.push(`/enterprise`)
+  }
+
   return (
     <div id='id_app_content' className={classes.root} >
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
@@ -130,7 +135,7 @@ function InfoPage(props) {
 
             </div>
             <div style={{width: '26%', textAlign: 'end'}}>
-              <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple>Iniciar sesión</Button>
+              <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple onClick={() => redirectToLoginPage()}>Iniciar sesión</Button>
             </div>
           </Toolbar>
         </AppBar>

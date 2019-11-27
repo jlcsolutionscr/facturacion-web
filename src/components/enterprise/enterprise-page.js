@@ -9,7 +9,7 @@ const style = {
 }
 
 function EnterprisePage(props) {
-  const component = !props.authenticated ? <LoginPage /> : <HomePage />
+  const component = !props.authenticated ? <LoginPage {...props} /> : <HomePage />
   return (
     <div style={style}>
       {component}
