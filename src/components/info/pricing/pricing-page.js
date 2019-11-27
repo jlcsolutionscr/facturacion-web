@@ -51,24 +51,24 @@ const tiers = [
   {
     title: '100 documentos',
     price: '17,500.00',
-    description: ['1 Usuario', '100 Facturas', '2 Terminales (Android o Windows)', 'Soporte técnico'],
-    monthlyPayment: false
-  },
-  {
-    title: '1000 documentos',
-    price: '40,000.00',
-    description: ['1 Usuario', '1,000 Facturas', '2 Terminales (Android o Windows)', 'Soporte técnico'],
+    description: ['1 Usuario', '100 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: 'PYMES 1 *',
     subheader: 'Most popular',
     price: '5,000.00',
-    description: ['10 Usuarios', '500 Facturas por mes', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['10 Usuarios', '300 Facturas por mes', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES 2 *',
+    price: '7,500.00',
+    description: ['1 Usuario', '750 Facturas', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    monthlyPayment: false
+  },
+  {
+    title: 'PYMES 3 *',
     price: '10,000.00',
     description: ['Usuarios ilimitados', '1000 Facturas por mes', '4 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
