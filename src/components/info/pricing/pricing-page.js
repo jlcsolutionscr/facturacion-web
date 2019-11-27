@@ -39,62 +39,62 @@ const tiers = [
   {
     title: '20 documentos',
     price: '5,000.00',
-    description: ['1 Usuario', '20 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
+    description: ['1 usuario', '20 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: '50 documentos',
     price: '10,000.00',
-    description: ['1 Usuario', '50 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
+    description: ['1 usuario', '50 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: '100 documentos',
     price: '17,500.00',
-    description: ['1 Usuario', '100 Facturas', '1 Terminal (Android o Windows)', 'Soporte técnico'],
+    description: ['1 usuario', '100 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: 'PYMES 1 *',
     subheader: 'Most popular',
     price: '5,000.00',
-    description: ['Usuarios ilimitados', '300 Facturas por mes', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '300 facturas por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES 2 *',
     price: '7,500.00',
-    description: ['Usuarios ilimitados', '750 Facturas', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '750 facturas por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
     title: 'PYMES 3 *',
     price: '10,000.00',
-    description: ['Usuarios ilimitados', '1000 Facturas por mes', '4 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 1 *',
     price: '20,000.00',
-    description: ['Usuarios ilimitados', '2500 Facturas por mes', '4 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '2,500 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 2 *',
     price: '35,000.00',
-    description: ['Usuarios ilimitados', '5,000 Facturas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '5,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 3 *',
-    price: '65,000.00',
-    description: ['Usuarios ilimitados', '7,500 Facturas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    price: '60,000.00',
+    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL PRO *',
-    price: '80,000.00',
-    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    price: '100,000.00',
+    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   }
 ]
