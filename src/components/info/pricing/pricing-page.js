@@ -58,13 +58,13 @@ const tiers = [
     title: 'PYMES 1 *',
     subheader: 'Most popular',
     price: '5,000.00',
-    description: ['10 Usuarios', '300 Facturas por mes', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '300 Facturas por mes', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES 2 *',
     price: '7,500.00',
-    description: ['1 Usuario', '750 Facturas', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '750 Facturas', '2 Terminales (Android o Windows)', 'Recepción de gastos', 'Soporte técnico'],
     monthlyPayment: false
   },
   {
