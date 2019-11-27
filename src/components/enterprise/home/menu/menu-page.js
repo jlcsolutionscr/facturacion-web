@@ -37,10 +37,8 @@ function MenuPage(props) {
     reportingMenu = true
   } else {
     props.rolesPerUser.forEach(item => {
-      if (item.Role.MenuItem === 'MnuParamEmpresa') {
-        updateCompanyInfo = true
-      }
-      if (item.Role.MenuItem === 'MnuArchivoReporte') reportingMenu = true
+      if (item.IdRole === 3) reportingMenu = true
+      if (item.IdRole === 6) updateCompanyInfo = true
     })
   }
   const classes = useStyles()
