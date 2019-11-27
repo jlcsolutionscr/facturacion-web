@@ -55,7 +55,7 @@ function MenuPage(props) {
           <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(3)}>Menu de reportes</Button>
         </Grid>}
         <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.LogOut()}>Cerrar sesión</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.logOut()}>Cerrar sesión</Button>
         </Grid>
       </Grid>
     </div>

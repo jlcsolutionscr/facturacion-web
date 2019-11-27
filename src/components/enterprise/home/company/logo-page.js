@@ -101,7 +101,7 @@ function LogoPage(props) {
         </Grid>
         <Grid item xs={2}>
           <Button variant='contained' disabled={logo === ''} className={classes.button} onClick={() => handleSaveButton()}>
-            Cargar
+            Actualizar
           </Button>
         </Grid>
         <Grid item xs={2}>

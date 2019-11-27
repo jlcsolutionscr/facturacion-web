@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { setActiveHomeSection } from 'store/ui/actions'
+import { logOut } from 'store/session/actions'
+
 import {
-  LogOut,
-  setActiveHomeSection,
   getCompany,
   updateCantonList,
   updateDistritoList,
@@ -13,7 +14,7 @@ import {
   setCompanyAttribute,
   saveCompany,
   saveLogo
-} from 'store/session/actions'
+} from 'store/company/actions'
 
 import Typography from '@material-ui/core/Typography'
 import BannerImage from 'assets/img/menu-background.jpg'
@@ -127,23 +128,23 @@ const mapStateToProps = (state) => {
   return {
     isLoaderActive: state.ui.isLoaderActive,
     loaderText: state.ui.loaderText,
-    activeHomeSection: state.session.activeHomeSection,
-    companyName: state.session.companyName,
-    companyIdentifier: state.session.companyIdentifier,
+    activeHomeSection: state.ui.activeHomeSection,
+    companyName: state.company.companyName,
+    companyIdentifier: state.company.companyIdentifier,
     rolesPerUser: state.session.rolesPerUser,
-    company: state.session.company,
-    cantonList: state.session.cantonList,
-    distritoList: state.session.distritoList,
-    barrioList: state.session.barrioList,
-    companyPageError: state.session.companyPageError,
-    logoPageError: state.session.logoPageError,
+    company: state.company.company,
+    cantonList: state.company.cantonList,
+    distritoList: state.company.distritoList,
+    barrioList: state.company.barrioList,
+    companyPageError: state.company.companyPageError,
+    logoPageError: state.company.logoPageError,
     reportsPageError: state.session.reportsPageError
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    LogOut,
+    logOut,
     setActiveHomeSection,
     getCompany,
     updateCantonList,

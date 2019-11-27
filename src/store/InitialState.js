@@ -2,13 +2,17 @@ export const INITIAL_STATE = {
   ui: {
     isLoaderActive: false,
     loaderText: '',
+    activeInfoSection: 0,
     activeHomeSection: 0,
     downloadError: ''
   },
   session: {
     authenticated: false,
     rolesPerUser: [],
-    activeHomeSection: 0,
+    token: null,
+    loginError: ''
+  },
+  company: {
     companyId: null,
     companyIdentifier: '',
     companyName: '',
@@ -16,8 +20,6 @@ export const INITIAL_STATE = {
     cantonList: [],
     distritoList: [],
     barrioList: [],
-    token: null,
-    loginError: '',
     companyPageError: '',
     logoPageError: '',
     reportsPageError: ''

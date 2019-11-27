@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setActiveHomeSection } from 'store/ui/actions'
+import { setActiveInfoSection } from 'store/ui/actions'
 
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
@@ -111,7 +111,7 @@ function InfoPage(props) {
   const classes = useStyles()
 
   const toggleCurrentPage = (pageId) => {
-    props.setActiveHomeSection(pageId)
+    props.setActiveInfoSection(pageId)
     window.scrollTo(0, 0)
   }
 
@@ -126,12 +126,12 @@ function InfoPage(props) {
         <AppBar classes={{colorDefault: classes.appBar}} color='default'>
           <Toolbar>
             <div style={{marginLeft: '8%'}}>
-              <Button disabled={props.activeHomeSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-              <Button disabled={props.activeHomeSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
-              <Button disabled={props.activeHomeSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
-              <Button disabled={props.activeHomeSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>App Windows</Button>
-              <Button disabled={props.activeHomeSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
-              <Button disabled={props.activeHomeSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
+              <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+              <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
+              <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
+              <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>App Windows</Button>
+              <Button disabled={props.activeInfoSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
+              <Button disabled={props.activeInfoSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
 
             </div>
             <div style={{width: '26%', textAlign: 'end'}}>
@@ -147,12 +147,12 @@ function InfoPage(props) {
         </Typography>
       </div>
       <div style={{marginTop: '205px'}}>
-        {props.activeHomeSection === 0 && <HomePage onClick={toggleCurrentPage} />}
-        {props.activeHomeSection === 1 && <PricingPage />}
-        {props.activeHomeSection === 2 && <MobileAppPage />}
-        {props.activeHomeSection === 3 && <WindowsAppPage />}
-        {props.activeHomeSection === 4 && <PlatformPage />}
-        {props.activeHomeSection === 5 && <DownloadsPage />}
+        {props.activeInfoSection === 0 && <HomePage onClick={toggleCurrentPage} />}
+        {props.activeInfoSection === 1 && <PricingPage />}
+        {props.activeInfoSection === 2 && <MobileAppPage />}
+        {props.activeInfoSection === 3 && <WindowsAppPage />}
+        {props.activeInfoSection === 4 && <PlatformPage />}
+        {props.activeInfoSection === 5 && <DownloadsPage />}
         <div className={classes.panelBottom}>
           <Container className={classes.footer}>
             <Grid container spacing={8} justify='space-evenly'>
@@ -187,12 +187,12 @@ const mapStateToProps = (state) => {
   return {
     isLoaderActive: state.ui.isLoaderActive,
     loaderText: state.ui.loaderText,
-    activeHomeSection: state.ui.activeHomeSection
+    activeInfoSection: state.ui.activeInfoSection
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActiveHomeSection }, dispatch)
+  return bindActionCreators({ setActiveInfoSection }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InfoPage)
