@@ -24,6 +24,8 @@ import {
   getReportData
 } from 'utils/domainHelper'
 
+import { ExportDataToXls } from 'utils/utilities'
+
 export const setIdentifier = (companyId, companyIdentifier, companyName) => {
   return {
     type: SET_IDENTIFIER,
@@ -266,7 +268,23 @@ export function exportReport (reportType, startDate, endDate) {
     dispatch(startLoader())
     try {
       const list = await getReportData(reportType, companyId, startDate, endDate, token)
-      dispatch(setReportResults(list))
+      const fileName = reportType === 1
+        ? 'facturas_generadas'
+        : reportType === 2
+          ? 'notas_credito_generadas'
+          : reportType === 3
+            ? 'facturas_recibidas'
+            : 'notas_credito_recibidas'
+      const reportName = reportType === 1
+        ? 'Reporte de facturas generadas'
+        : reportType === 2
+          ? 'Reporte de notas de crédito generadas'
+          : reportType === 3
+            ? 'Reporte de facturas recibidas'
+            : reportType === 4
+              ? 'Reporte de notas de crédito Recibidas'
+              : 'Reporte resumen de movimientos del período'
+      ExportDataToXls(fileName, reportName, list)
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setReportsPageError(error.message))

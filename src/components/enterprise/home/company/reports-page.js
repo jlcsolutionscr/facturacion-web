@@ -58,9 +58,11 @@ function ReportsPage(props) {
     const endDay = (endDate.getDate() < 10 ? '0' : '') + endDate.getDate()
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
-    if (type === 1) props.generateReport(reportType, startDateFormatted, endDateFormatted)
+    if (type === 1) {
+      props.generateReport(reportType, startDateFormatted, endDateFormatted)
+      setViewLayout(2)
+    }
     if (type === 2) props.exportReport(reportType, startDateFormatted, endDateFormatted)
-    setViewLayout(2)
   }
   const reportName = reportType === 1
     ? 'Reporte de facturas generadas'
@@ -119,7 +121,7 @@ function ReportsPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => processReport(2)}>
+          <Button disabled={reportType === 5} variant='contained' className={classes.button} onClick={() => processReport(2)}>
             Exportar
           </Button>
         </Grid>

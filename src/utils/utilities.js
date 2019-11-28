@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { saveAs } from 'file-saver'
+import XLSX from 'xlsx'
 
 export function formatCurrency (number) {
   const decPlaces = 2
@@ -11,6 +12,36 @@ export function formatCurrency (number) {
   if (decValue.length < decPlaces) decValue += '0'.repeat(decPlaces - decValue.length)
   const integerValue = decIndex > 0 ? number.toString().substring(0, decIndex) : number.toString()
   return sign + integerValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1'+thouSep) + decSep + decValue
+}
+
+export function ExportDataToXls(filename, title, data) {
+  try {
+    const wb = XLSX.utils.book_new()
+    wb.Props = {
+      Title: title,
+      Subject: title,
+      Author: 'JLC Solutions CR',
+      CreatedDate: new Date()
+    }
+    wb.SheetNames.push('Test Sheet')
+    const ws_data = []
+    let taxes = 0
+    let total = 0
+    ws_data.push(['EMISOR/RECEPTOR', 'FECHA', 'CONSECUTIVO', 'IMPUESTO', 'TOTAL'])
+    data.forEach(item => {
+      taxes += item.Impuesto
+      total += item.Total
+      ws_data.push([item.Nombre, item.Fecha, item.Consecutivo, item.Impuesto, item.Total])
+    })
+    ws_data.push([null, null, null, taxes, total])
+    const ws = XLSX.utils.aoa_to_sheet(ws_data)
+    wb.Sheets['Test Sheet'] = ws
+    const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'array'})
+    saveAs(new Blob([wbout],{type:'application/octet-stream'}), filename + '.xlsx')
+  } catch (error) {
+    const message = error.response.data ? error.response.data : error.message
+    throw new Error(message)
+  }
 }
 
 export function downloadFile (endpointURL) {

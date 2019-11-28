@@ -146,7 +146,7 @@ const mapStateToProps = (state) => {
     reportSummary: state.company.reportSummary,
     companyPageError: state.company.companyPageError,
     logoPageError: state.company.logoPageError,
-    reportsPageError: state.session.reportsPageError
+    reportsPageError: state.company.reportsPageError
   }
 }
 
