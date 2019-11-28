@@ -16,11 +16,12 @@ const useStyles = makeStyles(theme => ({
     maxHeight: `${window.innerHeight - 302}px`,
     backgroundColor: 'rgba(255,255,255,0.55)'
   },
-  subTitle: {
-    color: 'red',
+  errorLabel: {
+    fontFamily: '"Exo 2", sans-serif',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(15),
-    fontWeight: 500,
+    color: 'red',
+    fontWeight: '700',
     marginBottom: '20px'
   },
   button: {
@@ -61,7 +62,7 @@ function LogoPage(props) {
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
     <div className={classes.container}>
-      {props.logoPageError !== '' && <Typography className={classes.subTitle} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+      {props.logoPageError !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
         {props.logoPageError}
       </Typography>}
       <Grid container spacing={3}>

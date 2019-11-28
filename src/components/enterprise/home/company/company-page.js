@@ -21,11 +21,12 @@ const useStyles = makeStyles(theme => ({
     maxHeight: `${window.innerHeight - 302}px`,
     backgroundColor: 'rgba(255,255,255,0.55)'
   },
-  subTitle: {
-    color: 'red',
+  errorLabel: {
+    fontFamily: '"Exo 2", sans-serif',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(15),
-    fontWeight: 500,
+    color: 'red',
+    fontWeight: '700',
     marginBottom: '20px'
   },
   button: {
@@ -82,7 +83,7 @@ function CompanyPage(props) {
   const barrioList = props.barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
-      {props.companyPageError !== '' && <Typography className={classes.subTitle} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+      {props.companyPageError !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
         {props.companyPageError}
       </Typography>}
       <Grid container spacing={3}>

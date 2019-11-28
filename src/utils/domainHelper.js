@@ -95,6 +95,16 @@ export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
   }
 }
 
+export async function getReportData(reportType, idCompany, startDate, endDate, token) {
+  try {
+    const response = await getWithResponse(ADMIN_URL + '/obtenerdatosreporte?tipo=' + reportType + '&idempresa=' + idCompany + '&fechainicial=' + startDate + '&fechafinal=' + endDate, token)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e
+  }
+}
+
 function encryptString(plainText) {
   const phrase = 'Po78]Rba[%J=[14[*'
   const data = CryptoJS.enc.Utf8.parse(plainText)

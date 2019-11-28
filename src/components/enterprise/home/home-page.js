@@ -13,7 +13,9 @@ import {
   updateBarrioList,
   setCompanyAttribute,
   saveCompany,
-  saveLogo
+  saveLogo,
+  generateReport,
+  exportReport
 } from 'store/company/actions'
 
 import Typography from '@material-ui/core/Typography'
@@ -110,8 +112,12 @@ function HomePage(props) {
         <Typography className={classes.title} align='center' paragraph>
           {identification}
         </Typography>
-        {props.activeHomeSection === 1 && <Typography className={classes.subTitle} align='center' paragraph>
-          Actualización de datos
+        {props.activeHomeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
+          {props.activeHomeSection === 1
+            ? 'Actualización de datos'
+            : props.activeHomeSection === 2
+              ? 'Actualización de logotipo'
+              : 'Generación de reportes'}
         </Typography>}
       </div>
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
@@ -136,6 +142,8 @@ const mapStateToProps = (state) => {
     cantonList: state.company.cantonList,
     distritoList: state.company.distritoList,
     barrioList: state.company.barrioList,
+    reportResults: state.company.reportResults,
+    reportSummary: state.company.reportSummary,
     companyPageError: state.company.companyPageError,
     logoPageError: state.company.logoPageError,
     reportsPageError: state.session.reportsPageError
@@ -152,7 +160,9 @@ const mapDispatchToProps = (dispatch) => {
     updateBarrioList,
     setCompanyAttribute,
     saveCompany,
-    saveLogo
+    saveLogo,
+    generateReport,
+    exportReport
   }, dispatch)
 }
 

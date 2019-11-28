@@ -5,8 +5,10 @@ import {
   SET_BARRIO_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
+  SET_REPORT_RESULTS,
   SET_COMPANY_PAGE_ERROR,
-  SET_LOGO_PAGE_ERROR
+  SET_LOGO_PAGE_ERROR,
+  SET_REPORTS_PAGE_ERROR
 } from './types'
 
 import { startLoader, stopLoader, setActiveHomeSection } from 'store/ui/actions'
@@ -18,7 +20,8 @@ import {
   getBarrioList,
   saveCompanyEntity,
   saveCompanyCertificate,
-  saveCompanyLogo
+  saveCompanyLogo,
+  getReportData
 } from 'utils/domainHelper'
 
 export const setIdentifier = (companyId, companyIdentifier, companyName) => {
@@ -63,6 +66,13 @@ export const setCompanyAttribute = (attribute, value) => {
   }
 }
 
+export const setReportResults = (list, summary) => {
+  return {
+    type: SET_REPORT_RESULTS,
+    payload: { list, summary }
+  }
+}
+
 export const setCompanyPageError = (error) => {
   return {
     type: SET_COMPANY_PAGE_ERROR,
@@ -73,6 +83,13 @@ export const setCompanyPageError = (error) => {
 export const setLogoPageError = (error) => {
   return {
     type: SET_LOGO_PAGE_ERROR,
+    payload: { error }
+  }
+}
+
+export const setReportsPageError = (error) => {
+  return {
+    type: SET_REPORTS_PAGE_ERROR,
     payload: { error }
   }
 }
@@ -194,7 +211,7 @@ export function saveLogo (logo) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { companyId } = getState().company
-    dispatch(setCompanyPageError(''))
+    dispatch(setLogoPageError(''))
     dispatch(startLoader())
     try {
       if (logo !== '') {
@@ -203,7 +220,56 @@ export function saveLogo (logo) {
       dispatch(setActiveHomeSection(0))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setCompanyPageError(error.message))
+      dispatch(setLogoPageError(error.message))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export function generateReport (reportType, startDate, endDate) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { companyId } = getState().company
+    dispatch(setReportsPageError(''))
+    dispatch(startLoader())
+    dispatch(setReportResults([], null))
+    try {
+      const list = await getReportData(reportType, companyId, startDate, endDate, token)
+      let taxes = 0
+      let total = 0
+      if (reportType !== 5) {
+        list.forEach(item => {
+          taxes += item.Impuesto
+          total += item.Total
+        })
+      }
+      const summary = {
+        startDate,
+        endDate,
+        taxes,
+        total
+      }
+      dispatch(setReportResults(list, summary))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setReportsPageError(error.message))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export function exportReport (reportType, startDate, endDate) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { companyId } = getState().company
+    dispatch(setReportsPageError(''))
+    dispatch(startLoader())
+    try {
+      const list = await getReportData(reportType, companyId, startDate, endDate, token)
+      dispatch(setReportResults(list))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setReportsPageError(error.message))
       dispatch(stopLoader())
     }
   }
