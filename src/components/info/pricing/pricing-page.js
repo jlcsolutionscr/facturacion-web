@@ -68,33 +68,33 @@ const tiers = [
     monthlyPayment: false
   },
   {
-    title: 'PYMES 3 *',
-    price: '10,000.00',
-    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
-    monthlyPayment: true
-  },
-  {
     title: 'EMPRESARIAL 1 *',
-    price: '20,000.00',
-    description: ['Usuarios ilimitados', '2,500 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
+    price: '10,000.00',
+    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 2 *',
-    price: '35,000.00',
-    description: ['Usuarios ilimitados', '5,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
+    price: '20,000.00',
+    description: ['Usuarios ilimitados', '2,500 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 3 *',
+    price: '35,000.00',
+    description: ['Usuarios ilimitados', '5,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
+    monthlyPayment: true
+  },
+  {
+    title: 'EMPRESARIAL 4 *',
     price: '60,000.00',
-    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL PRO *',
     price: '100,000.00',
-    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
     monthlyPayment: true
   }
 ]
