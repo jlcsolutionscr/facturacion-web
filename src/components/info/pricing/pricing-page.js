@@ -103,13 +103,13 @@ function PricingPage() {
   const classes = useStyles()
   return (
     <div className={classes.container}>
-      <Container maxWidth="sm" component="main" className={classes.heroContent}>
-        <Typography component="h1" variant="h3" align="center" color="textPrimary" gutterBottom>
+      <Container maxWidth='sm' component='main' className={classes.heroContent}>
+        <Typography component='h1' variant='h3' align='center' color='textPrimary' gutterBottom>
           Nuestros planes
         </Typography>
       </Container>
-      <Container maxWidth="md" component="main">
-        <Grid container spacing={5} alignItems="flex-end">
+      <Container maxWidth='md' component='main'>
+        <Grid container spacing={5} alignItems='flex-end'>
           {tiers.map(tier => (
             <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={6}>
               <Card>
@@ -123,26 +123,26 @@ function PricingPage() {
                 />
                 <CardContent>
                   <div className={classes.cardPricing}>
-                    <Typography component="h2" variant="h4" color="textPrimary">
+                    <Typography component='h2' variant='h4' color='textPrimary'>
                       {tier.price}
                     </Typography>
-                    <Typography component="h2" variant="h5" color="textPrimary">
+                    <Typography component='h2' variant='h5' color='textPrimary'>
                       + I.V.A.
                     </Typography>
-                    {tier.monthlyPayment && <Typography variant="h6" color="textSecondary">
+                    {tier.monthlyPayment && <Typography variant='h6' color='textSecondary'>
                       /mensual
                     </Typography>}
                   </div>
                   <ul>
                     {tier.description.map(line => (
-                      <Typography component="li" variant="subtitle1" align="left" key={line}>
+                      <Typography component='li' variant='subtitle1' align='left' key={line}>
                         {line}
                       </Typography>
                     ))}
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant} color="primary">
+                  <Button fullWidth variant={tier.buttonVariant} color='primary'>
                     {tier.buttonText}
                   </Button>
                 </CardActions>
@@ -150,7 +150,7 @@ function PricingPage() {
             </Grid>
           ))}
         </Grid>
-        <Typography style={{marginTop: '50px'}} component="h1" variant="h6" align="center" color="textPrimary" gutterBottom>
+        <Typography style={{marginTop: '50px'}} component='h1' variant='h6' align='center' color='textPrimary' gutterBottom>
           * Al adquirir un plan anual recibirá un descuento equivalente a dos mensualidades.
         </Typography>
       </Container>

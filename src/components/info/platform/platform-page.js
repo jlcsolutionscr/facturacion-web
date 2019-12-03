@@ -9,7 +9,7 @@ function PlatformPage() {
   const preventDefault = event => event.preventDefault()
   return (
     <div id='id_platform_page' className={classes.container}>
-      <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
+      <Typography component='h1' variant='h4' align='center' color='textPrimary' gutterBottom>
         Nuestra plataforma de servicios web
       </Typography>
       <Typography className={classes.subTitle} paragraph>

@@ -27,7 +27,7 @@ export default function WindowsAppCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button classes={{root: classes.button}} onClick={() => props.onClick(2)}>CONOZCA MAS</Button>
+        <Button classes={{root: classes.button}} onClick={() => props.onClick(3)}>CONOZCA MAS</Button>
       </CardActions>
     </Card>
   )

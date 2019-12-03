@@ -93,16 +93,22 @@ function InfoPage(props) {
       color: '#247BA0',
       fontFamily: 'RussoOne',
       fontStyle: 'italic',
-      fontSize: theme.typography.pxToRem(65),
-      textShadow: '6px 6px 6px rgba(0,0,0,0.85)'
+      fontSize: theme.typography.pxToRem(66),
+      textShadow: '6px 6px 6px rgba(0,0,0,0.85)',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: theme.typography.pxToRem(15),
+      }
     },
     h4: {
       marginTop: theme.spacing(1),
       color: '#E2EBF1',
       fontFamily: 'RussoOne',
       fontStyle: 'italic',
-      fontSize: theme.typography.pxToRem(25),
-      textShadow: '3px 3px 4px rgba(0,0,0,0.85)'
+      fontSize: theme.typography.pxToRem(22),
+      textShadow: '3px 3px 4px rgba(0,0,0,0.85)',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: theme.typography.pxToRem(5),
+      }
     },
     footer: {
       color: 'inherit'
