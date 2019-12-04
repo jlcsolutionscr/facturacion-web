@@ -19,19 +19,31 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white'
   },
   link: {
-    margin: theme.spacing(1, 1.5),
+    margin: theme.spacing(1, 1.5)
   },
   heroContent: {
-    padding: theme.spacing(2, 0, 6),
+    padding: theme.spacing(2, 0, 6)
   },
   cardHeader: {
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.palette.grey[200]
   },
   cardPricing: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'baseline',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+  },
+  priceLabel: {
+    fontSize: '2.5rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.6rem'
+    }
+  },
+  restLabel: {
+    fontSize: '1.6rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem'
+    }
   }
 }))
 
@@ -65,7 +77,7 @@ const tiers = [
     title: 'PYMES 2 *',
     price: '7,500.00',
     description: ['Usuarios ilimitados', '750 facturas por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
-    monthlyPayment: false
+    monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 1 *',
@@ -123,10 +135,10 @@ function PricingPage() {
                 />
                 <CardContent>
                   <div className={classes.cardPricing}>
-                    <Typography component='h2' variant='h4' color='textPrimary'>
+                    <Typography className={classes.priceLabel} color='textPrimary'>
                       {tier.price}
                     </Typography>
-                    <Typography component='h2' variant='h5' color='textPrimary'>
+                    <Typography className={classes.restLabel} color='textPrimary'>
                       + I.V.A.
                     </Typography>
                     {tier.monthlyPayment && <Typography variant='h6' color='textSecondary'>

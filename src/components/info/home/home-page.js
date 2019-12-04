@@ -21,26 +21,17 @@ const useStyles = makeStyles(theme => ({
   },
   intro: {
     marginTop: theme.spacing(4),
-    fontSize: theme.typography.pxToRem(18),
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.typography.pxToRem(5),
-    }
+    fontSize: theme.typography.pxToRem(18)
   },
   items: {
     marginTop: theme.spacing(2),
     marginLeft: '3%',
-    fontSize: theme.typography.pxToRem(18),
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.typography.pxToRem(5),
-    }
+    fontSize: theme.typography.pxToRem(18)
   },
   subItems: {
     marginTop: theme.spacing(3),
     marginLeft: '6%',
-    fontSize: theme.typography.pxToRem(18),
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.typography.pxToRem(5),
-    }
+    fontSize: theme.typography.pxToRem(18)
   }
 }))
 
@@ -91,15 +82,15 @@ function HomePage(props) {
           </Typography>
         </div>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item>
         <Grid container justify='center' spacing={10}>
-          <Grid item xs>
+          <Grid item xs={10} md={4}>
             <MobileAppCard onClick={props.onClick} />
           </Grid>
-          <Grid item xs>
+          <Grid item xs={10} md={4}>
             <WindowsAppCard onClick={props.onClick}/>
           </Grid>
-          <Grid item xs>
+          <Grid item xs={10} md={4}>
             <PlatformCard onClick={props.onClick}/>
           </Grid>
         </Grid>

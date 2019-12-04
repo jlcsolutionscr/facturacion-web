@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Grid from '@material-ui/core/Grid'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -57,10 +58,14 @@ function MobileAppPage() {
           <Typography className={classes.paragraphList}>
             Paso 2: Seleccione la terminal de la lista y de click en el botón 'REGISTRAR TERMINAL'.
           </Typography>
-          <div style={{marginTop: '2%', width: '100%'}}>
-            <img src={FirstSignInStepImage} style={{marginLeft: '22.5%', width: '25%'}} alt='not available' />
-            <img src={SecondSignInStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-          </div>
+          <Grid container spacing={2} justify='space-around'>
+            <Grid item xs={12} md={6}>
+              <img src={FirstSignInStepImage} className={classes.twoImages} alt='not available' />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <img src={SecondSignInStepImage} className={classes.twoImages} alt='not available' />
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel classes={{root: classes.expantionPanel}} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
@@ -76,10 +81,14 @@ function MobileAppPage() {
           <Typography className={classes.paragraph}>
             Nuestra plataforma cuenta con las mas actuales medidas de seguridad al incluir comunicación segura mediante protocolo HTTPS asi como certificado de confianza. Adicionalmente cuenta con un sistema de sesión mediante usuario y contraseña con expiración para garantizar que usted es quien ingresa a nuestro sistema. Una vez que proporciona los credenciales válidos podrá tener acceso al menu principal.
           </Typography>
-          <div style={{marginTop: '2%', width: '100%'}}>
-            <img src={LoginImage} style={{marginLeft: '22.5%', width: '25%'}} alt='not available' />
-            <img src={MenuImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-          </div>
+          <Grid container spacing={2} justify='space-around'>
+            <Grid item xs={12} md={6}>
+              <img src={LoginImage} className={classes.twoImages} alt='not available' />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <img src={MenuImage} className={classes.twoImages} alt='not available' />
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel classes={{root: classes.expantionPanel}} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
@@ -104,11 +113,17 @@ function MobileAppPage() {
           <Typography className={classes.paragraphList}>
             Paso 3: Verifique el resumen y genere su factura mediante un click en el botón con etiqueta 'GENERAR'.
           </Typography>
-          <div style={{marginTop: '2%', width: '100%'}}>
-            <img src={FirstInvoiceStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-            <img src={SecondInvoiceStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-            <img src={ThirdInvoiceStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-          </div>
+          <Grid container spacing={2} justify='space-around'>
+            <Grid item xs={12} md={4}>
+              <img src={FirstInvoiceStepImage} className={classes.threeImages} alt='not available' />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <img src={SecondInvoiceStepImage} className={classes.threeImages} alt='not available' />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <img src={ThirdInvoiceStepImage} className={classes.threeImages} alt='not available' />
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel classes={{root: classes.expantionPanel}} expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
@@ -124,9 +139,11 @@ function MobileAppPage() {
           <Typography>
             Mediante el botón 'FACTURAS EMITIDAS' usted podrá visualizar todas sus facturas y realizar anulaciones mediante un click en el icono de anular, las cuales generar automáticamente las respectivas notas de crédito para el Ministerio de Hacienda. 
           </Typography>
-          <div style={{marginTop: '2%', textAlign: 'center', width: '100%'}}>
-            <img src={InvoiceListImage} style={{width: '25%'}} alt='not available' />
-          </div>
+          <Grid container spacing={2} justify='space-around'>
+            <Grid item xs={12} md={12}>
+              <img src={InvoiceListImage} className={classes.oneImage} alt='not available' />
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel classes={{root: classes.expantionPanel}} expanded={expanded === 'panel5'} onChange={handleChange('panel5')}>
@@ -142,11 +159,17 @@ function MobileAppPage() {
           <Typography>
             Mediante el botón 'DOCUMENTOS ELECTRONICOS EMITIDOS' usted tedrá acceso al listado de sus documentos electrónicos emitidos, como facturas electrónicas, tiquetes electrónicos, notas de crédito electrónicas y mensajes de recepción de facturas. Podrá visualizar la respuesta del Misiterio de Hacienda y realizar el reenvío del comprobante electrónico al correo de sus clientes con un solo click.
           </Typography>
-          <div style={{marginTop: '2%', width: '100%'}}>
-            <img src={FirstDocumentStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-            <img src={SecondDocumentStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-            <img src={ThirdDocumentStepImage} style={{marginLeft: '5%', width: '25%'}} alt='not available' />
-          </div>
+          <Grid container spacing={2} justify='space-around'>
+            <Grid item xs={12} md={4}>
+              <img src={FirstDocumentStepImage} className={classes.threeImages} alt='not available' />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <img src={SecondDocumentStepImage} className={classes.threeImages} alt='not available' />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <img src={ThirdDocumentStepImage} className={classes.threeImages} alt='not available' />
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel classes={{root: classes.expantionPanel}} expanded={expanded === 'panel6'} onChange={handleChange('panel6')}>
@@ -174,9 +197,11 @@ function MobileAppPage() {
           <Typography className={classes.paragraphList}>
             Paso 3: Solicite la generación de su reporte con un click en el botón con etiqueta 'ENVIAR REPORTE'.
           </Typography>
-          <div style={{marginTop: '2%', textAlign: 'center', width: '100%'}}>
-            <img src={ReportGenerationImage} style={{width: '25%'}} alt='not available' />
-          </div>
+          <Grid container spacing={2} justify='space-around'>
+            <Grid item xs={12} md={12}>
+              <img src={ReportGenerationImage} className={classes.oneImage} alt='not available' />
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

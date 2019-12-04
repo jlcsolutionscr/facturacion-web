@@ -67,6 +67,29 @@ function InfoPage(props) {
       position: 'fixed',
       paddingTop: '60px',
       zIndex: 100,
+      [theme.breakpoints.down('xs')]: {
+        paddingTop: '10px',
+        height: '145px'
+      }
+    },
+    header: {
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
+      }
+    },
+    headerMobile: {
+      display: 'none',
+      [theme.breakpoints.down('xs')]: {
+        marginLeft:'5%',
+        paddingTop: '140px',
+        display: 'block'
+      }
+    },
+    body: {
+      marginTop: '205px',
+      [theme.breakpoints.down('xs')]: {
+        marginTop: '10px'
+      }
     },
     appBar: {
       backgroundColor: 'rgba(0,0,0,0.65)',
@@ -79,6 +102,16 @@ function InfoPage(props) {
       '&:disabled': {
         color: 'rgba(255,255,255,0.65)',
         backgroundColor: 'rgba(255,255,255,0.15)'
+      },
+      [theme.breakpoints.down('xs')]: {
+        color: 'white',
+        borderRadius: '8px',
+        backgroundColor: 'rgba(0,0,0,0.65)',
+        width: 'auto',
+        '&:disabled': {
+          color: 'gray',
+          backgroundColor: 'rgba(0,0,0,0.15)'
+        }
       }
     },
     panelBottom: {
@@ -86,7 +119,23 @@ function InfoPage(props) {
       borderTopRightRadius: 0,
       backgroundColor: '#262626',
       color: 'white',
-      height: '220px'
+      height: '220px',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
+      }
+    },
+    mobileBottom: {
+      textAlign: 'center',
+      display: 'none',
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      backgroundColor: '#262626',
+      color: 'white',
+      height: '100px',
+      paddingTop: '15px',
+      [theme.breakpoints.down('xs')]: {
+        display: 'block'
+      }
     },
     h2: {
       marginTop: theme.spacing(2),
@@ -96,7 +145,8 @@ function InfoPage(props) {
       fontSize: theme.typography.pxToRem(66),
       textShadow: '6px 6px 6px rgba(0,0,0,0.85)',
       [theme.breakpoints.down('xs')]: {
-        fontSize: theme.typography.pxToRem(15),
+        fontSize: theme.typography.pxToRem(40),
+        marginTop: '10px'
       }
     },
     h4: {
@@ -107,7 +157,7 @@ function InfoPage(props) {
       fontSize: theme.typography.pxToRem(22),
       textShadow: '3px 3px 4px rgba(0,0,0,0.85)',
       [theme.breakpoints.down('xs')]: {
-        fontSize: theme.typography.pxToRem(5),
+        fontSize: theme.typography.pxToRem(16),
       }
     },
     footer: {
@@ -130,20 +180,21 @@ function InfoPage(props) {
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
       <div className={classes.titleContainer}>
         <AppBar classes={{colorDefault: classes.appBar}} color='default'>
-          <Toolbar>
-            <div style={{marginLeft: '8%'}}>
-              <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-              <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
-              <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
-              <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>App Windows</Button>
-              <Button disabled={props.activeInfoSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
-              <Button disabled={props.activeInfoSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
-
-            </div>
-            <div style={{width: '26%', textAlign: 'end'}}>
-              <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple onClick={() => redirectToLoginPage()}>Iniciar sesión</Button>
-            </div>
-          </Toolbar>
+          <div className={classes.header}>
+            <Toolbar>
+              <div style={{marginLeft: '8%'}}>
+                <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+                <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
+                <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
+                <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>App Windows</Button>
+                <Button disabled={props.activeInfoSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
+                <Button disabled={props.activeInfoSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
+              </div>
+              <div style={{width: '26%', textAlign: 'end'}}>
+                <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple onClick={() => redirectToLoginPage()}>Iniciar sesión</Button>
+              </div>
+            </Toolbar>
+          </div>
         </AppBar>
         <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
           JLC Solutions
@@ -152,7 +203,13 @@ function InfoPage(props) {
           A software development company
         </Typography>
       </div>
-      <div style={{marginTop: '205px'}}>
+      <div className={classes.headerMobile}>
+        <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+        <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
+        <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>Android</Button>
+        <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Windows</Button>
+      </div>
+      <div className={classes.body}>
         {props.activeInfoSection === 0 && <HomePage onClick={toggleCurrentPage} />}
         {props.activeInfoSection === 1 && <PricingPage />}
         {props.activeInfoSection === 2 && <MobileAppPage />}
@@ -183,6 +240,25 @@ function InfoPage(props) {
               <Copyright />
             </Box>
           </Container>
+        </div>
+        <div className={classes.mobileBottom}>
+          <Grid container spacing={2} justify='space-evenly'>
+            <Grid item xs={12}>
+              <Typography variant='h8' color='inherit'>
+                Contactenos: ventas@jlcsolutionscr.com
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant='h8' color='inherit'>
+                Whatsapp: (506) 8334-8641
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant='h8' color='inherit'>
+                Copyright © JLC Solutions CR 2019
+              </Typography>
+            </Grid>
+          </Grid>
         </div>
       </div>
     </div>

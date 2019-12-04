@@ -77,5 +77,32 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   button: {
     color: 'inherit'
+  },
+  oneImage: {
+    width: '25%',
+    [theme.breakpoints.down('xs')]: {
+      width: '80%'
+    }
+  },
+  twoImages: {
+    width: '50%',
+    [theme.breakpoints.down('xs')]: {
+      width: '80%'
+    }
+  },
+  threeImages: {
+    width: '85%',
+    [theme.breakpoints.down('xs')]: {
+      width: '80%'
+    }
+  },
+  windowsOneImage: {
+    width: '80%',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%'
+    }
+  },
+  windowsTwoImages: {
+    width: '100%'
   }
 }))
