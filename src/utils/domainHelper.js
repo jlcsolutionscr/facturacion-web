@@ -95,9 +95,9 @@ export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
   }
 }
 
-export async function getReportData(reportType, idCompany, startDate, endDate, token) {
+export async function getReportData(reportType, idCompany, idBranch, startDate, endDate, token) {
   try {
-    const response = await getWithResponse(ADMIN_URL + '/obtenerdatosreporte?tipo=' + reportType + '&idempresa=' + idCompany + '&fechainicial=' + startDate + '&fechafinal=' + endDate, token)
+    const response = await getWithResponse(ADMIN_URL + '/obtenerdatosreporte?tipo=' + reportType + '&idempresa=' + idCompany + '&idsucursal=' + idBranch + '&fechainicial=' + startDate + '&fechafinal=' + endDate, token)
     if (response === null) return []
     return response
   } catch (e) {

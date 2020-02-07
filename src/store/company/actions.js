@@ -236,7 +236,8 @@ export function generateReport (reportType, startDate, endDate) {
     dispatch(startLoader())
     dispatch(setReportResults([], null))
     try {
-      const list = await getReportData(reportType, companyId, startDate, endDate, token)
+      const list = await getReportData(reportType, companyId, 1, startDate, endDate, token)
+      console.log('list', list)
       let taxes = 0
       let total = 0
       if (reportType !== 5) {
@@ -267,7 +268,7 @@ export function exportReport (reportType, startDate, endDate) {
     dispatch(setReportsPageError(''))
     dispatch(startLoader())
     try {
-      const list = await getReportData(reportType, companyId, startDate, endDate, token)
+      const list = await getReportData(reportType, companyId, 1, startDate, endDate, token)
       const fileName = reportType === 1
         ? 'facturas_generadas'
         : reportType === 2

@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 function MenuPage(props) {
   let updateCompanyInfo = false
   let reportingMenu = false
+  console.log('company', props.company)
   const isAdministrator = props.rolesPerUser.filter(role => role.IdRole === 1).length > 0
   const isAccounting = props.rolesPerUser.filter(role => role.IdRole === 2).length > 0
   if (isAdministrator) {
@@ -37,8 +38,8 @@ function MenuPage(props) {
     reportingMenu = true
   } else {
     props.rolesPerUser.forEach(item => {
-      if (item.IdRole === 3) reportingMenu = true
-      if (item.IdRole === 6) updateCompanyInfo = true
+      if (item.IdRole === 57) reportingMenu = true
+      if (item.IdRole === 61) updateCompanyInfo = true
     })
   }
   const classes = useStyles()
