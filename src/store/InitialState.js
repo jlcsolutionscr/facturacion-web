@@ -20,6 +20,7 @@ export const INITIAL_STATE = {
     cantonList: [],
     distritoList: [],
     barrioList: [],
+    branchList: [],
     reportResults: [],
     reportSummary: null,
     companyPageError: '',

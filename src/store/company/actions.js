@@ -3,6 +3,7 @@ import {
   SET_CANTON_LIST,
   SET_DISTRITO_LIST,
   SET_BARRIO_LIST,
+  SET_BRANCH_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
   SET_REPORT_RESULTS,
@@ -21,6 +22,7 @@ import {
   saveCompanyEntity,
   saveCompanyCertificate,
   saveCompanyLogo,
+  getBranchList,
   getReportData
 } from 'utils/domainHelper'
 
@@ -50,6 +52,13 @@ export const setDistritoList = (list) => {
 export const setBarrioList = (list) => {
   return {
     type: SET_BARRIO_LIST,
+    payload: { list }
+  }
+}
+
+export const setBranchList = (list) => {
+  return {
+    type: SET_BRANCH_LIST,
     payload: { list }
   }
 }
@@ -115,6 +124,24 @@ export function getCompany () {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setCompanyPageError(error.message))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export function setReportsParameters () {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { companyId } = getState().company
+    dispatch(startLoader())
+    dispatch(setReportsPageError(''))
+    try {
+      dispatch(setActiveHomeSection(3))
+      const list = await getBranchList(companyId, token)
+      dispatch(setBranchList(list))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setReportsPageError(error.message))
       dispatch(stopLoader())
     }
   }
@@ -228,7 +255,7 @@ export function saveLogo (logo) {
   }
 }
 
-export function generateReport (reportType, startDate, endDate) {
+export function generateReport (idBranch, reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { companyId } = getState().company
@@ -236,8 +263,7 @@ export function generateReport (reportType, startDate, endDate) {
     dispatch(startLoader())
     dispatch(setReportResults([], null))
     try {
-      const list = await getReportData(reportType, companyId, 1, startDate, endDate, token)
-      console.log('list', list)
+      const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
       let taxes = 0
       let total = 0
       if (reportType !== 5) {

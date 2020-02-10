@@ -95,6 +95,16 @@ export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
   }
 }
 
+export async function getBranchList(idCompany, token) {
+  try {
+    const response = await getWithResponse(ADMIN_URL + '/obtenerlistadosucursales?idempresa=' + idCompany, token)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e
+  }
+}
+
 export async function getReportData(reportType, idCompany, idBranch, startDate, endDate, token) {
   try {
     const response = await getWithResponse(ADMIN_URL + '/obtenerdatosreporte?tipo=' + reportType + '&idempresa=' + idCompany + '&idsucursal=' + idBranch + '&fechainicial=' + startDate + '&fechafinal=' + endDate, token)

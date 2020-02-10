@@ -44,18 +44,15 @@ export const setDownloadError = (error) => {
 
 export function downloadWindowsAppFromWebSite () {
   return async (dispatch) => {
-    console.log('startLoader dispatched')
     dispatch(setDownloadError(''))
     dispatch(startLoader('Descargando'))
     try {
       await downloadWindowsApp()
-      console.log('stopLoader dispatched')
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setDownloadError(error))
-      console.log('stopLoader dispatched')
       dispatch(stopLoader())
-      console.log('Exepción en el procesamiento de la descarga:', error)
+      console.error('Exepción en el procesamiento de la descarga:', error)
     }
   }
 }

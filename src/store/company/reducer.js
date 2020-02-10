@@ -3,6 +3,7 @@ import {
   SET_CANTON_LIST,
   SET_DISTRITO_LIST,
   SET_BARRIO_LIST,
+  SET_BRANCH_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
   SET_REPORT_RESULTS,
@@ -27,6 +28,8 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, distritoList: payload.list }
     case SET_BARRIO_LIST:
       return { ...state, barrioList: payload.list }
+    case SET_BRANCH_LIST:
+      return { ...state, branchList: payload.list }
     case SET_COMPANY:
       return { ...state, company: payload.company }
     case SET_COMPANY_ATTRIBUTE:

@@ -47,7 +47,8 @@ function ReportsPage(props) {
   const classes = useStyles()
   const today = new Date()
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
-  const [reportType, setreportType] = React.useState(1)
+  const [branchId, setBranchId] = React.useState(1)
+  const [reportType, setReportType] = React.useState(1)
   const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth))
   const [viewLayout, setViewLayout] = React.useState(1)
@@ -59,7 +60,7 @@ function ReportsPage(props) {
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
     if (type === 1) {
-      props.generateReport(reportType, startDateFormatted, endDateFormatted)
+      props.generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
       setViewLayout(2)
     }
     if (type === 2) props.exportReport(reportType, startDateFormatted, endDateFormatted)
@@ -73,6 +74,7 @@ function ReportsPage(props) {
         : reportType === 4
           ? 'Reporte de notas de crédito Recibidas'
           : 'Reporte resumen de movimientos del período'
+  const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
       {props.reportsPageError !== '' && <Typography className={classes.title} color='textSecondary' component='p'>
@@ -81,11 +83,23 @@ function ReportsPage(props) {
       {viewLayout === 1 && <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <FormControl className={classes.formControl}>
-            <InputLabel id='demo-simple-select-label'>Provincia</InputLabel>
+            <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
+            <Select
+              id='Sucursal'
+              value={branchId}
+              onChange={(event) => setBranchId(event.target.value)}
+            >
+              {branchList}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id='demo-simple-select-label'>Seleccione el reporte:</InputLabel>
             <Select
               id='TipoReporte'
               value={reportType}
-              onChange={(event) => setreportType(event.target.value)}
+              onChange={(event) => setReportType(event.target.value)}
             >
               <MenuItem value={1}>FACTURAS EMITIDAS</MenuItem>
               <MenuItem value={2}>NOTAS DE CREDITO EMITIDAS</MenuItem>

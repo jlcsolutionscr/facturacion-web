@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
 function MenuPage(props) {
   let updateCompanyInfo = false
   let reportingMenu = false
-  console.log('company', props.company)
   const isAdministrator = props.rolesPerUser.filter(role => role.IdRole === 1).length > 0
   const isAccounting = props.rolesPerUser.filter(role => role.IdRole === 2).length > 0
   if (isAdministrator) {
@@ -53,7 +52,7 @@ function MenuPage(props) {
           <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(2)}>Incluya su logotipo</Button>
         </Grid>}
         {reportingMenu && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(3)}>Menu de reportes</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.setReportsParameters()}>Menu de reportes</Button>
         </Grid>}
         <Grid item xs={12}>
           <Button classes={{root: classes.button}} onClick={() => props.logOut()}>Cerrar sesión</Button>
