@@ -31,11 +31,6 @@ function DownloadsPage(props) {
   }
   return (
     <div id='id_download_page' className={classes.container}>
-      {props.downloadError !== '' &&
-        <Typography style={{textAlign: 'center', margin: '2%'}} className={classes.paragraphError} component='p'>
-          props.downloadError
-        </Typography>
-      }
       <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
         Productos disponibles
       </Typography>

@@ -1,5 +1,5 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
+
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: '150px',
     padding: '25px',
     maxHeight: `${window.innerHeight - 302}px`,
-    backgroundColor: 'rgba(255,255,255,0.55)'
+    backgroundColor: 'rgba(255,255,255,0.65)'
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -63,7 +63,7 @@ function ReportsPage(props) {
       props.generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
       setViewLayout(2)
     }
-    if (type === 2) props.exportReport(reportType, startDateFormatted, endDateFormatted)
+    if (type === 2) props.exportReport(branchId, reportType, startDateFormatted, endDateFormatted)
   }
   const reportName = reportType === 1
     ? 'Reporte de facturas generadas'
@@ -77,9 +77,6 @@ function ReportsPage(props) {
   const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
-      {props.reportsPageError !== '' && <Typography className={classes.title} color='textSecondary' component='p'>
-        {props.reportsPageError}
-      </Typography>}
       {viewLayout === 1 && <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <FormControl className={classes.formControl}>
@@ -140,7 +137,7 @@ function ReportsPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveHomeSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
             Regresar
           </Button>
         </Grid>

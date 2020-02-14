@@ -1,6 +1,19 @@
 import axios from 'axios'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
+import CryptoJS from 'crypto-js'
+
+export function encryptString(plainText) {
+  const phrase = 'Po78]Rba[%J=[14[*'
+  const data = CryptoJS.enc.Utf8.parse(plainText)
+  const passHash = CryptoJS.enc.Utf8.parse(phrase)
+  const iv = CryptoJS.enc.Utf8.parse('@1B2c3D4e5F6g7H8')
+  const saltKey = CryptoJS.enc.Utf8.parse('S@LT&KEY')
+  const key128Bits1000Iterations = CryptoJS.PBKDF2(passHash, saltKey, { keySize: 256 / 32, iterations: 1000 })
+  const encrypted = CryptoJS.AES.encrypt(data, key128Bits1000Iterations, { mode: CryptoJS.mode.CBC, iv: iv, padding: CryptoJS.pad.ZeroPadding })
+  const encryptedText = encrypted.ciphertext.toString(CryptoJS.enc.Base64)
+  return encryptedText
+}
 
 export function formatCurrency (number) {
   const decPlaces = 2
@@ -39,7 +52,7 @@ export function ExportDataToXls(filename, title, data) {
     const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'array'})
     saveAs(new Blob([wbout],{type:'application/octet-stream'}), filename + '.xlsx')
   } catch (error) {
-    const message = error.response.data ? error.response.data : error.message
+    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
     throw new Error(message)
   }
 }
@@ -74,7 +87,7 @@ export async function getWithResponse(endpointURL, token) {
       return null
     }
   } catch (error) {
-    const message = error.response.data ? error.response.data : error.message
+    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
     throw new Error(message)
   }
 }
@@ -93,7 +106,31 @@ export async function post(endpointURL, datos, token) {
       data: JSON.stringify(datos)
     })
   } catch (error) {
-    const message = error.response.data ? error.response.data : error.message
+    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
+    throw new Error(message)
+  }
+}
+
+export async function postWithResponse(endpointURL, datos, token) {
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+    if (token !== '') headers['Authorization'] = 'bearer ' + token
+    const response = await axios({
+      method: 'post',
+      url: endpointURL,
+      headers,
+      data: JSON.stringify(datos)
+    })
+    if (response.data !== '') {
+      return JSON.parse(response.data)
+    } else {
+      return null
+    }
+  } catch (error) {
+    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
     throw new Error(message)
   }
 }

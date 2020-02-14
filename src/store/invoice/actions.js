@@ -1,18 +1,16 @@
 import {
-  SET_IDENTIFIER,
+  SET_ACTIVE_SECTION,
+  SET_INVOICE_SESSION,
   SET_CANTON_LIST,
   SET_DISTRITO_LIST,
   SET_BARRIO_LIST,
   SET_BRANCH_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
-  SET_REPORT_RESULTS,
-  SET_COMPANY_PAGE_ERROR,
-  SET_LOGO_PAGE_ERROR,
-  SET_REPORTS_PAGE_ERROR
+  SET_REPORT_RESULTS
 } from './types'
 
-import { startLoader, stopLoader, setActiveHomeSection } from 'store/ui/actions'
+import { startLoader, stopLoader, setErrorMessage } from 'store/ui/actions'
 
 import {
   getCompanyEntity,
@@ -24,13 +22,20 @@ import {
   saveCompanyLogo,
   getBranchList,
   getReportData
-} from 'utils/domainHelper'
+} from 'utils/invoiceHelper'
 
 import { ExportDataToXls } from 'utils/utilities'
 
-export const setIdentifier = (companyId, companyIdentifier, companyName) => {
+export const setActiveSection = (pageId) => {
   return {
-    type: SET_IDENTIFIER,
+    type: SET_ACTIVE_SECTION,
+    payload: { pageId }
+  }
+}
+
+export const setInvoiceSession = (companyId, companyIdentifier, companyName) => {
+  return {
+    type: SET_INVOICE_SESSION,
     payload: { companyId, companyIdentifier, companyName }
   }
 }
@@ -84,35 +89,13 @@ export const setReportResults = (list, summary) => {
   }
 }
 
-export const setCompanyPageError = (error) => {
-  return {
-    type: SET_COMPANY_PAGE_ERROR,
-    payload: { error }
-  }
-}
-
-export const setLogoPageError = (error) => {
-  return {
-    type: SET_LOGO_PAGE_ERROR,
-    payload: { error }
-  }
-}
-
-export const setReportsPageError = (error) => {
-  return {
-    type: SET_REPORTS_PAGE_ERROR,
-    payload: { error }
-  }
-}
-
 export function getCompany () {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId } = getState().company
+    const { companyId } = getState().invoice
     dispatch(startLoader())
-    dispatch(setCompanyPageError(''))
     try {
-      dispatch(setActiveHomeSection(1))
+      dispatch(setActiveSection(1))
       const company = await getCompanyEntity(companyId, token)
       dispatch(setCompany(company))
       const cantonList = await getCantonList(company.IdProvincia, token)
@@ -123,7 +106,7 @@ export function getCompany () {
       dispatch(setBarrioList(barrioList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setCompanyPageError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -132,16 +115,15 @@ export function getCompany () {
 export function setReportsParameters () {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId } = getState().company
+    const { companyId } = getState().invoice
     dispatch(startLoader())
-    dispatch(setReportsPageError(''))
     try {
-      dispatch(setActiveHomeSection(3))
+      dispatch(setActiveSection(3))
       const list = await getBranchList(companyId, token)
       dispatch(setBranchList(list))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setReportsPageError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -150,9 +132,8 @@ export function setReportsParameters () {
 export function updateCantonList (idProvincia) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().company
+    const { company } = getState().invoice
     if (company.IdProvincia !== idProvincia) {
-      dispatch(setCompanyPageError(''))
       dispatch(startLoader())
       try {
         const newCompany = { ...company, IdProvincia: idProvincia, IdCanton: 1, IdDistrito: 1, IdBarrio: 1 }
@@ -165,7 +146,7 @@ export function updateCantonList (idProvincia) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setCompanyPageError(error.message))
+        dispatch(setErrorMessage(error.message))
         dispatch(stopLoader())
       }
     }
@@ -175,9 +156,8 @@ export function updateCantonList (idProvincia) {
 export function updateDistritoList (idProvincia, idCanton) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().company
+    const { company } = getState().invoice
     if (company.IdCanton !== idCanton) {
-      dispatch(setCompanyPageError(''))
       dispatch(startLoader())
       try {
         const newCompany = { ...company, IdCanton: idCanton, IdDistrito: 1, IdBarrio: 1 }
@@ -188,7 +168,7 @@ export function updateDistritoList (idProvincia, idCanton) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setCompanyPageError(error.message))
+        dispatch(setErrorMessage(error.message))
         dispatch(stopLoader())
       }
     }
@@ -198,9 +178,8 @@ export function updateDistritoList (idProvincia, idCanton) {
 export function updateBarrioList (idProvincia, idCanton, idDistrito) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().company
+    const { company } = getState().invoice
     if (company.IdDistrito !== idDistrito) {
-      dispatch(setCompanyPageError(''))
       dispatch(startLoader())
       try {
         const newCompany = { ...company, IdDistrito: idDistrito, IdBarrio: 1 }
@@ -209,7 +188,7 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setCompanyPageError(error.message))
+        dispatch(setErrorMessage(error.message))
         dispatch(stopLoader())
       }
     }
@@ -219,18 +198,17 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
 export function saveCompany (certificate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId, company } = getState().company
-    dispatch(setCompanyPageError(''))
+    const { companyId, company } = getState().invoice
     dispatch(startLoader())
     try {
       await saveCompanyEntity(company, token)
       if (certificate !== '') {
         await saveCompanyCertificate(companyId, certificate, token)
       }
-      dispatch(setActiveHomeSection(0))
+      dispatch(setActiveSection(0))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setCompanyPageError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -239,17 +217,16 @@ export function saveCompany (certificate) {
 export function saveLogo (logo) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId } = getState().company
-    dispatch(setLogoPageError(''))
+    const { companyId } = getState().invoice
     dispatch(startLoader())
     try {
       if (logo !== '') {
         await saveCompanyLogo(companyId, logo, token)
       }
-      dispatch(setActiveHomeSection(0))
+      dispatch(setActiveSection(0))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setLogoPageError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -258,8 +235,7 @@ export function saveLogo (logo) {
 export function generateReport (idBranch, reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId } = getState().company
-    dispatch(setReportsPageError(''))
+    const { companyId } = getState().invoice
     dispatch(startLoader())
     dispatch(setReportResults([], null))
     try {
@@ -281,7 +257,7 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
       dispatch(setReportResults(list, summary))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setReportsPageError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -290,8 +266,7 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
 export function exportReport (reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId } = getState().company
-    dispatch(setReportsPageError(''))
+    const { companyId } = getState().invoice
     dispatch(startLoader())
     try {
       const list = await getReportData(reportType, companyId, 1, startDate, endDate, token)
@@ -314,7 +289,7 @@ export function exportReport (reportType, startDate, endDate) {
       ExportDataToXls(fileName, reportName, list)
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setReportsPageError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
     }
   }

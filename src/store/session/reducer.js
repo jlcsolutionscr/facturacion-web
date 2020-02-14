@@ -10,13 +10,15 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: true,
-        rolesPerUser: payload.user.RolePorUsuario,
-        token: payload.user.Token
+        productId: payload.productId,
+        rolesPerUser: payload.roles,
+        token: payload.token
       }
     case LOGOUT:
       return {
         ...state,
         authenticated: false,
+        productId: null,
         rolesPerUser: [],
         token: null
       }

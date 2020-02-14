@@ -1,20 +1,20 @@
 import {
-  SET_IDENTIFIER,
+  SET_ACTIVE_SECTION,
+  SET_INVOICE_SESSION,
   SET_CANTON_LIST,
   SET_DISTRITO_LIST,
   SET_BARRIO_LIST,
   SET_BRANCH_LIST,
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
-  SET_REPORT_RESULTS,
-  SET_COMPANY_PAGE_ERROR,
-  SET_LOGO_PAGE_ERROR,
-  SET_REPORTS_PAGE_ERROR
+  SET_REPORT_RESULTS
 } from './types'
 
 const companyReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case SET_IDENTIFIER:
+    case SET_ACTIVE_SECTION:
+      return { ...state, activeSection: payload.pageId }
+    case SET_INVOICE_SESSION:
       return {
         ...state,
         companyId: payload.companyId,
@@ -36,12 +36,6 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, company: {...state.company, [payload.attribute]: payload.value }}
     case SET_REPORT_RESULTS:
       return { ...state, reportResults: payload.list, reportSummary: payload.summary }
-    case SET_COMPANY_PAGE_ERROR:
-      return { ...state, companyPageError: payload.error }
-    case SET_LOGO_PAGE_ERROR:
-      return { ...state, logoPageError: payload.error }
-    case SET_REPORTS_PAGE_ERROR:
-      return { ...state, reportsPageError: payload.error }
     default:
       return state
   }

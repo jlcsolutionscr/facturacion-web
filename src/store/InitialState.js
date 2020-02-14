@@ -3,16 +3,17 @@ export const INITIAL_STATE = {
     isLoaderActive: false,
     loaderText: '',
     activeInfoSection: 0,
-    activeHomeSection: 0,
-    downloadError: ''
+    errorMessage: ''
   },
   session: {
-    authenticated: false,
-    rolesPerUser: [],
-    token: null,
+    productId: 2,
+    authenticated: true,
+    rolesPerUser: [{RoleId: 1, UserId: 1}],
+    token: 'kbGDBcLCEPssvMURFcPNV7H/8JHAP7dzyyR6Vh/dXNMJmFxspc3U6L2w7O8cpWQf',
     loginError: ''
   },
-  company: {
+  invoice: {
+    activeSection: 0,
     companyId: null,
     companyIdentifier: '',
     companyName: '',
@@ -22,9 +23,21 @@ export const INITIAL_STATE = {
     barrioList: [],
     branchList: [],
     reportResults: [],
-    reportSummary: null,
-    companyPageError: '',
-    logoPageError: '',
-    reportsPageError: ''
+    reportSummary: null
+  },
+  visitortracking: {
+    activeSection: 0,
+    companyId: null,
+    companyIdentifier: '',
+    companyName: '',
+    companyList: [],
+    company: null,
+    branchList: [],
+    branch: null,
+    employeeList: [],
+    employee: null,
+    registryList: [],
+    registry: null,
+    reportResults: []
   }
 }

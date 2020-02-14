@@ -1,19 +1,18 @@
-import { downloadFile, getWithResponse, post } from './utilities'
-import CryptoJS from 'crypto-js'
-const API_SERVICE = process.env.API_SERVICE
-const DOWNLOAD_URL = `${API_SERVICE}/PuntoventaWCF.svc`
-const ADMIN_URL = `${API_SERVICE}/AdministracionWCF.svc`
+import { encryptString, downloadFile, getWithResponse, post } from './utilities'
+const SERVICE_URL = process.env.FE_SERVICE_URL
+const APP_URL = `${SERVICE_URL}/PuntoventaWCF.svc`
+const ADMIN_URL = `${SERVICE_URL}/AdministracionWCF.svc`
 
 export async function downloadWindowsApp() {
   try {
-    const endpointURL = DOWNLOAD_URL + '/descargaractualizacion'
+    const endpointURL = APP_URL + '/descargaractualizacion'
     await downloadFile(endpointURL)
   } catch (e) {
     throw e
   }
 }
 
-export async function validateCredentials(user, password, id) {
+export async function invoiceLogin(user, password, id) {
   try {
     const ecryptedPass = encryptString(password)
     const endpoint = ADMIN_URL + '/validarcredenciales?usuario=' + user + '&clave=' + ecryptedPass + '&id=' + id
@@ -113,16 +112,4 @@ export async function getReportData(reportType, idCompany, idBranch, startDate, 
   } catch (e) {
     throw e
   }
-}
-
-function encryptString(plainText) {
-  const phrase = 'Po78]Rba[%J=[14[*'
-  const data = CryptoJS.enc.Utf8.parse(plainText)
-  const passHash = CryptoJS.enc.Utf8.parse(phrase)
-  const iv = CryptoJS.enc.Utf8.parse('@1B2c3D4e5F6g7H8')
-  const saltKey = CryptoJS.enc.Utf8.parse('S@LT&KEY')
-  const key128Bits1000Iterations = CryptoJS.PBKDF2(passHash, saltKey, { keySize: 256 / 32, iterations: 1000 })
-  const encrypted = CryptoJS.AES.encrypt(data, key128Bits1000Iterations, { mode: CryptoJS.mode.CBC, iv: iv, padding: CryptoJS.pad.ZeroPadding })
-  const encryptedText = encrypted.ciphertext.toString(CryptoJS.enc.Base64)
-  return encryptedText
 }

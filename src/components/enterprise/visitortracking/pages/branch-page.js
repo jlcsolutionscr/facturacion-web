@@ -1,5 +1,5 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
+
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: '150px',
     padding: '25px',
     maxHeight: `${window.innerHeight - 302}px`,
-    backgroundColor: 'rgba(255,255,255,0.55)'
+    backgroundColor: 'rgba(255,255,255,0.65)'
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -62,9 +62,6 @@ function LogoPage(props) {
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
     <div className={classes.container}>
-      {props.logoPageError !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-        {props.logoPageError}
-      </Typography>}
       <Grid container spacing={3}>
       <Grid item xs={6} sm={6}>
           <TextField
@@ -106,7 +103,7 @@ function LogoPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveHomeSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
             Regresar
           </Button>
         </Grid>

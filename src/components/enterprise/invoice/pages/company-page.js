@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import TextField from 'components/custom/custom-textfield'
 import FormControl from '@material-ui/core/FormControl'
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: '150px',
     padding: '25px',
     maxHeight: `${window.innerHeight - 302}px`,
-    backgroundColor: 'rgba(255,255,255,0.55)'
+    backgroundColor: 'rgba(255,255,255,0.65)'
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -83,9 +82,6 @@ function CompanyPage(props) {
   const barrioList = props.barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
-      {props.companyPageError !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-        {props.companyPageError}
-      </Typography>}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <TextField
@@ -111,7 +107,7 @@ function CompanyPage(props) {
           />
         </Grid>
         <Grid item xs={6} sm={3}>
-          <FormControl className={classes.formControl}>
+          <FormControl>
             <InputLabel id='demo-simple-select-label'>Provincia</InputLabel>
             <Select
               id='IdProvincia'
@@ -129,7 +125,7 @@ function CompanyPage(props) {
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={3}>
-          <FormControl className={classes.formControl}>
+          <FormControl>
             <InputLabel id='demo-simple-select-label'>Cantón</InputLabel>
             <Select
               id='IdCanton'
@@ -141,7 +137,7 @@ function CompanyPage(props) {
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={3}>
-          <FormControl className={classes.formControl}>
+          <FormControl>
             <InputLabel id='demo-simple-select-label'>Distrito</InputLabel>
             <Select
               id='IdDistrito'
@@ -153,7 +149,7 @@ function CompanyPage(props) {
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={3}>
-          <FormControl className={classes.formControl}>
+          <FormControl>
             <InputLabel id='demo-simple-select-label'>Barrio</InputLabel>
             <Select
               id='IdBarrio'
@@ -269,7 +265,7 @@ function CompanyPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveHomeSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
             Regresar
           </Button>
         </Grid>

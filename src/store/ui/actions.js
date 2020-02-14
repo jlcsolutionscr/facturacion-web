@@ -2,11 +2,10 @@ import {
   START_LOADER,
   STOP_LOADER,
   SET_ACTIVE_INFO_SECTION,
-  SET_ACTIVE_HOME_SECTION,
-  SET_DOWNLOAD_ERROR
+  SET_ERROR_MESSAGE
 } from './types'
 
-import { downloadWindowsApp } from 'utils/domainHelper'
+import { downloadWindowsApp } from 'utils/invoiceHelper'
 
 export const startLoader = (text) => {
   return {
@@ -28,29 +27,21 @@ export const setActiveInfoSection = (pageId) => {
   }
 }
 
-export const setActiveHomeSection = (pageId) => {
+export const setErrorMessage = (error) => {
   return {
-    type: SET_ACTIVE_HOME_SECTION,
-    payload: { pageId }
-  }
-}
-
-export const setDownloadError = (error) => {
-  return {
-    type: SET_DOWNLOAD_ERROR,
+    type: SET_ERROR_MESSAGE,
     payload: { error }
   }
 }
 
 export function downloadWindowsAppFromWebSite () {
   return async (dispatch) => {
-    dispatch(setDownloadError(''))
     dispatch(startLoader('Descargando'))
     try {
       await downloadWindowsApp()
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setDownloadError(error))
+      dispatch(setErrorMessage(error))
       dispatch(stopLoader())
       console.error('Exepción en el procesamiento de la descarga:', error)
     }

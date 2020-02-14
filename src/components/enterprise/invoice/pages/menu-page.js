@@ -49,7 +49,7 @@ function MenuPage(props) {
           <Button classes={{root: classes.button}} onClick={() => props.getCompany()}>Actualice su información</Button>
         </Grid>}
         {updateCompanyInfo && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveHomeSection(2)}>Incluya su logotipo</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(2)}>Incluya su logotipo</Button>
         </Grid>}
         {reportingMenu && <Grid item xs={12}>
           <Button classes={{root: classes.button}} onClick={() => props.setReportsParameters()}>Menu de reportes</Button>

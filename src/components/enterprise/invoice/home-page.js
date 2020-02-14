@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setActiveHomeSection } from 'store/ui/actions'
 import { logOut } from 'store/session/actions'
 
 import {
+  setActiveSection,
   getCompany,
   updateCantonList,
   updateDistritoList,
@@ -17,17 +17,17 @@ import {
   saveLogo,
   generateReport,
   exportReport
-} from 'store/company/actions'
+} from 'store/invoice/actions'
 
 import Typography from '@material-ui/core/Typography'
 import BannerImage from 'assets/img/menu-background.jpg'
 import LogoImage from 'assets/img/company-logo.png'
 
 import Loader from 'components/loader/loader'
-import MenuPage from './menu/menu-page'
-import CompanyPage from './company/company-page'
-import LogoPage from './company/logo-page'
-import ReportsPage from './company/reports-page'
+import MenuPage from './pages/menu-page'
+import CompanyPage from './pages/company-page'
+import LogoPage from './pages/logo-page'
+import ReportsPage from './pages/reports-page'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -113,19 +113,19 @@ function HomePage(props) {
         <Typography className={classes.title} align='center' paragraph>
           {identification}
         </Typography>
-        {props.activeHomeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
-          {props.activeHomeSection === 1
+        {props.activeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
+          {props.activeSection === 1
             ? 'Actualización de datos'
-            : props.activeHomeSection === 2
+            : props.activeSection === 2
               ? 'Actualización de logotipo'
               : 'Generación de reportes'}
         </Typography>}
       </div>
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
-        {props.activeHomeSection === 0 && <MenuPage {...props} />}
-        {props.activeHomeSection === 1 && <CompanyPage {...props} />}
-        {props.activeHomeSection === 2 && <LogoPage {...props} />}
-        {props.activeHomeSection === 3 && <ReportsPage {...props} />}
+        {props.activeSection === 0 && <MenuPage {...props} />}
+        {props.activeSection === 1 && <CompanyPage {...props} />}
+        {props.activeSection === 2 && <LogoPage {...props} />}
+        {props.activeSection === 3 && <ReportsPage {...props} />}
       </div>
     </div>
   )
@@ -135,27 +135,27 @@ const mapStateToProps = (state) => {
   return {
     isLoaderActive: state.ui.isLoaderActive,
     loaderText: state.ui.loaderText,
-    activeHomeSection: state.ui.activeHomeSection,
-    companyName: state.company.companyName,
-    companyIdentifier: state.company.companyIdentifier,
+    activeSection: state.invoice.activeSection,
+    companyName: state.invoice.companyName,
+    companyIdentifier: state.invoice.companyIdentifier,
     rolesPerUser: state.session.rolesPerUser,
-    company: state.company.company,
-    cantonList: state.company.cantonList,
-    distritoList: state.company.distritoList,
-    barrioList: state.company.barrioList,
-    branchList: state.company.branchList,
-    reportResults: state.company.reportResults,
-    reportSummary: state.company.reportSummary,
-    companyPageError: state.company.companyPageError,
-    logoPageError: state.company.logoPageError,
-    reportsPageError: state.company.reportsPageError
+    company: state.invoice.company,
+    cantonList: state.invoice.cantonList,
+    distritoList: state.invoice.distritoList,
+    barrioList: state.invoice.barrioList,
+    branchList: state.invoice.branchList,
+    reportResults: state.invoice.reportResults,
+    reportSummary: state.invoice.reportSummary,
+    companyPageError: state.invoice.companyPageError,
+    logoPageError: state.invoice.logoPageError,
+    reportsPageError: state.invoice.reportsPageError
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     logOut,
-    setActiveHomeSection,
+    setActiveSection,
     getCompany,
     updateCantonList,
     updateDistritoList,

@@ -5,13 +5,15 @@ import {
 } from './types'
 
 import { startLoader, stopLoader } from 'store/ui/actions'
-import { setIdentifier } from 'store/company/actions'
-import { validateCredentials } from 'utils/domainHelper'
+import { setInvoiceSession } from 'store/invoice/actions'
+import { setVisitorSession } from 'store/visitortracking/actions'
+import { invoiceLogin } from 'utils/invoiceHelper'
+import { visitorLogin } from 'utils/visitorTrackingHelper'
 
-export const logIn = (user) => {
+export const logIn = (productId, roles, token) => {
   return {
     type: LOGIN,
-    payload: { user }
+    payload: { productId, roles, token }
   }
 }
 
@@ -28,15 +30,33 @@ export const setLoginError = (error) => {
   }
 }
 
-export function authenticateSession (username, password, id) {
+export function loginInvoiceSession (username, password, id) {
   return async (dispatch) => {
     dispatch(setLoginError(''))
     dispatch(startLoader())
     try {
-      const user = await validateCredentials(username, password, id)
-      dispatch(logIn(user))
+      const user = await invoiceLogin(username, password, id)
+      dispatch(logIn(1, user.RolePorUsuario, user.Token))
       const company = user.UsuarioPorEmpresa[0]
-      dispatch(setIdentifier(company.IdEmpresa, company.Empresa.Identificacion, company.Empresa.NombreEmpresa))
+      dispatch(setInvoiceSession(company.IdEmpresa, company.Empresa.Identificacion, company.Empresa.NombreEmpresa))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(logOut())
+      dispatch(setLoginError(error.message))
+      dispatch(stopLoader())
+      console.error('Exeption authenticating session', error)
+    }
+  }
+}
+
+export function loginVisitorSession (username, password, id) {
+  return async (dispatch) => {
+    dispatch(setLoginError(''))
+    dispatch(startLoader())
+    try {
+      const session = await visitorLogin(username, password, id)
+      dispatch(logIn(2, session.RolePerUser, session.Token))
+      dispatch(setVisitorSession(session.CompanyId, session.CompanyIdentifier, session.CompanyName))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(logOut())
