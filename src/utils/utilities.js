@@ -87,7 +87,7 @@ export async function getWithResponse(endpointURL, token) {
       return null
     }
   } catch (error) {
-    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
+    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
     throw new Error(message)
   }
 }
@@ -106,7 +106,7 @@ export async function post(endpointURL, datos, token) {
       data: JSON.stringify(datos)
     })
   } catch (error) {
-    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
+    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
     throw new Error(message)
   }
 }
@@ -130,7 +130,7 @@ export async function postWithResponse(endpointURL, datos, token) {
       return null
     }
   } catch (error) {
-    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
+    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
     throw new Error(message)
   }
 }

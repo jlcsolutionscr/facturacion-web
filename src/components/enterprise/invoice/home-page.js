@@ -117,7 +117,7 @@ function HomePage(props) {
           {props.activeSection === 1
             ? 'Actualización de datos'
             : props.activeSection === 2
-              ? 'Actualización de logotipo'
+              ? 'Ingreso de su logotipo'
               : 'Generación de reportes'}
         </Typography>}
       </div>

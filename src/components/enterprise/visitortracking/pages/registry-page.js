@@ -1,9 +1,16 @@
 import React from 'react'
 
 import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
+
+import { CheckIcon } from '../../../../utils/iconsHelper'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -43,69 +50,35 @@ const useStyles = makeStyles(theme => ({
 
 function LogoPage(props) {
   const classes = useStyles()
-  const [logo, setLogo] = React.useState('')
-  const [filename, setFilename] = React.useState('')
-  const handleImageChange = event => {
-    event.preventDefault()
-    let reader = new FileReader()
-    let file = event.target.files[0]
-    reader.onloadend = () => {
-      setLogo(reader.result)
-      setFilename(file.name)
-    }
-    reader.readAsDataURL(file)
-  }
-  const handleSaveButton = () => {
-    const logoBase64 = logo.substring(logo.indexOf(',') + 1)
-    props.saveLogo(logoBase64)
-  }
-  const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
+  const registryList = props.registryList.map((item, index) => { return <Grid item xs={8} sm={8} key={index}>
+    <ListItem>
+      <ListItemText
+        primary={item.CustomerName}
+      />
+      <ListItemSecondaryAction>
+        <IconButton edge="end" aria-label="delete" onClick={() => props.activateRegistry(item.RegistryId)}>
+          <CheckIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItem>
+  </Grid>})
   return (
     <div className={classes.container}>
       <Grid container spacing={3}>
-      <Grid item xs={6} sm={6}>
-          <TextField
-            disabled={true}
-            value={filename}
-            id='Logotipo'
-            fullWidth
-            variant='outlined'
-          />
-        </Grid>
-        <Grid item xs={2} sm={2}>
-          <input
-            accept='png/*'
-            style={{display: 'none'}}
-            id='contained-button-file'
-            multiple
-            type='file'
-            onChange={handleImageChange}
-          />
-          <label htmlFor='contained-button-file'>
-            <Button
-              component='span'
-              variant='contained'
-              className={classes.button}
-              style={{marginTop: '11px'}}
-            >
-              Seleccionar
-            </Button>
-          </label>
+        <Grid item xs={12} sm={12}>
+          <Typography className={classes.subTitle} paragraph>
+            Registros de clientes pendientes de aprobar
+          </Typography>
+          {registryList && <List dense={false}>
+            {registryList}
+          </List>}
         </Grid>
         <Grid item xs={12} sm={12}>
-          <div className={classes.imagePreview}>
-            {imagePreview}
-          </div>
-        </Grid>
-        <Grid item xs={2}>
-          <Button variant='contained' disabled={logo === ''} className={classes.button} onClick={() => handleSaveButton()}>
-            Actualizar
-          </Button>
-        </Grid>
-        <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
-            Regresar
-          </Button>
+          <Grid item xs={2}>
+            <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
+              Rgresar
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </div>

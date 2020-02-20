@@ -178,7 +178,7 @@ function WindowsAppPage() {
           aria-controls='panel1a-content'
           id='panel1a-header'
         >
-          <Typography className={classes.expantionTitle}>Envíe sus reportes a su correo</Typography>
+          <Typography className={classes.expantionTitle}>Visualice sus reportes</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{display: 'block'}}>
           <Typography>
@@ -194,7 +194,7 @@ function WindowsAppPage() {
             Paso 2: Seleccione el rango de fechas deseado.
           </Typography>
           <Typography className={classes.paragraphList}>
-            Paso 3: Solicite la generación de su reporte con un click en el botón con etiqueta 'ENVIAR REPORTE'.
+            Paso 3: Visualice su reporte con un click en el botón con etiqueta 'VISTA PREVIA'.
           </Typography>
           <Typography className={classes.paragraph}>
             Nota: Adicionalmente puede seleccionar un cliente o un proveedor para filtrar los datos basado en su selección.

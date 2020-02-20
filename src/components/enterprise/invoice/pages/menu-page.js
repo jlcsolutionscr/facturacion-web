@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     height: 'inherit'
   },
   button: {
-    width: '20%',
+    width: '30%',
     padding: '15px 20px',
     backgroundColor: 'rgba(0,0,0,0.65)',
     color: 'white',
@@ -46,13 +46,13 @@ function MenuPage(props) {
     <div className={classes.container}>
       <Grid container align='center' spacing={3} >
         {updateCompanyInfo && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.getCompany()}>Actualice su información</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.getCompany()}>Actualice la información de su empresa</Button>
         </Grid>}
         {updateCompanyInfo && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(2)}>Incluya su logotipo</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(2)}>Agregue un logotipo a su empresa</Button>
         </Grid>}
         {reportingMenu && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setReportsParameters()}>Menu de reportes</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.setReportsParameters()}>Acceda al menu de reportes</Button>
         </Grid>}
         <Grid item xs={12}>
           <Button classes={{root: classes.button}} onClick={() => props.logOut()}>Cerrar sesión</Button>

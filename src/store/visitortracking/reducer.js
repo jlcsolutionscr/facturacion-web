@@ -7,6 +7,12 @@ import {
   SET_BRANCH_LIST,
   SET_BRANCH,
   SET_BRANCH_ATTRIBUTE,
+  SET_USER_LIST,
+  SET_USER,
+  SET_ROLE_LIST,
+  ADD_USER_ROLE,
+  REMOVE_USER_ROLE,
+  SET_USER_ATTRIBUTE,
   SET_EMPLOYEE_LIST,
   SET_EMPLOYEE,
   SET_EMPLOYEE_ATTRIBUTE,
@@ -39,6 +45,18 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, branch: payload.entity }
     case SET_BRANCH_ATTRIBUTE:
       return { ...state, branch: {...state.branch, [payload.attribute]: payload.value }}
+    case SET_USER_LIST:
+      return { ...state, userList: payload.list }
+    case SET_USER:
+      return { ...state, user: payload.entity }
+    case SET_ROLE_LIST:
+      return { ...state, roleList: payload.list }
+    case ADD_USER_ROLE:
+      return { ...state, user: state.user ? { ...state.user, RoleList: [...state.user.RoleList, {Id: payload.id, Description: payload.description}] } : {RoleList: [{Id: payload.id, Description: payload.description}]} }
+    case REMOVE_USER_ROLE:
+      return { ...state, user: { ...state.user, RoleList: state.user.RoleList.filter(item => item.Id !== payload.id) } }
+    case SET_USER_ATTRIBUTE:
+      return { ...state, user: state.user ? {...state.user, [payload.attribute]: payload.value} : {[payload.attribute]: payload.value, RoleList: []}}
     case SET_EMPLOYEE_LIST:
       return { ...state, employeeList: payload.list }
     case SET_EMPLOYEE:

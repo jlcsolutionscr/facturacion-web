@@ -97,7 +97,7 @@ function InfoPage(props) {
     },
     menuButton: {
       marginRight: theme.spacing(2),
-      width: theme.spacing(17),
+      width: theme.spacing(16),
       backgroundColor: 'rgba(255,255,255,0.25)',
       '&:disabled': {
         color: 'rgba(255,255,255,0.65)',
@@ -182,7 +182,7 @@ function InfoPage(props) {
         <AppBar classes={{colorDefault: classes.appBar}} color='default'>
           <div className={classes.header}>
             <Toolbar>
-              <div style={{marginLeft: '8%'}}>
+              <div style={{marginLeft: '6%'}}>
                 <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
                 <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
                 <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
@@ -190,8 +190,8 @@ function InfoPage(props) {
                 <Button disabled={props.activeInfoSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
                 <Button disabled={props.activeInfoSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
               </div>
-              <div style={{width: '26%', textAlign: 'end'}}>
-                <Button className={classes.menuButton} style={{backgroundColor: 'white'}} disableRipple onClick={() => redirectToLoginPage()}>Iniciar sesión</Button>
+              <div style={{width: '30%', textAlign: 'end'}}>
+                <Button className={classes.menuButton} style={{backgroundColor: 'white', width: 130}} disableRipple onClick={() => redirectToLoginPage()}>Iniciar sesión</Button>
               </div>
             </Toolbar>
           </div>
@@ -244,17 +244,17 @@ function InfoPage(props) {
         <div className={classes.mobileBottom}>
           <Grid container spacing={2} justify='space-evenly'>
             <Grid item xs={12}>
-              <Typography variant='h8' color='inherit'>
+              <Typography variant='h6' color='inherit'>
                 Contactenos: ventas@jlcsolutionscr.com
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant='h8' color='inherit'>
+              <Typography variant='h6' color='inherit'>
                 Whatsapp: (506) 8334-8641
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant='h8' color='inherit'>
+              <Typography variant='h6' color='inherit'>
                 Copyright © JLC Solutions CR 2019
               </Typography>
             </Grid>

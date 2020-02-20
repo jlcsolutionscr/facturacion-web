@@ -8,7 +8,7 @@ import { logOut } from 'store/session/actions'
 import {
   setActiveSection,
   setCompany,
-  setCompanyListParameters,
+  setCompanyAdminParameters,
   setCompanyParameters,
   getCompany,
   setCompanyAttribute,
@@ -18,13 +18,19 @@ import {
   getBranch,
   saveBranch,
   setBranchAttribute,
+  setUser,
+  addUserRole,
+  removeUserRole,
+  getUser,
+  saveUser,
+  setUserAttribute,
+  setEmployee,
   setEmployeeParameters,
   getEmployee,
   setEmployeeAttribute,
   saveEmployee,
   setRegistryParameters,
-  getRegistry,
-  saveRegistry,
+  activateRegistry,
   setReportsParameters,
   generateReport,
   exportReport
@@ -36,7 +42,7 @@ import LogoImage from 'assets/img/company-logo.png'
 
 import Loader from 'components/loader/loader'
 import MenuPage from './pages/menu-page'
-import AdminCompanyPage from './pages/admin-company-page'
+import AdminPage from './pages/admin-page'
 import CompanyPage from './pages/company-page'
 import BranchPage from './pages/branch-page'
 import EmployeePage from './pages/employee-page'
@@ -145,7 +151,7 @@ function HomePage(props) {
       </div>
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
         {props.activeSection === 0 && <MenuPage {...props} />}
-        {props.activeSection === 1 && <AdminCompanyPage {...props} />}
+        {props.activeSection === 1 && <AdminPage {...props} />}
         {props.activeSection === 2 && <CompanyPage {...props} />}
         {props.activeSection === 3 && <BranchPage {...props} />}
         {props.activeSection === 4 && <EmployeePage {...props} />}
@@ -161,15 +167,21 @@ const mapStateToProps = (state) => {
     isLoaderActive: state.ui.isLoaderActive,
     loaderText: state.ui.loaderText,
     activeSection: state.visitortracking.activeSection,
+    companyId: state.visitortracking.companyId,
     companyName: state.visitortracking.companyName,
     companyIdentifier: state.visitortracking.companyIdentifier,
     rolesPerUser: state.session.rolesPerUser,
     companyList: state.visitortracking.companyList,
+    roleList: state.visitortracking.roleList,
     company: state.visitortracking.company,
     branchList: state.visitortracking.branchList,
     branch: state.visitortracking.branch,
+    userList: state.visitortracking.userList,
+    user: state.visitortracking.user,
     employeeList: state.visitortracking.employeeList,
     employee: state.visitortracking.employee,
+    customerList: state.visitortracking.customerList,
+    customer: state.visitortracking.customer,
     registryList: state.visitortracking.registryList,
     registry: state.visitortracking.registry,
     reportResults: state.visitortracking.reportResults,
@@ -181,7 +193,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     logOut,
     setActiveSection,
-    setCompanyListParameters,
+    setCompanyAdminParameters,
     setCompany,
     setCompanyParameters,
     getCompany,
@@ -192,13 +204,19 @@ const mapDispatchToProps = (dispatch) => {
     getBranch,
     setBranchAttribute,
     saveBranch,
+    setUser,
+    addUserRole,
+    removeUserRole,
+    setUserAttribute,
+    getUser,
+    saveUser,
+    setEmployee,
     setEmployeeParameters,
     getEmployee,
     setEmployeeAttribute,
     saveEmployee,
     setRegistryParameters,
-    getRegistry,
-    saveRegistry,
+    activateRegistry,
     setReportsParameters,
     generateReport,
     exportReport

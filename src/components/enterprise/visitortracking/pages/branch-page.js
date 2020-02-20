@@ -1,8 +1,12 @@
 import React from 'react'
 
 import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
+import TextField from 'components/custom/custom-textfield'
 import Button from '@material-ui/core/Button'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
@@ -16,13 +20,9 @@ const useStyles = makeStyles(theme => ({
     maxHeight: `${window.innerHeight - 302}px`,
     backgroundColor: 'rgba(255,255,255,0.65)'
   },
-  errorLabel: {
-    fontFamily: '"Exo 2", sans-serif',
-    textAlign: 'center',
-    fontSize: theme.typography.pxToRem(15),
-    color: 'red',
-    fontWeight: '700',
-    marginBottom: '20px'
+  form: {
+    width: '40%',
+    marginTop: theme.spacing(1)
   },
   button: {
     padding: '5px 15px',
@@ -33,77 +33,96 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: '#29A4B4',
       boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
     }
-  },
-  imagePreview: {
-    textAlign: 'center',
-    height: '160px',
-    width: '350px'
   }
 }))
 
-function LogoPage(props) {
+function BranchPage(props) {
   const classes = useStyles()
-  const [logo, setLogo] = React.useState('')
-  const [filename, setFilename] = React.useState('')
-  const handleImageChange = event => {
-    event.preventDefault()
-    let reader = new FileReader()
-    let file = event.target.files[0]
-    reader.onloadend = () => {
-      setLogo(reader.result)
-      setFilename(file.name)
-    }
-    reader.readAsDataURL(file)
+  let disabled = true
+  if (props.branch != null) {
+    disabled = props.branch.Id === ''
+      || props.branch.Description === ''
+      || props.branch.Address === ''
+      || props.branch.PhoneNumber === ''
   }
-  const handleSaveButton = () => {
-    const logoBase64 = logo.substring(logo.indexOf(',') + 1)
-    props.saveLogo(logoBase64)
+  const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Description}</MenuItem> })
+  const handleClose = () => {
+    props.setBranch(null)
+    props.setActiveSection(0)
   }
-  const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
     <div className={classes.container}>
       <Grid container spacing={3}>
-      <Grid item xs={6} sm={6}>
+        <Grid item xs={12} sm={12}>
+          <FormControl className={classes.form} disabled={props.branchList.length === 0}>
+            <InputLabel id='demo-simple-select-label'>Seleccione una sucursal</InputLabel>
+            <Select
+              id='BranchId'
+              value={props.branch && props.branch.Id ? props.branch.Id : ''}
+              onChange={(event) => props.getBranch(props.companyId, event.target.value)}
+            >
+              {branchList}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12}>
           <TextField
-            disabled={true}
-            value={filename}
-            id='Logotipo'
+            required
+            id='Id'
+            value={props.branch && props.branch.Id ? props.branch.Id : ''}
+            label='Consecutivo'
+            disabled
             fullWidth
+            autoComplete='lname'
             variant='outlined'
           />
         </Grid>
-        <Grid item xs={2} sm={2}>
-          <input
-            accept='png/*'
-            style={{display: 'none'}}
-            id='contained-button-file'
-            multiple
-            type='file'
-            onChange={handleImageChange}
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            id='Description'
+            value={props.branch && props.branch.Description ? props.branch.Description : ''}
+            label='Nombre'
+            disabled={!props.branch}
+            fullWidth
+            autoComplete='lname'
+            variant='outlined'
+            onChange={(event) => props.setBranchAttribute('Description', event.target.value)}
           />
-          <label htmlFor='contained-button-file'>
-            <Button
-              component='span'
-              variant='contained'
-              className={classes.button}
-              style={{marginTop: '11px'}}
-            >
-              Seleccionar
-            </Button>
-          </label>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <div className={classes.imagePreview}>
-            {imagePreview}
-          </div>
+          <TextField
+            required
+            id='Address'
+            value={props.branch && props.branch.Address ? props.branch.Address : ''}
+            label='Dirección'
+            disabled={!props.branch}
+            fullWidth
+            variant='outlined'
+            onChange={(event) => props.setBranchAttribute('Address', event.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            id='PhoneNumber'
+            value={props.branch && props.branch.PhoneNumber ? props.branch.PhoneNumber : ''}
+            label='Teléfono'
+            disabled={!props.branch}
+            fullWidth
+            variant='outlined'
+            inputProps={{maxLength: 8}}
+            numericFormat
+            onChange={(event) => props.setBranchAttribute('PhoneNumber', event.target.value)}
+          />
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' disabled={logo === ''} className={classes.button} onClick={() => handleSaveButton()}>
-            Actualizar
+          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveBranch(props.companyId, false)}>
+            Guardar
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => handleClose()}>
             Regresar
           </Button>
         </Grid>
@@ -112,4 +131,4 @@ function LogoPage(props) {
   )
 }
 
-export default LogoPage
+export default BranchPage

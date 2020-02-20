@@ -7,6 +7,12 @@ import {
   SET_BRANCH_LIST,
   SET_BRANCH,
   SET_BRANCH_ATTRIBUTE,
+  SET_USER_LIST,
+  SET_USER,
+  SET_ROLE_LIST,
+  ADD_USER_ROLE,
+  REMOVE_USER_ROLE,
+  SET_USER_ATTRIBUTE,
   SET_EMPLOYEE_LIST,
   SET_EMPLOYEE,
   SET_EMPLOYEE_ATTRIBUTE,
@@ -19,17 +25,20 @@ import { startLoader, stopLoader, setErrorMessage } from 'store/ui/actions'
 
 import {
   getCompanyList,
+  getRoleList,
   getCompanyEntity,
   saveCompanyEntity,
   getBranchList,
   getBranchEntity,
   saveBranchEntity,
+  getUserList,
+  getUserEntity,
+  saveUserEntity,
   getEmployeeList,
   getEmployeeEntity,
   saveEmployeeEntity,
-  getRegistryList,
-  getRegistryEntity,
-  activateRegistration,
+  GetPendingRegistryList,
+  RegistryApproval,
   getReportData
 } from 'utils/visitorTrackingHelper'
 
@@ -91,6 +100,48 @@ export const setBranchAttribute = (attribute, value) => {
   }
 }
 
+export const setUserList = (list) => {
+  return {
+    type: SET_USER_LIST,
+    payload: { list }
+  }
+}
+
+export const setUser = (entity) => {
+  return {
+    type: SET_USER,
+    payload: { entity }
+  }
+}
+
+export const setRoleList = (list) => {
+  return {
+    type: SET_ROLE_LIST,
+    payload: { list }
+  }
+}
+
+export const addUserRole = (id, description) => {
+  return {
+    type: ADD_USER_ROLE,
+    payload: { id, description }
+  }
+}
+
+export const removeUserRole = (id) => {
+  return {
+    type: REMOVE_USER_ROLE,
+    payload: { id }
+  }
+}
+
+export const setUserAttribute = (attribute, value) => {
+  return {
+    type: SET_USER_ATTRIBUTE,
+    payload: { attribute, value }
+  }
+}
+
 export const setEmployeeList = (list) => {
   return {
     type: SET_EMPLOYEE_LIST,
@@ -133,14 +184,16 @@ export const setReportResults = (list, summary) => {
   }
 }
 
-export function setCompanyListParameters () {
+export function setCompanyAdminParameters () {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
     try {
       dispatch(setActiveSection(1))
-      const list = await getCompanyList(token)
-      dispatch(setCompanyList(list))
+      const companyList = await getCompanyList(token)
+      dispatch(setCompanyList(companyList))
+      const roleList = await getRoleList(token)
+      dispatch(setRoleList(roleList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -154,6 +207,7 @@ export function setCompanyParameters () {
     const { token } = getState().session
     const { companyId } = getState().visitortracking
     dispatch(startLoader())
+    dispatch(setActiveSection(2))
     try {
       const entity = await getCompanyEntity(companyId, token)
       dispatch(setCompany(entity))
@@ -172,8 +226,10 @@ export function getCompany (companyId) {
     try {
       const entity = await getCompanyEntity(companyId, token)
       dispatch(setCompany(entity))
-      const list = await getBranchList(entity.Id, token)
-      dispatch(setBranchList(list))
+      const branchList = await getBranchList(entity.Id, token)
+      dispatch(setBranchList(branchList))
+      const userList = await getUserList(entity.Identifier, token)
+      dispatch(setUserList(userList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -189,8 +245,6 @@ export function saveCompany () {
     dispatch(startLoader())
     try {
       await saveCompanyEntity(company, token)
-      dispatch(setCompany(null))
-      dispatch(setActiveSection(0))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -204,8 +258,8 @@ export function setBranchParameters () {
     const { token } = getState().session
     const { companyId } = getState().visitortracking
     dispatch(startLoader())
+    dispatch(setActiveSection(3))
     try {
-      dispatch(setActiveSection(3))
       const list = await getBranchList(companyId, token)
       dispatch(setBranchList(list))
       dispatch(stopLoader())
@@ -216,10 +270,9 @@ export function setBranchParameters () {
   }
 }
 
-export function getBranch (branchId) {
+export function getBranch (companyId, branchId) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { companyId } = getState().visitortracking
     dispatch(startLoader())
     try {
       const entity = await getBranchEntity(companyId, branchId, token)
@@ -232,16 +285,52 @@ export function getBranch (branchId) {
   }
 }
 
-export function saveBranch () {
+export function saveBranch (companyId, isNew) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { branch } = getState().visitortracking
     dispatch(startLoader())
     try {
-      await saveBranchEntity(branch, token)
-      dispatch(setCompany(null))
-      dispatch(setBranch(null))
-      dispatch(setActiveSection(0))
+      await saveBranchEntity(branch, companyId, isNew, token)
+      if (isNew) {
+        const list = await getBranchList(companyId, token)
+        dispatch(setBranchList(list))
+      }
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setErrorMessage(error.message))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export function getUser (userId) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    dispatch(startLoader())
+    try {
+      const entity = await getUserEntity(userId, token)
+      dispatch(setUser(entity))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setErrorMessage(error.message))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export function saveUser (isNew) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { user, company } = getState().visitortracking
+    dispatch(startLoader())
+    try {
+      await saveUserEntity(user, company.Identifier, token)
+      if (isNew) {
+        const list = await getUserList(company.Identifier, token)
+        dispatch(setUserList(list))
+      }
+      dispatch(setUser(null))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -255,8 +344,8 @@ export function setEmployeeParameters () {
     const { token } = getState().session
     const { companyId } = getState().visitortracking
     dispatch(startLoader())
+    dispatch(setActiveSection(4))
     try {
-      dispatch(setActiveSection(4))
       const list = await getEmployeeList(companyId, token)
       dispatch(setEmployeeList(list))
       dispatch(stopLoader())
@@ -286,12 +375,15 @@ export function getEmployee (employeeId) {
 export function saveEmployee () {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { employee } = getState().visitortracking
+    const { employee, companyId } = getState().visitortracking
     dispatch(startLoader())
     try {
-      await saveEmployeeEntity(employee, token)
+      await saveEmployeeEntity(employee, companyId, token)
+      if (!employee.Id) {
+        const list = await getEmployeeList(companyId, token)
+        dispatch(setEmployeeList(list))
+      }
       dispatch(setEmployee(null))
-      dispatch(setActiveSection(0))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -305,9 +397,9 @@ export function setRegistryParameters () {
     const { token } = getState().session
     const { companyId } = getState().visitortracking
     dispatch(startLoader())
+    dispatch(setActiveSection(5))
     try {
-      dispatch(setActiveSection(5))
-      const list = await getRegistryList(companyId, token)
+      const list = await GetPendingRegistryList(companyId, token)
       dispatch(setRegistryList(list))
       dispatch(stopLoader())
     } catch (error) {
@@ -317,29 +409,15 @@ export function setRegistryParameters () {
   }
 }
 
-export function getRegistry (registryId) {
+export function activateRegistry (registryId) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { companyId } = getState().visitortracking
     dispatch(startLoader())
     try {
-      const entity = await getRegistryEntity(companyId, registryId, token)
-      dispatch(setCompany(entity))
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(setErrorMessage(error.message))
-      dispatch(stopLoader())
-    }
-  }
-}
-
-export function saveRegistry (registry) {
-  return async (dispatch, getState) => {
-    const { token } = getState().session
-    dispatch(startLoader())
-    try {
-      await activateRegistration(registry, token)
-      dispatch(setActiveSection(0))
+      await RegistryApproval(registryId, token)
+      const list = await GetPendingRegistryList(companyId, token)
+      dispatch(setRegistryList(list))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -353,8 +431,8 @@ export function setReportsParameters () {
     const { token } = getState().session
     const { companyId } = getState().visitortracking
     dispatch(startLoader())
+    dispatch(setActiveSection(6))
     try {
-      dispatch(setActiveSection(6))
       const list = await getBranchList(companyId, token)
       dispatch(setBranchList(list))
       dispatch(stopLoader())

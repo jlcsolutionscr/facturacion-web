@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     height: 'inherit'
   },
   button: {
-    width: '20%',
+    width: '30%',
     padding: '15px 20px',
     backgroundColor: 'rgba(0,0,0,0.65)',
     color: 'white',
@@ -45,10 +45,10 @@ function MenuPage(props) {
     <div className={classes.container}>
       <Grid container align='center' spacing={3} >
         {isAdministrator && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setCompanyListParameters()}>Mantenimiento de empresas</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.setCompanyAdminParameters()}>Mantenimiento de empresas</Button>
         </Grid>}
         {updateCompanyInfo && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setCompanyParameters()}>Actualice su información</Button>
+          <Button classes={{root: classes.button}} onClick={() => props.setCompanyParameters()}>Actualice la información de su empresa</Button>
         </Grid>}
         {updateBranchInfo && <Grid item xs={12}>
           <Button classes={{root: classes.button}} onClick={() => props.setBranchParameters()}>Actualice la información de sus sucursales</Button>

@@ -6,10 +6,10 @@ export const INITIAL_STATE = {
     errorMessage: ''
   },
   session: {
-    productId: 2,
-    authenticated: true,
-    rolesPerUser: [{RoleId: 1, UserId: 1}],
-    token: 'kbGDBcLCEPssvMURFcPNV7H/8JHAP7dzyyR6Vh/dXNMJmFxspc3U6L2w7O8cpWQf',
+    productId: null,
+    authenticated: false,
+    rolesPerUser: [],
+    token: null,
     loginError: ''
   },
   invoice: {
@@ -31,11 +31,16 @@ export const INITIAL_STATE = {
     companyIdentifier: '',
     companyName: '',
     companyList: [],
+    roleList: [],
     company: null,
     branchList: [],
     branch: null,
+    userList: [],
+    user: null,
     employeeList: [],
     employee: null,
+    customerList: [],
+    customer: null,
     registryList: [],
     registry: null,
     reportResults: []
