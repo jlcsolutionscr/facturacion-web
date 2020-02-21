@@ -45,7 +45,6 @@ function UserPage(props) {
   const [isUserNew, setIsUserNew] = React.useState(true)
   const [selectedRole, setSelectedRole] = React.useState(null)
   let disabled = true
-  console.log('props.user', props.user)
   if (props.user != null) {
     if (!isUserNew)
       disabled = props.user.Username === ''
