@@ -49,12 +49,6 @@ const useStyles = makeStyles(theme => ({
 
 const tiers = [
   {
-    title: '20 documentos',
-    price: '5,000.00',
-    description: ['1 usuario', '20 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
-    monthlyPayment: false
-  },
-  {
     title: '50 documentos',
     price: '10,000.00',
     description: ['1 usuario', '50 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
@@ -82,31 +76,25 @@ const tiers = [
   {
     title: 'EMPRESARIAL 1 *',
     price: '10,000.00',
-    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 2 *',
     price: '20,000.00',
-    description: ['Usuarios ilimitados', '2,500 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '2,500 facturas por mes', '8 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 3 *',
-    price: '35,000.00',
-    description: ['Usuarios ilimitados', '5,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
-    monthlyPayment: true
-  },
-  {
-    title: 'EMPRESARIAL 4 *',
-    price: '60,000.00',
-    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
+    price: '50,000.00',
+    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL PRO *',
     price: '100,000.00',
-    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, compras y proformas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
     monthlyPayment: true
   }
 ]
