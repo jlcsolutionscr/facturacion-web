@@ -1,5 +1,4 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -23,13 +22,10 @@ const useStyles = makeStyles(theme => ({
     maxHeight: `${window.innerHeight - 302}px`,
     backgroundColor: 'rgba(255,255,255,0.65)'
   },
-  errorLabel: {
-    fontFamily: '"Exo 2", sans-serif',
-    textAlign: 'center',
-    fontSize: theme.typography.pxToRem(15),
-    color: 'red',
-    fontWeight: '700',
-    marginBottom: '20px'
+  form: {
+    width: '40%',
+    minWidth: '350px',
+    marginTop: theme.spacing(1)
   },
   button: {
     padding: '5px 15px',
@@ -46,11 +42,10 @@ const useStyles = makeStyles(theme => ({
 function ReportsPage(props) {
   const classes = useStyles()
   const today = new Date()
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
   const [branchId, setBranchId] = React.useState(1)
   const [reportType, setReportType] = React.useState(1)
-  const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1))
-  const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth))
+  const [startDate, setStartDate] = React.useState(today)
+  const [endDate, setEndDate] = React.useState(today)
   const [viewLayout, setViewLayout] = React.useState(1)
   const processReport = (type) => {
     const startDay = (startDate.getDate() < 10 ? '0' : '') + startDate.getDate()
@@ -66,23 +61,14 @@ function ReportsPage(props) {
     if (type === 2) props.exportReport(reportType, startDateFormatted, endDateFormatted)
   }
   const reportName = reportType === 1
-    ? 'Reporte de facturas generadas'
-    : reportType === 2
-      ? 'Reporte de notas de crédito generadas'
-      : reportType === 3
-        ? 'Reporte de facturas recibidas'
-        : reportType === 4
-          ? 'Reporte de notas de crédito Recibidas'
-          : 'Reporte resumen de movimientos del período'
-  const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+    ? 'Registro de visitas recibidas'
+    : ''
+  const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Description}</MenuItem> })
   return (
     <div className={classes.container}>
-      {props.reportsPageError !== '' && <Typography className={classes.title} color='textSecondary' component='p'>
-        {props.reportsPageError}
-      </Typography>}
       {viewLayout === 1 && <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.form}>
             <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
             <Select
               id='Sucursal'
@@ -94,18 +80,14 @@ function ReportsPage(props) {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.form}>
             <InputLabel id='demo-simple-select-label'>Seleccione el reporte:</InputLabel>
             <Select
               id='TipoReporte'
               value={reportType}
               onChange={(event) => setReportType(event.target.value)}
             >
-              <MenuItem value={1}>FACTURAS EMITIDAS</MenuItem>
-              <MenuItem value={2}>NOTAS DE CREDITO EMITIDAS</MenuItem>
-              <MenuItem value={3}>FACTURAS RECIBIDAS</MenuItem>
-              <MenuItem value={4}>NOTAS DE CREDITO RECIBIDAS</MenuItem>
-              <MenuItem value={5}>RESUMEN DE MOVIMIENTOS</MenuItem>
+              <MenuItem value={1}>DETALLE DE VISITAS RECIBIDAS</MenuItem>
             </Select>
           </FormControl>
         </Grid>

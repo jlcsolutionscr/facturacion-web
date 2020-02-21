@@ -23,14 +23,6 @@ const useStyles = makeStyles(theme => ({
     maxHeight: `${window.innerHeight - 302}px`,
     backgroundColor: 'rgba(255,255,255,0.65)'
   },
-  errorLabel: {
-    fontFamily: '"Exo 2", sans-serif',
-    textAlign: 'center',
-    fontSize: theme.typography.pxToRem(15),
-    color: 'red',
-    fontWeight: '700',
-    marginBottom: '20px'
-  },
   button: {
     padding: '5px 15px',
     backgroundColor: '#239BB5',

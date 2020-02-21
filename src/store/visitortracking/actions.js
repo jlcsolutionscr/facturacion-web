@@ -245,6 +245,11 @@ export function saveCompany () {
     dispatch(startLoader())
     try {
       await saveCompanyEntity(company, token)
+      if (!company.Id) {
+        const companyList = await getCompanyList(token)
+        dispatch(setCompanyList(companyList))
+      }
+      dispatch(setCompany(null))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -296,6 +301,7 @@ export function saveBranch (companyId, isNew) {
         const list = await getBranchList(companyId, token)
         dispatch(setBranchList(list))
       }
+      dispatch(setBranch(null))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -451,19 +457,11 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
     dispatch(setReportResults([], null))
     try {
       const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
-      let taxes = 0
-      let total = 0
-      if (reportType !== 5) {
-        list.forEach(item => {
-          taxes += item.Impuesto
-          total += item.Total
-        })
-      }
+      let count = list.length
       const summary = {
         startDate,
         endDate,
-        taxes,
-        total
+        count
       }
       dispatch(setReportResults(list, summary))
       dispatch(stopLoader())

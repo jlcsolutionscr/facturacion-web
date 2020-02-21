@@ -20,6 +20,7 @@ import { DeleteIcon } from '../../../../../utils/iconsHelper'
 const useStyles = makeStyles(theme => ({
   form: {
     width: '40%',
+    minWidth: '350px',
     marginTop: theme.spacing(1)
   },
   subTitle: {
@@ -138,17 +139,15 @@ function UserPage(props) {
           {roleperUserList}
         </List>}
       </Grid>
-      <Grid item xs={12} sm={12}>
-        <Grid item xs={2}>
-          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => handleSaveUserClick()}>
-            {isUserNew ? 'Agregar' : 'Actualizar'}
-          </Button>
-        </Grid>
-        <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => handleNewUserClick()}>
-            Nuevo
-          </Button>
-        </Grid>
+      <Grid item xs={2}>
+        <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => handleSaveUserClick()}>
+          {isUserNew ? 'Agregar' : 'Actualizar'}
+        </Button>
+      </Grid>
+      <Grid item xs={2}>
+        <Button variant='contained' className={classes.button} onClick={() => handleNewUserClick()}>
+          Nuevo
+        </Button>
       </Grid>
     </Grid>
   )

@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: '40%',
+    minWidth: '350px',
     marginTop: theme.spacing(1)
   },
   button: {

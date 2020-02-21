@@ -10,8 +10,6 @@ import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { formatCurrency } from 'utils/utilities' 
-
 const useStyles = makeStyles(theme => ({
     container: {
       width: '100%',
@@ -35,7 +33,8 @@ const useStyles = makeStyles(theme => ({
       flexDirection: 'row'
     },
     table: {
-      minWidth: 650
+      minWidth: 800,
+      width: '80%'
     },
     button: {
       padding: '5px 15px',
@@ -70,34 +69,23 @@ const useStyles = makeStyles(theme => ({
       <Table className={classes.table} aria-label='simple table'>
         <TableHead>
           <TableRow>
-            <TableCell>Emisor/Receptor</TableCell>
+            <TableCell>Cliente</TableCell>
             <TableCell align='center'>Fecha</TableCell>
-            <TableCell align='center'>Consecutivo</TableCell>
-            <TableCell align='right'>Impuesto</TableCell>
-            <TableCell align='right'>Total</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.data.map((row, index) => (
             <TableRow key={index}>
-              <TableCell component='th' scope='row'>{row.Nombre}</TableCell>
-              <TableCell align='center'>{row.Fecha}</TableCell>
-              <TableCell align='center'>{row.Consecutivo}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Impuesto)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Total)}</TableCell>
+              <TableCell component='th' scope='row'>{row.CustomerName}</TableCell>
+              <TableCell align='center'>{row.RegisterDate}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <div className={classes.headerRange} style={{marginTop: '30px', marginBottom: '40px', marginRight: '5%'}}>
-        <div style={{width: '75%', marginRight: '10%'}}>
-          {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end'}}color='textSecondary' component='p'>
-            Total impuesto: {formatCurrency(props.summary.taxes)}
-          </Typography>}
-        </div>
-        <div style={{width: '25%'}}>
+        <div style={{width: '80%'}}>
           {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end'}} color='textSecondary' component='p'>
-            Total general: {formatCurrency(props.summary.total)}
+            Cantidad total: {props.summary.count}
           </Typography>}
         </div>
       </div>

@@ -52,7 +52,7 @@ export async function saveCompanyEntity(entity, token) {
 
 export async function getBranchList(companyId, token) {
   try {
-    const data = '{"MethodName": "GetBranchList", "Parameters": {"CompanyId" :' + companyId + '}}'
+    const data = '{"MethodName": "GetBranchList", "Parameters": {"CompanyId": ' + companyId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const list = await postWithResponse(endpoint, data, token)
     if (list === null) return []
@@ -64,7 +64,7 @@ export async function getBranchList(companyId, token) {
 
 export async function getBranchEntity(companyId, branchId, token) {
   try {
-    const data = '{"MethodName": "GetBranch", "Parameters": {"CompanyId" :' + companyId + ', "BranchId": ' + branchId + '}}'
+    const data = '{"MethodName": "GetBranch", "Parameters": {"CompanyId": ' + companyId + ', "BranchId": ' + branchId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const entity = await postWithResponse(endpoint, data, token)
     return entity
@@ -90,7 +90,7 @@ export async function saveBranchEntity(entity, companyId, isNew, token) {
 
 export async function getUserList(companyIdentifier, token) {
   try {
-    const data = '{"MethodName": "GetUserList", "Parameters": {"CompanyIdentifier" :' + companyIdentifier + '}}'
+    const data = '{"MethodName": "GetUserList", "Parameters": {"CompanyIdentifier": ' + companyIdentifier + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const list = await postWithResponse(endpoint, data, token)
     if (list === null) return []
@@ -143,7 +143,7 @@ export async function getRoleList(token) {
 
 export async function getEmployeeList(companyId, token) {
   try {
-    const data = '{"MethodName": "GetEmployeeList", "Parameters": {"CompanyId" :' + companyId + '}}'
+    const data = '{"MethodName": "GetEmployeeList", "Parameters": {"CompanyId": ' + companyId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const list = await postWithResponse(endpoint, data, token)
     if (list === null) return []
@@ -155,7 +155,7 @@ export async function getEmployeeList(companyId, token) {
 
 export async function getEmployeeEntity(companyId, employeeId, token) {
   try {
-    const data = '{"MethodName": "GetEmployee", "Parameters": {"CompanyId" :' + companyId + ', "EmployeeId": ' + employeeId + '}}'
+    const data = '{"MethodName": "GetEmployee", "Parameters": {"CompanyId": ' + companyId + ', "EmployeeId": ' + employeeId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const entity = await postWithResponse(endpoint, data, token)
     return entity
@@ -182,7 +182,7 @@ export async function saveEmployeeEntity(entity, companyId, token) {
 
 export async function getCustomerList(companyId, token) {
   try {
-    const data = '{"MethodName": "GetCustomerList", "Parameters": {"CompanyId" :' + companyId + '}}'
+    const data = '{"MethodName": "GetCustomerList", "Parameters": {"CompanyId": ' + companyId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const list = await postWithResponse(endpoint, data, token)
     if (list === null) return []
@@ -194,7 +194,7 @@ export async function getCustomerList(companyId, token) {
 
 export async function getCustomerEntity(companyId, employeeId, token) {
   try {
-    const data = '{"MethodName": "GetCustomer", "Parameters": {"CompanyId" :' + companyId + ', "CustomerId": ' + employeeId + '}}'
+    const data = '{"MethodName": "GetCustomer", "Parameters": {"CompanyId": ' + companyId + ', "CustomerId": ' + employeeId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const entity = await postWithResponse(endpoint, data, token)
     return entity
@@ -215,7 +215,7 @@ export async function saveCustomerEntity(entity, token) {
 
 export async function GetPendingRegistryList(companyId, token) {
   try {
-    const data = '{"MethodName": "GetPendingRegistryList", "Parameters": {"CompanyId" :' + companyId + '}}'
+    const data = '{"MethodName": "GetPendingRegistryList", "Parameters": {"CompanyId": ' + companyId + '}}'
     const endpoint = ADMIN_URL + '/messagewithresponse'
     const list = await postWithResponse(endpoint, data, token)
     if (list === null) return []
@@ -227,7 +227,7 @@ export async function GetPendingRegistryList(companyId, token) {
 
 export async function RegistryApproval(registryId, token) {
   try {
-    const data = '{"MethodName": "RegistryApproval", "Parameters": {"RegistryId" :' + registryId + '}}'
+    const data = '{"MethodName": "RegistryApproval", "Parameters": {"RegistryId": ' + registryId + '}}'
     const endpoint = ADMIN_URL + '/messagenoresponse'
     const user = await postWithResponse(endpoint, data, token)
     return user
@@ -236,12 +236,17 @@ export async function RegistryApproval(registryId, token) {
   }
 }
 
-export async function getReportData(reportType, companyId, idBranch, startDate, endDate, token) {
+export async function getReportData(reportType, companyId, branchId, startDate, endDate, token) {
   try {
-    const data = '{"MethodName": "UpdateCompany", "Entity": ' + JSON.stringify(reportType) + '}'
+    let data
+    if (reportType === 1)
+      data = '{"MethodName": "GetVisitorActivityList", "Parameters": {"CompanyId": ' + companyId + ', "BranchId": ' + branchId + ', "StartDate": "' + startDate + '", "EndDate": "' + endDate + '"}}'
+    else
+      throw new Error('Reporte no está parametrizado')
     const endpoint = ADMIN_URL + '/messagewithresponse'
-    const user = await postWithResponse(endpoint, data, token)
-    return user
+    const list = await postWithResponse(endpoint, data, token)
+    if (list === null) return []
+    return list
   } catch (e) {
     throw e
   }
