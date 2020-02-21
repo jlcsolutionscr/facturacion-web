@@ -45,14 +45,20 @@ function UserPage(props) {
   const [isUserNew, setIsUserNew] = React.useState(true)
   const [selectedRole, setSelectedRole] = React.useState(null)
   let disabled = true
-  if (props.user != null) disabled = props.user.Username === '' || props.user.Password === ''
+  console.log('props.user', props.user)
+  if (props.user != null) {
+    if (!isUserNew)
+      disabled = props.user.Username === ''
+    else
+      disabled = props.user.Username === null || props.user.Password == null || props.user.Username === '' || props.user.Password === ''
+  }
   const handleUserIdChange = (value) => {
     setIsUserNew(false)
     props.getUser(value)
   }
   const handleSaveUserClick = () => {
     props.saveUser(isUserNew)
-    setIsUserNew(false)
+    setIsUserNew(true)
   }
   const handleNewUserClick = () => {
     props.setUser(null)
@@ -113,7 +119,7 @@ function UserPage(props) {
         />
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
-        <FormControl className={classes.form} disabled={props.userList.length === 0}>
+        <FormControl className={classes.form} disabled={props.roleList.length === 0}>
         <InputLabel id='demo-simple-select-label'>Seleccione un role</InputLabel>
         <Select
             id='RoleId'
