@@ -117,6 +117,13 @@ function BranchPage(props) {
             onChange={(event) => props.setBranchAttribute('PhoneNumber', event.target.value)}
           />
         </Grid>
+        <Grid item xs={12} sm={12}>
+          <Grid item xs={4}>
+            <Button variant='contained' disabled={!props.branch} className={classes.button} onClick={() => props.downloadQRCode()}>
+              Descargar Codigo QR
+            </Button>
+          </Grid>
+        </Grid>
         <Grid item xs={2}>
           <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveBranch(props.companyId, false)}>
             Guardar

@@ -2,6 +2,7 @@ import axios from 'axios'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 import CryptoJS from 'crypto-js'
+import QRCode from 'qrcode'
 
 export function encryptString(plainText) {
   const phrase = 'Po78]Rba[%J=[14[*'
@@ -52,9 +53,29 @@ export function ExportDataToXls(filename, title, data) {
     const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'array'})
     saveAs(new Blob([wbout],{type:'application/octet-stream'}), filename + '.xlsx')
   } catch (error) {
-    const message = error.message ? error.message : error.response ? error.response.data ? error.response.data : error.response : ''
-    throw new Error(message)
+    throw error
   }
+}
+
+export async function downloadQRCodeImage(accessCode) {
+  try {
+    const options = {
+      width: 400
+    }
+    const data = await QRCode.toDataURL(accessCode, options)
+    saveAs(dataURLtoBlob(data), accessCode + '.png')
+  } catch (error) {
+    throw error
+  }
+}
+
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){
+      u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], {type:mime});
 }
 
 export function downloadFile (endpointURL) {

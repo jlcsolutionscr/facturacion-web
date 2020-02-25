@@ -33,7 +33,7 @@ import {
   activateRegistry,
   setReportsParameters,
   generateReport,
-  exportReport
+  downloadQRCode
 } from 'store/visitortracking/actions'
 
 import Typography from '@material-ui/core/Typography'
@@ -219,7 +219,7 @@ const mapDispatchToProps = (dispatch) => {
     activateRegistry,
     setReportsParameters,
     generateReport,
-    exportReport
+    downloadQRCode
   }, dispatch)
 }
 

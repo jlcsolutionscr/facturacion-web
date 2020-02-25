@@ -42,7 +42,7 @@ import {
   getReportData
 } from 'utils/visitorTrackingHelper'
 
-import { ExportDataToXls } from 'utils/utilities'
+import { downloadQRCodeImage } from 'utils/utilities'
 
 export const setActiveSection = (pageId) => {
   return {
@@ -449,6 +449,20 @@ export function setReportsParameters () {
   }
 }
 
+export function downloadQRCode() {
+  return async (dispatch, getState) => {
+    const { branch } = getState().visitortracking
+    dispatch(startLoader())
+    try {
+      downloadQRCodeImage(branch.AccessCode)
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setErrorMessage(error.message))
+      dispatch(stopLoader())
+    }
+  }
+}
+
 export function generateReport (idBranch, reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
@@ -464,38 +478,6 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
         count
       }
       dispatch(setReportResults(list, summary))
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(setErrorMessage(error.message))
-      dispatch(stopLoader())
-    }
-  }
-}
-
-export function exportReport (idBranch, reportType, startDate, endDate) {
-  return async (dispatch, getState) => {
-    const { token } = getState().session
-    const { companyId } = getState().visitortracking
-    dispatch(startLoader())
-    try {
-      const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
-      const fileName = reportType === 1
-        ? 'facturas_generadas'
-        : reportType === 2
-          ? 'notas_credito_generadas'
-          : reportType === 3
-            ? 'facturas_recibidas'
-            : 'notas_credito_recibidas'
-      const reportName = reportType === 1
-        ? 'Reporte de facturas generadas'
-        : reportType === 2
-          ? 'Reporte de notas de crédito generadas'
-          : reportType === 3
-            ? 'Reporte de facturas recibidas'
-            : reportType === 4
-              ? 'Reporte de notas de crédito Recibidas'
-              : 'Reporte resumen de movimientos del período'
-      ExportDataToXls(fileName, reportName, list)
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
