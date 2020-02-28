@@ -109,14 +109,13 @@ const useStyles = makeStyles(theme => ({
 
 function HomePage(props) {
   const classes = useStyles()
-  const title = props.companyName !== '' ? props.companyName : 'Usuario administrador'
-  const identification = props.companyIdentifier.length === 9
-    ? props.companyIdentifier.substring(0,1) + '-' + props.companyIdentifier.substring(1,5) + '-' + props.companyIdentifier.substring(5)
-    : props.companyIdentifier.length === 10
-      ? props.companyIdentifier.substring(0,1) + '-' + props.companyIdentifier.substring(1,4) + '-' + props.companyIdentifier.substring(4)
-      : props.companyIdentifier.length > 0
-        ? props.companyIdentifier
-        : 'Modo mantenimiento'
+  const title = props.companyName === null ? 'Usuario administrador' : props.companyName
+  const identification = props.companyIdentifier === null ? 'Modo mantenimiento'
+    : props.companyIdentifier.length === 9
+      ? props.companyIdentifier.substring(0,1) + '-' + props.companyIdentifier.substring(1,5) + '-' + props.companyIdentifier.substring(5)
+      : props.companyIdentifier.length === 10
+        ? props.companyIdentifier.substring(0,1) + '-' + props.companyIdentifier.substring(1,4) + '-' + props.companyIdentifier.substring(4)
+        : props.companyIdentifier
   return (
     <div id='id_enterprise_content' className={classes.root} >
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />

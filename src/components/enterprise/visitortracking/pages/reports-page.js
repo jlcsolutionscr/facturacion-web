@@ -117,11 +117,6 @@ function ReportsPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button disabled={reportType === 5} variant='contained' className={classes.button} onClick={() => processReport(2)}>
-            Exportar
-          </Button>
-        </Grid>
-        <Grid item xs={2}>
           <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
             Regresar
           </Button>
