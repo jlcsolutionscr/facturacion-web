@@ -39,30 +39,25 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function EmployeePage(props) {
+function ServicePage(props) {
   const classes = useStyles()
   let disabled = true
-  if (props.employee != null) {
-    disabled = !props.employee.Name
-      || !props.employee.MobileNumber
-      || props.employee.Name === ''
-      || props.employee.MobileNumber === ''
-  }
+  if (props.service != null) disabled = !props.service.Description
   const handleClose = () => {
-    props.setEmployee(null)
+    props.setService(null)
     props.setActiveSection(0)
   }
-  const employeeList = props.employeeList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Description}</MenuItem> })
+  const employeeList = props.serviceList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Description}</MenuItem> })
   return (
     <div className={classes.container}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
-          <FormControl className={classes.form} disabled={props.employeeList.length === 0}>
+          <FormControl className={classes.form} disabled={props.serviceList.length === 0}>
             <InputLabel id='demo-simple-select-label'>Seleccione un elemento</InputLabel>
             <Select
-              id='EmployeeId'
-              value={props.employee && props.employee.Id ? props.employee.Id : ''}
-              onChange={(event) => props.getEmployee(event.target.value)}
+              id='ServiceId'
+              value={props.service && props.service.Id ? props.service.Id : ''}
+              onChange={(event) => props.getService(event.target.value)}
             >
               {employeeList}
             </Select>
@@ -72,7 +67,7 @@ function EmployeePage(props) {
           <TextField
             required
             id='Id'
-            value={props.employee && props.employee.Id ? props.employee.Id : ''}
+            value={props.service && props.service.Id ? props.service.Id : ''}
             label='Id'
             disabled
             fullWidth
@@ -83,26 +78,13 @@ function EmployeePage(props) {
         <Grid item xs={12} sm={12}>
           <TextField
             required
-            id='Name'
-            value={props.employee && props.employee.Name ? props.employee.Name : ''}
-            label='Nombre'
+            id='Description'
+            value={props.service && props.service.Description ? props.service.Description : ''}
+            label='Descripción'
             fullWidth
             autoComplete='lname'
             variant='outlined'
-            onChange={(event) => props.setEmployeeAttribute('Name', event.target.value)}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            required
-            id='MobileNumber'
-            value={props.employee && props.employee.MobileNumber ? props.employee.MobileNumber : ''}
-            label='Teléfono'
-            fullWidth
-            variant='outlined'
-            inputProps={{maxLength: 8}}
-            numericFormat
-            onChange={(event) => props.setEmployeeAttribute('MobileNumber', event.target.value)}
+            onChange={(event) => props.setServiceAttribute('Description', event.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -110,19 +92,19 @@ function EmployeePage(props) {
           control={
             <Switch
             id='Active'
-            checked={props.employee && props.employee.Active ? props.employee.Active : false}
-            onChange={(event) => props.setEmployeeAttribute('Active', event.target.checked)} />
+            checked={props.service && props.service.Active ? props.service.Active : false}
+            onChange={(event) => props.setServiceAttribute('Active', event.target.checked)} />
           }
             label="Activo"
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveEmployee()}>
-            {props.employee && props.employee.Id ? 'Actualizar' : 'Agregar'}
+          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveService()}>
+            {props.service && props.service.Id ? 'Actualizar' : 'Agregar'}
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setEmployee(null)}>
+          <Button variant='contained' className={classes.button} onClick={() => props.setService(null)}>
             Nuevo
           </Button>
         </Grid>
@@ -136,4 +118,4 @@ function EmployeePage(props) {
   )
 }
 
-export default EmployeePage
+export default ServicePage

@@ -7,6 +7,8 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
@@ -39,6 +41,12 @@ function CompanyPage(props) {
       || props.company.PromotionDescription === ''
       || props.company.PromotionMessage === ''
   }
+  const handleDateChange = (value) => {
+    const day = (value.getDate() < 10 ? '0' : '') + value.getDate()
+    const month = value.getMonth()+1 < 10 ? '0'+(value.getMonth()+1) : value.getMonth()+1
+    const newDate = value.getFullYear()+'-'+month+'-'+day+'T23:59:59'
+    props.setCompanyAttribute('ExpiresAt', newDate)
+  }
   const handleClose = () => {
     props.setCompany(null)
     props.setBranch(null)
@@ -48,12 +56,13 @@ function CompanyPage(props) {
     props.setCompany(null)
     props.setBranch(null)
   }
+  const expirationDate = props.company && props.company.ExpiresAt ? new Date(props.company.ExpiresAt.substring(0,4), props.company.ExpiresAt.substring(5,7) - 1, props.company.ExpiresAt.substring(8,10)) : new Date()
   const companyList = props.companyList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Description}</MenuItem> })
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12}>
         <FormControl className={classes.form} disabled={props.companyList.Count === 0}>
-          <InputLabel id='demo-simple-select-label'>Seleccione una empresa</InputLabel>
+          <InputLabel id='demo-simple-select-label'>Seleccione un elemento</InputLabel>
           <Select
             id='CompanyId'
             value={props.company && props.company.Id > 0 ? props.company.Id : ''}
@@ -113,38 +122,52 @@ function CompanyPage(props) {
         />
       </Grid>
       <Grid item xs={12} sm={12}>
-        <TextField
-          required
-          id='PromotionAt'
-          value={props.company && props.company.PromotionAt ? props.company.PromotionAt : ''}
-          label='Cantidad de visitas'
-          fullWidth
-          variant='outlined'
-          numericFormat
-          onChange={(event) => props.setCompanyAttribute('PromotionAt', event.target.value !== '' ? parseInt(event.target.value) : null)}
-        />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Grid item xs={3} sm={3}>
+            <DatePicker
+              label='Fecha contrato'
+              format='dd/MM/yyyy'
+              value={expirationDate}
+              onChange={(value) => handleDateChange(value)}
+              animateYearScrolling
+            />
+          </Grid>
+        </MuiPickersUtilsProvider>
       </Grid>
       <Grid item xs={12} sm={12}>
-        <TextField
-          required
-          id='PromotionDescription'
-          value={props.company && props.company.PromotionDescription ? props.company.PromotionDescription : ''}
-          label='Descripción de la promoción'
-          fullWidth
-          variant='outlined'
-          onChange={(event) => props.setCompanyAttribute('PromotionDescription', event.target.value)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12}>
-        <TextField
-          required
-          id='PromotionMessage'
-          value={props.company && props.company.PromotionMessage ? props.company.PromotionMessage : ''}
-          label='Mensaje para el cliente'
-          fullWidth
-          variant='outlined'
-          onChange={(event) => props.setCompanyAttribute('PromotionMessage', event.target.value)}
-        />
+        <FormControl className={classes.form}>
+          <InputLabel id="demo-simple-select-label">Seleccione la zona horaria</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            value={props.company && props.company.UtcTimeFactor  ? props.company.UtcTimeFactor : ''}
+            onChange={(event) => props.setCompanyAttribute('UtcTimeFactor', event.target.value)}
+          >
+            <MenuItem value={0}>GMT</MenuItem>
+            <MenuItem value={1}>GMT+1:00</MenuItem>
+            <MenuItem value={2}>GMT+2:00</MenuItem>
+            <MenuItem value={3}>GMT+3:00</MenuItem>
+            <MenuItem value={4}>GMT+4:00</MenuItem>
+            <MenuItem value={5}>GMT+5:00</MenuItem>
+            <MenuItem value={6}>GMT+6:00</MenuItem>
+            <MenuItem value={7}>GMT+7:00</MenuItem>
+            <MenuItem value={8}>GMT+8:00</MenuItem>
+            <MenuItem value={9}>GMT+9:00</MenuItem>
+            <MenuItem value={10}>GMT+10:00</MenuItem>
+            <MenuItem value={11}>GMT+11:00</MenuItem>
+            <MenuItem value={12}>GMT+12:00</MenuItem>
+            <MenuItem value={-11}>GMT-11:00</MenuItem>
+            <MenuItem value={-10}>GMT-10:00</MenuItem>
+            <MenuItem value={-9}>GMT-09:00</MenuItem>
+            <MenuItem value={-8}>GMT-08:00</MenuItem>
+            <MenuItem value={-7}>GMT-07:00</MenuItem>
+            <MenuItem value={-6}>GMT-06:00</MenuItem>
+            <MenuItem value={-5}>GMT-05:00</MenuItem>
+            <MenuItem value={-4}>GMT-04:00</MenuItem>
+            <MenuItem value={-3}>GMT-03:00</MenuItem>
+            <MenuItem value={-2}>GMT-02:00</MenuItem>
+            <MenuItem value={-1}>GMT-01:00</MenuItem>
+          </Select>
+        </FormControl>
       </Grid>
       <Grid item xs={2}>
         <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveCompany()}>

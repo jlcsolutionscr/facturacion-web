@@ -13,7 +13,8 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles(theme => ({
     container: {
       width: '100%',
-      overflowX: 'auto'
+      overflowX: 'auto',
+      alignItems: 'center'
     },
     title: {
       color: 'black',
@@ -34,7 +35,8 @@ const useStyles = makeStyles(theme => ({
     },
     table: {
       minWidth: 800,
-      width: '80%'
+      width: '80%',
+      margin: 'auto'
     },
     button: {
       padding: '5px 15px',
@@ -66,11 +68,12 @@ const useStyles = makeStyles(theme => ({
           </Typography>}
         </div>
       </div>
-      <Table className={classes.table} aria-label='simple table'>
+      <Table stickyHeader className={classes.table} aria-label='simple table'>
         <TableHead>
           <TableRow>
             <TableCell>Cliente</TableCell>
             <TableCell align='center'>Fecha</TableCell>
+            <TableCell align='center'>Servicio</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -78,6 +81,7 @@ const useStyles = makeStyles(theme => ({
             <TableRow key={index}>
               <TableCell component='th' scope='row'>{row.CustomerName}</TableCell>
               <TableCell align='center'>{row.RegisterDate}</TableCell>
+              <TableCell align='center'>{row.ProductType}</TableCell>
             </TableRow>
           ))}
         </TableBody>

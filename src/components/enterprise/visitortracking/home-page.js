@@ -18,6 +18,7 @@ import {
   getBranch,
   saveBranch,
   setBranchAttribute,
+  setUserParameters,
   setUser,
   addUserRole,
   removeUserRole,
@@ -29,6 +30,11 @@ import {
   getEmployee,
   setEmployeeAttribute,
   saveEmployee,
+  setService,
+  setServiceParameters,
+  getService,
+  setServiceAttribute,
+  saveService,
   setRegistryParameters,
   activateRegistry,
   setReportsParameters,
@@ -44,8 +50,10 @@ import Loader from 'components/loader/loader'
 import MenuPage from './pages/menu-page'
 import AdminPage from './pages/admin-page'
 import CompanyPage from './pages/company-page'
+import UserPage from './pages/admin/user-page'
 import BranchPage from './pages/branch-page'
 import EmployeePage from './pages/employee-page'
+import ServicePage from './pages/service-page'
 import RegistryPage from './pages/registry-page'
 import ReportsPage from './pages/reports-page'
 
@@ -59,6 +67,16 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: `120% ${window.innerHeight}px`,
     overflowY: 'hidden',
     overflowX: 'hidden'
+  },
+  container: {
+    flexGrow: 1,
+    borderRadius: '8px',
+    overflowY: 'auto',
+    marginLeft: '150px',
+    marginRight: '150px',
+    padding: '25px',
+    maxHeight: `${window.innerHeight - 302}px`,
+    backgroundColor: 'rgba(255,255,255,0.65)'
   },
   titleContainer: {
     backgroundImage: `url(${LogoImage})`,
@@ -136,26 +154,32 @@ function HomePage(props) {
         </Typography>
         {props.activeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
           {props.activeSection === 1
-            ? 'Administrar datos de empresas'
+            ? 'Administrar empresas'
             : props.activeSection === 2
-              ? 'Actualización de la empresa'
+              ? 'Actualización de datos de empresa'
               : props.activeSection === 3
-                ? 'Actualización de las sucursales'
+                ? 'Actualización de usuarios'
                 : props.activeSection === 4
-                  ? 'Actualización de empleados'
+                  ? 'Actualización de sucursales'
                   : props.activeSection === 5
-                  ? 'Activación de registros de clientes'
-                  : 'Generación de reportes'}
+                    ? 'Actualización de empleados'
+                    : props.activeSection === 6
+                      ? 'Actualización de servicios'
+                      : props.activeSection === 7
+                        ? 'Activación de registros de clientes'
+                        : 'Generación de reportes'}
         </Typography>}
       </div>
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
         {props.activeSection === 0 && <MenuPage {...props} />}
         {props.activeSection === 1 && <AdminPage {...props} />}
         {props.activeSection === 2 && <CompanyPage {...props} />}
-        {props.activeSection === 3 && <BranchPage {...props} />}
-        {props.activeSection === 4 && <EmployeePage {...props} />}
-        {props.activeSection === 5 && <RegistryPage {...props} />}
-        {props.activeSection === 6 && <ReportsPage {...props} />}
+        {props.activeSection === 3 && <div className={classes.container}><UserPage {...props } admin /></div>}
+        {props.activeSection === 4 && <BranchPage {...props} />}
+        {props.activeSection === 5 && <EmployeePage {...props} />}
+        {props.activeSection === 6 && <ServicePage {...props} />}
+        {props.activeSection === 7 && <RegistryPage {...props} />}
+        {props.activeSection === 8 && <ReportsPage {...props} />}
       </div>
     </div>
   )
@@ -179,6 +203,8 @@ const mapStateToProps = (state) => {
     user: state.visitortracking.user,
     employeeList: state.visitortracking.employeeList,
     employee: state.visitortracking.employee,
+    serviceList: state.visitortracking.serviceList,
+    service: state.visitortracking.service,
     customerList: state.visitortracking.customerList,
     customer: state.visitortracking.customer,
     registryList: state.visitortracking.registryList,
@@ -203,6 +229,7 @@ const mapDispatchToProps = (dispatch) => {
     getBranch,
     setBranchAttribute,
     saveBranch,
+    setUserParameters,
     setUser,
     addUserRole,
     removeUserRole,
@@ -214,6 +241,11 @@ const mapDispatchToProps = (dispatch) => {
     getEmployee,
     setEmployeeAttribute,
     saveEmployee,
+    setService,
+    setServiceParameters,
+    getService,
+    setServiceAttribute,
+    saveService,
     setRegistryParameters,
     activateRegistry,
     setReportsParameters,

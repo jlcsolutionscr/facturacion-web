@@ -56,7 +56,7 @@ function BranchPage(props) {
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12} md={12}>
         <FormControl className={classes.form} disabled={props.branchList.length === 0}>
-          <InputLabel id='demo-simple-select-label'>Seleccione una sucursal</InputLabel>
+          <InputLabel id='demo-simple-select-label'>Seleccione un elemento</InputLabel>
           <Select
             id='BranchId'
             value={props.branch && props.branch.Id ? props.branch.Id : ''}

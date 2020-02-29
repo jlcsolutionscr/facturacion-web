@@ -47,22 +47,19 @@ function ReportsPage(props) {
   const [startDate, setStartDate] = React.useState(today)
   const [endDate, setEndDate] = React.useState(today)
   const [viewLayout, setViewLayout] = React.useState(1)
-  const processReport = (type) => {
+  const processReport = () => {
     const startDay = (startDate.getDate() < 10 ? '0' : '') + startDate.getDate()
     const startMonth = ((startDate.getMonth() + 1) < 10 ? '0' : '') + (startDate.getMonth() + 1)
     const startDateFormatted = `${startDay}/${startMonth}/${startDate.getFullYear()}`
     const endDay = (endDate.getDate() < 10 ? '0' : '') + endDate.getDate()
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
-    if (type === 1) {
-      props.generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
-      setViewLayout(2)
-    }
-    if (type === 2) props.exportReport(reportType, startDateFormatted, endDateFormatted)
+    props.generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
+    setViewLayout(2)
   }
   const reportName = reportType === 1
     ? 'Registro de visitas recibidas'
-    : ''
+    : 'Resumen de visitas por empleado'
   const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Description}</MenuItem> })
   return (
     <div className={classes.container}>
@@ -88,6 +85,7 @@ function ReportsPage(props) {
               onChange={(event) => setReportType(event.target.value)}
             >
               <MenuItem value={1}>DETALLE DE VISITAS RECIBIDAS</MenuItem>
+              <MenuItem value={2}>RESUMEN DE VISITAS POR EMPLEADO</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -112,7 +110,7 @@ function ReportsPage(props) {
           </Grid>
         </MuiPickersUtilsProvider>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => processReport(1)}>
+          <Button variant='contained' className={classes.button} onClick={() => processReport()}>
             Generar
           </Button>
         </Grid>
@@ -122,14 +120,14 @@ function ReportsPage(props) {
           </Button>
         </Grid>
       </Grid>}
-      {viewLayout === 2 && reportType !== 5 &&<DetailLayout
+      {viewLayout === 2 && reportType === 1 &&<DetailLayout
         reportName={reportName}
         summary={props.reportSummary}
         data={props.reportResults}
         returnOnClick={() => setViewLayout(1)}
       />}
-      {viewLayout === 2 && reportType === 5 && <SummaryLayout
-        reportName='Resumen de movimientos electrónicos'
+      {viewLayout === 2 && reportType === 2 && <SummaryLayout
+        reportName={reportName}
         summary={props.reportSummary}
         data={props.reportResults}
         returnOnClick={() => setViewLayout(1)}

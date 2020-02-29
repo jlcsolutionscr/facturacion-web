@@ -79,7 +79,7 @@ function ReportsPage(props) {
     <div className={classes.container}>
       {viewLayout === 1 && <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.form}>
             <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
             <Select
               id='Sucursal'
@@ -91,7 +91,7 @@ function ReportsPage(props) {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.form}>
             <InputLabel id='demo-simple-select-label'>Seleccione el reporte:</InputLabel>
             <Select
               id='TipoReporte'

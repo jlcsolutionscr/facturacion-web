@@ -10,8 +10,6 @@ import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { formatCurrency } from 'utils/utilities' 
-
 const useStyles = makeStyles(theme => ({
     container: {
       width: '100%',
@@ -35,7 +33,9 @@ const useStyles = makeStyles(theme => ({
       flexDirection: 'row'
     },
     table: {
-      minWidth: 650
+      minWidth: 800,
+      width: '80%',
+      margin: 'auto'
     },
     button: {
       padding: '5px 15px',
@@ -55,40 +55,30 @@ const useStyles = makeStyles(theme => ({
       <Typography className={classes.title} color='textSecondary' component='p'>
         {props.reportName}
       </Typography>
-      {props.summary !== null && <div className={classes.headerRange}>
-        <div style={{width: '60%'}}>
-          <Typography className={classes.subTitle} style={{textAlign: 'end', marginRight: '10%'}} color='textSecondary' component='p'>
+      <div className={classes.headerRange}>
+      <div style={{width: '60%'}}>
+          {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end', marginRight: '10%'}} color='textSecondary' component='p'>
             Fecha inicial: {props.summary.startDate}
-          </Typography>
+          </Typography>}
         </div>
         <div style={{width: '60%'}}>
-          <Typography className={classes.subTitle} style={{textAlign: 'start', marginLeft: '10%'}}color='textSecondary' component='p'>
+          {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'start', marginLeft: '10%'}}color='textSecondary' component='p'>
             Fecha final: {props.summary.endDate}
-          </Typography>
+          </Typography>}
         </div>
-      </div>}
-      <Table className={classes.table} aria-label='simple table'>
+      </div>
+      <Table stickyHeader className={classes.table} aria-label='simple table'>
         <TableHead>
           <TableRow>
-            <TableCell>Detalle</TableCell>
-            <TableCell align='right'>Exento</TableCell>
-            <TableCell align='right'>Tasa1</TableCell>
-            <TableCell align='right'>Tasa2</TableCell>
-            <TableCell align='right'>Tasa4</TableCell>
-            <TableCell align='right'>Tasa8</TableCell>
-            <TableCell align='right'>Tasa13</TableCell>
+            <TableCell>Nombre empleado</TableCell>
+            <TableCell align='center'>Total</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.data.map((row, index) => (
             <TableRow key={index}>
-              <TableCell component='th' scope='row'>{row.Descripcion}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Exento)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Tasa1)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Tasa2)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Tasa4)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Tasa8)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Tasa13)}</TableCell>
+              <TableCell component='th' scope='row'>{row.Name}</TableCell>
+              <TableCell align='center'>{row.Count}</TableCell>
             </TableRow>
           ))}
         </TableBody>

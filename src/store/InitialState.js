@@ -39,6 +39,8 @@ export const INITIAL_STATE = {
     user: null,
     employeeList: [],
     employee: null,
+    serviceList: [],
+    service: null,
     customerList: [],
     customer: null,
     registryList: [],

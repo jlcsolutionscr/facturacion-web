@@ -41,8 +41,10 @@ export async function saveCompanyEntity(entity, token) {
     let data = ''
     if (entity.Id)
       data = '{"MethodName": "UpdateCompany", "Entity": ' + JSON.stringify(entity) + '}'
-    else
+    else {
+      entity = {...entity, PromotionDescription: '', PromotionMessage: ''}
       data = '{"MethodName": "AddCompany", "Entity": ' + JSON.stringify(entity) + '}'
+    }
     const endpoint = ADMIN_URL + '/messagenoresponse'
     await post(endpoint, data, token)
   } catch (e) {
@@ -180,6 +182,45 @@ export async function saveEmployeeEntity(entity, companyId, token) {
   }
 }
 
+export async function getServiceList(companyId, token) {
+  try {
+    const data = '{"MethodName": "GetServiceList", "Parameters": {"CompanyId": ' + companyId + '}}'
+    const endpoint = ADMIN_URL + '/messagewithresponse'
+    const list = await postWithResponse(endpoint, data, token)
+    if (list === null) return []
+    return list
+  } catch (e) {
+    throw e
+  }
+}
+
+export async function getServiceEntity(companyId, serviceId, token) {
+  try {
+    const data = '{"MethodName": "GetService", "Parameters": {"CompanyId": ' + companyId + ', "ServiceId": ' + serviceId + '}}'
+    const endpoint = ADMIN_URL + '/messagewithresponse'
+    const entity = await postWithResponse(endpoint, data, token)
+    return entity
+  } catch (e) {
+    throw e
+  }
+}
+
+export async function saveServiceEntity(entity, companyId, token) {
+  try {
+    let data = ''
+    if (entity.Id)
+      data = '{"MethodName": "UpdateService", "Entity": ' + JSON.stringify(entity) + '}'
+    else {
+      entity = { ...entity, CompanyId: companyId }
+      data = '{"MethodName": "AddService", "Entity": ' + JSON.stringify(entity) + '}'
+    }
+    const endpoint = ADMIN_URL + '/messagenoresponse'
+    await post(endpoint, data, token)
+  } catch (e) {
+    throw e
+  }
+}
+
 export async function getCustomerList(companyId, token) {
   try {
     const data = '{"MethodName": "GetCustomerList", "Parameters": {"CompanyId": ' + companyId + '}}'
@@ -241,6 +282,8 @@ export async function getReportData(reportType, companyId, branchId, startDate, 
     let data
     if (reportType === 1)
       data = '{"MethodName": "GetVisitorActivityList", "Parameters": {"CompanyId": ' + companyId + ', "BranchId": ' + branchId + ', "StartDate": "' + startDate + '", "EndDate": "' + endDate + '"}}'
+    else if (reportType === 2)
+      data = '{"MethodName": "GetActivityPerEmployeeList", "Parameters": {"CompanyId": ' + companyId + ', "BranchId": ' + branchId + ', "StartDate": "' + startDate + '", "EndDate": "' + endDate + '"}}'
     else
       throw new Error('Reporte no está parametrizado')
     const endpoint = ADMIN_URL + '/messagewithresponse'

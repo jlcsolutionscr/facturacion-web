@@ -63,6 +63,10 @@ function UserPage(props) {
     props.setUser(null)
     setIsUserNew(true)
   }
+  const handleClose = () => {
+    props.setCompany(null)
+    props.setActiveSection(0)
+  }
   const addRoleDisabled = !selectedRole || (props.user && props.user.RoleList.filter(role => (role.Id === selectedRole.Id)).length > 0)
   const userList = props.userList.map((item, index) => { return <MenuItem key={index} value={item.Id}>{item.Description}</MenuItem> })
   const roleList = props.roleList.map((item, index) => { return <MenuItem key={index} value={item.Id}>{item.Description}</MenuItem> })
@@ -82,7 +86,7 @@ function UserPage(props) {
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12} md={12}>
         <FormControl className={classes.form} disabled={props.userList.length === 0}>
-        <InputLabel id='demo-simple-select-label'>Seleccione un usuario</InputLabel>
+        <InputLabel id='demo-simple-select-label'>Seleccione un elemento</InputLabel>
         <Select
             id='UserId'
             value={props.user && props.user.Id ? props.user.Id : ''}
@@ -119,7 +123,7 @@ function UserPage(props) {
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
         <FormControl className={classes.form} disabled={props.roleList.length === 0}>
-        <InputLabel id='demo-simple-select-label'>Seleccione un role</InputLabel>
+        <InputLabel id='demo-simple-select-label'>Seleccione un elemento</InputLabel>
         <Select
             id='RoleId'
             value={selectedRole ? selectedRole.Id : ''}
@@ -154,6 +158,11 @@ function UserPage(props) {
           Nuevo
         </Button>
       </Grid>
+      {props.admin && <Grid item xs={2}>
+      <Button variant='contained' className={classes.button} onClick={() => handleClose()}>
+            Regresar
+          </Button>
+      </Grid>}
     </Grid>
   )
 }

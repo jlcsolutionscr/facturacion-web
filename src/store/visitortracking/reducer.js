@@ -16,6 +16,9 @@ import {
   SET_EMPLOYEE_LIST,
   SET_EMPLOYEE,
   SET_EMPLOYEE_ATTRIBUTE,
+  SET_SERVICE_LIST,
+  SET_SERVICE,
+  SET_SERVICE_ATTRIBUTE,
   SET_REGISTRY_LIST,
   SET_REGISTRY,
   SET_REPORT_RESULTS
@@ -63,6 +66,12 @@ const companyReducer = (state = {}, { type, payload }) => {
     return { ...state, employee: payload.entity }
     case SET_EMPLOYEE_ATTRIBUTE:
       return { ...state, employee: {...state.employee, [payload.attribute]: payload.value }}
+      case SET_SERVICE_LIST:
+        return { ...state, serviceList: payload.list }
+      case SET_SERVICE:
+      return { ...state, service: payload.entity }
+      case SET_SERVICE_ATTRIBUTE:
+        return { ...state, service: {...state.service, [payload.attribute]: payload.value }}
     case SET_REGISTRY_LIST:
       return { ...state, registryList: payload.list }
     case SET_REGISTRY:
