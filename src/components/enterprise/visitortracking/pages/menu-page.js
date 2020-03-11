@@ -35,13 +35,13 @@ function MenuPage(props) {
   let reportingMenu = false
   props.rolesPerUser.forEach(item => {
     if (item.RoleId === 1) isAdministrator = true
-    if (item.RoleId === 4) updateCompanyInfo = true
-    if (item.RoleId === 5) updateUserInfo = true
-    if (item.RoleId === 6) updateBranchInfo = true
-    if (item.RoleId === 7) updateEmployeeInfo = true
-    if (item.RoleId === 8) updateServiceInfo = true
-    if (item.RoleId === 9) activateRegistry = true
-    if (item.RoleId === 10) reportingMenu = true
+    if (item.RoleId === 2) updateCompanyInfo = true
+    if (item.RoleId === 3) updateUserInfo = true
+    if (item.RoleId === 4) updateBranchInfo = true
+    if (item.RoleId === 5) updateEmployeeInfo = true
+    if (item.RoleId === 6) updateServiceInfo = true
+    if (item.RoleId === 7) activateRegistry = true
+    if (item.RoleId === 8) reportingMenu = true
   })
   const classes = useStyles()
   return (
@@ -71,9 +71,12 @@ function MenuPage(props) {
         {reportingMenu && <Grid item xs={6} style={{textAlign: 'right'}}>
           <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setReportsParameters()}>Menu de reportes</Button>
         </Grid>}
-        <Grid item xs={6} style={{textAlign: 'left'}}>
+        {isAdministrator && <Grid item xs={12}>
+        <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.logOut()}>Cerrar sesión</Button>
+        </Grid>}
+        {!isAdministrator && <Grid item xs={6} style={{textAlign: 'left'}}>
           <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.logOut()}>Cerrar sesión</Button>
-        </Grid>
+        </Grid>}
       </Grid>
     </div>
   )
