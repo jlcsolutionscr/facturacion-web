@@ -44,40 +44,44 @@ function MenuPage(props) {
     if (item.RoleId === 8) reportingMenu = true
   })
   const classes = useStyles()
+  const items = isAdministrator
+    ? (<Grid container align='center' spacing={3} >
+      <Grid item xs={12}>
+        <Button classes={{root: classes.button}} style={{width: '25%'}} onClick={() => props.setCompanyAdminParameters()}>Mantenimiento de empresas</Button>
+      </Grid>
+      <Grid item xs={12}>
+        <Button classes={{root: classes.button}} style={{width: '25%'}} onClick={() => props.logOut()}>Cerrar sesión</Button>
+      </Grid>
+    </Grid>)
+    : (<Grid container align='center' spacing={3} >
+        <Grid item xs={6} style={{textAlign: 'right'}}>
+          {updateCompanyInfo && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setCompanyParameters()}>Actualice  su empresa</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'left'}}>
+          {updateUserInfo && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setUserParameters()}>Actualice sus usuarios</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'right'}}>
+          {updateBranchInfo && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setBranchParameters()}>Actualice sus sucursales</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'left'}}>
+          {updateEmployeeInfo && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setEmployeeParameters()}>Actualice sus empleados</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'right'}}>
+          {updateServiceInfo && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setServiceParameters()}>Actualice sus servicios</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'left'}}>
+          {activateRegistry && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setRegistryParameters()}>Activar registros pendientes</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'right'}}>
+          {reportingMenu && <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setReportsParameters()}>Menu de reportes</Button>}
+        </Grid>
+        <Grid item xs={6} style={{textAlign: 'left'}}>
+        <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.logOut()}>Cerrar sesión</Button>
+        </Grid>
+      </Grid>)
   return (
     <div className={classes.container}>
-      <Grid container align='center' spacing={3} >
-        {isAdministrator && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} style={{width: '25%'}} onClick={() => props.setCompanyAdminParameters()}>Mantenimiento de empresas</Button>
-        </Grid>}
-        {updateCompanyInfo && <Grid item xs={6} style={{textAlign: 'right'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setCompanyParameters()}>Actualice  su empresa</Button>
-        </Grid>}
-        {updateUserInfo && <Grid item xs={6} style={{textAlign: 'left'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setUserParameters()}>Actualice sus usuarios</Button>
-        </Grid>}
-        {updateBranchInfo && <Grid item xs={6} style={{textAlign: 'right'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setBranchParameters()}>Actualice sus sucursales</Button>
-        </Grid>}
-        {updateEmployeeInfo && <Grid item xs={6} style={{textAlign: 'left'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setEmployeeParameters()}>Actualice sus empleados</Button>
-        </Grid>}
-        {updateServiceInfo && <Grid item xs={6} style={{textAlign: 'right'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setServiceParameters()}>Actualice sus servicios</Button>
-        </Grid>}
-        {activateRegistry && <Grid item xs={6} style={{textAlign: 'left'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setRegistryParameters()}>Activar registros pendientes</Button>
-        </Grid>}
-        {reportingMenu && <Grid item xs={6} style={{textAlign: 'right'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.setReportsParameters()}>Menu de reportes</Button>
-        </Grid>}
-        {isAdministrator && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.logOut()}>Cerrar sesión</Button>
-        </Grid>}
-        {!isAdministrator && <Grid item xs={6} style={{textAlign: 'left'}}>
-          <Button classes={{root: classes.button}} style={{width: '50%'}} onClick={() => props.logOut()}>Cerrar sesión</Button>
-        </Grid>}
-      </Grid>
+      {items}
     </div>
   )
 }
