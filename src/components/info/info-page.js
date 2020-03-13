@@ -28,12 +28,7 @@ import BannerImage from 'assets/img/banner.jpg'
 function Copyright() {
   return (
     <Typography variant='body2' color='inherit' align='center'>
-      {'Copyright © '}
-      <Link color='inherit' href='https://material-ui.com/'>
-        JLC Solutions CR
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
+      {'Copyright ©JLC Solutions CR ' + new Date().getFullYear() + '.'}
     </Typography>
   )
 }
@@ -46,11 +41,7 @@ const footers = [
   {
     title: 'Nuestros servicios',
     description: ['Facturación electrónica', 'Registro de visitas de clientes', 'Buzón de recepción de gastos']
-  },
-  {
-    title: 'Contactenos',
-    description: ['ventas@jlcsolutionscr.com', 'whatsapp: (506) 8334-8641']
-  },
+  }
 ]
 
 function InfoPage(props) {
@@ -172,9 +163,8 @@ function InfoPage(props) {
   }
 
   const redirectToLoginPage = () => {
-    props.history.push(`/enterprise`)
+    props.history.push('/enterprise')
   }
-
   return (
     <div id='id_app_content' className={classes.root} >
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
@@ -227,14 +217,36 @@ function InfoPage(props) {
                   <ul>
                     {footer.description.map(item => (
                       <li key={item}>
-                        <Link href='#' variant='subtitle1' color='inherit'>
+                        <Typography variant='subtitle1' color='inherit'>
                           {item}
-                        </Link>
+                        </Typography>
                       </li>
                     ))}
                   </ul>
                 </Grid>
               ))}
+              <Grid item key='Contactenos'>
+                <Typography variant='h6' color='inherit' gutterBottom>
+                  Contactenos
+                </Typography>
+                <ul>
+                  <li key='1'>
+                    <Link href='' onClick={() => props.history.push('/privacypolicy')} variant='subtitle1' color='inherit'>
+                      Policitas de Privacidad
+                    </Link>
+                  </li>
+                  <li key='2'>
+                    <Typography variant='subtitle1' color='inherit'>
+                      ventas@jlcsolutionscr.com
+                    </Typography>
+                  </li>
+                  <li key='3'>
+                    <Typography variant='subtitle1' color='inherit'>  
+                      whatsapp: (506) 8334-8641
+                    </Typography>
+                  </li>
+                </ul>
+              </Grid>
             </Grid>
             <Box mt={1}>
               <Copyright />
@@ -255,7 +267,7 @@ function InfoPage(props) {
             </Grid>
             <Grid item xs={12}>
               <Typography variant='h6' color='inherit'>
-                Copyright © JLC Solutions CR 2019
+                <Copyright />
               </Typography>
             </Grid>
           </Grid>

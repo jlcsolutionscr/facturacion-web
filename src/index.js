@@ -15,6 +15,7 @@ import { INITIAL_STATE } from './store/InitialState'
 import './index.css'
 
 import InfoPage from 'components/info/info-page'
+import PrivacyPolicyPage from 'components/privacy-policy/privacy-policy-page'
 import EnterprisePage from 'components/enterprise/enterprise-page'
 
 import * as serviceWorker from './serviceWorker'
@@ -40,6 +41,7 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Switch>
           <Route exact path='/info' component={InfoPage} />
+          <Route exact path='/privacypolicy' component={PrivacyPolicyPage} />
           <Route exact path='/enterprise' component={EnterprisePage} />
           <Redirect from="/" to="/info" />
         </Switch>
