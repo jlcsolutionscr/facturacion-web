@@ -66,14 +66,10 @@ function ReportsPage(props) {
     if (type === 2) props.exportReport(branchId, reportType, startDateFormatted, endDateFormatted)
   }
   const reportName = reportType === 1
-    ? 'Reporte de facturas generadas'
+    ? 'Reporte de documentos generados'
     : reportType === 2
-      ? 'Reporte de notas de crédito generadas'
-      : reportType === 3
-        ? 'Reporte de facturas recibidas'
-        : reportType === 4
-          ? 'Reporte de notas de crédito Recibidas'
-          : 'Reporte resumen de movimientos del período'
+      ? 'Reporte de documentos recibidas'
+      : 'Reporte resumen de movimientos del período'
   const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
@@ -98,11 +94,9 @@ function ReportsPage(props) {
               value={reportType}
               onChange={(event) => setReportType(event.target.value)}
             >
-              <MenuItem value={1}>FACTURAS EMITIDAS</MenuItem>
-              <MenuItem value={2}>NOTAS DE CREDITO EMITIDAS</MenuItem>
-              <MenuItem value={3}>FACTURAS RECIBIDAS</MenuItem>
-              <MenuItem value={4}>NOTAS DE CREDITO RECIBIDAS</MenuItem>
-              <MenuItem value={5}>RESUMEN DE MOVIMIENTOS</MenuItem>
+              <MenuItem value={1}>DOCUMENTOS ELECTRONICOS EMITIDOS</MenuItem>
+              <MenuItem value={2}>DOCUMENTOS ELECTRONICOS RECIBIDOS</MenuItem>
+              <MenuItem value={3}>RESUMEN DE MOVIMIENTOS</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -132,7 +126,7 @@ function ReportsPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button disabled={reportType === 5} variant='contained' className={classes.button} onClick={() => processReport(2)}>
+          <Button disabled={reportType === 3} variant='contained' className={classes.button} onClick={() => processReport(2)}>
             Exportar
           </Button>
         </Grid>
@@ -142,13 +136,13 @@ function ReportsPage(props) {
           </Button>
         </Grid>
       </Grid>}
-      {viewLayout === 2 && reportType !== 5 &&<DetailLayout
+      {viewLayout === 2 && reportType !== 3 &&<DetailLayout
         reportName={reportName}
         summary={props.reportSummary}
         data={props.reportResults}
         returnOnClick={() => setViewLayout(1)}
       />}
-      {viewLayout === 2 && reportType === 5 && <SummaryLayout
+      {viewLayout === 2 && reportType === 3 && <SummaryLayout
         reportName='Resumen de movimientos electrónicos'
         summary={props.reportSummary}
         data={props.reportResults}

@@ -39,15 +39,10 @@ export function ExportDataToXls(filename, title, data) {
     }
     wb.SheetNames.push('Test Sheet')
     const ws_data = []
-    let taxes = 0
-    let total = 0
-    ws_data.push(['EMISOR/RECEPTOR', 'FECHA', 'CONSECUTIVO', 'IMPUESTO', 'TOTAL'])
+    ws_data.push(['TIPO','EMISOR/RECEPTOR', 'FECHA', 'CONSECUTIVO', 'IMPUESTO', 'TOTAL'])
     data.forEach(item => {
-      taxes += item.Impuesto
-      total += item.Total
-      ws_data.push([item.Nombre, item.Fecha, item.Consecutivo, item.Impuesto, item.Total])
+      ws_data.push([item.TipoDocumento, item.Nombre, item.Fecha, item.Consecutivo, item.Impuesto, item.Total])
     })
-    ws_data.push([null, null, null, taxes, total])
     const ws = XLSX.utils.aoa_to_sheet(ws_data)
     wb.Sheets['Test Sheet'] = ws
     const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'array'})

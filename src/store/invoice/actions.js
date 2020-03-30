@@ -263,29 +263,19 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
   }
 }
 
-export function exportReport (reportType, startDate, endDate) {
+export function exportReport (idBranch, reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { companyId } = getState().invoice
     dispatch(startLoader())
     try {
-      const list = await getReportData(reportType, companyId, 1, startDate, endDate, token)
+      const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
       const fileName = reportType === 1
-        ? 'facturas_generadas'
-        : reportType === 2
-          ? 'notas_credito_generadas'
-          : reportType === 3
-            ? 'facturas_recibidas'
-            : 'notas_credito_recibidas'
+        ? 'documentos_electronicos_generados'
+        : 'documentos_electronicos_recibidos'
       const reportName = reportType === 1
-        ? 'Reporte de facturas generadas'
-        : reportType === 2
-          ? 'Reporte de notas de crédito generadas'
-          : reportType === 3
-            ? 'Reporte de facturas recibidas'
-            : reportType === 4
-              ? 'Reporte de notas de crédito Recibidas'
-              : 'Reporte resumen de movimientos del período'
+        ? 'Documentos electrónicos generados'
+        : 'Documentos electrónicos recibidos'
       ExportDataToXls(fileName, reportName, list)
       dispatch(stopLoader())
     } catch (error) {

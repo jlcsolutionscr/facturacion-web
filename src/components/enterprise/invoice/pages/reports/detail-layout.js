@@ -70,6 +70,7 @@ const useStyles = makeStyles(theme => ({
       <Table className={classes.table} aria-label='simple table'>
         <TableHead>
           <TableRow>
+            <TableCell>Tipo</TableCell>
             <TableCell>Emisor/Receptor</TableCell>
             <TableCell align='center'>Fecha</TableCell>
             <TableCell align='center'>Consecutivo</TableCell>
@@ -80,7 +81,8 @@ const useStyles = makeStyles(theme => ({
         <TableBody>
           {props.data.map((row, index) => (
             <TableRow key={index}>
-              <TableCell component='th' scope='row'>{row.Nombre}</TableCell>
+              <TableCell>{row.TipoDocumento}</TableCell>
+              <TableCell>{row.Nombre}</TableCell>
               <TableCell align='center'>{row.Fecha}</TableCell>
               <TableCell align='center'>{row.Consecutivo}</TableCell>
               <TableCell align='right'>{formatCurrency(row.Impuesto)}</TableCell>
@@ -89,18 +91,6 @@ const useStyles = makeStyles(theme => ({
           ))}
         </TableBody>
       </Table>
-      <div className={classes.headerRange} style={{marginTop: '30px', marginBottom: '40px', marginRight: '5%'}}>
-        <div style={{width: '75%', marginRight: '10%'}}>
-          {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end'}}color='textSecondary' component='p'>
-            Total impuesto: {formatCurrency(props.summary.taxes)}
-          </Typography>}
-        </div>
-        <div style={{width: '25%'}}>
-          {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end'}} color='textSecondary' component='p'>
-            Total general: {formatCurrency(props.summary.total)}
-          </Typography>}
-        </div>
-      </div>
       <div style={{margin: '20px'}}>
         <Button variant='contained' className={classes.button} onClick={() => props.returnOnClick()}>
           Regresar
