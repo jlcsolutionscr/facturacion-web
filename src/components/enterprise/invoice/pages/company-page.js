@@ -174,9 +174,20 @@ function CompanyPage(props) {
         <Grid item xs={12} sm={12}>
           <TextField
             required
-            id='Telefono'
-            value={props.company ? props.company.Telefono : ''}
-            label='Teléfono'
+            id='Telefono1'
+            value={props.company ? props.company.Telefono1 : ''}
+            label='Teléfono 1'
+            fullWidth
+            variant='outlined'
+            numericFormat
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            id='Telefono2'
+            value={props.company ? props.company.Telefono2 : ''}
+            label='Teléfono 2'
             fullWidth
             variant='outlined'
             numericFormat
