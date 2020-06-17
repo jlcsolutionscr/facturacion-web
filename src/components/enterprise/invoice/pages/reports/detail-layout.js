@@ -72,6 +72,7 @@ const useStyles = makeStyles(theme => ({
           <TableRow>
             <TableCell>Tipo</TableCell>
             <TableCell>Emisor/Receptor</TableCell>
+            <TableCell>Identificación</TableCell>
             <TableCell align='center'>Fecha</TableCell>
             <TableCell align='center'>Consecutivo</TableCell>
             <TableCell align='right'>Impuesto</TableCell>
@@ -83,6 +84,7 @@ const useStyles = makeStyles(theme => ({
             <TableRow key={index}>
               <TableCell>{row.TipoDocumento}</TableCell>
               <TableCell>{row.Nombre}</TableCell>
+              <TableCell>{row.Identificacion}</TableCell>
               <TableCell align='center'>{row.Fecha}</TableCell>
               <TableCell align='center'>{row.Consecutivo}</TableCell>
               <TableCell align='right'>{formatCurrency(row.Impuesto)}</TableCell>
