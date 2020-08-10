@@ -76,25 +76,25 @@ const tiers = [
   {
     title: 'EMPRESARIAL 1 *',
     price: '10,000.00',
-    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, CxC, CxP, Traslados de mercancía', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 2 *',
     price: '20,000.00',
-    description: ['Usuarios ilimitados', '2,500 facturas por mes', '8 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '2,500 facturas por mes', '8 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 3 *',
     price: '50,000.00',
-    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL PRO *',
     price: '100,000.00',
-    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'Módulos de punto de ventas', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', 'Facturas ilimitadas', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
     monthlyPayment: true
   }
 ]
