@@ -1,6 +1,7 @@
 import {
   START_LOADER,
   STOP_LOADER,
+  SET_ACTIVE_PRODUCT_INFO,
   SET_ACTIVE_INFO_SECTION,
   SET_ERROR_MESSAGE
 } from './types'
@@ -17,6 +18,13 @@ export const startLoader = (text) => {
 export const stopLoader = () => {
   return {
     type: STOP_LOADER
+  }
+}
+
+export const setActiveProductInfo = (productId) => {
+  return {
+    type: SET_ACTIVE_PRODUCT_INFO,
+    payload: { productId }
   }
 }
 

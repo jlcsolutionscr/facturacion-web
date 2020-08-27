@@ -14,7 +14,7 @@ import { INITIAL_STATE } from './store/InitialState'
 
 import './index.css'
 
-import InfoPage from 'components/info/info-page'
+import InfoPage from 'components/info/invoice/info-page'
 import PrivacyPolicyPage from 'components/privacy-policy/privacy-policy-page'
 import EnterprisePage from 'components/enterprise/enterprise-page'
 

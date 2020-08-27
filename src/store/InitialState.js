@@ -2,6 +2,7 @@ export const INITIAL_STATE = {
   ui: {
     isLoaderActive: false,
     loaderText: '',
+    activeProduct: 0,
     activeInfoSection: 0,
     errorMessage: ''
   },

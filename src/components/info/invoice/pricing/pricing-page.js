@@ -51,42 +51,48 @@ const tiers = [
   {
     title: '50 documentos',
     price: '10,000.00',
-    description: ['1 usuario', '50 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
+    description: ['1 usuario', '50 documentos electrónicos', '1 terminal (Android o Windows)', 'Soporte técnico', 'Recepción de gastos límitados'],
     monthlyPayment: false
   },
   {
     title: '100 documentos',
     price: '17,500.00',
-    description: ['1 usuario', '100 facturas', '1 terminal (Android o Windows)', 'Soporte técnico'],
+    description: ['1 usuario', '100 documentos electrónicos', '1 terminal (Android o Windows)', 'Soporte técnico', 'Recepción de gastos límitados'],
     monthlyPayment: false
   },
   {
     title: 'PYMES 1 *',
     subheader: 'Most popular',
     price: '5,000.00',
-    description: ['Usuarios ilimitados', '300 facturas por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '300 documentos electrónicos por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'PYMES 2 *',
     price: '7,500.00',
-    description: ['Usuarios ilimitados', '750 facturas por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '750 documentos electrónicos por mes', '2 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 1 *',
     price: '10,000.00',
-    description: ['Usuarios ilimitados', '1,000 facturas por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, CxC, CxP, Traslados de mercancía', 'Soporte técnico'],
+    description: ['Usuarios ilimitados', '1,000 documentos electrónicos por mes', '4 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'Inventario, CxC, CxP, Traslados de mercancía', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 2 *',
-    price: '20,000.00',
-    description: ['Usuarios ilimitados', '2,500 facturas por mes', '8 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
+    price: '15,000.00',
+    description: ['Usuarios ilimitados', '1,750 documentos electrónicos por mes', '6 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
     monthlyPayment: true
   },
   {
     title: 'EMPRESARIAL 3 *',
+    price: '20,000.00',
+    description: ['Usuarios ilimitados', '2,500 documentos electrónicos por mes', '8 terminales (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
+    monthlyPayment: true
+  },
+  {
+    title: 'EMPRESARIAL 4 *',
     price: '50,000.00',
     description: ['Usuarios ilimitados', '10,000 facturas por mes', 'Terminales ilimitadas (Android o Windows)', 'Recepción de gastos ilimitados', 'ERP Completo', 'Soporte técnico'],
     monthlyPayment: true

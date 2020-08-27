@@ -1,6 +1,7 @@
 import {
   START_LOADER,
   STOP_LOADER,
+  SET_ACTIVE_PRODUCT_INFO,
   SET_ACTIVE_INFO_SECTION,
   SET_ERROR_MESSAGE
 } from './types'
@@ -11,6 +12,8 @@ const uiReducer = (state = {}, { type, payload }) => {
       return { ...state, isLoaderActive: true, loaderText: payload.text !== undefined ? payload.text : 'Procesando' }
     case STOP_LOADER:
       return { ...state, isLoaderActive: false, loaderText: '' }
+    case SET_ACTIVE_PRODUCT_INFO:
+      return { ...state, activeProduct: payload.productId }
     case SET_ACTIVE_INFO_SECTION:
       return { ...state, activeInfoSection: payload.pageId }
     case SET_ERROR_MESSAGE:
