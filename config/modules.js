@@ -1,4 +1,4 @@
-'use strict';
+
 
 const fs = require('fs');
 const path = require('path');
@@ -14,15 +14,8 @@ const resolve = require('resolve');
 function getAdditionalModulePaths(options = {}) {
   const baseUrl = options.baseUrl;
 
-  // We need to explicitly check for null and undefined (and not a falsy value) because
-  // TypeScript treats an empty string as `.`.
-  if (baseUrl == null) {
-    // If there's no baseUrl set we respect NODE_PATH
-    // Note that NODE_PATH is deprecated and will be removed
-    // in the next major release of create-react-app.
-
-    const nodePath = process.env.NODE_PATH || '';
-    return nodePath.split(path.delimiter).filter(Boolean);
+  if (!baseUrl) {
+    return '';
   }
 
   const baseUrlResolved = path.resolve(paths.appPath, baseUrl);
@@ -41,7 +34,7 @@ function getAdditionalModulePaths(options = {}) {
   // If the path is equal to the root directory we ignore it here.
   // We don't want to allow importing from the root directly as source files are
   // not transpiled outside of `src`. We do allow importing them with the
-  // absolute path (e.g. `src/Components/Button.js`) but we set that up with
+  // absolute path (e.g. `src/components/Button.js`) but we set that up with
   // an alias.
   if (path.relative(paths.appPath, baseUrlResolved) === '') {
     return null;
@@ -93,7 +86,7 @@ function getJestAliases(options = {}) {
 
   if (path.relative(paths.appPath, baseUrlResolved) === '') {
     return {
-      'src/(.*)$': '<rootDir>/src/$1',
+      '^src/(.*)$': '<rootDir>/src/$1',
     };
   }
 }

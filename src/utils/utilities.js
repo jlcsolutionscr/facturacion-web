@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 import CryptoJS from 'crypto-js'
@@ -75,9 +74,10 @@ function dataURLtoBlob(dataurl) {
 
 export function downloadFile (endpointURL) {
   return new Promise((resolve, reject) => {
-    axios.get(endpointURL, {responseType: 'blob'})
-      .then(async (response) => {
-        const blob = new Blob([response.data], {type: 'application/octet-stream'})
+    fetch(endpointURL, {method: 'GET'})
+      .then(response => response.blob())
+      .then(async (data) => {
+        const blob = new Blob([data], {type: 'application/octet-stream'})
         saveAs(blob, 'puntoventaJLC.msi')
         resolve(true)
       })
@@ -94,7 +94,8 @@ export async function getWithResponse(endpointURL, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios.get(endpointURL, {
+    const response = await fetch(endpointURL, {
+      method: 'GET',
       headers
     })
     if (response.data !== '') {
@@ -115,11 +116,11 @@ export async function post(endpointURL, datos, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    await axios({
+    await fetch({
       method: 'post',
       url: endpointURL,
       headers,
-      data: JSON.stringify(datos)
+      body: JSON.stringify(datos)
     })
   } catch (error) {
     const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
@@ -134,11 +135,11 @@ export async function postWithResponse(endpointURL, datos, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios({
+    const response = await fetch({
       method: 'post',
       url: endpointURL,
       headers,
-      data: JSON.stringify(datos)
+      body: JSON.stringify(datos)
     })
     if (response.data !== '') {
       return JSON.parse(response.data)

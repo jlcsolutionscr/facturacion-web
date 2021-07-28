@@ -83,7 +83,7 @@ function HomePage(props) {
         </div>
       </Grid>
       <Grid item>
-        <Grid container justify='center' spacing={10}>
+        <Grid container justifyContent='center' spacing={10}>
           <Grid item xs={10} md={4}>
             <MobileAppCard onClick={props.onClick} />
           </Grid>

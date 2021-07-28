@@ -10,8 +10,6 @@ import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Link from '@material-ui/core/Link'
 import Box from '@material-ui/core/Box'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
@@ -49,45 +47,45 @@ function InfoPage(props) {
     titleContainer: {
       backgroundImage: `url(${BannerImage})`,
       backgroundRepeat: 'no-repeat',
-      backgroundSize: `100% 78%`,
-      minWidth: `${window.innerWidth / 8 * 7.5}px`,
-      height: '185px',
-      top: 0,
-      left: 0,
-      right: 0,
+      backgroundSize: `100% 100%`,
+      backgroundColor: `white`,
       position: 'fixed',
-      paddingTop: '60px',
+      top: '0',
+      right: '0',
+      left: '0',
       zIndex: 100,
+      paddingBottom: '20px',
+      minWidth: '320px',
       [theme.breakpoints.down('xs')]: {
-        paddingTop: '10px',
-        height: '145px'
+        marginBottom: '112px',
+        backgroundColor: `white`,
       }
     },
-    header: {
+    toolbar: {
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      color: 'white',
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+      backgroundColor: 'rgba(0,0,0,0.65)',
+      minWidth: '320px',
       [theme.breakpoints.down('xs')]: {
-        display: 'none'
-      }
-    },
-    headerMobile: {
-      display: 'none',
-      [theme.breakpoints.down('xs')]: {
-        marginLeft:'5%',
-        paddingTop: '140px',
-        display: 'block'
+        backgroundColor: 'white',
+        position: 'fixed',
+        top: '105px',
+        display: 'flex',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
       }
     },
     body: {
-      marginTop: '205px',
-      [theme.breakpoints.down('xs')]: {
-        marginTop: '10px'
-      }
-    },
-    appBar: {
-      backgroundColor: 'rgba(0,0,0,0.65)',
-      color: 'white'
+      marginTop: '252px',
+      minWidth: '320px',
     },
     menuButton: {
-      marginRight: theme.spacing(2),
+      marginLeft: theme.spacing(1),
+      marginBottom: theme.spacing(1),
       width: theme.spacing(16),
       backgroundColor: 'rgba(255,255,255,0.25)',
       '&:disabled': {
@@ -95,14 +93,21 @@ function InfoPage(props) {
         backgroundColor: 'rgba(255,255,255,0.15)'
       },
       [theme.breakpoints.down('xs')]: {
-        color: 'white',
         borderRadius: '8px',
         backgroundColor: 'rgba(0,0,0,0.65)',
-        width: 'auto',
         '&:disabled': {
-          color: 'gray',
+          color: 'rgba(255,255,255,0.65)',
+          backgroundColor: 'rgba(0,0,0,0.45)'
+        },
+        '&:hover': {
+          color: 'black',
           backgroundColor: 'rgba(0,0,0,0.15)'
-        }
+        },
+      },
+    },
+    hideButton: {
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
       }
     },
     panelBottom: {
@@ -110,7 +115,8 @@ function InfoPage(props) {
       borderTopRightRadius: 0,
       backgroundColor: '#262626',
       color: 'white',
-      height: '220px',
+      marginTop: '20px',
+      paddingBottom: '20px',
       [theme.breakpoints.down('xs')]: {
         display: 'none'
       }
@@ -122,7 +128,6 @@ function InfoPage(props) {
       borderTopRightRadius: 0,
       backgroundColor: '#262626',
       color: 'white',
-      height: '100px',
       paddingTop: '15px',
       [theme.breakpoints.down('xs')]: {
         display: 'block'
@@ -161,43 +166,28 @@ function InfoPage(props) {
     props.setActiveInfoSection(pageId)
     window.scrollTo(0, 0)
   }
-
-  const redirectToLoginPage = () => {
-    props.history.push('/enterprise')
-  }
   return (
-    <div id='id_app_content' className={classes.root} >
+    <div id='id_app_content'>
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
       <div className={classes.titleContainer}>
-        <AppBar classes={{colorDefault: classes.appBar}} color='default'>
-          <div className={classes.header}>
-            <Toolbar>
-              <div style={{marginLeft: '6%'}}>
-                <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-                <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
-                <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>App Android</Button>
-                <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>App Windows</Button>
-                <Button disabled={props.activeInfoSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
-                <Button disabled={props.activeInfoSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
-              </div>
-              <div style={{width: '30%', textAlign: 'end'}}>
-                <Button className={classes.menuButton} style={{backgroundColor: 'white', width: 130}} disableRipple onClick={() => redirectToLoginPage()}>Iniciar sesión</Button>
-              </div>
-            </Toolbar>
+        <div className={classes.toolbar}>
+          <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
+          <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
+          <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>Android App</Button>
+          <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Windows App</Button>
+          <Button disabled={props.activeInfoSection === 4} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(4)}>Plataforma</Button>
+          <div className={classes.hideButton}>
+            <Button disabled={props.activeInfoSection === 5} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(5)}>Descargas</Button>
           </div>
-        </AppBar>
-        <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
-          JLC Solutions
-        </Typography>
-        <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
-          A software development company
-        </Typography>
-      </div>
-      <div className={classes.headerMobile}>
-        <Button disabled={props.activeInfoSection === 0} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(0)}>Inicio</Button>
-        <Button disabled={props.activeInfoSection === 1} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(1)}>Planes</Button>
-        <Button disabled={props.activeInfoSection === 2} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(2)}>Android</Button>
-        <Button disabled={props.activeInfoSection === 3} className={classes.menuButton} color='inherit' onClick={() => toggleCurrentPage(3)}>Windows</Button>
+        </div>
+        <div className={classes.header}>
+          <Typography classes={{h2: classes.h2}} variant='h2' align='center' component='h2'>
+            JLC Solutions
+          </Typography>
+          <Typography classes={{h4: classes.h4}} variant='h4' align='center' component='h4'>
+            A software development company
+          </Typography>
+        </div>
       </div>
       <div className={classes.body}>
         {props.activeInfoSection === 0 && <HomePage onClick={toggleCurrentPage} />}
@@ -208,7 +198,7 @@ function InfoPage(props) {
         {props.activeInfoSection === 5 && <DownloadsPage />}
         <div className={classes.panelBottom}>
           <Container className={classes.footer}>
-            <Grid container spacing={8} justify='space-evenly'>
+            <Grid container spacing={8} justifyContent='space-evenly'>
               {footers.map(footer => (
                 <Grid item key={footer.title}>
                   <Typography variant='h6' color='inherit' gutterBottom>
@@ -254,7 +244,7 @@ function InfoPage(props) {
           </Container>
         </div>
         <div className={classes.mobileBottom}>
-          <Grid container spacing={2} justify='space-evenly'>
+          <Grid container spacing={2} justifyContent='space-evenly'>
             <Grid item xs={12}>
               <Typography variant='h6' color='inherit'>
                 Contactenos: ventas@jlcsolutionscr.com

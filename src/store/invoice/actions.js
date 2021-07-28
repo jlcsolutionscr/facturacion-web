@@ -118,7 +118,7 @@ export function setReportsParameters () {
     const { companyId } = getState().invoice
     dispatch(startLoader())
     try {
-      dispatch(setActiveSection(3))
+      dispatch(setActiveSection(20))
       const list = await getBranchList(companyId, token)
       dispatch(setBranchList(list))
       dispatch(stopLoader())

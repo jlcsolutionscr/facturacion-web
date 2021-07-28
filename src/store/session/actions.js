@@ -30,7 +30,7 @@ export const setLoginError = (error) => {
   }
 }
 
-export function loginInvoiceSession (username, password, id) {
+export function login (username, password, id) {
   return async (dispatch) => {
     dispatch(setLoginError(''))
     dispatch(startLoader())

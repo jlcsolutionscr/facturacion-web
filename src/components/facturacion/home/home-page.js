@@ -125,7 +125,7 @@ function HomePage(props) {
         {props.activeSection === 0 && <MenuPage {...props} />}
         {props.activeSection === 1 && <CompanyPage {...props} />}
         {props.activeSection === 2 && <LogoPage {...props} />}
-        {props.activeSection === 3 && <ReportsPage {...props} />}
+        {props.activeSection === 20 && <ReportsPage {...props} />}
       </div>
     </div>
   )

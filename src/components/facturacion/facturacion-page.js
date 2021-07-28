@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import LoginPage from 'components/enterprise/login/login-page'
-import InvoiceHomePage from 'components/enterprise/invoice/home-page'
-import VisitorTrackingHomePage from 'components/enterprise/visitortracking/home-page'
+import LoginPage from 'components/facturacion/login/login-page'
+import InvoiceHomePage from 'components/facturacion/home/home-page'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -30,9 +29,9 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function EnterprisePage(props) {
+function FacturacionPage(props) {
   const classes = useStyles()
-  const component = !props.authenticated ? <LoginPage {...props} /> : props.productId === 1 ? <InvoiceHomePage /> : <VisitorTrackingHomePage />
+  const component = !props.authenticated ? <LoginPage {...props} /> : <InvoiceHomePage />
   const open = props.errorMessage !== ''
   return (
     <div className={classes.container}>
@@ -68,4 +67,4 @@ const mapDispatchToProps = (dispatch) => {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnterprisePage)
+export default connect(mapStateToProps, mapDispatchToProps)(FacturacionPage)

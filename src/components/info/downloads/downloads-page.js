@@ -11,7 +11,7 @@ import { CloudDownloadIcon } from 'utils/iconsHelper'
 import MobileAppQRCodeImage from 'assets/img/mobile-app-QR-code.png'
 import { createStyle } from 'components/info/styles'
 
-const style = {
+const styles = {
   columns: {
     display: 'flex',
     flexDirection: 'row'
@@ -19,6 +19,10 @@ const style = {
   button: {
     backgroundColor: '#E2EBF1',
     height: '40px',
+    boxShadow: '6px 6px 10px #888888'
+  },
+  image: {
+    width: '15%',
     boxShadow: '6px 6px 10px #888888'
   }
 }
@@ -38,13 +42,13 @@ function DownloadsPage(props) {
         <Typography className={classes.subTitle} paragraph>
           La aplicación para sistemas Windows le permite gestionar sus operaciones mediante una aplicación ágil, segura y eficiente
         </Typography>
-        <Button variant='contained' style={style.button} startIcon={<CloudDownloadIcon />} onClick={() => downloadFile()}>
+        <Button variant='contained' style={styles.button} startIcon={<CloudDownloadIcon />} onClick={() => downloadFile()}>
           Descargar
         </Button>
         <Typography className={classes.subTitle} paragraph>
           Instale nuestra aplicación para dispositivos Android disponible en la Google App Store mediante el siguiente enlace
         </Typography>
-        <img src={MobileAppQRCodeImage} style={{width: '15%', boxShadow: '6px 6px 10px #888888'}} alt='not available' />
+        <img src={MobileAppQRCodeImage} style={styles.image} alt='not available' />
       </div>
     </div>
   )

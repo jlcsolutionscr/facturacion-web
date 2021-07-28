@@ -14,7 +14,7 @@ export const createStyle = makeStyles(theme => createStyles({
     boxShadow: '10px 10px 10px #888888'
   },
   expantionPanel: {
-    justifyContent: 'center',
+    justifyContentContent: 'center',
     backgroundColor: '#E2EBF1',
     color: 'black',
     boxShadow: '10px 10px 10px #888888'

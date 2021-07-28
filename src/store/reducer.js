@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-import { routerReducer as routing } from 'react-router-redux'
 
 import uiReducer from './ui/reducer'
 import sessionReducer from './session/reducer'
@@ -11,5 +10,4 @@ export default combineReducers({
   session: sessionReducer,
   invoice: invoiceReducer,
   visitortracking: visitortrackingReducer,
-  routing
 })

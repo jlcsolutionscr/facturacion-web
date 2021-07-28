@@ -51,7 +51,7 @@ function WindowsAppPage() {
           <Typography className={classes.paragraphList}>
             Paso 2: Seleccione la terminal de la lista y de click en el botón 'Registrar'.
           </Typography>
-          <Grid container spacing={2} justify='space-around'>
+          <Grid container spacing={2} justifyContent='space-around'>
             <Grid item xs={12} md={6}>
               <img src={FirstSignInStepImage} className={classes.windowsTwoImages} alt='not available' />
             </Grid>
@@ -74,7 +74,7 @@ function WindowsAppPage() {
           <Typography className={classes.paragraph}>
             Nuestra plataforma cuenta con las mas actuales medidas de seguridad al incluir comunicación encriptada mediante protocolo HTTPS asi como certificado de confianza. Adicionalmente cuenta con un sistema de sesión mediante usuario y contraseña con expiración para garantizar que usted es quien ingresa a nuestro sistema. Una vez que proporciona los credenciales válidos podrá tener acceso al menu principal.
           </Typography>
-          <Grid container spacing={2} justify='space-around'>
+          <Grid container spacing={2} justifyContent='space-around'>
             <Grid item xs={12} md={6}>
               <img src={LoginImage} className={classes.windowsOneImage} alt='not available' />
             </Grid>
@@ -103,7 +103,7 @@ function WindowsAppPage() {
           <Typography className={classes.paragraphList}>
             Paso 3: Verifique los totales de la factura e ingrese la forma de pago seleccionando de la lista 'Forma de pago', luego el botón 'Insertar' debajo de la lista de formas de pago y proceda a guardar el documento con el botón 'Guardar' en la parte superior izquierda de la pnatalla.
           </Typography>
-          <Grid container spacing={2} justify='space-around'>
+          <Grid container spacing={2} justifyContent='space-around'>
             <Grid item xs={12} md={12}>
               <img src={InvoiceImage} className={classes.windowsOneImage} alt='not available' />
             </Grid>
@@ -135,7 +135,7 @@ function WindowsAppPage() {
           <Typography className={classes.paragraphList}>
             Nueva factura: Presione el botón 'Nuevo' ubicado en la parte superior de la pantalla para limpiar la información actual del formulario y poder generar un nuevo registro de facturación.
           </Typography>
-          <Grid container spacing={2} justify='space-around'>
+          <Grid container spacing={2} justifyContent='space-around'>
             <Grid item xs={12} md={12}>
               <img src={InvoiceImage} className={classes.windowsOneImage} alt='not available' />
             </Grid>
@@ -164,7 +164,7 @@ function WindowsAppPage() {
           <Typography className={classes.paragraphList}>
             Mostrar respuesta de Hacienda: Presione el botón 'Mostrar respuesta' para visualizar los datos en formato XML de la respuesta del Ministerio de Hacienda con respecto al envío del documento electrónico, muy útil para conocer los motivos de rechazo en caso de haber sido rechazado.
           </Typography>
-          <Grid container spacing={2} justify='space-around'>
+          <Grid container spacing={2} justifyContent='space-around'>
             <Grid item xs={12} md={12}>
               <img src={DocumentImage} className={classes.windowsOneImage} alt='not available' />
             </Grid>
@@ -199,7 +199,7 @@ function WindowsAppPage() {
           <Typography className={classes.paragraph}>
             Nota: Adicionalmente puede seleccionar un cliente o un proveedor para filtrar los datos basado en su selección.
           </Typography>
-          <Grid container spacing={2} justify='space-around'>
+          <Grid container spacing={2} justifyContent='space-around'>
             <Grid item xs={12} md={6}>
               <img src={ReportGenerationImage} className={classes.windowsOneImage} alt='not available' />
             </Grid>

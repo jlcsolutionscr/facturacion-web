@@ -2,14 +2,10 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { loginInvoiceSession, loginVisitorSession } from 'store/session/actions'
+import { login } from 'store/session/actions'
 
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
 import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
@@ -79,7 +75,6 @@ function LoginPage(props) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [id, setId] = useState('')
-  const [productId, setProductId] = useState(1)
   const handleOnChange = field => (event) => {
     if (field === 'username') setUsername(event.target.value)
     if (field === 'password') setPassword(event.target.value)
@@ -87,8 +82,7 @@ function LoginPage(props) {
   }
 
   const handleLoginClick = () => {
-    if (productId === 1) props.loginInvoiceSession(username, password, id)
-    if (productId === 2) props.loginVisitorSession(username, password, id)
+    props.login(username, password, id)
   }
 
   const handleReturnClick = () => {
@@ -137,19 +131,6 @@ function LoginPage(props) {
               value={id}
               onChange={handleOnChange('id')}
             />
-            <Grid item xs={12} sm={12} md={12}>
-              <FormControl className={classes.form}>
-                <InputLabel id='demo-simple-select-label'>Seleccione el producto</InputLabel>
-                <Select
-                  id='productId'
-                  value={productId}
-                  onChange={(event) => setProductId(event.target.value)}
-                >
-                  <MenuItem value={1}>Facturación</MenuItem>
-                  <MenuItem value={2}>Visitor Tracking</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
             <Box mt={5}>
               <Button
                 style={{marginBottom: '20px'}}
@@ -211,7 +192,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ loginInvoiceSession, loginVisitorSession }, dispatch)
+  return bindActionCreators({ login }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

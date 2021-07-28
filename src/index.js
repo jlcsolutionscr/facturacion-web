@@ -1,35 +1,30 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, Switch, Redirect } from 'react-router-dom'
-import { createBrowserHistory } from 'history'
-import { syncHistoryWithStore } from 'react-router-redux'
-import { routerMiddleware } from 'react-router-redux'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 
-import appReducer from './store/reducer'
-import { INITIAL_STATE } from './store/InitialState'
+import appReducer from 'store/reducer'
+import { INITIAL_STATE } from 'store/InitialState'
 
 import './index.css'
 
-import InfoPage from 'components/info/invoice/info-page'
+import InfoPage from 'components/info/info-page'
 import PrivacyPolicyPage from 'components/privacy-policy/privacy-policy-page'
-import EnterprisePage from 'components/enterprise/enterprise-page'
+import FacturacionPage from 'components/facturacion/facturacion-page'
 
 import * as serviceWorker from './serviceWorker'
 import './fonts/RussoOne-Regular.ttf'
 
-const browserHistory = createBrowserHistory()
-const store = createStore(appReducer, INITIAL_STATE, applyMiddleware(thunk, routerMiddleware(browserHistory)))
-const history = syncHistoryWithStore(browserHistory, store)
+const store = createStore(appReducer, INITIAL_STATE, applyMiddleware(thunk))
 
-const theme = createMuiTheme({
+const theme = createTheme({
     overrides: {
       MuiButton: {
         root: {
-          borderRadius: 25
+          borderRadius: 20
         }
       }
     }
@@ -37,12 +32,12 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history}>
+    <Router>
       <ThemeProvider theme={theme}>
         <Switch>
           <Route exact path='/info' component={InfoPage} />
           <Route exact path='/privacypolicy' component={PrivacyPolicyPage} />
-          <Route exact path='/enterprise' component={EnterprisePage} />
+          <Route exact path='/facturacion' component={FacturacionPage} />
           <Redirect from="/" to="/info" />
         </Switch>
       </ThemeProvider>
