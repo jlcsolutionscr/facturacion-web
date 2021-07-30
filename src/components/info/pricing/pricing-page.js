@@ -12,10 +12,7 @@ import Container from '@material-ui/core/Container'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    paddingTop: '2%',
-    paddingBottom: '4%',
-    paddingLeft: '5%',
-    paddingRight: '5%',
+    padding: '0 5% 4% 5%',
     backgroundColor: 'white'
   },
   link: {
@@ -24,6 +21,9 @@ const useStyles = makeStyles(theme => ({
   heroContent: {
     padding: theme.spacing(2, 0, 6)
   },
+  card: {
+    boxShadow: '5px 5px 5px #888888'
+  },
   cardHeader: {
     backgroundColor: theme.palette.grey[200]
   },
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContentContent: 'center',
     alignItems: 'baseline',
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   priceLabel: {
     fontSize: '2.5rem',
@@ -115,10 +115,10 @@ function PricingPage() {
         </Typography>
       </Container>
       <Container maxWidth='md' component='main'>
-        <Grid container spacing={5} alignItems='flex-end'>
+        <Grid container spacing={5} justifyContent='center'>
           {tiers.map(tier => (
-            <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={6}>
-              <Card>
+            <Grid item key={tier.title} xs={12} sm={10} md={6}>
+              <Card className={classes.card}>
                 <CardHeader
                   title={tier.title}
                   subheader={tier.subheader}

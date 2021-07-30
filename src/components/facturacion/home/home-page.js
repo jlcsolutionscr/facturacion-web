@@ -27,6 +27,7 @@ import Loader from 'components/loader/loader'
 import MenuPage from './pages/menu-page'
 import CompanyPage from './pages/company-page'
 import LogoPage from './pages/logo-page'
+import UnderConstructionPage from './pages/under-construction'
 import ReportsPage from './pages/reports-page'
 
 const useStyles = makeStyles(theme => ({
@@ -87,17 +88,17 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function HomePage(props) {
+function HomePage({ activeSection, companyName, companyIdentifier, isLoaderActive, loaderText }) {
   const classes = useStyles()
-  const title = props.companyName
-  const identification = props.companyIdentifier.length === 9
-    ? props.companyIdentifier.substring(0,1) + '-' + props.companyIdentifier.substring(1,5) + '-' + props.companyIdentifier.substring(5)
-    : props.companyIdentifier.length === 10
-      ? props.companyIdentifier.substring(0,1) + '-' + props.companyIdentifier.substring(1,4) + '-' + props.companyIdentifier.substring(4)
-      : props.companyIdentifier
+  const title = companyName
+  const identification = companyIdentifier.length === 9
+    ? companyIdentifier.substring(0,1) + '-' + companyIdentifier.substring(1,5) + '-' + companyIdentifier.substring(5)
+    : companyIdentifier.length === 10
+      ? companyIdentifier.substring(0,1) + '-' + companyIdentifier.substring(1,4) + '-' + companyIdentifier.substring(4)
+      : companyIdentifier
   return (
     <div id='id_enterprise_content' className={classes.root} >
-      <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
+      <Loader isLoaderActive={isLoaderActive} loaderText={loaderText} />
       <div className={classes.titleContainer}>
         <Typography classes={{h2: classes.h2}} variant='h2' component='h2'>
           JLC Solutions
@@ -113,19 +114,20 @@ function HomePage(props) {
         <Typography className={classes.title} align='center' paragraph>
           {identification}
         </Typography>
-        {props.activeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
-          {props.activeSection === 1
+        {activeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
+          {activeSection === 1
             ? 'Actualización de datos'
-            : props.activeSection === 2
+            : activeSection === 2
               ? 'Ingreso de su logotipo'
               : 'Generación de reportes'}
         </Typography>}
       </div>
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
-        {props.activeSection === 0 && <MenuPage {...props} />}
-        {props.activeSection === 1 && <CompanyPage {...props} />}
-        {props.activeSection === 2 && <LogoPage {...props} />}
-        {props.activeSection === 20 && <ReportsPage {...props} />}
+        {activeSection === 0 && <MenuPage />}
+        {activeSection === 1 && <CompanyPage />}
+        {activeSection === 2 && <LogoPage />}
+        {activeSection === 2 && <UnderConstructionPage />}
+        {activeSection === 20 && <ReportsPage />}
       </div>
     </div>
   )

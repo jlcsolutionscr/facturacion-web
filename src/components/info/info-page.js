@@ -51,15 +51,11 @@ function InfoPage(props) {
       backgroundColor: `white`,
       position: 'fixed',
       top: '0',
-      right: '0',
       left: '0',
+      right: '0',
       zIndex: 100,
       paddingBottom: '20px',
-      minWidth: '320px',
-      [theme.breakpoints.down('xs')]: {
-        marginBottom: '112px',
-        backgroundColor: `white`,
-      }
+      minWidth: '370px'
     },
     toolbar: {
       display: 'flex',
@@ -69,7 +65,7 @@ function InfoPage(props) {
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(1),
       backgroundColor: 'rgba(0,0,0,0.65)',
-      minWidth: '320px',
+      minWidth: '370px',
       [theme.breakpoints.down('xs')]: {
         backgroundColor: 'white',
         position: 'fixed',
@@ -80,8 +76,8 @@ function InfoPage(props) {
       }
     },
     body: {
-      marginTop: '252px',
-      minWidth: '320px',
+      marginTop: '262px',
+      minWidth: '370px'
     },
     menuButton: {
       marginLeft: theme.spacing(1),
@@ -115,7 +111,6 @@ function InfoPage(props) {
       borderTopRightRadius: 0,
       backgroundColor: '#262626',
       color: 'white',
-      marginTop: '20px',
       paddingBottom: '20px',
       [theme.breakpoints.down('xs')]: {
         display: 'none'
@@ -196,72 +191,72 @@ function InfoPage(props) {
         {props.activeInfoSection === 3 && <WindowsAppPage />}
         {props.activeInfoSection === 4 && <PlatformPage />}
         {props.activeInfoSection === 5 && <DownloadsPage />}
-        <div className={classes.panelBottom}>
-          <Container className={classes.footer}>
-            <Grid container spacing={8} justifyContent='space-evenly'>
-              {footers.map(footer => (
-                <Grid item key={footer.title}>
-                  <Typography variant='h6' color='inherit' gutterBottom>
-                    {footer.title}
-                  </Typography>
-                  <ul>
-                    {footer.description.map(item => (
-                      <li key={item}>
-                        <Typography variant='subtitle1' color='inherit'>
-                          {item}
-                        </Typography>
-                      </li>
-                    ))}
-                  </ul>
-                </Grid>
-              ))}
-              <Grid item key='Contactenos'>
+      </div>
+      <div className={classes.panelBottom}>
+        <Container className={classes.footer}>
+          <Grid container spacing={8} xs={12} justifyContent='space-evenly'>
+            {footers.map(footer => (
+              <Grid item key={footer.title}>
                 <Typography variant='h6' color='inherit' gutterBottom>
-                  Contactenos
+                  {footer.title}
                 </Typography>
                 <ul>
-                  <li key='1'>
-                    <Link href='' onClick={() => props.history.push('/privacypolicy')} variant='subtitle1' color='inherit'>
-                      Policitas de Privacidad
-                    </Link>
-                  </li>
-                  <li key='2'>
-                    <Typography variant='subtitle1' color='inherit'>
-                      ventas@jlcsolutionscr.com
-                    </Typography>
-                  </li>
-                  <li key='3'>
-                    <Typography variant='subtitle1' color='inherit'>  
-                      whatsapp: (506) 8334-8641
-                    </Typography>
-                  </li>
+                  {footer.description.map(item => (
+                    <li key={item}>
+                      <Typography variant='subtitle1' color='inherit'>
+                        {item}
+                      </Typography>
+                    </li>
+                  ))}
                 </ul>
               </Grid>
-            </Grid>
-            <Box mt={1}>
-              <Copyright />
-            </Box>
-          </Container>
-        </div>
-        <div className={classes.mobileBottom}>
-          <Grid container spacing={2} justifyContent='space-evenly'>
-            <Grid item xs={12}>
-              <Typography variant='h6' color='inherit'>
-                Contactenos: ventas@jlcsolutionscr.com
+            ))}
+            <Grid item key='Contactenos'>
+              <Typography variant='h6' color='inherit' gutterBottom>
+                Contactenos
               </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant='h6' color='inherit'>
-                Whatsapp: (506) 8334-8641
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant='h6' color='inherit'>
-                <Copyright />
-              </Typography>
+              <ul>
+                <li key='1'>
+                  <Link href='' onClick={() => props.history.push('/privacypolicy')} variant='subtitle1' color='inherit'>
+                    Policitas de Privacidad
+                  </Link>
+                </li>
+                <li key='2'>
+                  <Typography variant='subtitle1' color='inherit'>
+                    ventas@jlcsolutionscr.com
+                  </Typography>
+                </li>
+                <li key='3'>
+                  <Typography variant='subtitle1' color='inherit'>  
+                    whatsapp: (506) 8334-8641
+                  </Typography>
+                </li>
+              </ul>
             </Grid>
           </Grid>
-        </div>
+          <Box mt={1}>
+            <Copyright />
+          </Box>
+        </Container>
+      </div>
+      <div className={classes.mobileBottom}>
+        <Grid container spacing={2} xs={12} justifyContent='space-evenly'>
+          <Grid item xs={12}>
+            <Typography variant='h6' color='inherit'>
+              Contactenos: ventas@jlcsolutionscr.com
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant='h6' color='inherit'>
+              Whatsapp: (506) 8334-8641
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant='h6' color='inherit'>
+              <Copyright />
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
     </div>
   )

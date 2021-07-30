@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 function HomePage(props) {
   const classes = useStyles();
   return (
-    <Grid container className={classes.root} spacing={2}>
+    <Grid container className={classes.root} spacing={2} xs={12}>
       <Grid item xs={12}>
         <div style={{marginLeft: '5%', marginRight: '5%'}}>
           <Typography component='h1' variant='h4' align='center' color='textPrimary' gutterBottom>
