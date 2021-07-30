@@ -21,7 +21,6 @@ import BackgroundImage from 'assets/img/login-background.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: `${window.innerHeight}px`,
     backgroundColor: '#EFF7F7'
   },
   image: {
@@ -30,32 +29,40 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: 'cover',
     backgroundPosition: 'top'
   },
-  avatar: {
-    width: '180px',
-    height: '180px',
-    backgroundColor: '#00729f'
-  },
   paper: {
-    margin: theme.spacing(8, 4, 4, 4),
+    height: `${window.innerHeight}px`,
+    padding: theme.spacing(0, 5),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  avatar: {
+    marginTop: theme.spacing(6),
+    width: '180px',
+    height: '180px',
+    backgroundColor: '#00729f',
+    "@media (max-height:568px)": {
+      marginTop: theme.spacing(2)
+    }
+  },
+  logoImage: {
+    width: '80%'
+  },
+  form: {
+    marginTop: theme.spacing(4),
+  },
+  footer: {
+    marginTop: 'auto',
+    marginBottom: theme.spacing(6),
+    "@media (min-height:737px)": {
+      marginTop: theme.spacing(6),
+    },
+    "@media (max-height:568px)": {
+      marginBottom: theme.spacing(3)
+    }
   },
   logo: {
     position: 'relative',
-    marginTop: '20px',
-    marginLeft: '10px'
-  },
-  logoImage: {
-    height: '200px',
-    width: '200px'
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1)
-  },
-  margin: {
-    margin: theme.spacing(1)
   },
   message: {
     display: 'flex',
@@ -93,14 +100,13 @@ function LoginPage(props) {
   const preventDefault = event => event.preventDefault()
   return (
     <Grid container component='main'>
-      <Grid item xs={12} sm={6} md={3} classes={{root: classes.root}} component={Paper} elevation={6} square>
+      <Grid item xs={12} sm={6} md={4} classes={{root: classes.root}} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
-            <img src={LogoImage} style={{width: '80%'}} alt='not available' />
+            <img className={classes.logoImage} src={LogoImage} alt='not available' />
           </Avatar>
           <form className={classes.form} noValidate>
             <TextField
-              margin='normal'
               required
               fullWidth
               id='username'
@@ -111,7 +117,6 @@ function LoginPage(props) {
               autoFocus
             />
             <TextField
-              margin='normal'
               required
               fullWidth
               name='password'
@@ -122,7 +127,6 @@ function LoginPage(props) {
               onChange={handleOnChange('password')}
             />
             <TextField
-              margin='normal'
               required
               fullWidth
               name='id'
@@ -131,6 +135,8 @@ function LoginPage(props) {
               value={id}
               onChange={handleOnChange('id')}
             />
+          </form>
+          <div className={classes.footer}>
             <Box mt={5}>
               <Button
                 style={{marginBottom: '20px'}}
@@ -150,16 +156,16 @@ function LoginPage(props) {
               </Button>
             </Box>
             <Grid container>
-            <Grid item xs={12} style={{marginTop: '5%', textAlign: 'center'}}>
-              <Link onClick={preventDefault} variant="body2">
-                Olvido su contraseña?
-              </Link>
+              <Grid item xs={12} style={{marginTop: '5%', textAlign: 'center'}}>
+                <Link onClick={preventDefault} variant="body2">
+                  Olvido su contraseña?
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-          </form>
+          </div>
         </div>
       </Grid>
-      <Grid item xs={false} sm={6} md={9} className={classes.image} />
+      <Grid item xs={false} sm={6} md={8} className={classes.image} />
       <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
       <Snackbar
         anchorOrigin={{

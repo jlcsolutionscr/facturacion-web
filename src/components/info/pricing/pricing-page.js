@@ -12,8 +12,9 @@ import Container from '@material-ui/core/Container'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    padding: '0 5% 4% 5%',
-    backgroundColor: 'white'
+    padding: '0 10%',
+    backgroundColor: 'white',
+    marginBottom: '7%'
   },
   link: {
     margin: theme.spacing(1, 1.5)
@@ -22,7 +23,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 0, 6)
   },
   card: {
-    boxShadow: '5px 5px 5px #888888'
+    boxShadow: '5px 5px 5px #888888',
+    maxWidth: '420px',
+    margin: 'auto'
   },
   cardHeader: {
     backgroundColor: theme.palette.grey[200]

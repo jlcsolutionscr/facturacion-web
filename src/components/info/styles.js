@@ -2,11 +2,9 @@ import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 export const createStyle = makeStyles(theme => createStyles({
   container: {
-    paddingTop: '2%',
-    paddingBottom: '4%',
-    paddingLeft: '5%',
-    paddingRight: '5%',
-    backgroundColor: 'white'
+    padding: '0 10%',
+    backgroundColor: 'white',
+    marginBottom: '5%'
   },
   card: {
     backgroundColor: '#E2EBF1',

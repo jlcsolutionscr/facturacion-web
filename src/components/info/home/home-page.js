@@ -10,9 +10,9 @@ import WindowsAppCard from './windows-app-card'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
-    paddingTop: '2%',
-    padding: '4%'
+    backgroundColor: 'white',
+    marginBottom: '7%',
+    padding: '0 5%'
   },
   subTitle: {
     marginTop: theme.spacing(2),
@@ -40,57 +40,55 @@ function HomePage(props) {
   return (
     <Grid container className={classes.root} spacing={2} xs={12}>
       <Grid item xs={12}>
-        <div style={{marginLeft: '5%', marginRight: '5%'}}>
-          <Typography component='h1' variant='h4' align='center' color='textPrimary' gutterBottom>
-            Nuestra plataforma de gestión y facturación
-          </Typography>
-          <Typography className={classes.intro}>
-            Nuestra aplicación para móviles le permite de una forma rápida y desde cualquier lugar confeccionar su factura electrónica y gestionar las facturas ya emitidas.
-          </Typography>
-          <Typography className={classes.items}>
-            Nuestra aplicación para Windows le permite gestionar todos los movimientos de su empresa mediante los siguientes módulos:
-          </Typography>
-          <Typography className={classes.subItems}>
-            Catalogo de clientes, líneas, proveedores y productos
-          </Typography>
-          <Typography className={classes.subItems}>
-            Facturación electrónica
-          </Typography>
-          <Typography className={classes.subItems}>
-            Manejo de inventarios y detalle de movimientos (CARDEX)
-          </Typography>
-          <Typography className={classes.subItems}>
-            Módulo para compras
-          </Typography>
-          <Typography className={classes.subItems}>
-            Generación de proformas que se convierten en factura con solo un click
-          </Typography>
-          <Typography className={classes.subItems}>
-            Ordenes de servicio para gestionar trabajos en progreso
-          </Typography>
-          <Typography className={classes.subItems}>
-            Reportes de movimientos entrantes y salientes
-          </Typography>
-          <Typography className={classes.subItems}>
-            Reportes de anulación de transacciones
-          </Typography>
-          <Typography className={classes.subItems}>
-            Reporte exclusivo para declaración del IVA.
-          </Typography>
-          <Typography className={classes.intro} style={{marginBottom: '2%'}}>
-            Conozca más de nuestros productos explorando las siguientes fichas técnicas
-          </Typography>
-        </div>
+        <Typography component='h1' variant='h4' align='center' color='textPrimary' gutterBottom>
+          Nuestra plataforma de gestión y facturación
+        </Typography>
+        <Typography className={classes.intro}>
+          Nuestra aplicación para móviles le permite de una forma rápida y desde cualquier lugar confeccionar su factura electrónica y gestionar las facturas ya emitidas.
+        </Typography>
+        <Typography className={classes.items}>
+          Nuestra aplicación para Windows le permite gestionar todos los movimientos de su empresa mediante los siguientes módulos:
+        </Typography>
+        <Typography className={classes.subItems}>
+          Catalogo de clientes, líneas, proveedores y productos
+        </Typography>
+        <Typography className={classes.subItems}>
+          Facturación electrónica
+        </Typography>
+        <Typography className={classes.subItems}>
+          Manejo de inventarios y detalle de movimientos (CARDEX)
+        </Typography>
+        <Typography className={classes.subItems}>
+          Módulo para compras
+        </Typography>
+        <Typography className={classes.subItems}>
+          Generación de proformas que se convierten en factura con solo un click
+        </Typography>
+        <Typography className={classes.subItems}>
+          Ordenes de servicio para gestionar trabajos en progreso
+        </Typography>
+        <Typography className={classes.subItems}>
+          Reportes de movimientos entrantes y salientes
+        </Typography>
+        <Typography className={classes.subItems}>
+          Reportes de anulación de transacciones
+        </Typography>
+        <Typography className={classes.subItems}>
+          Reporte exclusivo para declaración del IVA.
+        </Typography>
+        <Typography className={classes.intro} style={{marginBottom: '2%'}}>
+          Conozca más de nuestros productos explorando las siguientes fichas técnicas
+        </Typography>
       </Grid>
       <Grid item>
         <Grid container justifyContent='center' spacing={10}>
-          <Grid item xs={10} md={4}>
+          <Grid item xs={10} sm={8} md={6}>
             <MobileAppCard onClick={props.onClick} />
           </Grid>
-          <Grid item xs={10} md={4}>
+          <Grid item xs={10} sm={8} md={6}>
             <WindowsAppCard onClick={props.onClick}/>
           </Grid>
-          <Grid item xs={10} md={4}>
+          <Grid item xs={10} sm={8} md={6}>
             <PlatformCard onClick={props.onClick}/>
           </Grid>
         </Grid>
