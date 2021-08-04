@@ -1,8 +1,14 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { makeStyles } from '@material-ui/core/styles'
+
+import {
+  setActiveSection,
+} from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -55,4 +61,10 @@ function UnderConstructionPage({ setActiveSection }) {
   )
 }
 
-export default UnderConstructionPage
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    setActiveSection,
+  }, dispatch)
+}
+
+export default connect(null, mapDispatchToProps)(UnderConstructionPage)

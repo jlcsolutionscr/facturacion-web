@@ -1,5 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
+
+import {
+  setActiveSection,
+  getCompany,
+  setReportsParameters
+} from 'store/invoice/actions'
+
+import { logOut } from 'store/session/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
@@ -7,11 +17,12 @@ import Button from '@material-ui/core/Button'
 const useStyles = makeStyles(theme => ({
   container: {
     flexGrow: 1,
-    paddingTop: '50px',
-    height: 'inherit'
+    paddingTop: '30px',
+    height: 'inherit',
+    overflowX: 'auto'
   },
   button: {
-    width: '30%',
+    width: '400px',
     padding: '15px 20px',
     backgroundColor: 'rgba(0,0,0,0.65)',
     color: 'white',
@@ -25,47 +36,60 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function MenuPage(props) {
-  const updateCompanyInfo = props.rolesPerUser.filter(role => [1, 61].includes(role.IdRole)).length > 0
-  const manageCustomers = props.rolesPerUser.filter(role => role.IdRole = 100).length > 0
-  const manageProducts = props.rolesPerUser.filter(role => role.IdRole = 103).length > 0
-  const generateInvoice = props.rolesPerUser.filter(role => role.IdRole = 203).length > 0
-  const manageDocuments = props.rolesPerUser.filter(role => role.IdRole = 402).length > 0
-  const reportingMenu = props.rolesPerUser.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
+function MenuPage({rolesPerUser, getCompany, setActiveSection, setReportsParameters, logOut}) {
+  const updateCompanyInfo = rolesPerUser.filter(role => [1, 61].includes(role.IdRole)).length > 0
+  const manageCustomers = rolesPerUser.filter(role => role.IdRole === 100).length > 0
+  const manageProducts = rolesPerUser.filter(role => role.IdRole === 103).length > 0
+  const generateInvoice = rolesPerUser.filter(role => role.IdRole === 203).length > 0
+  const manageDocuments = rolesPerUser.filter(role => role.IdRole === 402).length > 0
+  const reportingMenu = rolesPerUser.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
   const classes = useStyles()
   return (
     <div className={classes.container}>
       <Grid container align='center' spacing={3} >
         {updateCompanyInfo && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.getCompany()}>Actualice la información de su empresa</Button>
+          <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualice la información de su empresa</Button>
         </Grid>}
         {updateCompanyInfo && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(2)}>Agregue el logotipo de su empresa</Button>
+          <Button classes={{root: classes.button}} onClick={() => setActiveSection(2)}>Agregue el logotipo de su empresa</Button>
         </Grid>}
         {manageCustomers && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(3)}>Gestione su catálogo de clientes</Button>
+          <Button classes={{root: classes.button}} onClick={() => setActiveSection(3)}>Gestione su catálogo de clientes</Button>
         </Grid>}
         {manageProducts && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(4)}>Gestione su catálogo de productos</Button>
+          <Button classes={{root: classes.button}} onClick={() => setActiveSection(4)}>Gestione su catálogo de productos</Button>
         </Grid>}
         {generateInvoice && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(5)}>Generar factura electrónica</Button>
+          <Button classes={{root: classes.button}} onClick={() => setActiveSection(5)}>Generar factura electrónica</Button>
         </Grid>}
         {generateInvoice && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(6)}>Gestione sus facturas electrónicas</Button>
+          <Button classes={{root: classes.button}} onClick={() => setActiveSection(6)}>Gestione sus facturas electrónicas</Button>
         </Grid>}
         {manageDocuments && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setActiveSection(7)}>Gestione sus documentos electrónicos</Button>
+          <Button classes={{root: classes.button}} onClick={() => setActiveSection(7)}>Gestione sus documentos electrónicos</Button>
         </Grid>}
         {reportingMenu && <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.setReportsParameters()}>Acceda al menu de reportes</Button>
+          <Button classes={{root: classes.button}} onClick={() => setReportsParameters()}>Acceda al menu de reportes</Button>
         </Grid>}
         <Grid item xs={12}>
-          <Button classes={{root: classes.button}} onClick={() => props.logOut()}>Cerrar sesión</Button>
+          <Button classes={{root: classes.button}} onClick={() => logOut()}>Cerrar sesión</Button>
         </Grid>
       </Grid>
     </div>
   )
 }
 
-export default MenuPage
+const mapStateToProps = (state) => {
+  return { rolesPerUser: state.session.rolesPerUser }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    logOut,
+    setActiveSection,
+    getCompany,
+    setReportsParameters,
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuPage)

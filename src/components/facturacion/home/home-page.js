@@ -1,23 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
-
-import { logOut } from 'store/session/actions'
-
-import {
-  setActiveSection,
-  getCompany,
-  updateCantonList,
-  updateDistritoList,
-  updateBarrioList,
-  setReportsParameters,
-  setCompanyAttribute,
-  saveCompany,
-  saveLogo,
-  generateReport,
-  exportReport
-} from 'store/invoice/actions'
 
 import Typography from '@material-ui/core/Typography'
 import BannerImage from 'assets/img/menu-background.jpg'
@@ -119,14 +102,20 @@ function HomePage({ activeSection, companyName, companyIdentifier, isLoaderActiv
             ? 'Actualización de datos'
             : activeSection === 2
               ? 'Ingreso de su logotipo'
-              : 'Generación de reportes'}
+              : activeSection === 3
+                ? 'Generación de reportes'
+                : 'Página en construcción'}
         </Typography>}
       </div>
       <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <LogoPage />}
-        {activeSection === 2 && <UnderConstructionPage />}
+        {activeSection === 3 && <UnderConstructionPage />}
+        {activeSection === 4 && <UnderConstructionPage />}
+        {activeSection === 5 && <UnderConstructionPage />}
+        {activeSection === 6 && <UnderConstructionPage />}
+        {activeSection === 7 && <UnderConstructionPage />}
         {activeSection === 20 && <ReportsPage />}
       </div>
     </div>
@@ -139,36 +128,8 @@ const mapStateToProps = (state) => {
     loaderText: state.ui.loaderText,
     activeSection: state.invoice.activeSection,
     companyName: state.invoice.companyName,
-    companyIdentifier: state.invoice.companyIdentifier,
-    rolesPerUser: state.session.rolesPerUser,
-    company: state.invoice.company,
-    cantonList: state.invoice.cantonList,
-    distritoList: state.invoice.distritoList,
-    barrioList: state.invoice.barrioList,
-    branchList: state.invoice.branchList,
-    reportResults: state.invoice.reportResults,
-    reportSummary: state.invoice.reportSummary,
-    companyPageError: state.invoice.companyPageError,
-    logoPageError: state.invoice.logoPageError,
-    reportsPageError: state.invoice.reportsPageError
+    companyIdentifier: state.invoice.companyIdentifier
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    logOut,
-    setActiveSection,
-    getCompany,
-    updateCantonList,
-    updateDistritoList,
-    updateBarrioList,
-    setReportsParameters,
-    setCompanyAttribute,
-    saveCompany,
-    saveLogo,
-    generateReport,
-    exportReport
-  }, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage)
+export default connect(mapStateToProps, null)(HomePage)

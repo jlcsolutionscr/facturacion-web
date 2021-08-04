@@ -10,7 +10,6 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: true,
-        productId: payload.productId,
         rolesPerUser: payload.roles,
         token: payload.token
       }
@@ -18,7 +17,6 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: false,
-        productId: null,
         rolesPerUser: [],
         token: null
       }

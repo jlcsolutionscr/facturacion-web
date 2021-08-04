@@ -62,8 +62,8 @@ function LogoPage(props) {
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
     <div className={classes.container}>
-      {props.logoPageError !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-        {props.logoPageError}
+      {props.errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+        {props.errorMessage}
       </Typography>}
       <Grid container spacing={3}>
       <Grid item xs={6} sm={6}>

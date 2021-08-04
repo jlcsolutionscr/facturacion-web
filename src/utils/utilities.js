@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 import CryptoJS from 'crypto-js'
@@ -74,10 +75,9 @@ function dataURLtoBlob(dataurl) {
 
 export function downloadFile (endpointURL) {
   return new Promise((resolve, reject) => {
-    fetch(endpointURL, {method: 'GET'})
-      .then(response => response.blob())
-      .then(async (data) => {
-        const blob = new Blob([data], {type: 'application/octet-stream'})
+    axios.get(endpointURL, {responseType: 'blob'})
+      .then(async (response) => {
+        const blob = new Blob([response.data], {type: 'application/octet-stream'})
         saveAs(blob, 'puntoventaJLC.msi')
         resolve(true)
       })
@@ -98,13 +98,14 @@ export async function getWithResponse(endpointURL, token) {
       method: 'GET',
       headers
     })
-    if (response.data !== '') {
-      return JSON.parse(response.data)
+    const data = await response.json()
+    if (data) {
+      return JSON.parse(data)
     } else {
       return null
     }
   } catch (error) {
-    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
+    const message = error.response ? error.response.body ? error.response.body : error.response : error.message ? error.message : ''
     throw new Error(message)
   }
 }
@@ -116,11 +117,11 @@ export async function post(endpointURL, datos, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    await fetch({
+    await axios({
       method: 'post',
       url: endpointURL,
       headers,
-      body: JSON.stringify(datos)
+      data: JSON.stringify(datos)
     })
   } catch (error) {
     const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
@@ -135,11 +136,11 @@ export async function postWithResponse(endpointURL, datos, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await fetch({
+    const response = await axios({
       method: 'post',
       url: endpointURL,
       headers,
-      body: JSON.stringify(datos)
+      data: JSON.stringify(datos)
     })
     if (response.data !== '') {
       return JSON.parse(response.data)

@@ -1,13 +1,32 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { makeStyles } from '@material-ui/core/styles'
+
+import { logOut } from 'store/session/actions'
+
+import {
+  setActiveSection,
+  getCompany,
+  updateCantonList,
+  updateDistritoList,
+  updateBarrioList,
+  setReportsParameters,
+  setCompanyAttribute,
+  saveCompany,
+  saveLogo,
+  generateReport,
+  exportReport
+} from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
 import TextField from 'components/custom/custom-textfield'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -40,53 +59,56 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function CompanyPage(props) {
+function CompanyPage({errorMessage, company, cantonList, distritoList, barrioList, setCompanyAttribute, updateCantonList, updateDistritoList, updateBarrioList, saveCompany, setActiveSection}) {
   const classes = useStyles()
   const [certificate, setCertificate] = React.useState('')
   let disabled = true
-  if (props.company != null) {
-    disabled = props.company.NombreEmpresa === ''
-      || props.company.Identificacion === ''
-      || props.company.CodigoActividad === ''
-      || props.company.Direccion === ''
-      || props.company.Telefono === ''
-      || props.company.CorreoNotificacion === ''
+  if (company != null) {
+    disabled = company.NombreEmpresa === ''
+      || company.Identificacion === ''
+      || company.CodigoActividad === ''
+      || company.Direccion === ''
+      || company.Telefono === ''
+      || company.CorreoNotificacion === ''
   }
   const handleChange = event => {
-    props.setCompanyAttribute(event.target.id, event.target.value)
+    setCompanyAttribute(event.target.id, event.target.value)
   }
   const handleSelectChange = (id, value) => {
     if (id === 'IdProvincia') {
-      props.updateCantonList(value)
+      updateCantonList(value)
     } else if (id === 'IdCanton') {
-      props.updateDistritoList(props.company.IdProvincia, value)
+      updateDistritoList(company.IdProvincia, value)
     } else if (id === 'IdDistrito') {
-      props.updateBarrioList(props.company.IdProvincia, props.company.IdCanton, value)
+      updateBarrioList(company.IdProvincia, company.IdCanton, value)
     } else {
-      props.setCompanyAttribute(id, value)
+      setCompanyAttribute(id, value)
     }
   }
   const handleCertificateChange = event => {
     event.preventDefault()
     let reader = new FileReader()
     let file = event.target.files[0]
-    props.setCompanyAttribute('NombreCertificado', file.name)
+    setCompanyAttribute('NombreCertificado', file.name)
     reader.onloadend = () => {
       const certificateBase64 = reader.result.substring(reader.result.indexOf(',') + 1)
       setCertificate(certificateBase64)
     }
     reader.readAsDataURL(file)
   }
-  const cantonList = props.cantonList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
-  const distritoList = props.distritoList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
-  const barrioList = props.barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const cantonItems = cantonList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const distritoItems = distritoList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const barrioItems = barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
+      {errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+        {errorMessage}
+      </Typography>}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <TextField
             id='NombreComercial'
-            value={props.company ? props.company.NombreComercial : ''}
+            value={company ? company.NombreComercial : ''}
             label='Nombre comercial'
             fullWidth
             autoComplete='lname'
@@ -97,7 +119,7 @@ function CompanyPage(props) {
         <Grid item xs={12} sm={12}>
           <TextField
             id='CodigoActividad'
-            value={props.company ? props.company.CodigoActividad : ''}
+            value={company ? company.CodigoActividad : ''}
             label='Codigo actividad'
             fullWidth
             variant='outlined'
@@ -111,7 +133,7 @@ function CompanyPage(props) {
             <InputLabel id='demo-simple-select-label'>Provincia</InputLabel>
             <Select
               id='IdProvincia'
-              value={props.company ? props.company.IdProvincia : 1}
+              value={company ? company.IdProvincia : 1}
               onChange={(event) => handleSelectChange('IdProvincia', event.target.value)}
             >
               <MenuItem value={1}>SAN JOSE</MenuItem>
@@ -129,10 +151,10 @@ function CompanyPage(props) {
             <InputLabel id='demo-simple-select-label'>Cantón</InputLabel>
             <Select
               id='IdCanton'
-              value={props.company && cantonList.length > 0 ? props.company.IdCanton : ''}
+              value={company && cantonItems.length > 0 ? company.IdCanton : ''}
               onChange={(event) => handleSelectChange('IdCanton', event.target.value)}
             >
-              {cantonList}
+              {cantonItems}
             </Select>
           </FormControl>
         </Grid>
@@ -141,10 +163,10 @@ function CompanyPage(props) {
             <InputLabel id='demo-simple-select-label'>Distrito</InputLabel>
             <Select
               id='IdDistrito'
-              value={props.company && distritoList.length > 0 ? props.company.IdDistrito : ''}
+              value={company && distritoItems.length > 0 ? company.IdDistrito : ''}
               onChange={(event) => handleSelectChange('IdDistrito', event.target.value)}
             >
-              {distritoList}
+              {distritoItems}
             </Select>
           </FormControl>
         </Grid>
@@ -153,10 +175,10 @@ function CompanyPage(props) {
             <InputLabel id='demo-simple-select-label'>Barrio</InputLabel>
             <Select
               id='IdBarrio'
-              value={props.company && barrioList.length > 0 ? props.company.IdBarrio : ''}
+              value={company && barrioItems.length > 0 ? company.IdBarrio : ''}
               onChange={(event) => handleSelectChange('IdBarrio', event.target.value)}
             >
-              {barrioList}
+              {barrioItems}
             </Select>
           </FormControl>
         </Grid>
@@ -164,7 +186,7 @@ function CompanyPage(props) {
           <TextField
             required
             id='Direccion'
-            value={props.company ? props.company.Direccion : ''}
+            value={company ? company.Direccion : ''}
             label='Dirección'
             fullWidth
             variant='outlined'
@@ -175,7 +197,7 @@ function CompanyPage(props) {
           <TextField
             required
             id='Telefono1'
-            value={props.company ? props.company.Telefono1 : ''}
+            value={company ? company.Telefono1 : ''}
             label='Teléfono 1'
             fullWidth
             variant='outlined'
@@ -186,7 +208,7 @@ function CompanyPage(props) {
         <Grid item xs={12} sm={12}>
           <TextField
             id='Telefono2'
-            value={props.company ? props.company.Telefono2 : ''}
+            value={company ? company.Telefono2 : ''}
             label='Teléfono 2'
             fullWidth
             variant='outlined'
@@ -198,7 +220,7 @@ function CompanyPage(props) {
           <TextField
             required
             id='CorreoNotificacion'
-            value={props.company ? props.company.CorreoNotificacion : ''}
+            value={company ? company.CorreoNotificacion : ''}
             label='Correo para notificaciones'
             fullWidth
             variant='outlined'
@@ -207,9 +229,9 @@ function CompanyPage(props) {
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
-            disabled={props.company ? props.company.RegimenSimplificado : true}
+            disabled={company ? company.RegimenSimplificado : true}
             id='UsuarioHacienda'
-            value={props.company ? props.company.UsuarioHacienda : ''}
+            value={company ? company.UsuarioHacienda : ''}
             label='Usuario ATV'
             fullWidth
             variant='outlined'
@@ -218,9 +240,9 @@ function CompanyPage(props) {
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
-            disabled={props.company ? props.company.RegimenSimplificado : true}
+            disabled={company ? company.RegimenSimplificado : true}
             id='ClaveHacienda'
-            value={props.company ? props.company.ClaveHacienda : ''}
+            value={company ? company.ClaveHacienda : ''}
             label='Clave ATV'
             fullWidth
             variant='outlined'
@@ -231,7 +253,7 @@ function CompanyPage(props) {
           <TextField
             disabled
             id='NombreCertificado'
-            value={props.company ? props.company.NombreCertificado : ''}
+            value={company ? company.NombreCertificado : ''}
             label='Llave criptográfica'
             fullWidth
             variant='outlined'
@@ -249,7 +271,7 @@ function CompanyPage(props) {
           />
           <label htmlFor='contained-button-file'>
             <Button
-              disabled={props.company ? props.company.RegimenSimplificado : true}
+              disabled={company ? company.RegimenSimplificado : true}
               component='span'
               variant='contained'
               className={classes.button}
@@ -261,9 +283,9 @@ function CompanyPage(props) {
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
-            disabled={props.company ? props.company.RegimenSimplificado : true}
+            disabled={company ? company.RegimenSimplificado : true}
             id='PinCertificado'
-            value={props.company ? props.company.PinCertificado : ''}
+            value={company ? company.PinCertificado : ''}
             label='Pin de llave criptográfica'
             fullWidth
             variant='outlined'
@@ -271,12 +293,12 @@ function CompanyPage(props) {
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => props.saveCompany(certificate)}>
+          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => saveCompany(certificate)}>
             Guardar
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>
         </Grid>
@@ -285,5 +307,41 @@ function CompanyPage(props) {
   )
 }
 
-export default CompanyPage
+const mapStateToProps = (state) => {
+  return {
+    isLoaderActive: state.ui.isLoaderActive,
+    loaderText: state.ui.loaderText,
+    activeSection: state.invoice.activeSection,
+    companyName: state.invoice.companyName,
+    companyIdentifier: state.invoice.companyIdentifier,
+    rolesPerUser: state.session.rolesPerUser,
+    company: state.invoice.company,
+    cantonList: state.invoice.cantonList,
+    distritoList: state.invoice.distritoList,
+    barrioList: state.invoice.barrioList,
+    branchList: state.invoice.branchList,
+    reportResults: state.invoice.reportResults,
+    reportSummary: state.invoice.reportSummary,
+    errorMessage: state.ui.errorMessage
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    logOut,
+    setActiveSection,
+    getCompany,
+    updateCantonList,
+    updateDistritoList,
+    updateBarrioList,
+    setReportsParameters,
+    setCompanyAttribute,
+    saveCompany,
+    saveLogo,
+    generateReport,
+    exportReport
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompanyPage)
               

@@ -1,6 +1,16 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { makeStyles } from '@material-ui/core/styles'
+
+import {
+  setActiveSection,
+  generateReport,
+  exportReport
+} from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
@@ -10,7 +20,6 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import DetailLayout from './reports/detail-layout'
 import SummaryLayout from './reports/summary-layout'
-import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -43,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function ReportsPage(props) {
+function ReportsPage({errorMessage, branchList, reportSummary, reportResults, generateReport, exportReport, setActiveSection}) {
   const classes = useStyles()
   const today = new Date()
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
@@ -60,19 +69,22 @@ function ReportsPage(props) {
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
     if (type === 1) {
-      props.generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
+      generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
       setViewLayout(2)
     }
-    if (type === 2) props.exportReport(branchId, reportType, startDateFormatted, endDateFormatted)
+    if (type === 2) exportReport(branchId, reportType, startDateFormatted, endDateFormatted)
   }
   const reportName = reportType === 1
     ? 'Reporte de documentos generados'
     : reportType === 2
       ? 'Reporte de documentos recibidas'
       : 'Reporte resumen de movimientos del período'
-  const branchList = props.branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
+      {errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+        {errorMessage}
+      </Typography>}
       {viewLayout === 1 && <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <FormControl className={classes.form}>
@@ -82,7 +94,7 @@ function ReportsPage(props) {
               value={branchId}
               onChange={(event) => setBranchId(event.target.value)}
             >
-              {branchList}
+              {branchItems}
             </Select>
           </FormControl>
         </Grid>
@@ -131,25 +143,42 @@ function ReportsPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>
         </Grid>
       </Grid>}
       {viewLayout === 2 && reportType !== 3 &&<DetailLayout
         reportName={reportName}
-        summary={props.reportSummary}
-        data={props.reportResults}
+        summary={reportSummary}
+        data={reportResults}
         returnOnClick={() => setViewLayout(1)}
       />}
       {viewLayout === 2 && reportType === 3 && <SummaryLayout
         reportName='Resumen de movimientos electrónicos'
-        summary={props.reportSummary}
-        data={props.reportResults}
+        summary={reportSummary}
+        data={reportResults}
         returnOnClick={() => setViewLayout(1)}
       />}
     </div>
   )
 }
 
-export default ReportsPage
+const mapStateToProps = (state) => {
+  return {
+    branchList: state.invoice.branchList,
+    reportResults: state.invoice.reportResults,
+    reportSummary: state.invoice.reportSummary,
+    errorMessage: state.ui.errorMessage
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    setActiveSection,
+    generateReport,
+    exportReport
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportsPage)

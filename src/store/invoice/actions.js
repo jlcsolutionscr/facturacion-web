@@ -94,6 +94,7 @@ export function getCompany () {
     const { token } = getState().session
     const { companyId } = getState().invoice
     dispatch(startLoader())
+    dispatch(setErrorMessage(''))
     try {
       dispatch(setActiveSection(1))
       const company = await getCompanyEntity(companyId, token)
@@ -117,9 +118,10 @@ export function setReportsParameters () {
     const { token } = getState().session
     const { companyId } = getState().invoice
     dispatch(startLoader())
+    dispatch(setErrorMessage(''))
     try {
-      dispatch(setActiveSection(20))
       const list = await getBranchList(companyId, token)
+      dispatch(setActiveSection(20))
       dispatch(setBranchList(list))
       dispatch(stopLoader())
     } catch (error) {
@@ -135,6 +137,7 @@ export function updateCantonList (idProvincia) {
     const { company } = getState().invoice
     if (company.IdProvincia !== idProvincia) {
       dispatch(startLoader())
+      dispatch(setErrorMessage(''))
       try {
         const newCompany = { ...company, IdProvincia: idProvincia, IdCanton: 1, IdDistrito: 1, IdBarrio: 1 }
         dispatch(setCompany(newCompany))
@@ -159,6 +162,7 @@ export function updateDistritoList (idProvincia, idCanton) {
     const { company } = getState().invoice
     if (company.IdCanton !== idCanton) {
       dispatch(startLoader())
+      dispatch(setErrorMessage(''))
       try {
         const newCompany = { ...company, IdCanton: idCanton, IdDistrito: 1, IdBarrio: 1 }
         dispatch(setCompany(newCompany))
@@ -181,6 +185,7 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
     const { company } = getState().invoice
     if (company.IdDistrito !== idDistrito) {
       dispatch(startLoader())
+      dispatch(setErrorMessage(''))
       try {
         const newCompany = { ...company, IdDistrito: idDistrito, IdBarrio: 1 }
         dispatch(setCompany(newCompany))
@@ -200,6 +205,7 @@ export function saveCompany (certificate) {
     const { token } = getState().session
     const { companyId, company } = getState().invoice
     dispatch(startLoader())
+    dispatch(setErrorMessage(''))
     try {
       await saveCompanyEntity(company, token)
       if (certificate !== '') {
@@ -219,6 +225,7 @@ export function saveLogo (logo) {
     const { token } = getState().session
     const { companyId } = getState().invoice
     dispatch(startLoader())
+    dispatch(setErrorMessage(''))
     try {
       if (logo !== '') {
         await saveCompanyLogo(companyId, logo, token)
@@ -237,6 +244,7 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
     const { token } = getState().session
     const { companyId } = getState().invoice
     dispatch(startLoader())
+    dispatch(setErrorMessage(''))
     dispatch(setReportResults([], null))
     try {
       const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
@@ -268,6 +276,7 @@ export function exportReport (idBranch, reportType, startDate, endDate) {
     const { token } = getState().session
     const { companyId } = getState().invoice
     dispatch(startLoader())
+    dispatch(setErrorMessage(''))
     try {
       const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
       const fileName = reportType === 1
