@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography'
 import BannerImage from 'assets/img/menu-background.jpg'
 import LogoImage from 'assets/img/company-logo.png'
 
-import Loader from 'components/loader/loader'
 import MenuPage from './pages/menu-page'
 import CompanyPage from './pages/company-page'
 import LogoPage from './pages/logo-page'
@@ -15,35 +14,89 @@ import ReportsPage from './pages/reports-page'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
-    minWidth: `${window.innerWidth / 8 * 7.5}px`,
-    height: `${window.innerHeight}px`,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
     backgroundImage: `url(${BannerImage})`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: `120% ${window.innerHeight}px`,
-    overflowY: 'hidden',
-    overflowX: 'hidden'
+    backgroundSize: `110% 100%`
   },
-  titleContainer: {
+  header: {
+    flex: '0 1 auto',
+    paddingTop: '70px',
+    paddingBottom: '40px',
+    '@media (max-width:960px)': {
+      paddingTop: '0',
+      paddingBottom: '10px'
+    },
+    '@media (max-width:411px)': {
+      paddingBottom: '0'
+    }
+  },
+  body: {
+    flex: '1 1 auto',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    paddingBottom: '20px',
+    marginBottom: '40px',
+    marginLeft: '100px',
+    marginRight: '100px',
+    '@media (max-width:960px)': {
+      marginLeft: '50px',
+      marginRight: '50px'
+    },
+    '@media (max-width:600px)': {
+      marginLeft: '15px',
+      marginRight: '15px',
+    },
+    '@media (max-width:414px)': {
+      paddingBottom: '5px',
+      marginBottom: '5px',
+      marginLeft: '10px',
+      marginRight: '10px',
+    }
+  },
+  banner: {
     backgroundImage: `url(${LogoImage})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: '105px 105px',
-    backgroundPosition: '55% 0px',
+    backgroundPosition: '50% 0px',
     backgroundColor: 'transparent',
     paddingTop: '110px',
     paddingLeft: '10px',
-    marginBottom: '40px',
-    width: '210px',
-    height: '85px',
     position: 'absolute',
     top: '30px',
-    left: '35px'
+    left: '0',
+    '@media (max-width:960px)': {
+      backgroundSize: '85px 85px',
+      marginBottom: '15px',
+      position: 'relative',
+      paddingTop: '90px',
+      paddingLeft: '0',
+      top: '10px',
+      left: '0',
+      textAlign: 'center',
+      width: 'auto'
+    },
+    '@media (max-width:414px)': {
+      backgroundSize: '65px 65px',
+      paddingTop: '70px',
+    }
   },
   h2: {
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
     fontSize: theme.typography.pxToRem(30),
-    textShadow: '4px 4px 6px rgba(0,0,0,0.45)'
+    textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
+    '@media (max-width:630px)': {
+      fontSize: theme.typography.pxToRem(25)
+    },
+    '@media (max-width:500px)': {
+      fontSize: theme.typography.pxToRem(22)
+    },
+    '@media (max-width:411px)': {
+      fontSize: theme.typography.pxToRem(20)
+    }
   },
   h4: {
     marginTop: '8px',
@@ -59,7 +112,16 @@ const useStyles = makeStyles(theme => ({
     fontStyle: 'italic',
     fontWeight: 600,
     textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
-    marginBottom: 0
+    marginBottom: 0,
+    '@media (max-width:630px)': {
+      fontSize: theme.typography.pxToRem(30)
+    },
+    '@media (max-width:500px)': {
+      fontSize: theme.typography.pxToRem(25)
+    },
+    '@media (max-width:411px)': {
+      fontSize: theme.typography.pxToRem(20)
+    }
   },
   subTitle: {
     fontFamily: '"Exo 2", sans-serif',
@@ -67,7 +129,10 @@ const useStyles = makeStyles(theme => ({
     fontStyle: 'italic',
     fontWeight: 500,
     textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
-    marginBottom: 0
+    marginBottom: 0,
+    '@media (max-width:630px)': {
+      fontSize: theme.typography.pxToRem(25),
+    }
   }
 }))
 
@@ -80,34 +145,26 @@ function HomePage({ activeSection, companyName, companyIdentifier, isLoaderActiv
       ? companyIdentifier.substring(0,1) + '-' + companyIdentifier.substring(1,4) + '-' + companyIdentifier.substring(4)
       : companyIdentifier
   return (
-    <div id='id_enterprise_content' className={classes.root} >
-      <Loader isLoaderActive={isLoaderActive} loaderText={loaderText} />
-      <div className={classes.titleContainer}>
-        <Typography classes={{h2: classes.h2}} variant='h2' component='h2'>
-          JLC Solutions
-        </Typography>
-        <Typography classes={{h4: classes.h4}} variant='h4' component='h4'>
-          A software development company
-        </Typography>
+    <div id='id_home_page' className={classes.root} >
+      <div className={classes.header}>
+        <div className={classes.banner}>
+          <Typography classes={{h2: classes.h2}} variant='h2' component='h2'>
+            JLC Solutions
+          </Typography>
+          <Typography classes={{h4: classes.h4}} variant='h4' component='h4'>
+            A software development company
+          </Typography>
+        </div>
+        <div>
+          <Typography className={classes.title} align='center' paragraph>
+            {title}
+          </Typography>
+          <Typography className={classes.title} align='center' paragraph>
+            {identification}
+          </Typography>
+        </div>
       </div>
-      <div style={{marginTop: '50px'}}>
-        <Typography className={classes.title} align='center' paragraph>
-          {title}
-        </Typography>
-        <Typography className={classes.title} align='center' paragraph>
-          {identification}
-        </Typography>
-        {activeSection > 0 && <Typography className={classes.subTitle} align='center' paragraph>
-          {activeSection === 1
-            ? 'Actualización de datos'
-            : activeSection === 2
-              ? 'Ingreso de su logotipo'
-              : activeSection === 3
-                ? 'Generación de reportes'
-                : 'Página en construcción'}
-        </Typography>}
-      </div>
-      <div style={{paddingTop: '20px', height: `${window.innerHeight - 261}px`}}>
+      <div className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <LogoPage />}

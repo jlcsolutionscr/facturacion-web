@@ -13,7 +13,7 @@ import './index.css'
 
 import InfoPage from 'components/info/info-page'
 import PrivacyPolicyPage from 'components/privacy-policy/privacy-policy-page'
-import FacturacionPage from 'components/facturacion/facturacion-page'
+import FacturacionPage from 'components/billing/facturacion-page'
 
 import * as serviceWorker from './serviceWorker'
 import './fonts/RussoOne-Regular.ttf'

@@ -17,7 +17,7 @@ import {
   saveLogo,
   generateReport,
   exportReport
-} from 'store/invoice/actions'
+} from 'store/billing/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -33,8 +33,6 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     borderRadius: '8px',
     overflowY: 'auto',
-    marginLeft: '150px',
-    marginRight: '150px',
     padding: '25px',
     maxHeight: `${window.innerHeight - 302}px`,
     backgroundColor: 'rgba(255,255,255,0.65)'
@@ -249,7 +247,7 @@ function CompanyPage({errorMessage, company, cantonList, distritoList, barrioLis
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={10} sm={10}>
+        <Grid item xs={8} sm={9} md={10}>
           <TextField
             disabled
             id='NombreCertificado'
@@ -260,7 +258,7 @@ function CompanyPage({errorMessage, company, cantonList, distritoList, barrioLis
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={2} sm={2}>
+        <Grid item xs={1}>
           <input
             accept='p12/*'
             style={{display: 'none'}}
@@ -292,12 +290,12 @@ function CompanyPage({errorMessage, company, cantonList, distritoList, barrioLis
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={5} sm={3} md={2}>
           <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => saveCompany(certificate)}>
             Guardar
           </Button>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={5} sm={3} md={2}>
           <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>

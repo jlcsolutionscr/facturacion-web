@@ -5,7 +5,7 @@ import {
 } from './types'
 
 import { startLoader, stopLoader } from 'store/ui/actions'
-import { setInvoiceSession } from 'store/invoice/actions'
+import { setInvoiceSession } from 'store/billing/actions'
 import { invoiceLogin } from 'utils/invoiceHelper'
 
 export const logIn = (roles, token) => {

@@ -7,7 +7,7 @@ import {
   setActiveSection,
   generateReport,
   exportReport
-} from 'store/invoice/actions'
+} from 'store/billing/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'

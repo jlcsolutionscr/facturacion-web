@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import {
   setActiveSection,
-} from 'store/invoice/actions'
+} from 'store/billing/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'

@@ -15,7 +15,6 @@ import Link from '@material-ui/core/Link'
 import { ErrorIcon } from 'utils/iconsHelper'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
-import Loader from 'components/loader/loader'
 import LogoImage from 'assets/img/login-logo.png'
 import BackgroundImage from 'assets/img/login-background.jpg'
 
@@ -166,7 +165,6 @@ function LoginPage(props) {
         </div>
       </Grid>
       <Grid item xs={false} sm={6} md={8} className={classes.image} />
-      <Loader isLoaderActive={props.isLoaderActive} loaderText={props.loaderText} />
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
@@ -191,8 +189,6 @@ function LoginPage(props) {
 
 const mapStateToProps = (state) => {
   return {
-    isLoaderActive: state.ui.isLoaderActive,
-    loaderText: state.ui.loaderText,
     loginError: state.session.loginError
   }
 }

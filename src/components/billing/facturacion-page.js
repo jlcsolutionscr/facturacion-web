@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import LoginPage from 'components/facturacion/login/login-page'
-import InvoiceHomePage from 'components/facturacion/home/home-page'
+import Loader from 'components/loader/loader'
+import LoginPage from 'components/billing/login/login-page'
+import InvoiceHomePage from 'components/billing/home/home-page'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -17,7 +18,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    display: 'flex'
+    display: 'flex',
+    height: `${window.innerHeight}px`
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -29,21 +31,22 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function FacturacionPage(props) {
+function FacturacionPage({ authenticated, errorMessage, isLoaderActive, loaderText, setErrorMessage}) {
   const classes = useStyles()
-  const component = !props.authenticated ? <LoginPage {...props} /> : <InvoiceHomePage />
-  const open = props.errorMessage !== ''
+  const component = !authenticated ? <LoginPage /> : <InvoiceHomePage />
+  const open = errorMessage !== ''
   return (
     <div className={classes.container}>
+      <Loader isLoaderActive={isLoaderActive} loaderText={loaderText} />
       <Dialog open={open}>
         <DialogTitle id="simple-dialog-title">Error en el procesamiento de la petición</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {props.errorMessage}
+            {errorMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => props.setErrorMessage('')} color="primary" autoFocus>
+          <Button onClick={() => setErrorMessage('')} color="primary" autoFocus>
             Cerrar
           </Button>
         </DialogActions>
@@ -57,6 +60,8 @@ const mapStateToProps = (state) => {
   return {
     authenticated: state.session.authenticated,
     productId: state.session.productId,
+    isLoaderActive: state.ui.isLoaderActive,
+    loaderText: state.ui.loaderText,
     errorMessage: state.ui.errorMessage
   }
 }

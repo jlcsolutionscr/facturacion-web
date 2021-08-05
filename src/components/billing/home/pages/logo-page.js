@@ -1,9 +1,17 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { makeStyles } from '@material-ui/core/styles'
+
+import {
+  setActiveSection,
+  saveLogo
+} from 'store/billing/actions'
+
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -41,7 +49,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LogoPage(props) {
+function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
   const classes = useStyles()
   const [logo, setLogo] = React.useState('')
   const [filename, setFilename] = React.useState('')
@@ -57,13 +65,13 @@ function LogoPage(props) {
   }
   const handleSaveButton = () => {
     const logoBase64 = logo.substring(logo.indexOf(',') + 1)
-    props.saveLogo(logoBase64)
+    saveLogo(logoBase64)
   }
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
     <div className={classes.container}>
-      {props.errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-        {props.errorMessage}
+      {errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+        {errorMessage}
       </Typography>}
       <Grid container spacing={3}>
       <Grid item xs={6} sm={6}>
@@ -106,7 +114,7 @@ function LogoPage(props) {
           </Button>
         </Grid>
         <Grid item xs={2}>
-          <Button variant='contained' className={classes.button} onClick={() => props.setActiveSection(0)}>
+          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>
         </Grid>
@@ -115,4 +123,12 @@ function LogoPage(props) {
   )
 }
 
-export default LogoPage
+const mapStateToProps = (state) => {
+  return { errorMessage: state.ui.errorMessage }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({setActiveSection, saveLogo}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogoPage)
