@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
+import UAParser from 'ua-parser-js'
 
 import {
   setActiveSection,
@@ -23,14 +24,14 @@ import SummaryLayout from './reports/summary-layout'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    flexGrow: 1,
-    borderRadius: '8px',
-    overflowY: 'auto',
-    marginLeft: '150px',
-    marginRight: '150px',
-    padding: '25px',
-    maxHeight: `${window.innerHeight - 302}px`,
-    backgroundColor: 'rgba(255,255,255,0.65)'
+    marginTop: '50px',
+    marginLeft: '30px',
+    '@media (max-width:414px)': {
+      marginLeft: '5px'
+    },
+    '@media (max-width:360px)': {
+      marginLeft: '0'
+    }
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -53,6 +54,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function ReportsPage({errorMessage, branchList, reportSummary, reportResults, generateReport, exportReport, setActiveSection}) {
+  const result = new UAParser().getResult()
+  const isMobile = !!result.device.type
   const classes = useStyles()
   const today = new Date()
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
@@ -113,7 +116,7 @@ function ReportsPage({errorMessage, branchList, reportSummary, reportResults, ge
           </FormControl>
         </Grid>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid item xs={3} sm={3}>
+          <Grid item xs={5} sm={3}>
             <DatePicker
               label='Fecha inicial'
               format='dd/MM/yyyy'
@@ -122,7 +125,7 @@ function ReportsPage({errorMessage, branchList, reportSummary, reportResults, ge
               animateYearScrolling
             />
           </Grid>
-          <Grid item xs={9} sm={9}>
+          <Grid item xs={5} sm={9}>
           <DatePicker
               label='Fecha final'
               format='dd/MM/yyyy'
@@ -132,17 +135,17 @@ function ReportsPage({errorMessage, branchList, reportSummary, reportResults, ge
             />
           </Grid>
         </MuiPickersUtilsProvider>
-        <Grid item xs={2}>
+        <Grid item xs={isMobile ? 5 : 4} sm={3} md={2}>
           <Button variant='contained' className={classes.button} onClick={() => processReport(1)}>
             Generar
           </Button>
         </Grid>
-        <Grid item xs={2}>
+        {!isMobile &&<Grid item xs={4} sm={3} md={2}>
           <Button disabled={reportType === 3} variant='contained' className={classes.button} onClick={() => processReport(2)}>
             Exportar
           </Button>
-        </Grid>
-        <Grid item xs={2}>
+        </Grid>}
+        <Grid item xs={isMobile ? 5 : 4} sm={3} md={2}>
           <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>

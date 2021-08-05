@@ -15,14 +15,18 @@ import Button from '@material-ui/core/Button'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    flexGrow: 1,
-    borderRadius: '8px',
-    overflowY: 'auto',
-    marginLeft: '150px',
-    marginRight: '150px',
-    padding: '25px',
-    maxHeight: `${window.innerHeight - 302}px`,
-    backgroundColor: 'rgba(255,255,255,0.65)'
+    backgroundColor: 'rgba(255,255,255,0.65)',
+    marginTop: '50px',
+    marginLeft: '30px',
+    padding: '50px 30px 0 30px',
+    '@media (max-width:414px)': {
+      marginTop: '5px',
+      marginLeft: '5px',
+      padding: '10px'
+    },
+    '@media (max-width:360px)': {
+      marginLeft: '0'
+    }
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -45,7 +49,10 @@ const useStyles = makeStyles(theme => ({
   imagePreview: {
     textAlign: 'center',
     height: '160px',
-    width: '350px'
+    width: '350px',
+    '@media (max-width:460px)': {
+      width: '100%'
+    }
   }
 }))
 
@@ -108,12 +115,12 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
             {imagePreview}
           </div>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={5} sm={3} md={2}>
           <Button variant='contained' disabled={logo === ''} className={classes.button} onClick={() => handleSaveButton()}>
             Actualizar
           </Button>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={5} sm={3} md={2}>
           <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>

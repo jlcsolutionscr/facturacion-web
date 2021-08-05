@@ -30,12 +30,17 @@ import Button from '@material-ui/core/Button'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    flexGrow: 1,
-    borderRadius: '8px',
-    overflowY: 'auto',
-    padding: '25px',
-    maxHeight: `${window.innerHeight - 302}px`,
-    backgroundColor: 'rgba(255,255,255,0.65)'
+    backgroundColor: 'rgba(255,255,255,0.65)',
+    marginTop: '50px',
+    marginLeft: '30px',
+    padding: '50px 30px 0 30px',
+    '@media (max-width:414px)': {
+      marginLeft: '5px',
+      padding: '10px'
+    },
+    '@media (max-width:360px)': {
+      marginLeft: '0'
+    }
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',

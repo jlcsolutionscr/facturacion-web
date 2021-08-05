@@ -6,7 +6,7 @@ import {
 
 import { startLoader, stopLoader } from 'store/ui/actions'
 import { setInvoiceSession } from 'store/billing/actions'
-import { invoiceLogin } from 'utils/invoiceHelper'
+import { userLogin } from 'utils/billingHelper'
 
 export const logIn = (roles, token) => {
   return {
@@ -33,7 +33,7 @@ export function login (username, password, id) {
     dispatch(setLoginError(''))
     dispatch(startLoader())
     try {
-      const user = await invoiceLogin(username, password, id)
+      const user = await userLogin(username, password, id)
       const roles = user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole}))
       dispatch(logIn(roles, user.Token))
       const company = user.UsuarioPorEmpresa[0]

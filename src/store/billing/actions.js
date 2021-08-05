@@ -22,7 +22,7 @@ import {
   saveCompanyLogo,
   getBranchList,
   getReportData
-} from 'utils/invoiceHelper'
+} from 'utils/billingHelper'
 
 import { ExportDataToXls } from 'utils/utilities'
 

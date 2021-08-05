@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function MenuPage({rolesPerUser, getCompany, setActiveSection, setReportsParameters, logOut}) {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const updateCompanyInfo = rolesPerUser.filter(role => [1, 61].includes(role.IdRole)).length > 0
   const manageCustomers = rolesPerUser.filter(role => role.IdRole === 100).length > 0
   const manageProducts = rolesPerUser.filter(role => role.IdRole === 103).length > 0
@@ -45,10 +48,10 @@ function MenuPage({rolesPerUser, getCompany, setActiveSection, setReportsParamet
   return (
     <Grid container align='center' spacing={3} >
       {updateCompanyInfo && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualización de su empresa</Button>
+        <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>
       </Grid>}
       {updateCompanyInfo && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(2)}>Agregue su logotipo</Button>
+        <Button classes={{root: classes.button}} onClick={() => setActiveSection(2)}>Agregar logotipo</Button>
       </Grid>}
       {manageCustomers && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(3)}>Catálogo de clientes</Button>
@@ -57,13 +60,13 @@ function MenuPage({rolesPerUser, getCompany, setActiveSection, setReportsParamet
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(4)}>Catálogo de productos</Button>
       </Grid>}
       {generateInvoice && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(5)}>Generar factura electrónica</Button>
+        <Button classes={{root: classes.button}} onClick={() => setActiveSection(5)}>Facturar</Button>
       </Grid>}
       {generateInvoice && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(6)}>Gestionar facturas electrónicas</Button>
+        <Button classes={{root: classes.button}} onClick={() => setActiveSection(6)}>Facturas electrónicas</Button>
       </Grid>}
       {manageDocuments && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(7)}>Gestionar documentos electrónicos</Button>
+        <Button classes={{root: classes.button}} onClick={() => setActiveSection(7)}>Documentos electrónicos</Button>
       </Grid>}
       {reportingMenu && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => setReportsParameters()}>Menu de reportes</Button>

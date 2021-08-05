@@ -6,7 +6,7 @@ import {
   SET_ERROR_MESSAGE
 } from './types'
 
-import { downloadWindowsApp } from 'utils/invoiceHelper'
+import { downloadWindowsApp } from 'utils/billingHelper'
 
 export const startLoader = (text) => {
   return {

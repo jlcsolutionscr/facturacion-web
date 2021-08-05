@@ -55,6 +55,19 @@
   animation-delay: -0.16s;
 }
 
+@media screen and (max-width: 600px) {
+  .loaderContainer {
+    left: 35%;
+    margin: -75px 0 0 -75px;
+  }
+  .loaderText {
+    font-size: 30px;
+  }
+  .loaderDotsDiv {
+    margin-top: 14px;
+  }
+}
+
 @keyframes sk-bouncedelay {
   0%, 80%, 100% { 
     transform: scale(0);

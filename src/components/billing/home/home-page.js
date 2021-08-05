@@ -10,6 +10,7 @@ import MenuPage from './pages/menu-page'
 import CompanyPage from './pages/company-page'
 import LogoPage from './pages/logo-page'
 import UnderConstructionPage from './pages/under-construction'
+import BillingPage from './pages/billing-page'
 import ReportsPage from './pages/reports-page'
 
 const useStyles = makeStyles(theme => ({
@@ -29,11 +30,12 @@ const useStyles = makeStyles(theme => ({
       paddingTop: '0',
       paddingBottom: '10px'
     },
-    '@media (max-width:411px)': {
+    '@media (max-width:414px)': {
       paddingBottom: '0'
     }
   },
   body: {
+    display: 'flex',
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
@@ -94,7 +96,7 @@ const useStyles = makeStyles(theme => ({
     '@media (max-width:500px)': {
       fontSize: theme.typography.pxToRem(22)
     },
-    '@media (max-width:411px)': {
+    '@media (max-width:414px)': {
       fontSize: theme.typography.pxToRem(20)
     }
   },
@@ -119,7 +121,7 @@ const useStyles = makeStyles(theme => ({
     '@media (max-width:500px)': {
       fontSize: theme.typography.pxToRem(25)
     },
-    '@media (max-width:411px)': {
+    '@media (max-width:414px)': {
       fontSize: theme.typography.pxToRem(20)
     }
   },
@@ -170,7 +172,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, isLoaderActiv
         {activeSection === 2 && <LogoPage />}
         {activeSection === 3 && <UnderConstructionPage />}
         {activeSection === 4 && <UnderConstructionPage />}
-        {activeSection === 5 && <UnderConstructionPage />}
+        {activeSection === 5 && <BillingPage />}
         {activeSection === 6 && <UnderConstructionPage />}
         {activeSection === 7 && <UnderConstructionPage />}
         {activeSection === 20 && <ReportsPage />}
