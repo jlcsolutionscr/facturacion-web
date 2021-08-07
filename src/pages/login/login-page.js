@@ -81,7 +81,7 @@ function LoginPage({ login }) {
     login(username, password, id)
   }
 
-  const isSubmitButtonDisabled = username === '' || password === '' || (username.toUpperCase() !== 'ADMIN' && id === '')
+  const isSubmitButtonDisabled = username === '' || password === '' || id === ''
   const preventDefault = event => event.preventDefault()
   return (
     <Grid container component='main'>

@@ -51,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 
   function SummaryLayout(props) {
     const classes = useStyles()
+    if (props.data.length === 0) return null
     return (<Paper className={classes.container}>
       <Typography className={classes.title} color='textSecondary' component='p'>
         {props.reportName}

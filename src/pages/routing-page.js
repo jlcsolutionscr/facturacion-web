@@ -16,7 +16,8 @@ import { setErrorMessage } from 'store/ui/actions'
 const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
-    height: `${window.innerHeight}px`
+    height: `${window.innerHeight}px`,
+    width: `${window.innerWidth}px`
   },
   error: {
     backgroundColor: theme.palette.error.dark
