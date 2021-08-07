@@ -1,7 +1,6 @@
 import {
   LOGIN,
-  LOGOUT,
-  SET_LOGIN_ERROR
+  LOGOUT
 } from './types'
 
 const sessionReducer = (state = {}, { type, payload }) => {
@@ -10,18 +9,19 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: true,
-        rolesPerUser: payload.roles,
-        token: payload.token
+        companyId: payload.companyId,
+        companyName: payload.companyName,
+        companyIdentifier: payload.companyIdentifier,
+        permissions: payload.user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
+        token: payload.user.Token
       }
     case LOGOUT:
       return {
         ...state,
         authenticated: false,
-        rolesPerUser: [],
+        permissions: [],
         token: null
       }
-    case SET_LOGIN_ERROR:
-      return { ...state, loginError: payload.error }
     default:
       return state
   }

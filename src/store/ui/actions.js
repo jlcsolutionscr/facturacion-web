@@ -1,12 +1,13 @@
 import {
   START_LOADER,
   STOP_LOADER,
-  SET_ACTIVE_PRODUCT_INFO,
-  SET_ACTIVE_INFO_SECTION,
-  SET_ERROR_MESSAGE
+  SET_ACTIVE_SECTION,
+  SET_ERROR_MESSAGE,
+  SET_CANTON_LIST,
+  SET_DISTRITO_LIST,
+  SET_BARRIO_LIST,
+  SET_BRANCH_LIST
 } from './types'
-
-import { downloadWindowsApp } from 'utils/billingHelper'
 
 export const startLoader = (text) => {
   return {
@@ -21,16 +22,9 @@ export const stopLoader = () => {
   }
 }
 
-export const setActiveProductInfo = (productId) => {
+export const setActiveSection = (pageId) => {
   return {
-    type: SET_ACTIVE_PRODUCT_INFO,
-    payload: { productId }
-  }
-}
-
-export const setActiveInfoSection = (pageId) => {
-  return {
-    type: SET_ACTIVE_INFO_SECTION,
+    type: SET_ACTIVE_SECTION,
     payload: { pageId }
   }
 }
@@ -42,16 +36,30 @@ export const setErrorMessage = (error) => {
   }
 }
 
-export function downloadWindowsAppFromWebSite () {
-  return async (dispatch) => {
-    dispatch(startLoader('Descargando'))
-    try {
-      await downloadWindowsApp()
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(setErrorMessage(error))
-      dispatch(stopLoader())
-      console.error('Exepción en el procesamiento de la descarga:', error)
-    }
+export const setCantonList = (list) => {
+  return {
+    type: SET_CANTON_LIST,
+    payload: { list }
+  }
+}
+
+export const setDistritoList = (list) => {
+  return {
+    type: SET_DISTRITO_LIST,
+    payload: { list }
+  }
+}
+
+export const setBarrioList = (list) => {
+  return {
+    type: SET_BARRIO_LIST,
+    payload: { list }
+  }
+}
+
+export const setBranchList = (list) => {
+  return {
+    type: SET_BRANCH_LIST,
+    payload: { list }
   }
 }

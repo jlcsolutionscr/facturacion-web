@@ -95,18 +95,17 @@ export async function getWithResponse(endpointURL, token) {
       'Accept': 'application/json'
     }
     if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await fetch(endpointURL, {
+    const response = await axios.get(endpointURL, {
       method: 'GET',
       headers
     })
-    const data = await response.json()
-    if (data) {
-      return JSON.parse(data)
+    if (response.data !== '') {
+      return JSON.parse(response.data)
     } else {
       return null
     }
   } catch (error) {
-    const message = error.response ? error.response.body ? error.response.body : error.response : error.message ? error.message : ''
+    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
     throw new Error(message)
   }
 }

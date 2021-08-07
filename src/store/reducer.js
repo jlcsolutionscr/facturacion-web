@@ -1,11 +1,15 @@
 import { combineReducers } from 'redux'
 
-import uiReducer from './ui/reducer'
+import companyReducer from './company/reducer'
+import customerReducer from './customer/reducer'
+import invoiceReducer from './invoice/reducer'
 import sessionReducer from './session/reducer'
-import invoiceReducer from './billing/reducer'
+import uiReducer from './ui/reducer'
 
 export default combineReducers({
-  ui: uiReducer,
+  company: companyReducer,
+  customer: customerReducer,
+  invoice: invoiceReducer,
   session: sessionReducer,
-  invoice: invoiceReducer
+  ui: uiReducer
 })

@@ -1,28 +1,33 @@
 export const INITIAL_STATE = {
   ui: {
-    isLoaderActive: false,
+    isLoaderOpen: false,
     loaderText: '',
-    activeProduct: 0,
-    activeInfoSection: 0,
-    errorMessage: ''
-  },
-  session: {
-    authenticated: false,
-    rolesPerUser: [],
-    token: null,
-    loginError: ''
-  },
-  invoice: {
     activeSection: 0,
-    companyId: null,
-    companyIdentifier: '',
-    companyName: '',
-    company: null,
     cantonList: [],
     distritoList: [],
     barrioList: [],
     branchList: [],
+    errorMessage: ''
+  },
+  session: {
+    authenticated: false,
+    companyId: null,
+    companyName: '',
+    companyIdentifier: '',
+    permissions: [],
+    token: null
+  },
+  customer: {
+    customerList: []
+  },
+  company: {
+    company: null,
     reportResults: [],
-    reportSummary: null
+    reportSummary: null,
+  },
+  invoice: {
+    customerId: null,
+    productDetails: [],
+    payment: null
   }
 }

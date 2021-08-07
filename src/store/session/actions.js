@@ -1,17 +1,20 @@
 import {
   LOGIN,
-  LOGOUT,
-  SET_LOGIN_ERROR
+  LOGOUT
 } from './types'
 
-import { startLoader, stopLoader } from 'store/ui/actions'
-import { setInvoiceSession } from 'store/billing/actions'
-import { userLogin } from 'utils/billingHelper'
+import {
+  startLoader,
+  stopLoader,
+  setErrorMessage
+} from 'store/ui/actions'
 
-export const logIn = (roles, token) => {
+import { userLogin } from 'utils/domainHelper'
+
+export const logIn = (user, companyId, companyName, companyIdentifier) => {
   return {
     type: LOGIN,
-    payload: { roles, token }
+    payload: { user, companyId, companyName, companyIdentifier }
   }
 }
 
@@ -21,27 +24,20 @@ export const logOut = () => {
   }
 }
 
-export const setLoginError = (error) => {
-  return {
-    type: SET_LOGIN_ERROR,
-    payload: { error }
-  }
-}
-
 export function login (username, password, id) {
   return async (dispatch) => {
-    dispatch(setLoginError(''))
+    dispatch(setErrorMessage(''))
     dispatch(startLoader())
     try {
       const user = await userLogin(username, password, id)
-      const roles = user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole}))
-      dispatch(logIn(roles, user.Token))
       const company = user.UsuarioPorEmpresa[0]
-      dispatch(setInvoiceSession(company.IdEmpresa, company.Empresa.Identificacion, company.Empresa.NombreEmpresa))
+      const companyName = company.Empresa.NombreComercial || company.Empresa.NombreEmpresa
+      const companyIdentifier = company.Empresa.Identificacion
+      dispatch(logIn(user, company.IdEmpresa, companyName, companyIdentifier))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(logOut())
-      dispatch(setLoginError(error.message))
+      dispatch(setErrorMessage(error.message))
       dispatch(stopLoader())
       console.error('Exeption authenticating session', error)
     }

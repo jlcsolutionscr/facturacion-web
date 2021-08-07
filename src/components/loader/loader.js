@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './loader.css'
 
-function Loader ({ loaderText, isLoaderActive }) {
-  const divStyle = { display: isLoaderActive ? 'block' : 'none' }
+function Loader ({ loaderText, isLoaderOpen }) {
+  const divStyle = { display: isLoaderOpen ? 'block' : 'none' }
   return (
     <div id='id_loader' className="loaderBackground" style={divStyle}>
       <div className="loaderContainer">
@@ -19,7 +19,7 @@ function Loader ({ loaderText, isLoaderActive }) {
 }
 
 Loader.propTypes = {
-  isLoaderActive: PropTypes.bool,
+  isLoaderOpen: PropTypes.bool,
   loaderText: PropTypes.string
 }
 
