@@ -23,7 +23,12 @@ export const INITIAL_STATE = {
   company: {
     company: null,
     reportResults: [],
-    reportSummary: null,
+    reportSummary: {
+      startDate: '01/01/2000',
+      endDate: '01/01/2000',
+      taxes: 0,
+      total: 0
+    },
   },
   invoice: {
     customerId: null,

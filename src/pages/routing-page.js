@@ -8,6 +8,7 @@ import { ErrorIcon } from 'utils/iconsHelper'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Loader from 'components/loader'
+import useWindowSize from 'hooks/use-window-size'
 import LoginPage from './login/login-page'
 import HomePage from './invoice/home-page'
 
@@ -15,9 +16,7 @@ import { setErrorMessage } from 'store/ui/actions'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    display: 'flex',
-    height: `${window.innerHeight}px`,
-    width: `${window.innerWidth}px`
+    display: 'flex'
   },
   error: {
     backgroundColor: theme.palette.error.dark
@@ -30,9 +29,11 @@ const useStyles = makeStyles(theme => ({
 
 function RoutingPage({ authenticated, errorMessage, isLoaderOpen, loaderText, setErrorMessage}) {
   const classes = useStyles()
-  const component = !authenticated ? <LoginPage /> : <HomePage />
+  const size = useWindowSize()
+  const width = size.width > 320 ? size.width : 320
+  const component = !authenticated ? <LoginPage /> : <HomePage width={width} />
   return (
-    <div className={classes.container}>
+    <div id='main_container' className={classes.container} style={{height: `${size.height}px`, width: `${size.width}px`}}>
       <Loader isLoaderOpen={isLoaderOpen} loaderText={loaderText} />
       {component}
       <Snackbar

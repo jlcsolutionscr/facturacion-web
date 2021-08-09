@@ -3,12 +3,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setActiveSection } from 'store/ui/actions'
-
 import {
+  setActiveSection,
   updateCantonList,
   updateDistritoList,
-  updateBarrioList,
+  updateBarrioList
+} from 'store/ui/actions'
+
+import {
   setCompanyAttribute,
   saveCompany,
 } from 'store/company/actions'
@@ -25,16 +27,7 @@ import TextField from 'components/text-field'
 const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: 'rgba(255,255,255,0.65)',
-    marginTop: '50px',
-    marginLeft: '30px',
-    padding: '50px 30px 0 30px',
-    '@media (max-width:414px)': {
-      marginLeft: '5px',
-      padding: '10px'
-    },
-    '@media (max-width:360px)': {
-      marginLeft: '0'
-    }
+    padding: '3%'
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -73,10 +66,13 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
   }
   const handleSelectChange = (id, value) => {
     if (id === 'IdProvincia') {
+      setCompanyAttribute('IdProvincia', value)
       updateCantonList(value)
     } else if (id === 'IdCanton') {
+      setCompanyAttribute('IdCanton', value)
       updateDistritoList(company.IdProvincia, value)
     } else if (id === 'IdDistrito') {
+      setCompanyAttribute('IdDistrito', value)
       updateBarrioList(company.IdProvincia, company.IdCanton, value)
     } else {
       setCompanyAttribute(id, value)
@@ -97,8 +93,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
   const distritoItems = distritoList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   const barrioItems = barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
-    <div className={classes.container}>
-      <Grid container spacing={3}>
+    <div>
+      <Grid container spacing={3} className={classes.container}>
         <Grid item xs={12} sm={12}>
           <TextField
             id='NombreComercial'

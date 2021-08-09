@@ -3,13 +3,12 @@ import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Header from 'components/header'
-
+import BannerImage from 'assets/img/menu-background.jpg'
 import MenuPage from './menu-page'
 import CompanyPage from './company-page'
 import LogoPage from './logo-page'
 import UnderConstructionPage from './under-construction'
 import ReportsPage from './reports-page'
-import BannerImage from 'assets/img/menu-background.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,31 +24,20 @@ const useStyles = makeStyles(theme => ({
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
-    paddingBottom: '20px',
-    marginBottom: '40px',
-    marginLeft: '100px',
-    marginRight: '100px',
-    '@media (max-width:960px)': {
-      marginLeft: '50px',
-      marginRight: '50px'
+    margin: '0 15% 2% 15%',
+    '@media (max-width:1280px)': {
+      margin: '0 8% 2% 8%',
     },
     '@media (max-width:600px)': {
-      marginLeft: '15px',
-      marginRight: '15px',
-    },
-    '@media (max-width:414px)': {
-      paddingBottom: '5px',
-      marginBottom: '5px',
-      marginLeft: '10px',
-      marginRight: '10px',
+      margin: '0 3% 2% 3%'
     }
   }
 }))
 
-function HomePage({ activeSection, companyName, companyIdentifier }) {
+function HomePage({ activeSection, companyName, companyIdentifier, width }) {
   const classes = useStyles()
   return (
-    <div id='id_home_page' className={classes.root} >
+    <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
       <Header companyName={companyName} companyIdentifier={companyIdentifier} />
       <div className={classes.body}>
         {activeSection === 0 && <MenuPage />}
@@ -60,7 +48,7 @@ function HomePage({ activeSection, companyName, companyIdentifier }) {
         {activeSection === 5 && <UnderConstructionPage />}
         {activeSection === 6 && <UnderConstructionPage />}
         {activeSection === 7 && <UnderConstructionPage />}
-        {activeSection === 20 && <ReportsPage />}
+        {activeSection === 20 && <ReportsPage width={width} />}
       </div>
     </div>
   )

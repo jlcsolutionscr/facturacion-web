@@ -9,6 +9,12 @@ import {
   SET_BRANCH_LIST
 } from './types'
 
+import {
+  getCantonList,
+  getDistritoList,
+  getBarrioList
+} from 'utils/domainHelper'
+
 export const startLoader = (text) => {
   return {
     type: START_LOADER,
@@ -63,3 +69,67 @@ export const setBranchList = (list) => {
     payload: { list }
   }
 }
+
+export function updateCantonList (idProvincia) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { company } = getState().invoice
+    if (company.IdProvincia !== idProvincia) {
+      dispatch(startLoader())
+      dispatch(setErrorMessage(''))
+      try {
+        const cantonList = await getCantonList(idProvincia, token)
+        dispatch(setCantonList(cantonList))
+        const distritoList = await getDistritoList(idProvincia, 1, token)
+        dispatch(setDistritoList(distritoList))
+        const barrioList = await getBarrioList(idProvincia, 1, 1, token)
+        dispatch(setBarrioList(barrioList))
+        dispatch(stopLoader())
+      } catch (error) {
+        dispatch(setErrorMessage(error.message))
+        dispatch(stopLoader())
+      }
+    }
+  }
+}
+
+export function updateDistritoList (idProvincia, idCanton) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { company } = getState().invoice
+    if (company.IdCanton !== idCanton) {
+      dispatch(startLoader())
+      dispatch(setErrorMessage(''))
+      try {
+        const distritoList = await getDistritoList(idProvincia, idCanton, token)
+        dispatch(setDistritoList(distritoList))
+        const barrioList = await getBarrioList(idProvincia, idCanton, 1, token)
+        dispatch(setBarrioList(barrioList))
+        dispatch(stopLoader())
+      } catch (error) {
+        dispatch(setErrorMessage(error.message))
+        dispatch(stopLoader())
+      }
+    }
+  }
+}
+
+export function updateBarrioList (idProvincia, idCanton, idDistrito) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { company } = getState().invoice
+    if (company.IdDistrito !== idDistrito) {
+      dispatch(startLoader())
+      dispatch(setErrorMessage(''))
+      try {
+        const barrioList = await getBarrioList(idProvincia, idCanton, idDistrito, token)
+        dispatch(setBarrioList(barrioList))
+        dispatch(stopLoader())
+      } catch (error) {
+        dispatch(setErrorMessage(error.message))
+        dispatch(stopLoader())
+      }
+    }
+  }
+}
+

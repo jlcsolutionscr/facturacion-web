@@ -15,17 +15,7 @@ import Button from '@material-ui/core/Button'
 const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: 'rgba(255,255,255,0.65)',
-    marginTop: '50px',
-    marginLeft: '30px',
-    padding: '50px 30px 0 30px',
-    '@media (max-width:414px)': {
-      marginTop: '5px',
-      marginLeft: '5px',
-      padding: '10px'
-    },
-    '@media (max-width:360px)': {
-      marginLeft: '0'
-    }
+    padding: '3%'
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -75,11 +65,13 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
   }
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
-    <div className={classes.container}>
-      {errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-        {errorMessage}
-      </Typography>}
-      <Grid container spacing={3}>
+    <div>
+      <Grid container spacing={3} className={classes.container}>
+      {errorMessage !== '' && <Grid item xs={12}>
+        <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
+          {errorMessage}
+        </Typography>
+      </Grid>}
       <Grid item xs={6} sm={6}>
           <TextField
             disabled={true}

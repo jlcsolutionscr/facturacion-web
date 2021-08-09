@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function StepOneScreen({index, value, customerList, customer, setParameters, setCompanyAttribute}) {
-  useEffect(() => {
+  React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
   const classes = useStyles()
@@ -95,7 +95,7 @@ function StepOneScreen({index, value, customerList, customer, setParameters, set
 
 const mapStateToProps = (state) => {
   return {
-    customer: state.billing.customer,
+    customer: state.invoice.customer,
     customerList: state.customer.customerList
   }
 }

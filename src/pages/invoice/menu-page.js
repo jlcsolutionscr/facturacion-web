@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function MenuPage({permissions, getCompany, setActiveSection, setReportsParameters, logOut}) {
-  useEffect(() => {
+  React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
