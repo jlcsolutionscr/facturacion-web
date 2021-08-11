@@ -4,14 +4,21 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Grid from '@material-ui/core/Grid'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
+import Button from '@material-ui/core/Button'
 
-import LabelField from 'components/label-field'
-import { setActiveSection } from 'store/ui/actions'
-import { getCustomer } from 'store/customer/actions'
+import ListDropdown from 'components/list-dropdown'
+import TextField from 'components/text-field'
+
+import {
+  addDetails,
+  removeDetails
+} from 'store/invoice/actions'
+
+import { formatCurrency, roundNumber } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -22,73 +29,92 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function StepTwoScreen({index, value, customer, customerList, setActiveSection, getCustomer}) {
+function StepTwoScreen({index, value, product, productList, productDetails, successful}) {
   React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
   const classes = useStyles()
-  const menuItems = customerList.map(item => { return <MenuItem key={item.IdCliente} value={item.IdCliente}>{item.Nombre}</MenuItem> })
-  return (
-    <div className={classes.container} hidden={value !== index}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={9} md={7}>
-          <FormControl fullWidth>
-            <InputLabel id='demo-simple-select-label'>Seleccione un cliente</InputLabel>
-            <Select value={customer ? customer.IdCliente : 0} onChange={(event) => getCustomer(event.target.value)}>
-              {menuItems}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField
-            label='Nombre del cliente'
-            value={customer ? customer.NombreComercial || customer.Nombre : ''}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField
-            label='Tipo de exoneración'
-            value={customer ? customer.ParametroExoneracion.Descripcion : ''}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField
-            label='Código del documento'
-            value={customer ? customer.NumDocExoneracion : ''}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField
-            label='Nombre de la institución'
-            value={customer ? customer.NombreInstExoneracion : ''}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField
-            label='Fecha de emisión'
-            value={customer ? customer.FechaEmisionDoc : ''}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField
-            label='Porcentaje de exoneración'
-            value={customer ? customer.PorcentajeExoneracion : ''}
-          />
-        </Grid>
+  const [filter, setFilter] = React.useState('')
+  const [description, setDescription] = React.useState(product ? product.Descripcion : '')
+  const [quantity, setQuantity] = React.useState(1)
+  const [price, setPrice] = React.useState(product ? product.PrecioVenta : 0)
+  const rows = productDetails.map((item, index) => {
+    return (<Table className={classes.table} aria-label='simple table'>
+      <TableBody>
+        {productDetails.map((row, index) => (
+          <TableRow key={index}>
+            <TableCell>{row.Cantidad}</TableCell>
+            <TableCell>{row.Descripcion}</TableCell>
+            <TableCell align='right'>{formatCurrency(roundNumber(item.Cantidad * item.PrecioVenta, 2), 2)}</TableCell>
+            <TableCell align='right'>+</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>)
+  })
+  let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
+  return (<div className={classes.container} hidden={value !== index}>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <ListDropdown
+          label='Seleccione un producto'
+          items={productList}
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+        />
       </Grid>
-    </div>
-  )
+      <Grid item xs={12}>
+        <TextField
+          label='Descripción'
+          value={description}
+          fullWidth
+          variant='outlined'
+          onChange={(event) => setDescription(event.target.value)}
+        />
+      </Grid>
+      <Grid item xs={3}>
+        <TextField
+          label='Cantidad'
+          value={quantity}
+          fullWidth
+          numericFormat
+          variant='outlined'
+          onChange={(event) => setQuantity(event.target.value)}
+        />
+      </Grid>
+      <Grid item xs={8}>
+        <TextField
+          label='Precio'
+          value={price}
+          fullWidth
+          numericFormat
+          variant='outlined'
+          onChange={(event) => setPrice(event.target.value)}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <Button
+          disabled={!buttonEnabled}
+          onPressButton={() => this.props.insertProduct()}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        {rows}
+      </Grid>
+    </Grid>
+  </div>)
 }
 
 const mapStateToProps = (state) => {
   return {
-    customer: state.customer.customer,
-    customerList: state.customer.customerList
+    product: state.product.product,
+    productList: state.product.productList,
+    productDetails: state.invoice.productDetails
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActiveSection, getCustomer }, dispatch)
+  return bindActionCreators({ addDetails, removeDetails }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen)

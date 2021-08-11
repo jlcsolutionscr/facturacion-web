@@ -101,7 +101,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             value={company ? company.NombreComercial : ''}
             label='Nombre comercial'
             fullWidth
-            autoComplete='lname'
             variant='outlined'
             onChange={handleChange}
           />

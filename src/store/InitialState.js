@@ -34,6 +34,11 @@ export const INITIAL_STATE = {
   invoice: {
     customer: null,
     productDetails: [],
-    payment: null
+    payment: null,
+    successful: false
+  },
+  product: {
+    product: null,
+    productList: []
   }
 }

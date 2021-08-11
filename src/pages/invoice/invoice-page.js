@@ -39,7 +39,7 @@ function InvoicePage({setActiveSection}) {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton color="#FFF" aria-label="upload picture" component="span" onClick={() => setActiveSection(0)}>
+        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(0)}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

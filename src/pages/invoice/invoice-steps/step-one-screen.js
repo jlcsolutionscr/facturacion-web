@@ -10,7 +10,6 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 
 import LabelField from 'components/label-field'
-import { setActiveSection } from 'store/ui/actions'
 import { getCustomer } from 'store/customer/actions'
 
 const useStyles = makeStyles(theme => ({
@@ -22,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function StepOneScreen({index, value, customer, customerList, setActiveSection, getCustomer}) {
+function StepOneScreen({index, value, customer, customerList, getCustomer}) {
   React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -88,7 +87,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActiveSection, getCustomer }, dispatch)
+  return bindActionCreators({ getCustomer }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen)

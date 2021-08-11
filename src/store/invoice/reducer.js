@@ -2,7 +2,8 @@ import {
   RESET_INVOICE,
   ADD_DETAIL,
   REMOVE_DETAIL,
-  SET_PAYMENT
+  SET_PAYMENT,
+  SET_SUCCESSFUL
 } from './types'
 
 const companyReducer = (state = {}, { type, payload }) => {
@@ -15,6 +16,8 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, productDetails: state.productDetails.filter(detail => detail.Id !== payload.id) }
     case SET_PAYMENT:
       return { ...state, payment: payload.payment }
+    case SET_SUCCESSFUL:
+      return { ...state, successful: payload.success }
     default:
       return state
   }

@@ -49,8 +49,8 @@ export const createStyle = makeStyles(theme => createStyles({
     }
   },
   input: {
-    lineHeight: '1.1876em',
     color: 'currentColor',
+    lineHeight: '1.1876em',
     width: '100%',
     border: '0',
     height: '1.1876em',
@@ -61,8 +61,11 @@ export const createStyle = makeStyles(theme => createStyles({
     background: 'none',
     boxSizing: 'content-box',
     textRendering: 'auto',
+    cursor: 'text',
     "&:focus + label": {
       color: '#3F51B5'
     }
+  },
+  listContainer: {
   }
 }))

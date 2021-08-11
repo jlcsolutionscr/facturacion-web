@@ -2,7 +2,8 @@ import {
   RESET_INVOICE,
   ADD_DETAIL,
   REMOVE_DETAIL,
-  SET_PAYMENT
+  SET_PAYMENT,
+  SET_SUCCESSFUL
 } from './types'
 
 import {
@@ -22,7 +23,7 @@ export const resetInvoice = () => {
   }
 }
 
-export const setDetails = (detail) => {
+export const addDetails = (detail) => {
   return {
     type: ADD_DETAIL,
     payload: { detail }
@@ -40,6 +41,13 @@ export const setPayment = (method) => {
   return {
     type: SET_PAYMENT,
     payload: { method }
+  }
+}
+
+export const setSuccessful = (success) => {
+  return {
+    type: SET_SUCCESSFUL,
+    payload: { success }
   }
 }
 
