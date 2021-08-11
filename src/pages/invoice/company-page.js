@@ -118,8 +118,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <FormControl>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Provincia</InputLabel>
             <Select
               id='IdProvincia'
@@ -136,8 +136,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <FormControl>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Cantón</InputLabel>
             <Select
               id='IdCanton'
@@ -148,8 +148,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <FormControl>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Distrito</InputLabel>
             <Select
               id='IdDistrito'
@@ -160,8 +160,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <FormControl>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Barrio</InputLabel>
             <Select
               id='IdBarrio'

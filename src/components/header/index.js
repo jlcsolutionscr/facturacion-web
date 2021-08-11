@@ -23,11 +23,11 @@ function Header({ companyName, companyIdentifier, width }) {
           Software development
         </Typography>
       </div>
-      <div>
-        <Typography className={classes.title} align='center' paragraph>
+      <div className={classes.title}>
+        <Typography className={classes.companyText} align='center' paragraph>
           {title}
         </Typography>
-        <Typography className={classes.title} align='center' paragraph>
+        <Typography className={classes.companyText} align='center' paragraph>
           {identification}
         </Typography>
       </div>

@@ -23,19 +23,17 @@ export const createStyle = makeStyles(theme => createStyles({
     },
     '@media (max-width:414px)': {
       backgroundSize: '75px 75px',
-      backgroundPosition: '4% 0',
       height: '75px'
     }
   },
   text: {
     textAlign: 'left',
-    margin: '30px 0 10px 130px',
+    margin: '30px 0 10px 120px',
     '@media (max-width:600px)': {
       margin: '30px 0 10px 110px'
     },
     '@media (max-width:414px)': {
-      textAlign: 'center',
-      margin: '20px 0 10px 0'
+      margin: '20px 0 10px 90px'
     }
   },
   h2: {
@@ -65,6 +63,18 @@ export const createStyle = makeStyles(theme => createStyles({
     }
   },
   title: {
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    textAlign: 'center',
+    width: '100%',
+    top: '40px',
+    '@media (max-width:960px)': {
+      position: 'relative',
+      top: '0px'
+    }
+  },
+  companyText: {
     fontFamily: '"Exo 2", sans-serif',
     fontSize: theme.typography.pxToRem(30),
     fontStyle: 'italic',

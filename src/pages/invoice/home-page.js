@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
-    margin: '0px 15% 4% 15%',
+    margin: '50px 15% 4% 15%',
     '@media (max-width:960px)': {
       margin: '0px 8% 3% 8%',
     },
