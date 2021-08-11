@@ -100,12 +100,12 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
             {imagePreview}
           </div>
         </Grid>
-        <Grid item xs={5} sm={3} md={2}>
+        <Grid item xs={5} sm={3}>
           <Button variant='contained' disabled={logo === ''} className={classes.button} onClick={() => handleSaveButton()}>
             Actualizar
           </Button>
         </Grid>
-        <Grid item xs={5} sm={3} md={2}>
+        <Grid item xs={5} sm={3}>
           <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
             Regresar
           </Button>

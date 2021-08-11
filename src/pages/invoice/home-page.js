@@ -25,12 +25,15 @@ const useStyles = makeStyles(theme => ({
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
-    margin: '0 15% 2% 15%',
-    '@media (max-width:1280px)': {
-      margin: '0 8% 2% 8%',
+    margin: '0px 15% 4% 15%',
+    '@media (max-width:960px)': {
+      margin: '0px 8% 3% 8%',
     },
     '@media (max-width:600px)': {
-      margin: '0 3% 2% 3%'
+      margin: '0px 4% 2% 4%',
+    },
+    '@media (max-width:414px)': {
+      margin: '0px 3% 1% 3%'
     }
   }
 }))
@@ -39,7 +42,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
   const classes = useStyles()
   return (
     <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
-      <Header companyName={companyName} companyIdentifier={companyIdentifier} />
+      <Header companyName={companyName} companyIdentifier={companyIdentifier} width={width} />
       <div className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}

@@ -144,7 +144,7 @@ export async function getCustomerList(token, companyId) {
     const data = "{NombreMetodo: 'ObtenerListadoClientes', Parametros: {IdEmpresa: " + companyId + ", NumeroPagina: 1, FilasPorPagina: 0}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
-    return response.map(item => ({Id: item.Id, NombreCliente: item.Descripcion }))
+    return response.map(item => ({IdCliente: item.Id, Nombre: item.Descripcion }))
   } catch (e) {
     throw e.message
   }

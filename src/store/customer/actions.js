@@ -27,12 +27,11 @@ export const setCustomer = (customer) => {
 
 export function getCustomer (idCustomer) {
   return async (dispatch, getState) => {
-    const { serviceURL } = getState().config
     const { token } = getState().session
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
-      const customer = await getCustomerEntity(serviceURL, token, idCustomer)
+      const customer = await getCustomerEntity(token, idCustomer)
       dispatch(setCustomer(customer))
       dispatch(stopLoader())
     } catch (error) {

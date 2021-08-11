@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 
 import { createStyle } from './styles'
 
-function Header({ companyName, companyIdentifier }) {
+function Header({ companyName, companyIdentifier, width }) {
   const classes = createStyle()
   const title = companyName
   const identification = companyIdentifier.length === 9
@@ -14,12 +14,13 @@ function Header({ companyName, companyIdentifier }) {
       : companyIdentifier
   return (
     <div className={classes.header}>
-      <div className={classes.banner}>
+      <div className={classes.banner} />
+      <div className={classes.text}>
         <Typography classes={{h2: classes.h2}} variant='h2' component='h2'>
           JLC Solutions
         </Typography>
         <Typography classes={{h4: classes.h4}} variant='h4' component='h4'>
-          A software development company
+          Software development
         </Typography>
       </div>
       <div>

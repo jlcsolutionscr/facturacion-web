@@ -4,52 +4,46 @@ import LogoImage from 'assets/img/company-logo.png'
 export const createStyle = makeStyles(theme => createStyles({
   header: {
     flex: '0 1 auto',
-    paddingTop: '70px',
-    paddingBottom: '40px',
-    '@media (max-width:960px)': {
-      paddingTop: '0',
-      paddingBottom: '10px'
-    },
-    '@media (max-width:414px)': {
-      paddingBottom: '0'
-    }
+    paddingTop: '0',
+    paddingBottom: '10px'
   },
   banner: {
     backgroundImage: `url(${LogoImage})`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: '105px 105px',
-    backgroundPosition: '50% 0px',
-    backgroundColor: 'transparent',
-    paddingTop: '110px',
-    paddingLeft: '10px',
     position: 'absolute',
-    top: '30px',
+    backgroundSize: '105px 105px',
+    backgroundPosition: '10px 0',
+    top: '10px',
     left: '0',
-    '@media (max-width:960px)': {
-      backgroundSize: '85px 85px',
-      marginBottom: '15px',
-      position: 'relative',
-      paddingTop: '90px',
-      paddingLeft: '0',
-      top: '10px',
-      left: '0',
-      textAlign: 'center',
-      width: 'auto'
+    height: '105px',
+    width: '100%',
+    '@media (max-width:600px)': {
+      backgroundSize: '95px 95px',
+      height: '95px'
     },
     '@media (max-width:414px)': {
-      backgroundSize: '65px 65px',
-      paddingTop: '70px',
+      backgroundSize: '75px 75px',
+      backgroundPosition: '4% 0',
+      height: '75px'
+    }
+  },
+  text: {
+    textAlign: 'left',
+    margin: '30px 0 10px 130px',
+    '@media (max-width:600px)': {
+      margin: '30px 0 10px 110px'
+    },
+    '@media (max-width:414px)': {
+      textAlign: 'center',
+      margin: '20px 0 10px 0'
     }
   },
   h2: {
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(30),
+    fontSize: theme.typography.pxToRem(25),
     textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
-    '@media (max-width:630px)': {
-      fontSize: theme.typography.pxToRem(25)
-    },
-    '@media (max-width:500px)': {
+    '@media (max-width:600px)': {
       fontSize: theme.typography.pxToRem(22)
     },
     '@media (max-width:414px)': {
@@ -61,20 +55,23 @@ export const createStyle = makeStyles(theme => createStyles({
     color: '#E2EBF1',
     fontFamily: 'RussoOne',
     fontStyle: 'italic',
-    fontSize: theme.typography.pxToRem(11.5),
-    textShadow: '2px 2px 3px rgba(0,0,0,0.85)'
+    fontSize: theme.typography.pxToRem(15),
+    textShadow: '2px 2px 3px rgba(0,0,0,0.85)',
+    '@media (max-width:600px)': {
+      fontSize: theme.typography.pxToRem(13)
+    },
+    '@media (max-width:414px)': {
+      fontSize: theme.typography.pxToRem(11)
+    }
   },
   title: {
     fontFamily: '"Exo 2", sans-serif',
-    fontSize: theme.typography.pxToRem(40),
+    fontSize: theme.typography.pxToRem(30),
     fontStyle: 'italic',
     fontWeight: 600,
     textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
     marginBottom: 0,
-    '@media (max-width:630px)': {
-      fontSize: theme.typography.pxToRem(30)
-    },
-    '@media (max-width:500px)': {
+    '@media (max-width:600px)': {
       fontSize: theme.typography.pxToRem(25)
     },
     '@media (max-width:414px)': {

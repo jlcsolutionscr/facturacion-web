@@ -52,8 +52,8 @@ export function setInvoiceParameters () {
       const newList = await getCustomerList(token, companyId)
       dispatch(setActiveSection(5))
       const customer = {
-        Id: 1,
-        NombreCliente: 'CLIENTE DE CONTADO',
+        IdCliente: 1,
+        Nombre: 'CLIENTE DE CONTADO',
         ParametroExoneracion: {
           Descripcion: 'Ley especial'
         },

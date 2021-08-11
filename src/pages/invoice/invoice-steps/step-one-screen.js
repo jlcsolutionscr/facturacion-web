@@ -8,33 +8,33 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import Button from '@material-ui/core/Button'
 
 import LabelField from 'components/label-field'
 import { setActiveSection } from 'store/ui/actions'
+import { getCustomer } from 'store/customer/actions'
 
 const useStyles = makeStyles(theme => ({
   container: {
     flex: 1,
     overflowY: 'auto',
-    backgroundColor: 'rgba(255,255,255,0.65)',
+    backgroundColor: 'white',
     padding: '10px'
   }
 }))
 
-function StepOneScreen({index, value, customer, customerList, setActiveSection}) {
+function StepOneScreen({index, value, customer, customerList, setActiveSection, getCustomer}) {
   React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
   const classes = useStyles()
-  const menuItems = customerList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.NombreCliente}</MenuItem> })
+  const menuItems = customerList.map(item => { return <MenuItem key={item.IdCliente} value={item.IdCliente}>{item.Nombre}</MenuItem> })
   return (
     <div className={classes.container} hidden={value !== index}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <FormControl>
+        <Grid item xs={12} sm={9} md={7}>
+          <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Seleccione un cliente</InputLabel>
-            <Select value={customer ? customer.Id : 0}>
+            <Select value={customer ? customer.IdCliente : 0} onChange={(event) => getCustomer(event.target.value)}>
               {menuItems}
             </Select>
           </FormControl>
@@ -42,7 +42,7 @@ function StepOneScreen({index, value, customer, customerList, setActiveSection})
         <Grid item xs={12} md={6}>
           <LabelField
             label='Nombre del cliente'
-            value={customer ? customer.NombreCliente : ''}
+            value={customer ? customer.NombreComercial || customer.Nombre : ''}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -75,11 +75,6 @@ function StepOneScreen({index, value, customer, customerList, setActiveSection})
             value={customer ? customer.PorcentajeExoneracion : ''}
           />
         </Grid>
-        <Grid item xs={5} sm={3} md={2}>
-          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
-            Regresar
-          </Button>
-        </Grid>
       </Grid>
     </div>
   )
@@ -93,7 +88,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActiveSection }, dispatch)
+  return bindActionCreators({ setActiveSection, getCustomer }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen)
