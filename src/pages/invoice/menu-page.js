@@ -10,6 +10,8 @@ import {
   setReportsParameters
 } from 'store/company/actions'
 
+import { setInvoiceParameters } from 'store/invoice/actions'
+
 import { logOut } from 'store/session/actions'
 
 import Grid from '@material-ui/core/Grid'
@@ -35,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function MenuPage({permissions, getCompany, setActiveSection, setReportsParameters, logOut}) {
+function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParameters, setReportsParameters, logOut}) {
   React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -47,7 +49,7 @@ function MenuPage({permissions, getCompany, setActiveSection, setReportsParamete
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
   const classes = useStyles()
   return (
-    <Grid container align='center' spacing={3} >
+    <Grid container align='center' spacing={2} >
       {updateCompanyInfo && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>
       </Grid>}
@@ -61,7 +63,7 @@ function MenuPage({permissions, getCompany, setActiveSection, setReportsParamete
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(4)}>Catálogo de productos</Button>
       </Grid>}
       {generateInvoice && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(5)}>Facturar</Button>
+        <Button classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
       </Grid>}
       {generateInvoice && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(6)}>Facturas electrónicas</Button>
@@ -88,6 +90,7 @@ const mapDispatchToProps = (dispatch) => {
     logOut,
     setActiveSection,
     getCompany,
+    setInvoiceParameters,
     setReportsParameters,
   }, dispatch)
 }

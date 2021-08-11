@@ -1,15 +1,18 @@
 import {
-  SET_CUSTOMER_ID,
-  SET_DETAILS,
+  RESET_INVOICE,
+  ADD_DETAIL,
+  REMOVE_DETAIL,
   SET_PAYMENT
 } from './types'
 
 const companyReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case SET_CUSTOMER_ID:
-      return { ...state, customerId: payload.id }
-    case SET_DETAILS:
-      return { ...state, productDetails: payload.list }
+    case RESET_INVOICE:
+      return { ...state, productDetails: [], payment: null }
+    case ADD_DETAIL:
+      return { ...state, productDetails: [...state.productDetails, payload.detail] }
+    case REMOVE_DETAIL:
+      return { ...state, productDetails: state.productDetails.filter(detail => detail.Id !== payload.id) }
     case SET_PAYMENT:
       return { ...state, payment: payload.payment }
     default:

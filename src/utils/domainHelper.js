@@ -1,21 +1,11 @@
-import { encryptString, downloadFile, roundNumber, getWithResponse, post, postWithResponse } from './utilities'
+import { encryptString, roundNumber, getWithResponse, post, postWithResponse } from './utilities'
 const SERVICE_URL = process.env.REACT_APP_SERVER_URL
-const ADMIN_URL = `${SERVICE_URL}/AdministracionWCF.svc`
 const APP_URL = `${SERVICE_URL}/PuntoventaWCF.svc`
-
-export async function downloadWindowsApp() {
-  try {
-    const endpointURL = APP_URL + '/descargaractualizacion'
-    await downloadFile(endpointURL)
-  } catch (e) {
-    throw e
-  }
-}
 
 export async function userLogin(user, password, id) {
   try {
     const ecryptedPass = encryptString(password)
-    const endpoint = ADMIN_URL + '/validarcredenciales?usuario=' + user + '&clave=' + ecryptedPass + '&id=' + id
+    const endpoint = APP_URL + '/validarcredencialesweb?usuario=' + user + '&clave=' + ecryptedPass + '&identificacion=' + id
     const company = await getWithResponse(endpoint, '')
     return company
   } catch (e) {
@@ -25,9 +15,9 @@ export async function userLogin(user, password, id) {
 
 export async function getCompanyEntity(idCompany, token) {
   try {
-    const endpoint = ADMIN_URL + '/obtenerempresa?idempresa=' + idCompany
-    const response = await getWithResponse(endpoint, token)
-    if (response === null) return []
+    const data = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + idCompany + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return null
     return response
   } catch {
     throw new Error('Error al comunicarse con el servicio web. Intente más tarde. . .')
@@ -36,9 +26,8 @@ export async function getCompanyEntity(idCompany, token) {
 
 export async function saveCompanyEntity(entity, token) {
   try {
-    const datos = '{"Entidad": ' + JSON.stringify(entity) + '}'
-    const endpoint = ADMIN_URL + '/actualizarempresa'
-    await post(endpoint, datos, token)
+    const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" + JSON.stringify(entity) + "'}";
+    await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e
   }
@@ -46,9 +35,8 @@ export async function saveCompanyEntity(entity, token) {
 
 export async function saveCompanyLogo(idCompany, strLogo, token) {
   try {
-    const datos = '{"Id": ' + idCompany + ', "Datos": ' + JSON.stringify(strLogo) + '}'
-    const endpoint = ADMIN_URL + '/actualizarlogoempresa'
-    await post(endpoint, datos, token)
+    const data = "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + idCompany + ", Logotipo: '" + strLogo + "'}}";
+    await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e
   }
@@ -56,9 +44,8 @@ export async function saveCompanyLogo(idCompany, strLogo, token) {
 
 export async function saveCompanyCertificate(idCompany, strCertificate, token) {
   try {
-    const datos = '{"Id": ' + idCompany + ', "Datos": ' + JSON.stringify(strCertificate) + '}'
-    const endpoint = ADMIN_URL + '/actualizarcertificadoempresa'
-    await post(endpoint, datos, token)
+    const data = "{NombreMetodo: 'ActualizarCertificadoEmpresa', Parametros: {IdEmpresa: " + idCompany + ", Certificado: '" + strCertificate + "'}}";
+    await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e
   }
@@ -66,7 +53,8 @@ export async function saveCompanyCertificate(idCompany, strCertificate, token) {
 
 export async function getCantonList(idProvincia, token) {
   try {
-    const response = await getWithResponse(ADMIN_URL + '/obtenerlistadocantones?idprovincia=' + idProvincia, token)
+    const data = "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " + idProvincia + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -76,7 +64,8 @@ export async function getCantonList(idProvincia, token) {
 
 export async function getDistritoList(idProvincia, idCanton, token) {
   try {
-    const response = await getWithResponse(ADMIN_URL + '/obtenerlistadodistritos?idprovincia=' + idProvincia + '&idcanton=' + idCanton, token)
+    const data = "{NombreMetodo: 'ObtenerListadoDistritos', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -86,7 +75,8 @@ export async function getDistritoList(idProvincia, idCanton, token) {
 
 export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
   try {
-    const response = await getWithResponse(ADMIN_URL + '/obtenerlistadobarrios?idprovincia=' + idProvincia + '&idcanton=' + idCanton + '&iddistrito=' + idDistrito, token)
+    const data = "{NombreMetodo: 'ObtenerListadoBarrios', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + ", IdDistrito: " + idDistrito + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -96,7 +86,8 @@ export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
 
 export async function getBranchList(idCompany, token) {
   try {
-    const response = await getWithResponse(ADMIN_URL + '/obtenerlistadosucursales?idempresa=' + idCompany, token)
+    const data = "{NombreMetodo: 'ObtenerListadoSucursales', Parametros: {IdEmpresa: " + idCompany + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -106,7 +97,8 @@ export async function getBranchList(idCompany, token) {
 
 export async function getReportData(reportType, idCompany, idBranch, startDate, endDate, token) {
   try {
-    const response = await getWithResponse(ADMIN_URL + '/obtenerdatosreporte?tipo=' + reportType + '&idempresa=' + idCompany + '&idsucursal=' + idBranch + '&fechainicial=' + startDate + '&fechafinal=' + endDate, token)
+    const data = "{NombreMetodo: 'ObtenerDatosReporte', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", TipoReporte: " + reportType + ", FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "'}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -114,10 +106,10 @@ export async function getReportData(reportType, idCompany, idBranch, startDate, 
   }
 }
 
-export async function getIdTypeList(serviceURL, token) {
+export async function getIdTypeList(token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipoIdentificacion'}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -125,10 +117,10 @@ export async function getIdTypeList(serviceURL, token) {
   }
 }
 
-export async function getRentTypeList(serviceURL, token) {
+export async function getRentTypeList(token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipoImpuesto'}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -136,10 +128,10 @@ export async function getRentTypeList(serviceURL, token) {
   }
 }
 
-export async function getPriceTypeList(serviceURL, token) {
+export async function getPriceTypeList(token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipodePrecio'}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -147,29 +139,29 @@ export async function getPriceTypeList(serviceURL, token) {
   }
 }
 
-export async function getCustomerList(serviceURL, token, companyId) {
+export async function getCustomerList(token, companyId) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoClientes', Parametros: {IdEmpresa: " + companyId + ", NumeroPagina: 1, FilasPorPagina: 0}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
-    return response
+    return response.map(item => ({Id: item.Id, NombreCliente: item.Descripcion }))
   } catch (e) {
     throw e.message
   }
 }
 
-export async function getCustomerEntity(serviceURL, token, idCustomer) {
+export async function getCustomerEntity(token, idCustomer) {
   try {
     const data = "{NombreMetodo: 'ObtenerCliente', Parametros: {IdCliente: " + idCustomer + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
-    return response
+    return { ...response, FechaEmisionDoc: response.FechaEmisionDoc.DateTime.substr(0,10) }
   } catch (e) {
     throw e.message
   }
 }
 
-export async function saveCustomerEntity(serviceURL, token, customer) {
+export async function saveCustomerEntity(token, customer) {
   try {
     const entidad = JSON.stringify(customer)
     let data = ""
@@ -180,7 +172,7 @@ export async function saveCustomerEntity(serviceURL, token, customer) {
     } else {
       data = "{NombreMetodo: 'AgregarCliente', Entidad: " + entidad + "}"
     }
-    const response = await post(serviceURL + "/ejecutar", token, data)
+    const response = await post(APP_URL + "/ejecutar", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -188,10 +180,10 @@ export async function saveCustomerEntity(serviceURL, token, customer) {
   }
 }
 
-export async function getProductTypeList(serviceURL, token) {
+export async function getProductTypeList(token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipoProducto'}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -199,10 +191,10 @@ export async function getProductTypeList(serviceURL, token) {
   }
 }
 
-export async function getProductCategoryList(serviceURL, token, idCompany) {
+export async function getProductCategoryList(token, idCompany) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoLineas', Parametros: {IdEmpresa: " + idCompany + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -210,10 +202,10 @@ export async function getProductCategoryList(serviceURL, token, idCompany) {
   }
 }
 
-export async function getProductProviderList(serviceURL, token, idCompany) {
+export async function getProductProviderList(token, idCompany) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoProveedores', Parametros: {IdEmpresa: " + idCompany + ", NumeroPagina: 1, FilasPorPagina: 0}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -221,10 +213,10 @@ export async function getProductProviderList(serviceURL, token, idCompany) {
   }
 }
 
-export async function getProductList(serviceURL, token, idCompany, idBranch, filterText) {
+export async function getProductList(token, idCompany, idBranch, filterText) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: 1, FilasPorPagina: 50, IncluyeServicios: 'true', FiltraActivos: 'true', IdLinea: 0, Codigo: '', Descripcion: '" + filterText + "'}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -232,10 +224,10 @@ export async function getProductList(serviceURL, token, idCompany, idBranch, fil
   }
 }
 
-export async function getProductEntity(serviceURL, token, idProduct, idBranch) {
+export async function getProductEntity(token, idProduct, idBranch) {
   try {
     const data = "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " + idProduct + ", IdSucursal: " + idBranch + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -243,7 +235,7 @@ export async function getProductEntity(serviceURL, token, idProduct, idBranch) {
   }
 }
 
-export async function saveProductEntity(serviceURL, token, product) {
+export async function saveProductEntity(token, product) {
   try {
     const entidad = JSON.stringify(product)
     let data = ""
@@ -251,7 +243,7 @@ export async function saveProductEntity(serviceURL, token, product) {
       data = "{NombreMetodo: 'ActualizarProducto', Entidad: " + entidad + "}"
     else
       data = "{NombreMetodo: 'AgregarProducto', Entidad: " + entidad + "}"
-    const response = await post(serviceURL + "/ejecutar", token, data)
+    const response = await post(APP_URL + "/ejecutar", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -259,10 +251,10 @@ export async function saveProductEntity(serviceURL, token, product) {
   }
 }
 
-export async function getExonerationTypeList(serviceURL, token) {
+export async function getExonerationTypeList(token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipoExoneracion'}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -270,7 +262,7 @@ export async function getExonerationTypeList(serviceURL, token) {
   }
 }
 
-export async function getPaymentBankId(serviceURL, token, idCompany, paymentMethod) {
+export async function getPaymentBankId(token, idCompany, paymentMethod) {
   try {
     let data
     if (paymentMethod === 1 || paymentMethod === 2) {
@@ -278,7 +270,7 @@ export async function getPaymentBankId(serviceURL, token, idCompany, paymentMeth
     } else {
       data = "{NombreMetodo: 'ObtenerListadoCuentasBanco', Parametros: {IdEmpresa: " + idCompany + "}}"
     }
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     if (response.length === 0) return null
     return response[0].Id
@@ -357,9 +349,9 @@ export function getInvoiceSummary(products, exonerationPercentage) {
   }
 }
 
-export async function saveInvoiceEntity(serviceURL, token, products, paymentMethodId, company, idCustomer, customerName, excento, gravado, exonerado, impuesto, totalCosto, total, exonerationType, exonerationCode, exonerationEntity, exonerationDate, exonerationPercentage) {
+export async function saveInvoiceEntity(token, products, paymentMethodId, company, idCustomer, customerName, excento, gravado, exonerado, impuesto, totalCosto, total, exonerationType, exonerationCode, exonerationEntity, exonerationDate, exonerationPercentage) {
   try {
-    const bankId = await getPaymentBankId(serviceURL, token, company.IdEmpresa, paymentMethodId)
+    const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentMethodId)
     const detalleFactura = []
     products.forEach(item => {
       const detalle = {
@@ -429,26 +421,26 @@ export async function saveInvoiceEntity(serviceURL, token, products, paymentMeth
       DesglosePagoFactura: desglosePagoFactura
     }
     let data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(factura) + "}"
-    await post(serviceURL + "/ejecutarconsulta", token, data)
+    await post(APP_URL + "/ejecutarconsulta", token, data)
   } catch (e) {
     throw e.message
   }
 }
 
 
-export async function revokeInvoiceEntity(serviceURL, token, idInvoice, idUser) {
+export async function revokeInvoiceEntity(token, idInvoice, idUser) {
   try {
     const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + idInvoice + ", IdUsuario: " + idUser + "}}"
-    await post(serviceURL + "/ejecutar", token, data)
+    await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e.message
   }
 }
 
-export async function getInvoiceDetails(serviceURL, token, idInvoice) {
+export async function getInvoiceDetails(token, idInvoice) {
   try {
     const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + idInvoice + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -456,10 +448,10 @@ export async function getInvoiceDetails(serviceURL, token, idInvoice) {
   }
 }
 
-export async function getProcessedInvoiceListCount(serviceURL, token, idCompany, idBranch) {
+export async function getProcessedInvoiceListCount(token, idCompany, idBranch) {
   try {
     const data = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -467,10 +459,10 @@ export async function getProcessedInvoiceListCount(serviceURL, token, idCompany,
   }
 }
 
-export async function getProcessedInvoiceListPerPage(serviceURL, token, idCompany, idBranch, pageNumber, rowPerPage) {
+export async function getProcessedInvoiceListPerPage(token, idCompany, idBranch, pageNumber, rowPerPage) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: " + pageNumber + ",FilasPorPagina: " + rowPerPage + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -478,10 +470,10 @@ export async function getProcessedInvoiceListPerPage(serviceURL, token, idCompan
   }
 }
 
-export async function getProcessedDocumentListCount(serviceURL, token, idCompany, idBranch) {
+export async function getProcessedDocumentListCount(token, idCompany, idBranch) {
   try {
     const data = "{NombreMetodo: 'ObtenerTotalDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -489,10 +481,10 @@ export async function getProcessedDocumentListCount(serviceURL, token, idCompany
   }
 }
 
-export async function getProcessedDocumentListPerPage(serviceURL, token, idCompany, idBranch, pageNumber, rowPerPage) {
+export async function getProcessedDocumentListPerPage(token, idCompany, idBranch, pageNumber, rowPerPage) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: " + pageNumber + ",FilasPorPagina: " + rowPerPage + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
   } catch (e) {
@@ -500,10 +492,10 @@ export async function getProcessedDocumentListPerPage(serviceURL, token, idCompa
   }
 }
 
-export async function getDocumentEntity(serviceURL, token, idDocument) {
+export async function getDocumentEntity(token, idDocument) {
   try {
     const data = "{NombreMetodo: 'ObtenerDocumentoElectronico', Parametros: {IdDocumento: " + idDocument + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     return response
   } catch (e) {
@@ -511,20 +503,20 @@ export async function getDocumentEntity(serviceURL, token, idDocument) {
   }
 }
 
-export async function sendDocumentByEmail(serviceURL, token, idDocument, emailTo) {
+export async function sendDocumentByEmail(token, idDocument, emailTo) {
   try {
     const data = "{NombreMetodo: 'EnviarNotificacionDocumentoElectronico', Parametros: {IdDocumento: " + idDocument + ", CorreoReceptor: '" + emailTo + "'}}"
-    await post(serviceURL + "/ejecutar", token, data)
+    await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e.message
   }
 }
 
-export async function sendReportEmail(serviceURL, token, idCompany, idBranch, reportName, startDate, endDate) {
+export async function sendReportEmail(token, idCompany, idBranch, reportName, startDate, endDate) {
   try {
     if (reportName !== '') {
       const data = "{NombreMetodo: 'EnviarReportePorCorreoElectronico', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NombreReporte: '" + reportName + "', FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "', FormatoReporte: 'PDF'}}"
-      await post(serviceURL + "/ejecutar", token, data)
+      await post(APP_URL + "/ejecutar", token, data)
     }
   } catch (e) {
     throw e.message

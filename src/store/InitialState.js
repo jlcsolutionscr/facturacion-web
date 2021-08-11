@@ -18,6 +18,7 @@ export const INITIAL_STATE = {
     token: null
   },
   customer: {
+    customer: null,
     customerList: []
   },
   company: {
@@ -31,7 +32,7 @@ export const INITIAL_STATE = {
     },
   },
   invoice: {
-    customerId: null,
+    customer: null,
     productDetails: [],
     payment: null
   }

@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 import CryptoJS from 'crypto-js'
@@ -74,81 +73,102 @@ function dataURLtoBlob(dataurl) {
   return new Blob([u8arr], {type:mime});
 }
 
-export function downloadFile (endpointURL) {
-  return new Promise((resolve, reject) => {
-    axios.get(endpointURL, {responseType: 'blob'})
-      .then(async (response) => {
-        const blob = new Blob([response.data], {type: 'application/octet-stream'})
-        saveAs(blob, 'puntoventaJLC.msi')
-        resolve(true)
-      })
-      .catch(error => {
-        reject(error.message)
-      })
-  })
-}
-
 export async function getWithResponse(endpointURL, token) {
   try {
     const headers = {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+    };
+    if (token !== null) {
+      headers.Authorization = 'bearer ' + token;
     }
-    if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios.get(endpointURL, {
+    const response = await fetch(endpointURL, {
       method: 'GET',
-      headers
-    })
-    if (response.data !== '') {
-      return JSON.parse(response.data)
+      headers,
+    });
+    if (!response.ok) {
+      let error = '';
+      try {
+        error = await response.json();
+      } catch {
+        error =
+          'Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.';
+      }
+      throw new Error(error);
     } else {
-      return null
+      const data = await response.json();
+      if (data !== '') {
+        return JSON.parse(data);
+      } else {
+        return null;
+      }
     }
   } catch (error) {
-    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
-    throw new Error(message)
+    throw error;
   }
 }
 
-export async function post(endpointURL, datos, token) {
+export async function post(endpointURL, token, datos) {
   try {
     const headers = {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+    };
+    if (token !== '') {
+      headers.Authorization = 'bearer ' + token;
     }
-    if (token !== '') headers['Authorization'] = 'bearer ' + token
-    await axios({
-      method: 'post',
-      url: endpointURL,
+    const response = await fetch(endpointURL, {
+      method: 'POST',
       headers,
-      data: JSON.stringify(datos)
-    })
+      body: JSON.stringify(datos),
+    });
+    if (!response.ok) {
+      let error = '';
+      try {
+        error = await response.json();
+      } catch {
+        error =
+          'Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.';
+      }
+      throw new Error(error);
+    }
   } catch (error) {
-    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
-    throw new Error(message)
+    throw error;
   }
 }
 
-export async function postWithResponse(endpointURL, datos, token) {
+export async function postWithResponse(endpointURL, token, datos) {
   try {
     const headers = {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+    };
+    if (token !== '') {
+      headers.Authorization = 'bearer ' + token;
     }
-    if (token !== '') headers['Authorization'] = 'bearer ' + token
-    const response = await axios({
-      method: 'post',
-      url: endpointURL,
+    const response = await fetch(endpointURL, {
+      method: 'POST',
       headers,
-      data: JSON.stringify(datos)
-    })
-    if (response.data !== '') {
-      return JSON.parse(response.data)
+      body: JSON.stringify(datos),
+    });
+    if (!response.ok) {
+      let error = '';
+      try {
+        error = await response.json();
+      } catch {
+        error =
+          'Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.';
+      }
+      throw new Error(error);
     } else {
-      return null
+      const data = await response.json();
+      if (data !== '') {
+        return JSON.parse(data);
+      } else {
+        return null;
+      }
     }
   } catch (error) {
-    const message = error.response ? error.response.data ? error.response.data : error.response : error.message ? error.message : ''
-    throw new Error(message)
+    throw error;
   }
 }

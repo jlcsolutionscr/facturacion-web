@@ -4,9 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import StepOneScreen from './steps/step-one-screen'
-import StepTwoScreen from './steps/step-two-screen'
-import StepThreeScreen from './steps/step-three-screen'
+import StepOneScreen from './invoice-steps/step-one-screen'
+import StepTwoScreen from './invoice-steps/step-two-screen'
+import StepThreeScreen from './invoice-steps/step-three-screen'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function BillingPage() {
+function InvoicePage() {
   const classes = useStyles()
   const [value, setValue] = useState(0);
 
@@ -45,4 +45,4 @@ function BillingPage() {
   )
 }
 
-export default BillingPage
+export default InvoicePage

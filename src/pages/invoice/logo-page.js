@@ -7,7 +7,6 @@ import { setActiveSection } from 'store/ui/actions'
 
 import { saveLogo } from 'store/company/actions'
 
-import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -67,11 +66,6 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
   return (
     <div>
       <Grid container spacing={3} className={classes.container}>
-      {errorMessage !== '' && <Grid item xs={12}>
-        <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-          {errorMessage}
-        </Typography>
-      </Grid>}
       <Grid item xs={6} sm={6}>
           <TextField
             disabled={true}

@@ -18,10 +18,10 @@ export const setCustomerList = (list) => {
   }
 }
 
-export const setCustomer = (entity) => {
+export const setCustomer = (customer) => {
   return {
     type: SET_CUSTOMER,
-    payload: { entity }
+    payload: { customer }
   }
 }
 

@@ -7,6 +7,7 @@ import BannerImage from 'assets/img/menu-background.jpg'
 import MenuPage from './menu-page'
 import CompanyPage from './company-page'
 import LogoPage from './logo-page'
+import InvoicePage from './invoice-page'
 import UnderConstructionPage from './under-construction'
 import ReportsPage from './reports-page'
 
@@ -45,7 +46,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
         {activeSection === 2 && <LogoPage />}
         {activeSection === 3 && <UnderConstructionPage />}
         {activeSection === 4 && <UnderConstructionPage />}
-        {activeSection === 5 && <UnderConstructionPage />}
+        {activeSection === 5 && <InvoicePage />}
         {activeSection === 6 && <UnderConstructionPage />}
         {activeSection === 7 && <UnderConstructionPage />}
         {activeSection === 20 && <ReportsPage width={width} />}
