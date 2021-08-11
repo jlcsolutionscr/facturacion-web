@@ -32,9 +32,12 @@ export const INITIAL_STATE = {
     },
   },
   invoice: {
-    customer: null,
+    description: '',
+    quantity: 1,
+    price: 0,
     productDetails: [],
     payment: null,
+    summary: null,
     successful: false
   },
   product: {

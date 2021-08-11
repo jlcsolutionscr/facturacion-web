@@ -67,5 +67,21 @@ export const createStyle = makeStyles(theme => createStyles({
     }
   },
   listContainer: {
+    overflow: 'auto'
+  },
+  item: {
+    color: 'currentColor',
+    lineHeight: '1.1876em',
+    width: '100%',
+    border: '0',
+    height: '1.1876em',
+    margin: '0',
+    display: 'block',
+    padding: '10px 14px',
+    minWidth: '0',
+    background: 'none',
+    boxSizing: 'content-box',
+    textRendering: 'auto',
+    cursor: 'text'
   }
 }))

@@ -31,7 +31,7 @@ export function getProduct (idProduct) {
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
-      const product = await getProductEntity(token, idProduct)
+      const product = await getProductEntity(token, idProduct, 1)
       dispatch(setProduct(product))
       dispatch(stopLoader())
     } catch (error) {

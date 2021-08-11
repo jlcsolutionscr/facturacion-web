@@ -8,12 +8,18 @@ import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
-import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 
 import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
+import { AddCircleIcon, RemoveCircleIcon } from 'utils/iconsHelper'
 
 import {
+  getProduct,
+  setDescription,
+  setQuantity,
+  setPrice,
+  filterProductList,
   addDetails,
   removeDetails
 } from 'store/invoice/actions'
@@ -26,33 +32,49 @@ const useStyles = makeStyles(theme => ({
     overflowY: 'auto',
     backgroundColor: 'white',
     padding: '10px'
+  },
+  icon: {
+    width: '24px'
   }
 }))
 
-function StepTwoScreen({index, value, product, productList, productDetails, successful}) {
+let delayTimer = null;
+
+function StepTwoScreen({
+  index,
+  value,
+  productList,
+  description,
+  quantity,
+  price,
+  productDetails,
+  successful,
+  getProduct,
+  setDescription,
+  setQuantity,
+  setPrice,
+  filterProductList,
+  addDetails,
+  removeDetails
+}) {
   React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
   const classes = useStyles()
   const [filter, setFilter] = React.useState('')
-  const [description, setDescription] = React.useState(product ? product.Descripcion : '')
-  const [quantity, setQuantity] = React.useState(1)
-  const [price, setPrice] = React.useState(product ? product.PrecioVenta : 0)
-  const rows = productDetails.map((item, index) => {
-    return (<Table className={classes.table} aria-label='simple table'>
-      <TableBody>
-        {productDetails.map((row, index) => (
-          <TableRow key={index}>
-            <TableCell>{row.Cantidad}</TableCell>
-            <TableCell>{row.Descripcion}</TableCell>
-            <TableCell align='right'>{formatCurrency(roundNumber(item.Cantidad * item.PrecioVenta, 2), 2)}</TableCell>
-            <TableCell align='right'>+</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>)
-  })
-  let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
+  const handleOnFilterChange = (event) => {
+    setFilter(event.target.value)
+    if (delayTimer) {  
+      clearTimeout(delayTimer)
+    }
+    delayTimer = setTimeout(() => {
+      filterProductList(event.target.value)
+    }, 500)
+  }
+  const handleItemSelected = (item) => {
+    getProduct(item.Id)
+  }
+  let buttonEnabled = description !== '' && quantity !== null && price !== null && successful === false
   return (<div className={classes.container} hidden={value !== index}>
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -60,21 +82,26 @@ function StepTwoScreen({index, value, product, productList, productDetails, succ
           label='Seleccione un producto'
           items={productList}
           value={filter}
-          onChange={(event) => setFilter(event.target.value)}
+          onItemSelected={handleItemSelected}
+          onChange={handleOnFilterChange}
         />
       </Grid>
       <Grid item xs={12}>
         <TextField
           label='Descripción'
+          id='Descripcion'
           value={description}
           fullWidth
           variant='outlined'
+          inputProps={{maxLength: 6}}
+          numericFormat
           onChange={(event) => setDescription(event.target.value)}
         />
       </Grid>
       <Grid item xs={3}>
         <TextField
           label='Cantidad'
+          id='Cantidad'
           value={quantity}
           fullWidth
           numericFormat
@@ -82,7 +109,7 @@ function StepTwoScreen({index, value, product, productList, productDetails, succ
           onChange={(event) => setQuantity(event.target.value)}
         />
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={6}>
         <TextField
           label='Precio'
           value={price}
@@ -93,13 +120,27 @@ function StepTwoScreen({index, value, product, productList, productDetails, succ
         />
       </Grid>
       <Grid item xs={2}>
-        <Button
-          disabled={!buttonEnabled}
-          onPressButton={() => this.props.insertProduct()}
-        />
+        <IconButton color="primary" disabled={!buttonEnabled} component="span" onClick={() => addDetails()}>
+          <AddCircleIcon className={classes.icon} />
+        </IconButton>
       </Grid>
       <Grid item xs={12}>
-        {rows}
+        <Table>
+          <TableBody>
+            {productDetails.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.Cantidad}</TableCell>
+                <TableCell>{row.Descripcion}</TableCell>
+                <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
+                <TableCell align='right'>
+                  <IconButton color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
+                    <RemoveCircleIcon className={classes.icon} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Grid>
     </Grid>
   </div>)
@@ -107,14 +148,25 @@ function StepTwoScreen({index, value, product, productList, productDetails, succ
 
 const mapStateToProps = (state) => {
   return {
-    product: state.product.product,
+    description: state.invoice.description,
+    quantity: state.invoice.quantity,
+    price: state.invoice.price,
     productList: state.product.productList,
-    productDetails: state.invoice.productDetails
+    productDetails: state.invoice.productDetails,
+    successful: state.invoice.successful
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addDetails, removeDetails }, dispatch)
+  return bindActionCreators({
+    getProduct,
+    setDescription,
+    setQuantity,
+    setPrice,
+    filterProductList,
+    addDetails,
+    removeDetails
+  }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen)
