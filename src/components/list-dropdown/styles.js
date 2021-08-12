@@ -56,7 +56,7 @@ export const createStyle = makeStyles(theme => createStyles({
     height: '1.1876em',
     margin: '0',
     display: 'block',
-    padding: '18.5px 14px',
+    padding: '10.5px 14px',
     minWidth: '0',
     background: 'none',
     boxSizing: 'content-box',

@@ -31,7 +31,8 @@ const useStyles = makeStyles(theme => ({
   },
   headerRange: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: 'inherit'
   },
   table: {
     minWidth: '1170px'
@@ -55,7 +56,7 @@ function DetailLayout(props) {
       {props.reportName}
     </Typography>
     <div className={classes.headerRange}>
-    <div style={{width: '60%'}}>
+      <div style={{width: '60%'}}>
         {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end', marginRight: '10%'}} color='textSecondary' component='p'>
           Fecha inicial: {props.summary.startDate}
         </Typography>}
@@ -66,32 +67,34 @@ function DetailLayout(props) {
         </Typography>}
       </div>
     </div>
-    <Table className={classes.table}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Tipo</TableCell>
-          <TableCell>Emisor/Receptor</TableCell>
-          <TableCell>Identificación</TableCell>
-          <TableCell align='center'>Fecha</TableCell>
-          <TableCell align='center'>Consecutivo</TableCell>
-          <TableCell align='right'>Impuesto</TableCell>
-          <TableCell align='right'>Total</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {props.data.map((row, index) => (
-          <TableRow key={index}>
-            <TableCell>{row.TipoDocumento}</TableCell>
-            <TableCell>{row.Nombre}</TableCell>
-            <TableCell>{row.Identificacion}</TableCell>
-            <TableCell align='center'>{row.Fecha}</TableCell>
-            <TableCell align='center'>{row.Consecutivo}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Impuesto)}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Total)}</TableCell>
+    <div className={classes.table}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Tipo</TableCell>
+            <TableCell>Emisor/Receptor</TableCell>
+            <TableCell>Identificación</TableCell>
+            <TableCell align='center'>Fecha</TableCell>
+            <TableCell align='center'>Consecutivo</TableCell>
+            <TableCell align='right'>Impuesto</TableCell>
+            <TableCell align='right'>Total</TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {props.data.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell>{row.TipoDocumento}</TableCell>
+              <TableCell>{row.Nombre}</TableCell>
+              <TableCell>{row.Identificacion}</TableCell>
+              <TableCell align='center'>{row.Fecha}</TableCell>
+              <TableCell align='center'>{row.Consecutivo}</TableCell>
+              <TableCell align='right'>{formatCurrency(row.Impuesto)}</TableCell>
+              <TableCell align='right'>{formatCurrency(row.Total)}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
     <div style={{margin: '20px'}}>
       <Button variant='contained' className={classes.button} onClick={() => props.returnOnClick()}>
         Regresar

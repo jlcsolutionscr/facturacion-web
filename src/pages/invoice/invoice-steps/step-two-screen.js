@@ -57,10 +57,11 @@ function StepTwoScreen({
   addDetails,
   removeDetails
 }) {
-  React.useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
   const classes = useStyles()
+  const myRef = React.useRef(null)
+  React.useEffect(() => {
+    myRef.current.scrollTo(0, 0)
+  }, [value])
   const [filter, setFilter] = React.useState('')
   const handleOnFilterChange = (event) => {
     setFilter(event.target.value)
@@ -75,8 +76,8 @@ function StepTwoScreen({
     getProduct(item.Id)
   }
   let buttonEnabled = description !== '' && quantity !== null && price !== null && successful === false
-  return (<div className={classes.container} hidden={value !== index}>
-    <Grid container spacing={3}>
+  return (<div ref={myRef} className={classes.container} hidden={value !== index}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
         <ListDropdown
           label='Seleccione un producto'
@@ -125,7 +126,7 @@ function StepTwoScreen({
         </IconButton>
       </Grid>
       <Grid item xs={12}>
-        <Table>
+        <Table size="small">
           <TableBody>
             {productDetails.map((row, index) => (
               <TableRow key={index}>

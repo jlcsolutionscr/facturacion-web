@@ -57,10 +57,10 @@ export function getCompany () {
     dispatch(setErrorMessage(''))
     try {
       dispatch(setActiveSection(1))
-      const company = await getCompanyEntity(companyId, token)
-      const cantonList = await getCantonList(1, token)
-      const distritoList = await getDistritoList(1, 1, token)
-      const barrioList = await getBarrioList(1, 1, 1, token)
+      const company = await getCompanyEntity(token, companyId)
+      const cantonList = await getCantonList(token, 1)
+      const distritoList = await getDistritoList(token, 1, 1)
+      const barrioList = await getBarrioList(token, 1, 1, 1)
       dispatch(setCompany(company))
       dispatch(setCantonList(cantonList))
       dispatch(setDistritoList(distritoList))
@@ -80,9 +80,9 @@ export function saveCompany (certificate) {
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
-      await saveCompanyEntity(company, token)
+      await saveCompanyEntity(token, company)
       if (certificate !== '') {
-        await saveCompanyCertificate(company.IdEmpresa, certificate, token)
+        await saveCompanyCertificate(token, company.IdEmpresa, certificate)
       }
       dispatch(setActiveSection(0))
       dispatch(stopLoader())
@@ -100,7 +100,7 @@ export function saveLogo (logo) {
     dispatch(setErrorMessage(''))
     try {
       if (logo !== '') {
-        await saveCompanyLogo(companyId, logo, token)
+        await saveCompanyLogo(token, companyId, logo)
       }
       dispatch(setActiveSection(0))
       dispatch(stopLoader())
@@ -114,12 +114,15 @@ export function saveLogo (logo) {
 export function setReportsParameters () {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
+    const { branchList } = getState().ui
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
-      const list = await getBranchList(companyId, token)
+      if (branchList.length === 0 ) {
+        const list = await getBranchList(token, companyId)
+        dispatch(setBranchList(list))
+      }
       dispatch(setActiveSection(20))
-      dispatch(setBranchList(list))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setErrorMessage(error.message))
@@ -135,7 +138,7 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
     dispatch(setErrorMessage(''))
     dispatch(setReportResults([], null))
     try {
-      const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
+      const list = await getReportData(token, reportType, companyId, idBranch, startDate, endDate)
       let taxes = 0
       let total = 0
       if (reportType !== 5) {
@@ -165,7 +168,7 @@ export function exportReport (idBranch, reportType, startDate, endDate) {
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
-      const list = await getReportData(reportType, companyId, idBranch, startDate, endDate, token)
+      const list = await getReportData(token, reportType, companyId, idBranch, startDate, endDate)
       const fileName = reportType === 1
         ? 'documentos_electronicos_generados'
         : 'documentos_electronicos_recibidos'

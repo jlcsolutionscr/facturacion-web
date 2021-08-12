@@ -1,18 +1,16 @@
 import {
-  RESET_INVOICE,
   SET_DESCRIPTION,
   SET_QUANTITY,
   SET_PRICE,
   SET_PRODUCTS_DETAIL,
   SET_SUMMARY,
-  SET_PAYMENT,
+  SET_PAYMENT_ID,
+  SET_BRANCH_ID,
   SET_SUCCESSFUL
 } from './types'
 
 const companyReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case RESET_INVOICE:
-      return { ...state, description: '', quantity: 1, price: 0, productDetails: [], payment: null }
     case SET_DESCRIPTION:
       return { ...state, description: payload.description }
     case SET_QUANTITY:
@@ -23,8 +21,10 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, productDetails: payload.details }
     case SET_SUMMARY:
       return { ...state, summary: payload.summary }
-    case SET_PAYMENT:
-      return { ...state, payment: payload.payment }
+    case SET_PAYMENT_ID:
+      return { ...state, paymentId: payload.id }
+    case SET_BRANCH_ID:
+      return { ...state, branchId: payload.id }
     case SET_SUCCESSFUL:
       return { ...state, successful: payload.success }
     default:

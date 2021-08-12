@@ -12,6 +12,7 @@ function CustomTextField(props) {
 
   return <TextField
     {...restProps}
+    size="small"
     onChange={handleChange}
   />
 }

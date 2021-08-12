@@ -13,7 +13,7 @@ export async function userLogin(user, password, id) {
   }
 }
 
-export async function getCompanyEntity(idCompany, token) {
+export async function getCompanyEntity(token, idCompany) {
   try {
     const data = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + idCompany + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -24,7 +24,7 @@ export async function getCompanyEntity(idCompany, token) {
   }
 }
 
-export async function saveCompanyEntity(entity, token) {
+export async function saveCompanyEntity(token, entity) {
   try {
     const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" + JSON.stringify(entity) + "'}";
     await post(APP_URL + "/ejecutar", token, data)
@@ -33,7 +33,7 @@ export async function saveCompanyEntity(entity, token) {
   }
 }
 
-export async function saveCompanyLogo(idCompany, strLogo, token) {
+export async function saveCompanyLogo(token, idCompany, strLogo) {
   try {
     const data = "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + idCompany + ", Logotipo: '" + strLogo + "'}}";
     await post(APP_URL + "/ejecutar", token, data)
@@ -42,7 +42,7 @@ export async function saveCompanyLogo(idCompany, strLogo, token) {
   }
 }
 
-export async function saveCompanyCertificate(idCompany, strCertificate, token) {
+export async function saveCompanyCertificate(token, idCompany, strCertificate) {
   try {
     const data = "{NombreMetodo: 'ActualizarCertificadoEmpresa', Parametros: {IdEmpresa: " + idCompany + ", Certificado: '" + strCertificate + "'}}";
     await post(APP_URL + "/ejecutar", token, data)
@@ -51,7 +51,7 @@ export async function saveCompanyCertificate(idCompany, strCertificate, token) {
   }
 }
 
-export async function getCantonList(idProvincia, token) {
+export async function getCantonList(token, idProvincia) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " + idProvincia + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -62,7 +62,7 @@ export async function getCantonList(idProvincia, token) {
   }
 }
 
-export async function getDistritoList(idProvincia, idCanton, token) {
+export async function getDistritoList(token, idProvincia, idCanton) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoDistritos', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -73,7 +73,7 @@ export async function getDistritoList(idProvincia, idCanton, token) {
   }
 }
 
-export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
+export async function getBarrioList(token, idProvincia, idCanton, idDistrito) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoBarrios', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + ", IdDistrito: " + idDistrito + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -84,7 +84,7 @@ export async function getBarrioList(idProvincia, idCanton, idDistrito, token) {
   }
 }
 
-export async function getBranchList(idCompany, token) {
+export async function getBranchList(token, idCompany) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoSucursales', Parametros: {IdEmpresa: " + idCompany + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -95,7 +95,7 @@ export async function getBranchList(idCompany, token) {
   }
 }
 
-export async function getReportData(reportType, idCompany, idBranch, startDate, endDate, token) {
+export async function getReportData(token, reportType, idCompany, idBranch, startDate, endDate) {
   try {
     const data = "{NombreMetodo: 'ObtenerDatosReporte', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", TipoReporte: " + reportType + ", FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "'}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -349,11 +349,19 @@ export function getInvoiceSummary(products, exonerationPercentage) {
   }
 }
 
-export async function saveInvoiceEntity(token, products, paymentMethodId, company, idCustomer, customerName, excento, gravado, exonerado, impuesto, totalCosto, total, exonerationType, exonerationCode, exonerationEntity, exonerationDate, exonerationPercentage) {
+export async function saveInvoiceEntity(
+  token,
+  userId,
+  productDetails,
+  paymentId,
+  branchId,
+  company,
+  customer,
+  summary) {
   try {
-    const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentMethodId)
+    const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentId)
     const detalleFactura = []
-    products.forEach(item => {
+    productDetails.forEach(item => {
       const detalle = {
         IdFactura: 0,
         IdProducto: item.IdProducto,
@@ -370,13 +378,13 @@ export async function saveInvoiceEntity(token, products, paymentMethodId, compan
     const desglosePagoFactura = [{
       IdConsecutivo: 0,
       IdFactura: 0,
-      IdFormaPago: paymentMethodId,
+      IdFormaPago: paymentId,
       IdTipoMoneda: company.IdTipoMoneda,
       IdCuentaBanco: bankId,
       TipoTarjeta: '',
       NroMovimiento: '',
-      MontoLocal: total,
-      MontoForaneo: total
+      MontoLocal: summary.total,
+      MontoForaneo: summary.total
     }]
     const fechaFactura = new Date()
     const dd = (fechaFactura.getDate() < 10 ? '0' : '') + fechaFactura.getDate()
@@ -387,31 +395,31 @@ export async function saveInvoiceEntity(token, products, paymentMethodId, compan
     const timeString = dd + '/' + MM + '/' + fechaFactura.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-07:00'
     const factura = {
       IdEmpresa: company.IdEmpresa,
-      IdSucursal: company.EquipoRegistrado.IdSucursal,
-      IdTerminal: company.EquipoRegistrado.IdTerminal,
+      IdSucursal: branchId,
+      IdTerminal: 1,
       IdFactura: 0,
-      IdUsuario: company.Usuario.IdUsuario,
+      IdUsuario: userId,
       IdTipoMoneda: 1,
       TipoDeCambioDolar: 0,
-      IdCliente: idCustomer,
-      NombreCliente: customerName,
+      IdCliente: customer.IdCliente,
+      NombreCliente: customer.NombreCliente,
       IdCondicionVenta: 1,
       PlazoCredito: 0,
       Fecha: {DateTime: timeString},
       TextoAdicional: '',
       IdVendedor: 1,
-      Excento: excento,
-      Gravado: gravado,
-      Exonerado: exonerado,
+      Excento: summary.excento,
+      Gravado: summary.gravado,
+      Exonerado: summary.exonerado,
       Descuento: 0,
-      Impuesto: impuesto,
-      TotalCosto: totalCosto,
-      MontoPagado: total,
-      IdTipoExoneracion: exonerationType,
-      NumDocExoneracion: exonerationCode,
-      NombreInstExoneracion: exonerationEntity,
-      FechaEmisionDoc: {DateTime: exonerationDate + ' 22:59:59 GMT-07:00'},
-      PorcentajeExoneracion: exonerationPercentage,
+      Impuesto: summary.impuesto,
+      TotalCosto: summary.totalCosto,
+      MontoPagado: summary.total,
+      IdTipoExoneracion: customer.IdTipoExoneracion,
+      NumDocExoneracion: customer.NumDocExoneracion,
+      NombreInstExoneracion: customer.NombreInstExoneracion,
+      FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-07:00'},
+      PorcentajeExoneracion: customer.PorcentajeExoneracion,
       IdCxC: 0,
       IdAsiento: 0,
       IdMovBanco: 0,

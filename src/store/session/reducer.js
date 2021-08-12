@@ -9,6 +9,7 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: true,
+        userId: payload.user.IdUsuario,
         companyId: payload.companyId,
         companyName: payload.companyName,
         companyIdentifier: payload.companyIdentifier,

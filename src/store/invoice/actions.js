@@ -1,11 +1,11 @@
 import {
-  RESET_INVOICE,
   SET_DESCRIPTION,
   SET_QUANTITY,
   SET_PRICE,
   SET_PRODUCTS_DETAIL,
   SET_SUMMARY,
-  SET_PAYMENT,
+  SET_PAYMENT_ID,
+  SET_BRANCH_ID,
   SET_SUCCESSFUL
 } from './types'
 
@@ -13,27 +13,26 @@ import {
   startLoader,
   stopLoader,
   setErrorMessage,
-  setActiveSection
+  setActiveSection,
+  setBranchList
 } from 'store/ui/actions'
+
+import { setCompany } from 'store/company/actions'
 
 import { setCustomer, setCustomerList } from 'store/customer/actions'
 
 import { setProduct, setProductList } from 'store/product/actions'
 
 import {
+  getCompanyEntity,
   getCustomerList,
   getProductList,
+  getBranchList,
   getProductEntity,
   getCustomerPrice,
   getInvoiceSummary,
   saveInvoiceEntity
 } from 'utils/domainHelper'
-
-export const resetInvoice = () => {
-  return {
-    type: RESET_INVOICE
-  }
-}
 
 export const setDescription = (description) => {
   return {
@@ -70,10 +69,17 @@ export const setSummary = (summary) => {
   }
 }
 
-export const setPayment = (method) => {
+export const setPaymentId = (id) => {
   return {
-    type: SET_PAYMENT,
-    payload: { method }
+    type: SET_PAYMENT_ID,
+    payload: { id }
+  }
+}
+
+export const setBranchId = (id) => {
+  return {
+    type: SET_BRANCH_ID,
+    payload: { id }
   }
 }
 
@@ -87,11 +93,21 @@ export const setSuccessful = (success) => {
 export function setInvoiceParameters () {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
+    const { company } = getState().company
+    const { branchList } = getState().ui
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
       const customerList = await getCustomerList(token, companyId)
       const productList = await getProductList(token, companyId, 1, '')
+      if (company === null) {
+        const companyEntity = await getCompanyEntity(token, companyId)
+        dispatch(setCompany(companyEntity))
+      }
+      if (branchList.length === 0 ) {
+        const list = await getBranchList(token, companyId)
+        dispatch(setBranchList(list))
+      }
       dispatch(setActiveSection(5))
       const customer = {
         IdCliente: 1,
@@ -211,49 +227,24 @@ export const removeDetails = (id) => {
   }
 }
 
-export function saveInvoice () {
+export const saveInvoice = () => {
   return async (dispatch, getState) => {
-    const { serviceURL } = getState().config
-    const { token, company } = getState().session
-    const {
-      paymentMethodId,
-      customer,
-      customerName,
-      exonerationType,
-      exonerationCode,
-      exonerationEntity,
-      exonerationDate,
-      exonerationPercentage,
-      products,
-      excento,
-      gravado,
-      exonerado,
-      impuesto,
-      totalCosto,
-      total
-    } = getState().invoice
+    const { token, userId } = getState().session
+    const { company } = getState().company
+    const { customer } = getState().customer
+    const { paymentId, branchId, productDetails, summary } = getState().invoice
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
       await saveInvoiceEntity(
-        serviceURL,
         token,
-        products,
-        paymentMethodId,
+        userId,
+        productDetails,
+        paymentId,
+        branchId,
         company,
-        customer.IdCliente,
-        customerName,
-        excento,
-        gravado,
-        exonerado,
-        impuesto,
-        totalCosto,
-        total,
-        exonerationType,
-        exonerationCode,
-        exonerationEntity,
-        exonerationDate,
-        exonerationPercentage
+        customer,
+        summary
       )
       dispatch(setSuccessful())
       dispatch(stopLoader())
@@ -261,5 +252,17 @@ export function saveInvoice () {
       dispatch(stopLoader())
       dispatch(setErrorMessage(error))
     }
+  }
+}
+
+export const resetInvoice = () => {
+  return async (dispatch) => {
+    dispatch(setProduct(null))
+    dispatch(setDescription(''))
+    dispatch(setQuantity(1))
+    dispatch(setPrice(0))
+    dispatch(setProductsDetail([]))
+    dispatch(setSummary({ gravado: 0, exonerado: 0, excento: 0, subTotal: 0, impuesto: 0,total: 0 }))
+    dispatch(setPaymentId(1))
   }
 }

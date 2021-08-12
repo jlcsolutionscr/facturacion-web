@@ -11,6 +11,7 @@ export const INITIAL_STATE = {
   },
   session: {
     authenticated: false,
+    userId: null,
     companyId: null,
     companyName: '',
     companyIdentifier: '',
@@ -36,8 +37,16 @@ export const INITIAL_STATE = {
     quantity: 1,
     price: 0,
     productDetails: [],
-    payment: null,
-    summary: null,
+    paymentId: 1,
+    branchId: 1,
+    summary: {
+      gravado: 0,
+      exonerado: 0,
+      excento: 0,
+      subTotal: 0,
+      impuesto: 0,
+      total: 0,
+    },
     successful: false
   },
   product: {

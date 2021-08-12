@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import UAParser from 'ua-parser-js'
 
 import { setActiveSection } from 'store/ui/actions'
-import { generateReport, exportReport } from 'store/company/actions'
+import { setReportResults, generateReport, exportReport } from 'store/company/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -30,11 +30,14 @@ const useStyles = makeStyles(theme => ({
   secondLayout: {
     padding: '2%',
     overflow: 'auto',
-    margin: '0 30% 0 0',
-    '@media (max-width:1280px)': {
+    margin: '0 20% 0 0',
+    '@media (max-width:960px)': {
       margin: '0 16% 0 0',
     },
     '@media (max-width:600px)': {
+      margin: '0 8% 0 0'
+    },
+    '@media (max-width:414px)': {
       margin: '0 6% 0 0'
     }
   },
@@ -63,6 +66,7 @@ function ReportsPage({
   branchList,
   reportSummary,
   reportResults,
+  setReportResults,
   generateReport,
   exportReport,
   setActiveSection,
@@ -94,6 +98,10 @@ function ReportsPage({
       generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
     }
     if (type === 2) exportReport(branchId, reportType, startDateFormatted, endDateFormatted)
+  }
+  const handleBackButton = () => {
+    setActiveSection(0)
+    setReportResults([], null)
   }
   const reportName = reportType === 1
     ? 'Reporte de documentos generados'
@@ -165,7 +173,7 @@ function ReportsPage({
             </Button>
           </Grid>}
           <Grid item xs={isMobile ? 5 : 4} sm={3}>
-            <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
+            <Button variant='contained' className={classes.button} onClick={handleBackButton}>
               Regresar
             </Button>
           </Grid>
@@ -201,6 +209,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActiveSection,
+    setReportResults,
     generateReport,
     exportReport
   }, dispatch)

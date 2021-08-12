@@ -78,11 +78,11 @@ export function updateCantonList (idProvincia) {
       dispatch(startLoader())
       dispatch(setErrorMessage(''))
       try {
-        const cantonList = await getCantonList(idProvincia, token)
+        const cantonList = await getCantonList(token, idProvincia)
         dispatch(setCantonList(cantonList))
-        const distritoList = await getDistritoList(idProvincia, 1, token)
+        const distritoList = await getDistritoList(token, idProvincia, 1)
         dispatch(setDistritoList(distritoList))
-        const barrioList = await getBarrioList(idProvincia, 1, 1, token)
+        const barrioList = await getBarrioList(token, idProvincia, 1, 1)
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
@@ -101,9 +101,9 @@ export function updateDistritoList (idProvincia, idCanton) {
       dispatch(startLoader())
       dispatch(setErrorMessage(''))
       try {
-        const distritoList = await getDistritoList(idProvincia, idCanton, token)
+        const distritoList = await getDistritoList(token, idProvincia, idCanton)
         dispatch(setDistritoList(distritoList))
-        const barrioList = await getBarrioList(idProvincia, idCanton, 1, token)
+        const barrioList = await getBarrioList(token, idProvincia, idCanton, 1)
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
@@ -122,7 +122,7 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
       dispatch(startLoader())
       dispatch(setErrorMessage(''))
       try {
-        const barrioList = await getBarrioList(idProvincia, idCanton, idDistrito, token)
+        const barrioList = await getBarrioList(token, idProvincia, idCanton, idDistrito)
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {

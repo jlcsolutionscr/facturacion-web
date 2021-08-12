@@ -22,14 +22,15 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function StepOneScreen({index, value, customer, customerList, getCustomer}) {
-  React.useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
   const classes = useStyles()
+  const myRef = React.useRef(null)
+  React.useEffect(() => {
+    myRef.current.scrollTo(0, 0)
+  }, [value])
   const menuItems = customerList.map(item => { return <MenuItem key={item.IdCliente} value={item.IdCliente}>{item.Nombre}</MenuItem> })
   return (
-    <div className={classes.container} hidden={value !== index}>
-      <Grid container spacing={3}>
+    <div ref={myRef} className={classes.container} hidden={value !== index}>
+      <Grid container spacing={2}>
         <Grid item xs={12} sm={9} md={7}>
           <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Seleccione un cliente</InputLabel>
@@ -41,7 +42,13 @@ function StepOneScreen({index, value, customer, customerList, getCustomer}) {
         <Grid item xs={12} md={6}>
           <LabelField
             label='Nombre del cliente'
-            value={customer ? customer.NombreComercial || customer.Nombre : ''}
+            value={customer ? customer.Nombre : ''}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <LabelField
+            label='Nombre comercial'
+            value={customer ? customer.NombreComercial : ''}
           />
         </Grid>
         <Grid item xs={12} md={6}>

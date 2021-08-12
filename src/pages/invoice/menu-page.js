@@ -38,9 +38,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParameters, setReportsParameters, logOut}) {
-  React.useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
   const manageCustomers = permissions.filter(role => role.IdRole === 100).length > 0
   const manageProducts = permissions.filter(role => role.IdRole === 103).length > 0

@@ -40,6 +40,9 @@ const useStyles = makeStyles(theme => ({
 
 function HomePage({ activeSection, companyName, companyIdentifier, width }) {
   const classes = useStyles()
+  React.useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [activeSection])
   return (
     <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
       <Header companyName={companyName} companyIdentifier={companyIdentifier} width={width} />
