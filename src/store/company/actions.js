@@ -11,8 +11,7 @@ import {
   setErrorMessage,
   setCantonList,
   setDistritoList,
-  setBarrioList,
-  setBranchList
+  setBarrioList
 } from 'store/ui/actions'
 
 import {
@@ -23,7 +22,6 @@ import {
   saveCompanyEntity,
   saveCompanyCertificate,
   saveCompanyLogo,
-  getBranchList,
   getReportData
 } from 'utils/domainHelper'
 
@@ -111,34 +109,14 @@ export function saveLogo (logo) {
   }
 }
 
-export function setReportsParameters () {
+export function generateReport (reportType, startDate, endDate) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
-    const { branchList } = getState().ui
-    dispatch(startLoader())
-    dispatch(setErrorMessage(''))
-    try {
-      if (branchList.length === 0 ) {
-        const list = await getBranchList(token, companyId)
-        dispatch(setBranchList(list))
-      }
-      dispatch(setActiveSection(20))
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(setErrorMessage(error.message))
-      dispatch(stopLoader())
-    }
-  }
-}
-
-export function generateReport (idBranch, reportType, startDate, endDate) {
-  return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
+    const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     dispatch(setReportResults([], null))
     try {
-      const list = await getReportData(token, reportType, companyId, idBranch, startDate, endDate)
+      const list = await getReportData(token, reportType, companyId, branchId, startDate, endDate)
       let taxes = 0
       let total = 0
       if (reportType !== 5) {
@@ -162,13 +140,13 @@ export function generateReport (idBranch, reportType, startDate, endDate) {
   }
 }
 
-export function exportReport (idBranch, reportType, startDate, endDate) {
+export function exportReport (reportType, startDate, endDate) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
+    const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
-      const list = await getReportData(token, reportType, companyId, idBranch, startDate, endDate)
+      const list = await getReportData(token, reportType, companyId, branchId, startDate, endDate)
       const fileName = reportType === 1
         ? 'documentos_electronicos_generados'
         : 'documentos_electronicos_recibidos'

@@ -5,8 +5,7 @@ import {
   SET_ERROR_MESSAGE,
   SET_CANTON_LIST,
   SET_DISTRITO_LIST,
-  SET_BARRIO_LIST,
-  SET_BRANCH_LIST
+  SET_BARRIO_LIST
 } from './types'
 
 import {
@@ -59,13 +58,6 @@ export const setDistritoList = (list) => {
 export const setBarrioList = (list) => {
   return {
     type: SET_BARRIO_LIST,
-    payload: { list }
-  }
-}
-
-export const setBranchList = (list) => {
-  return {
-    type: SET_BRANCH_LIST,
     payload: { list }
   }
 }

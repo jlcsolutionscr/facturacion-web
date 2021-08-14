@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setBranchId, setPaymentId, saveInvoice, resetInvoice } from 'store/invoice/actions'
+import { setPaymentId, saveInvoice, resetInvoice } from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
@@ -51,12 +51,9 @@ const useStyles = makeStyles(theme => ({
 function StepThreeScreen({
   value,
   index,
-  branchId,
-  branchList,
   summary,
   paymentId,
   successful,
-  setBranchId,
   setPaymentId,
   saveInvoice,
   resetInvoice}) {
@@ -69,7 +66,6 @@ function StepThreeScreen({
   const buttonDisabled = total === 0
   let paymentMethods = [{Id: 1, Descripcion: 'EFECTIVO'}, {Id: 2, Descripcion: 'TARJETA'}, {Id: 3, Descripcion: 'CHEQUE'}, {Id: 4, Descripcion: 'TRANSFERENCIA'}]
   const paymentItems = paymentMethods.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
-  const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   const handleOnPress = () => {
     if (!successful) {
       saveInvoice()
@@ -82,7 +78,7 @@ function StepThreeScreen({
       <Grid container spacing={2} className={classes.gridContainer}>
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
-          <Grid container spacing={3} className={classes.details}>
+          <Grid container spacing={2} className={classes.details}>
             <Grid item xs={6}>
             <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
             </Grid>
@@ -122,18 +118,6 @@ function StepThreeScreen({
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-            <FormControl style={{maxWidth: '400px', textAlign: 'left'}}>
-              <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
-              <Select
-                id='Sucursal'
-                value={branchId}
-                onChange={(event) => setBranchId(event.target.value)}
-              >
-                {branchItems}
-              </Select>
-            </FormControl>
-          </Grid>
-        <Grid item xs={12} className={classes.centered}>
           <FormControl style={{width: '215px', textAlign: 'left'}}>
             <InputLabel id='demo-simple-select-label'>Seleccione la forma de pago:</InputLabel>
             <Select
@@ -158,7 +142,6 @@ function StepThreeScreen({
 const mapStateToProps = (state) => {
   return {
     paymentId: state.invoice.paymentId,
-    branchId: state.invoice.branchId,
     summary: state.invoice.summary,
     successful: state.invoice.successful,
     branchList: state.ui.branchList,
@@ -168,7 +151,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    setBranchId,
     setPaymentId,
     saveInvoice,
     resetInvoice

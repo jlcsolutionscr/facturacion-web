@@ -5,7 +5,6 @@ import {
   SET_PRODUCTS_DETAIL,
   SET_SUMMARY,
   SET_PAYMENT_ID,
-  SET_BRANCH_ID,
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
@@ -16,8 +15,7 @@ import {
   startLoader,
   stopLoader,
   setErrorMessage,
-  setActiveSection,
-  setBranchList
+  setActiveSection
 } from 'store/ui/actions'
 
 import { setCompany } from 'store/company/actions'
@@ -30,7 +28,6 @@ import {
   getCompanyEntity,
   getCustomerList,
   getProductList,
-  getBranchList,
   getProductEntity,
   getCustomerPrice,
   getInvoiceSummary,
@@ -82,13 +79,6 @@ export const setPaymentId = (id) => {
   }
 }
 
-export const setBranchId = (id) => {
-  return {
-    type: SET_BRANCH_ID,
-    payload: { id }
-  }
-}
-
 export const setSuccessful = (success) => {
   return {
     type: SET_SUCCESSFUL,
@@ -121,7 +111,6 @@ export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     const { company } = getState().company
-    const { branchList } = getState().ui
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {
@@ -130,10 +119,6 @@ export function setInvoiceParameters (id) {
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
-      }
-      if (branchList.length === 0 ) {
-        const list = await getBranchList(token, companyId)
-        dispatch(setBranchList(list))
       }
       dispatch(setActiveSection(id))
       const customer = {
@@ -256,10 +241,10 @@ export const removeDetails = (id) => {
 
 export const saveInvoice = () => {
   return async (dispatch, getState) => {
-    const { token, userId } = getState().session
+    const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, branchId, productDetails, summary } = getState().invoice
+    const { paymentId, productDetails, summary } = getState().invoice
     dispatch(startLoader())
     dispatch(setErrorMessage(''))
     try {

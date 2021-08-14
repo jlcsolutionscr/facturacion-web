@@ -6,13 +6,13 @@ export const INITIAL_STATE = {
     cantonList: [],
     distritoList: [],
     barrioList: [],
-    branchList: [],
     errorMessage: ''
   },
   session: {
     authenticated: false,
     userId: null,
     companyId: null,
+    branchList: [],
     branchId: 1,
     companyName: '',
     companyIdentifier: '',
@@ -39,7 +39,6 @@ export const INITIAL_STATE = {
     price: 0,
     productDetails: [],
     paymentId: 1,
-    branchId: 1,
     summary: {
       gravado: 0,
       exonerado: 0,

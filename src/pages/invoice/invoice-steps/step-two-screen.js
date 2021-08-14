@@ -34,7 +34,8 @@ const useStyles = makeStyles(theme => ({
     padding: '10px'
   },
   icon: {
-    width: '24px'
+    width: '24px',
+    padding: 0
   }
 }))
 
@@ -121,7 +122,7 @@ function StepTwoScreen({
         />
       </Grid>
       <Grid item xs={2}>
-        <IconButton color="primary" disabled={!buttonEnabled} component="span" onClick={() => addDetails()}>
+        <IconButton className={classes.icon} color="primary" disabled={!buttonEnabled} component="span" onClick={() => addDetails()}>
           <AddCircleIcon className={classes.icon} />
         </IconButton>
       </Grid>

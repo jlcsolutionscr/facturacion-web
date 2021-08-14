@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
 
 function ReportsPage({
   width,
-  branchList,
+  branchId,
   reportSummary,
   reportResults,
   setReportResults,
@@ -80,7 +80,6 @@ function ReportsPage({
   const isMobile = !!result.device.type
   const today = new Date()
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
-  const [branchId, setBranchId] = React.useState(1)
   const [reportType, setReportType] = React.useState(1)
   const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth))
@@ -93,9 +92,9 @@ function ReportsPage({
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
     if (type === 1) {
-      generateReport(branchId, reportType, startDateFormatted, endDateFormatted)
+      generateReport(reportType, startDateFormatted, endDateFormatted)
     }
-    if (type === 2) exportReport(branchId, reportType, startDateFormatted, endDateFormatted)
+    if (type === 2) exportReport(reportType, startDateFormatted, endDateFormatted)
   }
   const handleBackButton = () => {
     setActiveSection(0)
@@ -106,23 +105,10 @@ function ReportsPage({
     : reportType === 2
       ? 'Reporte de documentos recibidos'
       : 'Reporte resumen de documentos del período'
-  const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div>
       <Grid container className={classes.container}>
         {viewLayout === 1 && <Grid container spacing={3} className={classes.firstLayout}>
-          <Grid item xs={12} sm={12}>
-            <FormControl className={classes.form}>
-              <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
-              <Select
-                id='Sucursal'
-                value={branchId}
-                onChange={(event) => setBranchId(event.target.value)}
-              >
-                {branchItems}
-              </Select>
-            </FormControl>
-          </Grid>
           <Grid item xs={12} sm={12}>
             <FormControl className={classes.form}>
               <InputLabel id='demo-simple-select-label'>Seleccione el reporte:</InputLabel>
@@ -194,7 +180,6 @@ function ReportsPage({
 
 const mapStateToProps = (state) => {
   return {
-    branchList: state.ui.branchList,
     reportResults: state.company.reportResults,
     reportSummary: state.company.reportSummary
   }

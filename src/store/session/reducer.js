@@ -1,6 +1,7 @@
 import {
   LOGIN,
-  LOGOUT
+  LOGOUT,
+  SET_BRANCH_ID
 } from './types'
 
 const sessionReducer = (state = {}, { type, payload }) => {
@@ -14,6 +15,8 @@ const sessionReducer = (state = {}, { type, payload }) => {
         companyName: payload.companyName,
         companyIdentifier: payload.companyIdentifier,
         permissions: payload.user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
+        branchList: payload.branchList,
+        branchId: payload.branchList[0].Id,
         token: payload.user.Token
       }
     case LOGOUT:
@@ -23,6 +26,8 @@ const sessionReducer = (state = {}, { type, payload }) => {
         permissions: [],
         token: null
       }
+    case SET_BRANCH_ID:
+      return { ...state, branchId: payload.id }
     default:
       return state
   }

@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     width: 'inherit'
   },
   table: {
-    minWidth: '1170px'
+    minWidth: '1220px'
   },
   button: {
     padding: '5px 15px',
@@ -68,7 +68,7 @@ function DetailLayout(props) {
       </div>
     </div>
     <div className={classes.table}>
-      <Table>
+      <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Tipo</TableCell>

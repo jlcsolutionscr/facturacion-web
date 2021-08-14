@@ -5,8 +5,7 @@ import {
   SET_ERROR_MESSAGE,
   SET_CANTON_LIST,
   SET_DISTRITO_LIST,
-  SET_BARRIO_LIST,
-  SET_BRANCH_LIST
+  SET_BARRIO_LIST
 } from './types'
 
 const uiReducer = (state = {}, { type, payload }) => {
@@ -25,8 +24,6 @@ const uiReducer = (state = {}, { type, payload }) => {
       return { ...state, distritoList: payload.list }
     case SET_BARRIO_LIST:
       return { ...state, barrioList: payload.list }
-    case SET_BRANCH_LIST:
-      return { ...state, branchList: payload.list }
     default:
       return state
   }

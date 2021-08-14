@@ -46,7 +46,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
   }, [activeSection])
   return (
     <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
-      <Header companyName={companyName} companyIdentifier={companyIdentifier} width={width} />
+      <Header companyName={companyName} companyIdentifier={companyIdentifier} />
       <div className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
@@ -68,7 +68,9 @@ const mapStateToProps = (state) => {
     loaderText: state.ui.loaderText,
     activeSection: state.ui.activeSection,
     companyName: state.session.companyName,
-    companyIdentifier: state.session.companyIdentifier
+    companyIdentifier: state.session.companyIdentifier,
+    branchList: state.session.branchList,
+    branchId: state.session.branchId
   }
 }
 

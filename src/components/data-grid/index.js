@@ -78,7 +78,7 @@ export default function DataGrid({page, dense, columns, rows, rowsCount, rowsPer
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableContainer className={classes.tableContainer}>
-          <Table className={classes.table} size="small">
+          <Table className={classes.table} size={dense ? "small" : "medium"}>
             <TableHead>
               <TableRow>
                 {columns.map((cell) => (

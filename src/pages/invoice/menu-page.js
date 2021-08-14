@@ -4,18 +4,17 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
-
-import { 
-  getCompany,
-  setReportsParameters
-} from 'store/company/actions'
-
+import {  getCompany } from 'store/company/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
-
 import { logOut } from 'store/session/actions'
+import { setBranchId } from 'store/session/actions'
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -37,16 +36,39 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParameters, getInvoiceListFirstPage, setReportsParameters, logOut}) {
+function MenuPage({
+  permissions,
+  getCompany,
+  branchId,
+  branchList,
+  setBranchId,
+  setActiveSection,
+  setInvoiceParameters,
+  getInvoiceListFirstPage,
+  logOut
+}) {
+  const classes = useStyles()
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
   const manageCustomers = permissions.filter(role => role.IdRole === 100).length > 0
   const manageProducts = permissions.filter(role => role.IdRole === 103).length > 0
   const generateInvoice = permissions.filter(role => role.IdRole === 203).length > 0
   const manageDocuments = permissions.filter(role => role.IdRole === 402).length > 0
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
-  const classes = useStyles()
+  const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <Grid container align='center' spacing={2} >
+      {branchItems.length > 1 && <Grid item xs={12}>
+        <FormControl className={classes.form}>
+          <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
+          <Select
+            id='Sucursal'
+            value={branchId}
+            onChange={(event) => setBranchId(event.target.value)}
+          >
+            {branchItems}
+          </Select>
+        </FormControl>
+      </Grid>}
       {updateCompanyInfo && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>
       </Grid>}
@@ -69,7 +91,7 @@ function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParamete
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(7)}>Documentos electrónicos</Button>
       </Grid>}
       {reportingMenu && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setReportsParameters()}>Menu de reportes</Button>
+        <Button classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
       </Grid>}
       <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => logOut()}>Cerrar sesión</Button>
@@ -79,17 +101,21 @@ function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParamete
 }
 
 const mapStateToProps = (state) => {
-  return { permissions: state.session.permissions }
+  return {
+    permissions: state.session.permissions,
+    branchId: state.session.branchId,
+    branchList: state.session.branchList
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     logOut,
     setActiveSection,
+    setBranchId,
     getCompany,
     setInvoiceParameters,
-    getInvoiceListFirstPage,
-    setReportsParameters,
+    getInvoiceListFirstPage
   }, dispatch)
 }
 
