@@ -8,6 +8,7 @@ import MenuPage from './menu-page'
 import CompanyPage from './company-page'
 import LogoPage from './logo-page'
 import InvoicePage from './invoice-page'
+import InvoiceListPage from './invoice-list-page'
 import UnderConstructionPage from './under-construction'
 import ReportsPage from './reports-page'
 
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
-    margin: '50px 10% 4% 10%',
+    margin: '40px 10% 3% 10%',
     '@media (max-width:960px)': {
       margin: '0px 8% 3% 8%',
     },
@@ -53,7 +54,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
         {activeSection === 3 && <UnderConstructionPage />}
         {activeSection === 4 && <UnderConstructionPage />}
         {activeSection === 5 && <InvoicePage />}
-        {activeSection === 6 && <UnderConstructionPage />}
+        {activeSection === 6 && <InvoiceListPage />}
         {activeSection === 7 && <UnderConstructionPage />}
         {activeSection === 20 && <ReportsPage width={width} />}
       </div>

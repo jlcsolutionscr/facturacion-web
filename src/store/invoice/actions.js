@@ -6,7 +6,10 @@ import {
   SET_SUMMARY,
   SET_PAYMENT_ID,
   SET_BRANCH_ID,
-  SET_SUCCESSFUL
+  SET_SUCCESSFUL,
+  SET_LIST_PAGE,
+  SET_LIST_COUNT,
+  SET_LIST
 } from './types'
 
 import {
@@ -31,7 +34,10 @@ import {
   getProductEntity,
   getCustomerPrice,
   getInvoiceSummary,
-  saveInvoiceEntity
+  saveInvoiceEntity,
+  getProcessedInvoiceListCount,
+  getProcessedInvoiceListPerPage,
+  revokeInvoiceEntity
 } from 'utils/domainHelper'
 
 export const setDescription = (description) => {
@@ -90,7 +96,28 @@ export const setSuccessful = (success) => {
   }
 }
 
-export function setInvoiceParameters () {
+export const setInvoiceListPage = (page) => {
+  return {
+    type: SET_LIST_PAGE,
+    payload: { page }
+  }
+}
+
+export const setInvoiceListCount = (count) => {
+  return {
+    type: SET_LIST_COUNT,
+    payload: { count }
+  }
+}
+
+export const setInvoiceList = (list) => {
+  return {
+    type: SET_LIST,
+    payload: { list }
+  }
+}
+
+export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     const { company } = getState().company
@@ -108,7 +135,7 @@ export function setInvoiceParameters () {
         const list = await getBranchList(token, companyId)
         dispatch(setBranchList(list))
       }
-      dispatch(setActiveSection(5))
+      dispatch(setActiveSection(id))
       const customer = {
         IdCliente: 1,
         Nombre: 'CLIENTE DE CONTADO',
@@ -264,5 +291,62 @@ export const resetInvoice = () => {
     dispatch(setProductsDetail([]))
     dispatch(setSummary({ gravado: 0, exonerado: 0, excento: 0, subTotal: 0, impuesto: 0,total: 0 }))
     dispatch(setPaymentId(1))
+  }
+}
+
+export const getInvoiceListFirstPage = (id) => {
+  return async (dispatch, getState) => {
+    const { token, companyId, branchId } = getState().session
+    dispatch(startLoader())
+    try {
+      dispatch(setInvoiceListPage(1))
+      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId)
+      dispatch(setInvoiceListCount(recordCount))
+      if (recordCount > 0) {
+        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10)
+        dispatch(setInvoiceList(newList))
+      } else {
+        dispatch(setInvoiceList([]))
+      }
+      if (id) dispatch(setActiveSection(id))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setErrorMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const getInvoiceListByPageNumber = (pageNumber) => {
+  return async (dispatch, getState) => {
+    const { token, companyId, branchId } = getState().session
+    dispatch(startLoader())
+    try {
+      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, pageNumber, 10)
+      dispatch(setInvoiceListPage(pageNumber))
+      dispatch(setInvoiceList(newList))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setErrorMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const revokeInvoice = (idInvoice) => {
+  return async (dispatch, getState) => {
+    const { token, userId } = getState().session
+    const { list } = getState().invoice
+    dispatch(startLoader())
+    try {
+      await revokeInvoiceEntity(token, idInvoice, userId)
+      const index = list.findIndex(item => item.IdFactura === idInvoice)
+      const newList = [...list.slice(0, index), { ...list[index], Anulando: true }, ...list.slice(index + 1)]
+      dispatch(setInvoiceList(newList))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setErrorMessage(error))
+      dispatch(stopLoader())
+    }
   }
 }

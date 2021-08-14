@@ -10,7 +10,7 @@ import {
   setReportsParameters
 } from 'store/company/actions'
 
-import { setInvoiceParameters } from 'store/invoice/actions'
+import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
 
 import { logOut } from 'store/session/actions'
 
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParameters, setReportsParameters, logOut}) {
+function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParameters, getInvoiceListFirstPage, setReportsParameters, logOut}) {
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
   const manageCustomers = permissions.filter(role => role.IdRole === 100).length > 0
   const manageProducts = permissions.filter(role => role.IdRole === 103).length > 0
@@ -63,7 +63,7 @@ function MenuPage({permissions, getCompany, setActiveSection, setInvoiceParamete
         <Button classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
       </Grid>}
       {generateInvoice && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(6)}>Facturas electrónicas</Button>
+        <Button classes={{root: classes.button}} onClick={() => getInvoiceListFirstPage(6)}>Facturas electrónicas</Button>
       </Grid>}
       {manageDocuments && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(7)}>Documentos electrónicos</Button>
@@ -88,6 +88,7 @@ const mapDispatchToProps = (dispatch) => {
     setActiveSection,
     getCompany,
     setInvoiceParameters,
+    getInvoiceListFirstPage,
     setReportsParameters,
   }, dispatch)
 }

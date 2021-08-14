@@ -13,6 +13,7 @@ export const INITIAL_STATE = {
     authenticated: false,
     userId: null,
     companyId: null,
+    branchId: 1,
     companyName: '',
     companyIdentifier: '',
     permissions: [],
@@ -47,7 +48,10 @@ export const INITIAL_STATE = {
       impuesto: 0,
       total: 0,
     },
-    successful: false
+    successful: false,
+    listPage: 1,
+    listCount: 0,
+    list: []
   },
   product: {
     product: null,

@@ -6,7 +6,10 @@ import {
   SET_SUMMARY,
   SET_PAYMENT_ID,
   SET_BRANCH_ID,
-  SET_SUCCESSFUL
+  SET_SUCCESSFUL,
+  SET_LIST_PAGE,
+  SET_LIST_COUNT,
+  SET_LIST
 } from './types'
 
 const companyReducer = (state = {}, { type, payload }) => {
@@ -27,6 +30,12 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, branchId: payload.id }
     case SET_SUCCESSFUL:
       return { ...state, successful: payload.success }
+    case SET_LIST_PAGE:
+      return { ...state, listPage: payload.page }
+    case SET_LIST_COUNT:
+      return { ...state, listCount: payload.count }
+    case SET_LIST:
+      return { ...state, list: payload.list }
     default:
       return state
   }

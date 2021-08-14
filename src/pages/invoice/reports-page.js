@@ -8,7 +8,6 @@ import { setActiveSection } from 'store/ui/actions'
 import { setReportResults, generateReport, exportReport } from 'store/company/actions'
 
 import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
@@ -62,15 +61,14 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function ReportsPage({
-  errorMessage,
+  width,
   branchList,
   reportSummary,
   reportResults,
   setReportResults,
   generateReport,
   exportReport,
-  setActiveSection,
-  width
+  setActiveSection
 }) {
   const classes = useStyles()
   const result = new UAParser().getResult()
@@ -112,9 +110,6 @@ function ReportsPage({
   return (
     <div>
       <Grid container className={classes.container}>
-        {errorMessage !== '' && <Typography className={classes.errorLabel} style={{fontWeight: '700'}} color='textSecondary' component='p'>
-          {errorMessage}
-        </Typography>}
         {viewLayout === 1 && <Grid container spacing={3} className={classes.firstLayout}>
           <Grid item xs={12} sm={12}>
             <FormControl className={classes.form}>
@@ -201,8 +196,7 @@ const mapStateToProps = (state) => {
   return {
     branchList: state.ui.branchList,
     reportResults: state.company.reportResults,
-    reportSummary: state.company.reportSummary,
-    errorMessage: state.ui.errorMessage
+    reportSummary: state.company.reportSummary
   }
 }
 

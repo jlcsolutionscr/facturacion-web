@@ -63,4 +63,26 @@ export const RemoveCircleIcon = React.forwardRef((props, ref) => (
   </SvgIcon>
 ))
 
+export const FirstPageIcon = React.forwardRef((props, ref) => (
+  <SvgIcon {...props} ref={ref}>
+    <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"/><path d="M24 24H0V0h24v24z" fill="none"/>
+  </SvgIcon>
+))
 
+export const KeyboardArrowLeftIcon = React.forwardRef((props, ref) => (
+  <SvgIcon {...props} ref={ref}>
+    <path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+  </SvgIcon>
+))
+
+export const KeyboardArrowRightIcon = React.forwardRef((props, ref) => (
+  <SvgIcon {...props} ref={ref}>
+    <path d="M0 0h24v24H0V0z" fill="none"/><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+  </SvgIcon>
+))
+
+export const LastPageIcon = React.forwardRef((props, ref) => (
+  <SvgIcon {...props} ref={ref}>
+    <path d="M0 0h24v24H0V0z" fill="none"/><path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z"/>
+  </SvgIcon>
+))
