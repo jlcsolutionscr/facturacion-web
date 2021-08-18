@@ -53,6 +53,7 @@ const useStyles = makeStyles(theme => ({
 function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyAttribute, updateCantonList, updateDistritoList, updateBarrioList, saveCompany, setActiveSection}) {
   const classes = useStyles()
   const [certificate, setCertificate] = React.useState('')
+  const inputFile = React.useRef(null)
   let disabled = true
   if (company != null) {
     disabled = company.NombreEmpresa === ''
@@ -255,16 +256,12 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             accept='p12/*'
             style={{display: 'none'}}
             id='contained-button-file'
+            ref={inputFile}
             multiple
             type='file'
             onChange={handleCertificateChange}
           />
-          <label htmlFor='contained-button-file'>
-            <Button
-              disabled={company ? company.RegimenSimplificado : true}
-              label='Cargar'
-            />
-          </label>
+          <Button disabled={company ? company.RegimenSimplificado : true} label='Cargar' onClick={() => inputFile.current.click()} />
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
