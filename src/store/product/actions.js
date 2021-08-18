@@ -6,7 +6,7 @@ import {
 import {
   startLoader,
   stopLoader,
-  setErrorMessage
+  setMessage
 } from 'store/ui/actions'
 
 import { getProductEntity } from 'utils/domainHelper'
@@ -29,7 +29,7 @@ export function getProduct (idProduct) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       const product = await getProductEntity(token, idProduct, 1)
       dispatch(setProduct(product))
@@ -37,7 +37,7 @@ export function getProduct (idProduct) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setProduct(null))
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
     }
   }
 }

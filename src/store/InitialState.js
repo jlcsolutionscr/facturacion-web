@@ -6,7 +6,8 @@ export const INITIAL_STATE = {
     cantonList: [],
     distritoList: [],
     barrioList: [],
-    errorMessage: ''
+    message: '',
+    messageType: 'ERROR'
   },
   session: {
     authenticated: false,
@@ -55,5 +56,11 @@ export const INITIAL_STATE = {
   product: {
     product: null,
     productList: []
+  },
+  document: {
+    listPage: 1,
+    listCount: 0,
+    list: [],
+    details: ''
   }
 }

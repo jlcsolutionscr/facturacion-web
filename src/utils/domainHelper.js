@@ -478,7 +478,7 @@ export async function getProcessedInvoiceListPerPage(token, idCompany, idBranch,
   }
 }
 
-export async function getProcessedDocumentListCount(token, idCompany, idBranch) {
+export async function getDocumentListCount(token, idCompany, idBranch) {
   try {
     const data = "{NombreMetodo: 'ObtenerTotalDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -489,7 +489,7 @@ export async function getProcessedDocumentListCount(token, idCompany, idBranch) 
   }
 }
 
-export async function getProcessedDocumentListPerPage(token, idCompany, idBranch, pageNumber, rowPerPage) {
+export async function getDocumentListPerPage(token, idCompany, idBranch, pageNumber, rowPerPage) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: " + pageNumber + ",FilasPorPagina: " + rowPerPage + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)

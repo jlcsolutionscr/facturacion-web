@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import { ThemeProvider } from '@material-ui/core/styles'
 import Snackbar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
-import { ErrorIcon } from 'utils/iconsHelper'
+import { ErrorIcon, InfoIcon } from 'utils/iconsHelper'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Loader from 'components/loader'
@@ -13,7 +13,7 @@ import useWindowSize from 'hooks/use-window-size'
 import LoginPage from './login/login-page'
 import HomePage from './invoice/home-page'
 
-import { setErrorMessage } from 'store/ui/actions'
+import { setMessage } from 'store/ui/actions'
 import { darkTheme, lightTheme } from "utils/muiThemeProvider"
 
 const useStyles = makeStyles(theme => ({
@@ -23,13 +23,16 @@ const useStyles = makeStyles(theme => ({
   error: {
     backgroundColor: theme.palette.error.normal
   },
+  info: {
+    backgroundColor: theme.palette.info.normal
+  },
   icon: {
     opacity: 0.9,
     marginRight: theme.spacing(1)
   }
 }))
 
-function RoutingPage({ authenticated, errorMessage, isLoaderOpen, loaderText, setErrorMessage}) {
+function RoutingPage({ authenticated, message, messageType, isLoaderOpen, loaderText, setMessage}) {
   const classes = useStyles()
   const size = useWindowSize()
   const [isDarkMode, setDarkMode] = React.useState(false)
@@ -45,17 +48,17 @@ function RoutingPage({ authenticated, errorMessage, isLoaderOpen, loaderText, se
             vertical: 'bottom',
             horizontal: 'center'
           }}
-          open={errorMessage !== ''}
+          open={message !== ''}
           autoHideDuration={6000}
-          onClose={() => setErrorMessage('')}
+          onClose={() => setMessage('')}
         >
           <SnackbarContent
-            className={classes.error}
+            className={messageType === 'ERROR' ? classes.error : classes.info}
             aria-describedby='client-snackbar'
             message={
               <span id='client-snackbar' className={classes.message}>
-                <ErrorIcon className={classes.icon} />
-                {errorMessage}
+                {messageType === 'ERROR' ? <ErrorIcon className={classes.icon} /> : <InfoIcon className={classes.icon} />}
+                {message}
               </span>
             }
           />
@@ -70,13 +73,14 @@ const mapStateToProps = (state) => {
     authenticated: state.session.authenticated,
     isLoaderOpen: state.ui.isLoaderOpen,
     loaderText: state.ui.loaderText,
-    errorMessage: state.ui.errorMessage
+    message: state.ui.message,
+    messageType: state.ui.messageType
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    setErrorMessage
+    setMessage
   }, dispatch)
 }
 

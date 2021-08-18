@@ -17,7 +17,7 @@ const uiReducer = (state = {}, { type, payload }) => {
     case SET_ACTIVE_SECTION:
       return { ...state, activeSection: payload.pageId }
     case SET_ERROR_MESSAGE:
-      return { ...state, errorMessage: payload.error }
+      return { ...state, message: payload.error, messageType: payload.type }
     case SET_CANTON_LIST:
       return { ...state, cantonList: payload.list }
     case SET_DISTRITO_LIST:

@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 import {  getCompany } from 'store/company/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
+import { getDocumentListFirstPage } from 'store/document/actions'
 import { logOut } from 'store/session/actions'
 import { setBranchId } from 'store/session/actions'
 
@@ -51,6 +52,7 @@ function MenuPage({
   setActiveSection,
   setInvoiceParameters,
   getInvoiceListFirstPage,
+  getDocumentListFirstPage,
   logOut
 }) {
   const classes = useStyles()
@@ -96,7 +98,7 @@ function MenuPage({
         <Button classes={{root: classes.button}} onClick={() => getInvoiceListFirstPage(6)}>Facturas electrónicas</Button>
       </Grid>}
       {manageDocuments && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(7)}>Documentos electrónicos</Button>
+        <Button classes={{root: classes.button}} onClick={() => getDocumentListFirstPage(7)}>Documentos electrónicos</Button>
       </Grid>}
       {reportingMenu && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
@@ -123,7 +125,8 @@ const mapDispatchToProps = (dispatch) => {
     setBranchId,
     getCompany,
     setInvoiceParameters,
-    getInvoiceListFirstPage
+    getInvoiceListFirstPage,
+    getDocumentListFirstPage
   }, dispatch)
 }
 

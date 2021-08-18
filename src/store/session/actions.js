@@ -7,7 +7,7 @@ import {
 import {
   startLoader,
   stopLoader,
-  setErrorMessage
+  setMessage
 } from 'store/ui/actions'
 
 import { userLogin, getBranchList } from 'utils/domainHelper'
@@ -34,7 +34,7 @@ export const setBranchId = (id) => {
 
 export function login (username, password, id) {
   return async (dispatch) => {
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     dispatch(startLoader())
     try {
       const user = await userLogin(username, password, id)
@@ -46,7 +46,7 @@ export function login (username, password, id) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(logOut())
-      dispatch(setErrorMessage(error.message))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
       console.error('Exeption authenticating session', error)
     }

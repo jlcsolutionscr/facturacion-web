@@ -34,10 +34,10 @@ export const setActiveSection = (pageId) => {
   }
 }
 
-export const setErrorMessage = (error) => {
+export const setMessage = (error, type = 'ERROR') => {
   return {
     type: SET_ERROR_MESSAGE,
-    payload: { error }
+    payload: { error, type }
   }
 }
 
@@ -68,7 +68,7 @@ export function updateCantonList (idProvincia) {
     const { company } = getState().invoice
     if (company.IdProvincia !== idProvincia) {
       dispatch(startLoader())
-      dispatch(setErrorMessage(''))
+      dispatch(setMessage(''))
       try {
         const cantonList = await getCantonList(token, idProvincia)
         dispatch(setCantonList(cantonList))
@@ -78,7 +78,7 @@ export function updateCantonList (idProvincia) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setErrorMessage(error.message))
+        dispatch(setMessage(error.message))
         dispatch(stopLoader())
       }
     }
@@ -91,7 +91,7 @@ export function updateDistritoList (idProvincia, idCanton) {
     const { company } = getState().invoice
     if (company.IdCanton !== idCanton) {
       dispatch(startLoader())
-      dispatch(setErrorMessage(''))
+      dispatch(setMessage(''))
       try {
         const distritoList = await getDistritoList(token, idProvincia, idCanton)
         dispatch(setDistritoList(distritoList))
@@ -99,7 +99,7 @@ export function updateDistritoList (idProvincia, idCanton) {
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setErrorMessage(error.message))
+        dispatch(setMessage(error.message))
         dispatch(stopLoader())
       }
     }
@@ -112,13 +112,13 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
     const { company } = getState().invoice
     if (company.IdDistrito !== idDistrito) {
       dispatch(startLoader())
-      dispatch(setErrorMessage(''))
+      dispatch(setMessage(''))
       try {
         const barrioList = await getBarrioList(token, idProvincia, idCanton, idDistrito)
         dispatch(setBarrioList(barrioList))
         dispatch(stopLoader())
       } catch (error) {
-        dispatch(setErrorMessage(error.message))
+        dispatch(setMessage(error.message))
         dispatch(stopLoader())
       }
     }

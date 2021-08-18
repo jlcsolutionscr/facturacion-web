@@ -9,6 +9,7 @@ import CompanyPage from './company-page'
 import LogoPage from './logo-page'
 import InvoicePage from './invoice-page'
 import InvoiceListPage from './invoice-list-page'
+import DocumentListPage from './document-list-page'
 import UnderConstructionPage from './under-construction'
 import ReportsPage from './reports-page'
 
@@ -55,7 +56,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
         {activeSection === 4 && <UnderConstructionPage />}
         {activeSection === 5 && <InvoicePage />}
         {activeSection === 6 && <InvoiceListPage />}
-        {activeSection === 7 && <UnderConstructionPage />}
+        {activeSection === 7 && <DocumentListPage />}
         {activeSection === 20 && <ReportsPage width={width} />}
       </div>
     </div>

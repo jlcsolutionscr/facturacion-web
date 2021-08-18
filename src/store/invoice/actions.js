@@ -14,7 +14,7 @@ import {
 import {
   startLoader,
   stopLoader,
-  setErrorMessage,
+  setMessage,
   setActiveSection
 } from 'store/ui/actions'
 
@@ -112,7 +112,7 @@ export function setInvoiceParameters (id) {
     const { companyId, token } = getState().session
     const { company } = getState().company
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       const customerList = await getCustomerList(token, companyId)
       const productList = await getProductList(token, companyId, 1, '')
@@ -139,7 +139,7 @@ export function setInvoiceParameters (id) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
     }
   }
 }
@@ -149,7 +149,7 @@ export function getProduct (idProduct) {
     const { token } = getState().session
     const { customer } = getState().customer
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
@@ -164,7 +164,7 @@ export function getProduct (idProduct) {
       dispatch(setDescription(''))
       dispatch(setQuantity(1))
       dispatch(setPrice(0))
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
     }
   }
 }
@@ -173,14 +173,14 @@ export function filterProductList (text) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       let newList = await getProductList(token, companyId, 1, text)
       dispatch(setProductList(newList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
     }
   }
 }
@@ -191,7 +191,7 @@ export function addDetails () {
     const { product } = getState().product
     const { productDetails, description, quantity, price } = getState().invoice
     try {
-      dispatch(setErrorMessage(''))
+      dispatch(setMessage(''))
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
         let newProducts = null
         let tasaIva = product.ParametroImpuesto.TasaImpuesto
@@ -221,8 +221,8 @@ export function addDetails () {
         dispatch(setPrice(0))
       }
     } catch (error) {
-      const errorMessage = error.message ? error.message : error
-      dispatch(setErrorMessage(errorMessage))
+      const message = error.message ? error.message : error
+      dispatch(setMessage(message))
     }
   }
 }
@@ -246,7 +246,7 @@ export const saveInvoice = () => {
     const { customer } = getState().customer
     const { paymentId, productDetails, summary } = getState().invoice
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       await saveInvoiceEntity(
         token,
@@ -262,7 +262,7 @@ export const saveInvoice = () => {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
     }
   }
 }
@@ -297,7 +297,7 @@ export const getInvoiceListFirstPage = (id) => {
       if (id) dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
       dispatch(stopLoader())
     }
   }
@@ -313,7 +313,7 @@ export const getInvoiceListByPageNumber = (pageNumber) => {
       dispatch(setInvoiceList(newList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
       dispatch(stopLoader())
     }
   }
@@ -331,7 +331,7 @@ export const revokeInvoice = (idInvoice) => {
       dispatch(setInvoiceList(newList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error))
+      dispatch(setMessage(error))
       dispatch(stopLoader())
     }
   }

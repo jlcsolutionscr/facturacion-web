@@ -109,7 +109,7 @@ function LogoPage({ setActiveSection, saveLogo }) {
 }
 
 const mapStateToProps = (state) => {
-  return { errorMessage: state.ui.errorMessage }
+  return { message: state.ui.message }
 }
 
 const mapDispatchToProps = (dispatch) => {

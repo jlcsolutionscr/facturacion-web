@@ -8,7 +8,7 @@ import {
   setActiveSection,
   startLoader,
   stopLoader,
-  setErrorMessage,
+  setMessage,
   setCantonList,
   setDistritoList,
   setBarrioList
@@ -52,7 +52,7 @@ export function getCompany () {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       dispatch(setActiveSection(1))
       const company = await getCompanyEntity(token, companyId)
@@ -65,7 +65,7 @@ export function getCompany () {
       dispatch(setBarrioList(barrioList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error.message))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -76,7 +76,7 @@ export function saveCompany (certificate) {
     const { token } = getState().session
     const { company } = getState().company
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       await saveCompanyEntity(token, company)
       if (certificate !== '') {
@@ -85,7 +85,7 @@ export function saveCompany (certificate) {
       dispatch(setActiveSection(0))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error.message))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -95,7 +95,7 @@ export function saveLogo (logo) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       if (logo !== '') {
         await saveCompanyLogo(token, companyId, logo)
@@ -103,7 +103,7 @@ export function saveLogo (logo) {
       dispatch(setActiveSection(0))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error.message))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -113,7 +113,7 @@ export function generateReport (reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     dispatch(setReportResults([], null))
     try {
       const list = await getReportData(token, reportType, companyId, branchId, startDate, endDate)
@@ -134,7 +134,7 @@ export function generateReport (reportType, startDate, endDate) {
       dispatch(setReportResults(list, summary))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error.message))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -144,7 +144,7 @@ export function exportReport (reportType, startDate, endDate) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setErrorMessage(''))
+    dispatch(setMessage(''))
     try {
       const list = await getReportData(token, reportType, companyId, branchId, startDate, endDate)
       const fileName = reportType === 1
@@ -156,7 +156,7 @@ export function exportReport (reportType, startDate, endDate) {
       ExportDataToXls(fileName, reportName, list)
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setErrorMessage(error.message))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
