@@ -27,15 +27,27 @@ import {
 import { formatCurrency, roundNumber } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
-  container: {
+  root: {
     flex: 1,
     overflowY: 'auto',
-    backgroundColor: 'white',
-    padding: '10px'
+    padding: '2%',
+    backgroundColor: '#333'
   },
-  icon: {
-    width: '24px',
-    padding: 0
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden'
+  },
+  bottom: {
+    margin: '10px 0 10px 0',
+    display: 'flex',
+    overflow: 'hidden'
+  },
+  outerButton: {
+    padding: '8px'
+  },
+  innerButton: {
+    padding: '0px'
   }
 }))
 
@@ -45,6 +57,7 @@ function StepTwoScreen({
   index,
   value,
   productList,
+  product,
   description,
   quantity,
   price,
@@ -76,75 +89,82 @@ function StepTwoScreen({
   const handleItemSelected = (item) => {
     getProduct(item.Id)
   }
-  let buttonEnabled = description !== '' && quantity !== null && price !== null && successful === false
-  return (<div ref={myRef} className={classes.container} hidden={value !== index}>
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <ListDropdown
-          label='Seleccione un producto'
-          items={productList}
-          value={filter}
-          onItemSelected={handleItemSelected}
-          onChange={handleOnFilterChange}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          label='Descripción'
-          id='Descripcion'
-          value={description}
-          fullWidth
-          variant='outlined'
-          inputProps={{maxLength: 6}}
-          numericFormat
-          onChange={(event) => setDescription(event.target.value)}
-        />
-      </Grid>
-      <Grid item xs={3}>
-        <TextField
-          label='Cantidad'
-          id='Cantidad'
-          value={quantity}
-          fullWidth
-          numericFormat
-          variant='outlined'
-          onChange={(event) => setQuantity(event.target.value)}
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <TextField
-          label='Precio'
-          value={price}
-          fullWidth
-          numericFormat
-          variant='outlined'
-          onChange={(event) => setPrice(event.target.value)}
-        />
-      </Grid>
-      <Grid item xs={2}>
-        <IconButton className={classes.icon} color="primary" disabled={!buttonEnabled} component="span" onClick={() => addDetails()}>
-          <AddCircleIcon className={classes.icon} />
-        </IconButton>
-      </Grid>
-      <Grid item xs={12}>
-        <Table size="small">
-          <TableBody>
-            {productDetails.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.Cantidad}</TableCell>
-                <TableCell>{row.Descripcion}</TableCell>
-                <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
-                <TableCell align='right'>
-                  <IconButton color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
-                    <RemoveCircleIcon className={classes.icon} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Grid>
-    </Grid>
+  let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
+  const display = value !== index ? 'none' : 'flex'
+  return (<div ref={myRef} className={classes.root} style={{display: display}}>
+    <div className={classes.container}>
+      <div>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <ListDropdown
+              label='Seleccione un producto'
+              items={productList}
+              value={filter}
+              onItemSelected={handleItemSelected}
+              onChange={handleOnFilterChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label='Descripción'
+              id='Descripcion'
+              value={description}
+              fullWidth
+              variant='outlined'
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              label='Cantidad'
+              id='Cantidad'
+              value={quantity}
+              fullWidth
+              numericFormat
+              variant='outlined'
+              onChange={(event) => setQuantity(event.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label='Precio'
+              value={price}
+              fullWidth
+              numericFormat
+              variant='outlined'
+              onChange={(event) => setPrice(event.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton className={classes.outerButton} color="primary" disabled={!buttonEnabled} component="span" onClick={() => addDetails()}>
+              <AddCircleIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </div>
+      <div className={classes.bottom}>
+        <Grid container spacing={2} style={{overflowY: 'auto'}}>
+          <Grid item xs={12}>
+            <Table size="small">
+              <TableBody>
+                {productDetails.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.Cantidad}</TableCell>
+                    <TableCell>{row.Descripcion}</TableCell>
+                    <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
+                    <TableCell align='right'>
+                      <IconButton className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
+                        <RemoveCircleIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Grid>
+        </Grid>
+      </div>
+    </div>
   </div>)
 }
 
@@ -152,6 +172,7 @@ const mapStateToProps = (state) => {
   return {
     description: state.invoice.description,
     quantity: state.invoice.quantity,
+    product: state.product.product,
     price: state.invoice.price,
     productList: state.product.productList,
     productDetails: state.invoice.productDetails,

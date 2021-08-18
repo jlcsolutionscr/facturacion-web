@@ -1,30 +1,26 @@
 import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 
+import DataGrid from 'components/data-grid'
+import Button from 'components/button'
 import { formatCurrency } from 'utils/utilities' 
 
 const useStyles = makeStyles(theme => ({
   container: {
+    backgroundColor: '#333',
     overflow: 'auto'
   },
   title: {
-    color: 'black',
+    color: '#FFF',
     marginTop: '40px',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(20),
     marginBottom: '20px'
   },
   subTitle: {
-    color: 'black',
+    color: '#FFF',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(15),
     marginBottom: '20px'
@@ -33,74 +29,61 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     width: 'inherit'
-  },
-  table: {
-    minWidth: '1220px'
-  },
-  button: {
-    padding: '5px 15px',
-    backgroundColor: '#239BB5',
-    color: 'white',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
-    '&:hover': {
-      backgroundColor: '#29A4B4',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
-    }
   }
 }))
 
-function DetailLayout(props) {
+function DetailLayout({reportName, summary, data, returnOnClick}) {
   const classes = useStyles()
-  return (<Paper className={classes.container}>
+  const rows = data.map(row => (
+    {
+      type: row.TipoDocumento,
+      name: row.Nombre,
+      identifier: row.Identificacion,
+      date: row.Fecha,
+      ref: row.Consecutivo,
+      subtotal: formatCurrency(row.Total - row.Impuesto),
+      taxes: formatCurrency(row.Impuesto),
+      amount: formatCurrency(row.Total)
+    }
+  ))
+  
+  const columns = [
+    { field: 'type', headerName: 'Tipo' },
+    { field: 'name', headerName: 'Emisor/Receptor' },
+    { field: 'identifier', headerName: 'Identificación' },
+    { field: 'date', headerName: 'Fecha' },
+    { field: 'ref', headerName: 'Consecutivo' },
+    { field: 'subtotal', headerName: 'SubTotal', type: 'number' },
+    { field: 'taxes', headerName: 'Impuesto', type: 'number' },
+    { field: 'amount', headerName: 'Total', type: 'number' }
+  ];
+  return (<div className={classes.container}>
     <Typography className={classes.title} color='textSecondary' component='p'>
-      {props.reportName}
+      {reportName}
     </Typography>
     <div className={classes.headerRange}>
       <div style={{width: '60%'}}>
-        {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'end', marginRight: '10%'}} color='textSecondary' component='p'>
-          Fecha inicial: {props.summary.startDate}
+        {summary && <Typography className={classes.subTitle} style={{textAlign: 'end', marginRight: '10%'}} color='textSecondary' component='p'>
+          Fecha inicio: {summary.startDate}
         </Typography>}
       </div>
       <div style={{width: '60%'}}>
-        {props.summary && <Typography className={classes.subTitle} style={{textAlign: 'start', marginLeft: '10%'}}color='textSecondary' component='p'>
-          Fecha final: {props.summary.endDate}
+        {summary && <Typography className={classes.subTitle} style={{textAlign: 'start', marginLeft: '10%'}}color='textSecondary' component='p'>
+          Fecha final: {summary.endDate}
         </Typography>}
       </div>
     </div>
-    <div className={classes.table}>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Tipo</TableCell>
-            <TableCell>Emisor/Receptor</TableCell>
-            <TableCell>Identificación</TableCell>
-            <TableCell align='center'>Fecha</TableCell>
-            <TableCell align='center'>Consecutivo</TableCell>
-            <TableCell align='right'>Impuesto</TableCell>
-            <TableCell align='right'>Total</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {props.data.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>{row.TipoDocumento}</TableCell>
-              <TableCell>{row.Nombre}</TableCell>
-              <TableCell>{row.Identificacion}</TableCell>
-              <TableCell align='center'>{row.Fecha}</TableCell>
-              <TableCell align='center'>{row.Consecutivo}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Impuesto)}</TableCell>
-              <TableCell align='right'>{formatCurrency(row.Total)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <DataGrid
+      minWidth={1330}
+      dense
+      columns={columns}
+      rows={rows}
+      rowsPerPage={8}
+    />
     <div style={{margin: '20px'}}>
-      <Button variant='contained' className={classes.button} onClick={() => props.returnOnClick()}>
-        Regresar
-      </Button>
+      <Button label='Regresar' onClick={() => returnOnClick()} />
     </div>
-  </Paper>)
+  </div>)
 }
 
 export default DetailLayout

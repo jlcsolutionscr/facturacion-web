@@ -12,16 +12,17 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import Button from '@material-ui/core/Button'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 
+import Button from 'components/button'
 import DetailLayout from './reports/detail-layout'
 import SummaryLayout from './reports/summary-layout'
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    backgroundColor: 'rgba(255,255,255,0.65)'
+  root: {
+    backgroundColor: '#333',
+    marginBottom: 'auto'
   },
   firstLayout: {
     padding: '3%'
@@ -39,30 +40,11 @@ const useStyles = makeStyles(theme => ({
     '@media (max-width:414px)': {
       margin: '0 6% 0 0'
     }
-  },
-  errorLabel: {
-    fontFamily: '"Exo 2", sans-serif',
-    textAlign: 'center',
-    fontSize: theme.typography.pxToRem(15),
-    color: 'red',
-    fontWeight: '700',
-    marginBottom: '20px'
-  },
-  button: {
-    padding: '5px 15px',
-    backgroundColor: '#239BB5',
-    color: 'white',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
-    '&:hover': {
-      backgroundColor: '#29A4B4',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
-    }
   }
 }))
 
 function ReportsPage({
   width,
-  branchId,
   reportSummary,
   reportResults,
   setReportResults,
@@ -106,8 +88,8 @@ function ReportsPage({
       ? 'Reporte de documentos recibidos'
       : 'Reporte resumen de documentos del período'
   return (
-    <div>
-      <Grid container className={classes.container}>
+    <div className={classes.root}>
+      <Grid container>
         {viewLayout === 1 && <Grid container spacing={3} className={classes.firstLayout}>
           <Grid item xs={12} sm={12}>
             <FormControl className={classes.form}>
@@ -144,19 +126,13 @@ function ReportsPage({
             </Grid>
           </MuiPickersUtilsProvider>
           <Grid item xs={isMobile ? 5 : 4} sm={3}>
-            <Button variant='contained' className={classes.button} onClick={() => processReport(1)}>
-              Generar
-            </Button>
+            <Button label='Generar' onClick={() => processReport(1)} />
           </Grid>
           {!isMobile &&<Grid item xs={4} sm={3}>
-            <Button disabled={reportType === 3} variant='contained' className={classes.button} onClick={() => processReport(2)}>
-              Exportar
-            </Button>
+            <Button disabled={reportType === 3} label='Exportar' onClick={() => processReport(2)} />
           </Grid>}
           <Grid item xs={isMobile ? 5 : 4} sm={3}>
-            <Button variant='contained' className={classes.button} onClick={handleBackButton}>
-              Regresar
-            </Button>
+            <Button label='Regresar' onClick={handleBackButton} />
           </Grid>
         </Grid>}
         {viewLayout === 2 && <Grid container spacing={3} className={classes.secondLayout} style={{width: `${width}px`}}>

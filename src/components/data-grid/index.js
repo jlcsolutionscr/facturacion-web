@@ -1,37 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import IconButton from '@material-ui/core/IconButton'
+import Paper from '@material-ui/core/Paper'
 
 import { FirstPageIcon, KeyboardArrowLeftIcon, KeyboardArrowRightIcon, LastPageIcon } from 'utils/iconsHelper'
 import { createStyle } from './styles'
 
 function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
-  const classes = createStyle();
+  const classes = createStyle()
 
   const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
-  };
+    onPageChange(event, 0)
+  }
 
   const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
+    onPageChange(event, page - 1)
+  }
 
   const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
+    onPageChange(event, page + 1)
+  }
 
   const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+  }
 
   return (
     <div className={classes.paginationActions}>
@@ -60,7 +60,7 @@ function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
         <LastPageIcon />
       </IconButton>
     </div>
-  );
+  )
 }
 
 TablePaginationActions.propTypes = {
@@ -68,17 +68,22 @@ TablePaginationActions.propTypes = {
   onPageChange: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
-};
+}
 
-export default function DataGrid({page, dense, columns, rows, rowsCount, rowsPerPage, onPageChange}) {
-  const classes = createStyle();
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowsCount - page * rowsPerPage);
-
+export default function DataGrid({page, minWidth, dense, columns, rows, rowsCount, rowsPerPage, onPageChange}) {
+  const classes = createStyle()
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowsCount - page * rowsPerPage)
+  const maxHeight = page === undefined ? rowsPerPage * (dense ? 37 : 53) : 0
+  let tableStyle = {
+    color: 'white',
+    minWidth: minWidth
+  }
+  if (maxHeight > 0) tableStyle = { ...tableStyle, display: 'list-item', maxHeight: maxHeight }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableContainer className={classes.tableContainer}>
-          <Table className={classes.table} size={dense ? "small" : "medium"}>
+          <Table style={tableStyle} size={dense ? "small" : "medium"}>
             <TableHead>
               <TableRow>
                 {columns.map((cell) => (
@@ -114,7 +119,7 @@ export default function DataGrid({page, dense, columns, rows, rowsCount, rowsPer
                   </TableRow>
                 )})
               }
-              {emptyRows > 0 && (
+              {page !== undefined && emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 37 : 53) * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
@@ -122,7 +127,7 @@ export default function DataGrid({page, dense, columns, rows, rowsCount, rowsPer
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
+        {page !== undefined && <TablePagination
           className={classes.pagination}
           rowsPerPageOptions={[]}
           component="div"
@@ -131,8 +136,8 @@ export default function DataGrid({page, dense, columns, rows, rowsCount, rowsPer
           page={page}
           onPageChange={(event, newPage) => onPageChange(newPage)}
           ActionsComponent={TablePaginationActions}
-        />
+        />}
       </Paper>
     </div>
-  );
+  )
 }

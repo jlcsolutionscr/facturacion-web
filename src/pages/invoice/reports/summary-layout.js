@@ -1,13 +1,9 @@
 import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
+
+import DataGrid from 'components/data-grid'
+import Button from 'components/button'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { formatCurrency } from 'utils/utilities' 
@@ -17,14 +13,14 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto'
   },
   title: {
-    color: 'black',
-    marginTop: '40px',
+    color: '#FFF',
+    marginTop: '20px',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(20),
     marginBottom: '20px'
   },
   subTitle: {
-    color: 'black',
+    color: '#FFF',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(15),
     marginBottom: '20px'
@@ -32,9 +28,6 @@ const useStyles = makeStyles(theme => ({
   headerRange: {
     display: 'flex',
     flexDirection: 'row'
-  },
-  table: {
-    minWidth: 650
   },
   button: {
     padding: '5px 15px',
@@ -48,56 +41,56 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function SummaryLayout(props) {
+function SummaryLayout({reportName, summary, data, returnOnClick}) {
   const classes = useStyles()
-  return (<Paper className={classes.container}>
+  const rows = data.map(row => (
+    {
+      name: row.Descripcion,
+      rate1: formatCurrency(row.Exento),
+      rate2: formatCurrency(row.Tasa1),
+      rate3: formatCurrency(row.Tasa2),
+      rate4: formatCurrency(row.Tasa4),
+      rate5: formatCurrency(row.Tasa8),
+      rate6: formatCurrency(row.Tasa13)
+    }
+  ))
+  
+  const columns = [
+    { field: 'name', headerName: 'Descripción' },
+    { field: 'rate1', headerName: 'Exento', type: 'number' },
+    { field: 'rate2', headerName: 'Tasa1', type: 'number' },
+    { field: 'rate3', headerName: 'Tasa2', type: 'number' },
+    { field: 'rate4', headerName: 'Tasa4', type: 'number' },
+    { field: 'rate5', headerName: 'Tasa8', type: 'number' },
+    { field: 'rate6', headerName: 'Tasa13', type: 'number' }
+  ];
+  return (<div className={classes.container}>
     <Typography className={classes.title} color='textSecondary' component='p'>
-      {props.reportName}
+      {reportName}
     </Typography>
-    {props.summary !== null && <div className={classes.headerRange}>
+    {summary !== null && <div className={classes.headerRange}>
       <div style={{width: '60%'}}>
         <Typography className={classes.subTitle} style={{textAlign: 'end', marginRight: '10%'}} color='textSecondary' component='p'>
-          Fecha inicial: {props.summary.startDate}
+          Fecha inicio: {summary.startDate}
         </Typography>
       </div>
       <div style={{width: '60%'}}>
         <Typography className={classes.subTitle} style={{textAlign: 'start', marginLeft: '10%'}}color='textSecondary' component='p'>
-          Fecha final: {props.summary.endDate}
+          Fecha final: {summary.endDate}
         </Typography>
       </div>
     </div>}
-    <Table size="small" className={classes.table}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Detalle</TableCell>
-          <TableCell align='right'>Exento</TableCell>
-          <TableCell align='right'>Tasa1</TableCell>
-          <TableCell align='right'>Tasa2</TableCell>
-          <TableCell align='right'>Tasa4</TableCell>
-          <TableCell align='right'>Tasa8</TableCell>
-          <TableCell align='right'>Tasa13</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {props.data.map((row, index) => (
-          <TableRow key={index}>
-            <TableCell component='th' scope='row'>{row.Descripcion}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Exento)}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Tasa1)}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Tasa2)}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Tasa4)}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Tasa8)}</TableCell>
-            <TableCell align='right'>{formatCurrency(row.Tasa13)}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-    <div style={{margin: '20px'}}>
-      <Button variant='contained' className={classes.button} onClick={() => props.returnOnClick()}>
-        Regresar
-      </Button>
+    <DataGrid
+        minWidth={650}
+        dense
+        columns={columns}
+        rows={rows}
+        rowsPerPage={8}
+      />
+    <div style={{margin: '20px 0 0 0'}}>
+      <Button label='Regresar' onClick={() => returnOnClick()} />
     </div>
-  </Paper>)
+  </div>)
 }
 
 export default SummaryLayout

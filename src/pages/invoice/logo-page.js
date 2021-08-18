@@ -9,12 +9,15 @@ import { saveLogo } from 'store/company/actions'
 
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
+
+import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    backgroundColor: 'rgba(255,255,255,0.65)',
-    padding: '3%'
+  root: {
+    backgroundColor: '#333',
+    overflowY: 'hidden',
+    padding: '3%',
+    marginBottom: 'auto'
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -23,16 +26,6 @@ const useStyles = makeStyles(theme => ({
     color: 'red',
     fontWeight: '700',
     marginBottom: '20px'
-  },
-  button: {
-    padding: '5px 15px',
-    backgroundColor: '#239BB5',
-    color: 'white',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
-    '&:hover': {
-      backgroundColor: '#29A4B4',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
-    }
   },
   imagePreview: {
     textAlign: 'center',
@@ -44,10 +37,11 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
+function LogoPage({ setActiveSection, saveLogo }) {
   const classes = useStyles()
   const [logo, setLogo] = React.useState('')
   const [filename, setFilename] = React.useState('')
+  const inputFile = React.useRef(null)
   const handleImageChange = event => {
     event.preventDefault()
     let reader = new FileReader()
@@ -64,9 +58,9 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
   }
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
   return (
-    <div>
-      <Grid container spacing={3} className={classes.container}>
-      <Grid item xs={6} sm={6}>
+    <div className={classes.root}>
+      <Grid container spacing={3}>
+        <Grid item xs={6} sm={6}>
           <TextField
             disabled={true}
             value={filename}
@@ -80,20 +74,12 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
             accept='png/*'
             style={{display: 'none'}}
             id='contained-button-file'
+            ref={inputFile}
             multiple
             type='file'
             onChange={handleImageChange}
           />
-          <label htmlFor='contained-button-file'>
-            <Button
-              component='span'
-              variant='contained'
-              className={classes.button}
-              style={{marginTop: '11px'}}
-            >
-              Seleccionar
-            </Button>
-          </label>
+          <Button style={{marginTop: '11px'}} label='Seleccionar' onClick={() => inputFile.current.click()} />
         </Grid>
         <Grid item xs={12} sm={12}>
           <div className={classes.imagePreview}>
@@ -101,14 +87,10 @@ function LogoPage({ errorMessage, setActiveSection, saveLogo }) {
           </div>
         </Grid>
         <Grid item xs={5} sm={3}>
-          <Button variant='contained' disabled={logo === ''} className={classes.button} onClick={() => handleSaveButton()}>
-            Actualizar
-          </Button>
+          <Button disabled={logo === ''} label='Actualizar' onClick={() => handleSaveButton()} />
         </Grid>
         <Grid item xs={5} sm={3}>
-          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
-            Regresar
-          </Button>
+          <Button label='Regresar' onClick={() => setActiveSection(0)} />
         </Grid>
       </Grid>
     </div>

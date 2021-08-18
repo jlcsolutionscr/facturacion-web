@@ -10,16 +10,16 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import Button from '@material-ui/core/Button'
 
+import Button from 'components/button'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   container: {
     flex: 1,
     overflowY: 'auto',
-    backgroundColor: 'white',
-    padding: '10px'
+    padding: '2%',
+    backgroundColor: '#333'
   },
   summary: {
     flexDirection: 'column',
@@ -33,13 +33,13 @@ const useStyles = makeStyles(theme => ({
   summaryTitle: {
     marginTop: '20px',
     fontWeight: '700',
-    color: 'black'
+    color: '#FFF'
   },
   columnRight: {
     textAlign: 'right'
   },
   summaryRow: {
-    color: 'black'
+    color: '#FFF'
   },
   centered: {
     display: 'flex',
@@ -56,7 +56,9 @@ function StepThreeScreen({
   successful,
   setPaymentId,
   saveInvoice,
-  resetInvoice}) {
+  resetInvoice,
+  setValue
+}) {
   const { gravado, exonerado, excento, subTotal, impuesto, total } = summary
   const classes = useStyles()
   const myRef = React.useRef(null)
@@ -71,6 +73,7 @@ function StepThreeScreen({
       saveInvoice()
     } else {
       resetInvoice()
+      setValue(0)
     }
   }
   return (
@@ -130,9 +133,7 @@ function StepThreeScreen({
           </FormControl>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button disabled={buttonDisabled} variant='contained' className={classes.button} onClick={handleOnPress}>
-            {successful ? 'Nueva factura': 'Generar'}
-          </Button>
+          <Button disabled={buttonDisabled} label={successful ? 'Nueva factura': 'Generar'} onClick={handleOnPress} />
         </Grid>
       </Grid>
     </div>

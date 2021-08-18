@@ -2,6 +2,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 export const createStyle = makeStyles(theme => createStyles({
   root: {
+    backgroundColor: '#424242',
     width: '100%',
     display: 'flex'
   },
@@ -11,10 +12,8 @@ export const createStyle = makeStyles(theme => createStyles({
     flexDirection: 'column'
   },
   tableContainer: {
-    flex: '1 1 auto'
-  },
-  table: {
-    minWidth: 700
+    flex: '1 1 auto',
+    color: 'white'
   },
   pagination: {
     flex: '1 0 auto'

@@ -13,13 +13,13 @@ export const createStyle = makeStyles(theme => createStyles({
     width: '100%'
   },
   font: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     fontWeight: '400',
     letterSpacing: '0.00938em',
     fontSize: '1rem',
   },
   label: {
-    backgroundColor: 'white',
+    backgroundColor: '#424242',
     transform: 'translate(14px, -6px) scale(0.75)',
     transformOrigin: 'top left',
     zIndex: '1',
@@ -27,7 +27,7 @@ export const createStyle = makeStyles(theme => createStyles({
     left: '0',
     position: 'absolute',
     display: 'block',
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: 'rgba(255, 255, 255, 0.7)',
     lineHeight: '1',
     paddingInlineStart: '5px',
     paddingInlineEnd: '7px'
@@ -39,20 +39,12 @@ export const createStyle = makeStyles(theme => createStyles({
     position: 'relative',
     boxSizing: 'border-box',
     alignItems: 'center',
-    borderRadius: '4px',
-    width: '100%',
-    borderColor: 'rgba(0, 0, 0, 0.23)',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    "&:focus": {
-      borderColor: '#3F51B5'
-    }
+    width: '100%'
   },
   input: {
     lineHeight: '1.1876em',
-    color: 'currentColor',
+    color: '#FFF',
     width: '100%',
-    border: '0',
     height: '1.1876em',
     margin: '0',
     display: 'block',
@@ -61,8 +53,15 @@ export const createStyle = makeStyles(theme => createStyles({
     background: 'none',
     boxSizing: 'content-box',
     textRendering: 'auto',
-    "&:focus + label": {
-      color: '#3F51B5'
+    borderRadius: '4px',
+    border: '1px solid rgba(255, 255, 255, 0.23)',
+    '&:focus': {
+      outline: '0',
+      borderColor: '#90CAF9',
+      boxShadow: '0 0 0 1px #90CAF9 inset'
+    },
+    '&:focus + label': {
+      color: '#90CAF9'
     }
   }
 }))

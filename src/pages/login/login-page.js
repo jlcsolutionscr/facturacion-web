@@ -17,7 +17,9 @@ import BackgroundImage from 'assets/img/login-background.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: '#EFF7F7'
+    '& .MuiTextField-root': {
+      marginTop: theme.spacing(1)
+    }
   },
   image: {
     backgroundImage: `url(${BackgroundImage})`,
@@ -37,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     width: '180px',
     height: '180px',
     backgroundColor: '#00729f',
-    "@media (max-height:568px)": {
+    '@media (max-height:568px)': {
       marginTop: theme.spacing(2)
     }
   },
@@ -50,10 +52,10 @@ const useStyles = makeStyles(theme => ({
   footer: {
     marginTop: 'auto',
     marginBottom: theme.spacing(6),
-    "@media (min-height:737px)": {
+    '@media (min-height:737px)': {
       marginTop: theme.spacing(6),
     },
-    "@media (max-height:568px)": {
+    '@media (max-height:568px)': {
       marginBottom: theme.spacing(3)
     }
   },
@@ -126,8 +128,8 @@ function LoginPage({ login }) {
               <Button
                 style={{marginBottom: '20px'}}
                 disabled={isSubmitButtonDisabled}
-                variant="contained"
-                color="secondary"
+                variant='contained'
+                color='secondary'
                 fullWidth
                 onClick={handleLoginClick}>
                 Ingresar
@@ -135,7 +137,7 @@ function LoginPage({ login }) {
             </Box>
             <Grid container>
               <Grid item xs={12} style={{marginTop: '5%', textAlign: 'center'}}>
-                <Link onClick={preventDefault} variant="body2">
+                <Link onClick={preventDefault} variant='body2'>
                   Olvido su contraseña?
                 </Link>
               </Grid>

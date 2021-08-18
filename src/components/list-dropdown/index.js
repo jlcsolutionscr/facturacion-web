@@ -3,7 +3,7 @@ import UAParser from 'ua-parser-js'
 
 import { createStyle } from './styles'
 
-function ListDropdown(props) {
+function ListDropdown({items, label, value, onChange, onItemSelected}) {
   const classes = createStyle()
   const [open, setOpen] = React.useState(false)
   const result = new UAParser().getResult()
@@ -17,13 +17,13 @@ function ListDropdown(props) {
   }
   const handleOnClick = (item) => {
     outsideClickHandler()
-    props.onItemSelected(item)
+    onItemSelected(item)
   }
   const onFocus = (e) => {
     document.addEventListener("click", outsideClickHandler)
     !open && setOpen(true)
   }
-  const items = props.items.map(item => (
+  const listItems = items.map(item => (
     <div key={item.Id} onClick={() => handleOnClick(item)}>
       <span className={`${classes.item} ${classes.font}`}>{item.Descripcion}</span>
     </div>
@@ -33,18 +33,18 @@ function ListDropdown(props) {
       <input
         id="input-field" 
         className={`${classes.input} ${classes.font}`} 
-        value={props.value}
+        value={value}
         onClick={onFocus}
-        onChange={props.onChange}
+        onChange={onChange}
       />
-      <label id="main-container" className={`${classes.label} ${classes.font}`}>{props.label}</label>
+      <label id="main-container" className={`${classes.label} ${classes.font}`}>{label}</label>
     </div>
     <div
       id="items-container"
       className={classes.listContainer}
-      style={{display: props.items.length > 0 && open ? 'block' : 'none', height: isMobile ? '100px' : '200px'}}
+      style={{display: items.length > 0 && open ? 'block' : 'none', height: isMobile ? '100px' : '200px'}}
     >
-      {items}
+      {listItems}
     </div>
   </div>)
 }

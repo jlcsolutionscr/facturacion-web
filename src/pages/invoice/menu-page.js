@@ -17,8 +17,14 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 
 const useStyles = makeStyles(theme => ({
+  branches: {
+    width: '320px',
+    padding: '4px 0 10px 0',
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    borderRadius: '8px'
+  },
   button: {
-    width: '360px',
+    width: '320px',
     padding: '15px 20px',
     backgroundColor: 'rgba(0,0,0,0.65)',
     color: 'white',
@@ -58,16 +64,18 @@ function MenuPage({
   return (
     <Grid container align='center' spacing={2} >
       {branchItems.length > 1 && <Grid item xs={12}>
-        <FormControl className={classes.form}>
-          <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
-          <Select
-            id='Sucursal'
-            value={branchId}
-            onChange={(event) => setBranchId(event.target.value)}
-          >
-            {branchItems}
-          </Select>
-        </FormControl>
+        <div  className={classes.branches}>
+          <FormControl className={classes.form}>
+            <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
+            <Select
+              id='Sucursal'
+              value={branchId}
+              onChange={(event) => setBranchId(event.target.value)}
+            >
+              {branchItems}
+            </Select>
+          </FormControl>
+        </div>
       </Grid>}
       {updateCompanyInfo && <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>

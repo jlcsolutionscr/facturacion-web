@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 
 import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
+import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -61,9 +61,7 @@ function UnderConstructionPage({ setActiveSection }) {
           </p>
         </Grid>
         <Grid item xs={12}>
-          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
-            Regresar
-          </Button>
+          <Button label='Regresar' onClick={() => setActiveSection(0)} />
         </Grid>
       </Grid>
     </div>

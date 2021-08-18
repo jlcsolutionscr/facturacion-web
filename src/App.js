@@ -12,7 +12,39 @@ import RoutingPage from 'pages/routing-page'
 const store = createStore(appReducer, INITIAL_STATE, applyMiddleware(thunk))
 
 const theme = createTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#90CAF9'
+    }
+  },
   overrides: {
+    MuiInputLabel: {
+      root: {
+        "&$focused": {
+          color: "#90CAF9"
+        }
+      }
+    },
+    MuiInput: {
+      underline: {
+        '&$focused:after': {
+          borderColor: "#90CAF9"
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      root: {
+        '&$focused $notchedOutline': {
+          borderColor: "#90CAF9"
+        }
+      }
+    },
+    MuiLink: {
+      root: {
+        color: '#90CAF9'
+      }
+    },
     MuiButton: {
       root: {
         borderRadius: 20

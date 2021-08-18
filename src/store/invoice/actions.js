@@ -258,7 +258,7 @@ export const saveInvoice = () => {
         customer,
         summary
       )
-      dispatch(setSuccessful())
+      dispatch(setSuccessful(true))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
@@ -276,6 +276,7 @@ export const resetInvoice = () => {
     dispatch(setProductsDetail([]))
     dispatch(setSummary({ gravado: 0, exonerado: 0, excento: 0, subTotal: 0, impuesto: 0,total: 0 }))
     dispatch(setPaymentId(1))
+    dispatch(setSuccessful(false))
   }
 }
 

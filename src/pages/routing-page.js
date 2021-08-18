@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex'
   },
   error: {
-    backgroundColor: theme.palette.error.dark
+    backgroundColor: theme.palette.error.normal
   },
   icon: {
     opacity: 0.9,

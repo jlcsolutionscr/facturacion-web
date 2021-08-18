@@ -402,7 +402,7 @@ export async function saveInvoiceEntity(
       IdTipoMoneda: 1,
       TipoDeCambioDolar: 0,
       IdCliente: customer.IdCliente,
-      NombreCliente: customer.NombreComercial || customer.Nombre,
+      NombreCliente: customer.Nombre,
       IdCondicionVenta: 1,
       PlazoCredito: 0,
       Fecha: {DateTime: timeString},

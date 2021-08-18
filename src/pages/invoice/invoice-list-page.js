@@ -6,47 +6,58 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 import { getInvoiceListByPageNumber, revokeInvoice } from 'store/invoice/actions'
 
-import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
 import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
+import Button from 'components/button'
 import { RemoveCircleIcon } from 'utils/iconsHelper'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    backgroundColor: 'rgba(255,255,255,0.65)',
+  root: {
+    backgroundColor: '#333',
     width: '100%',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginBottom: 'auto'
   },
   dataContainer: {
-    margin: '10px',
+    backgroundColor: '#424242',
     display: 'flex',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    margin: '2%'
   },
   icon: {
     padding: 0
   },
   buttonContainer: {
-    margin: '0 0 10px 10px',
+    margin: '0 0 2% 2%',
     order: 5
   },
-  button: {
-    padding: '5px 15px',
-    backgroundColor: '#239BB5',
-    color: 'white',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
-    '&:hover': {
-      backgroundColor: '#29A4B4',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
-    }
+  dialogActions: {
+    margin: '0 20px 10px 20px'
   }
 }))
 
 function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber, revokeInvoice, setActiveSection }) {
   const classes = useStyles()
-  const rows = list.map((row, index) => (
+  const [invoiceId, setInvoiceId] = React.useState(null)
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const handleRevokeButtonClick = (id) => {
+    setInvoiceId(id)
+    setDialogOpen(true)
+  }
+  const handleConfirmButtonClick = () => {
+    setDialogOpen(false)
+    revokeInvoice(invoiceId)
+  }
+  const rows = list.map((row) => (
     {
       id: row.IdFactura,
       date: row.Fecha,
@@ -54,7 +65,7 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
       taxes: formatCurrency(row.Impuesto),
       amount: formatCurrency(row.Total),
       action: (
-        <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => revokeInvoice(row.IdFactura)}>
+        <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura)}>
           <RemoveCircleIcon className={classes.icon} />
         </IconButton>
       )
@@ -70,9 +81,10 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
     { field: 'action', headerName: '' }
   ];
   return (
-    <div className={classes.container}>
+    <Paper className={classes.root}>
       <div className={classes.dataContainer}>
         <DataGrid
+          minWidth={722}
           dense
           page={listPage - 1}
           columns={columns}
@@ -85,11 +97,22 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
-          Regresar
-        </Button>
+        <Button label='Regresar' onClick={() => setActiveSection(0)} />
       </div>
-    </div>
+      <Dialog onClose={() => setDialogOpen(false)} open={dialogOpen}>
+        <DialogTitle id="simple-dialog-title">Anular factura</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {`Desea proceder con la anulación de la factura número ${invoiceId}?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button negative label='Cerrar' onClick={() => setDialogOpen(false)} />
+          <Button label='Anular' autoFocus onClick={handleConfirmButtonClick} />
+        </DialogActions>
+        
+      </Dialog>
+    </Paper>
   )
 }
 

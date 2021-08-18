@@ -20,13 +20,14 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import Button from '@material-ui/core/Button'
 
 import TextField from 'components/text-field'
+import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    backgroundColor: 'rgba(255,255,255,0.65)',
+  root: {
+    backgroundColor: '#333',
+    overflowY: 'auto',
     padding: '3%'
   },
   errorLabel: {
@@ -36,16 +37,6 @@ const useStyles = makeStyles(theme => ({
     color: 'red',
     fontWeight: '700',
     marginBottom: '20px'
-  },
-  button: {
-    padding: '5px 15px',
-    backgroundColor: '#239BB5',
-    color: 'white',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
-    '&:hover': {
-      backgroundColor: '#29A4B4',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
-    }
   }
 }))
 
@@ -93,8 +84,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
   const distritoItems = distritoList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   const barrioItems = barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
-    <div>
-      <Grid container spacing={3} className={classes.container}>
+    <div className={classes.root}>
+      <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
           <TextField
             id='NombreComercial'
@@ -261,13 +252,8 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
           <label htmlFor='contained-button-file'>
             <Button
               disabled={company ? company.RegimenSimplificado : true}
-              component='span'
-              variant='contained'
-              className={classes.button}
-              style={{marginTop: '11px'}}
-            >
-              Cargar
-            </Button>
+              label='Cargar'
+            />
           </label>
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -282,14 +268,18 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button variant='contained' disabled={disabled} className={classes.button} onClick={() => saveCompany(certificate)}>
-            Guardar
-          </Button>
+          <Button
+            disabled={disabled}
+            label='Guardar'
+            onClick={() => saveCompany(certificate)}
+          />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button variant='contained' className={classes.button} onClick={() => setActiveSection(0)}>
-            Regresar
-          </Button>
+          <Button
+            disabled={company ? company.RegimenSimplificado : true}
+            label='Regresar'
+            onClick={() => setActiveSection(0)}
+          />
         </Grid>
       </Grid>
     </div>

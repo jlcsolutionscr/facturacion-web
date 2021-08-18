@@ -16,8 +16,8 @@ const useStyles = makeStyles(theme => ({
   container: {
     flex: 1,
     overflowY: 'auto',
-    backgroundColor: 'white',
-    padding: '10px'
+    padding: '2%',
+    backgroundColor: '#333'
   }
 }))
 

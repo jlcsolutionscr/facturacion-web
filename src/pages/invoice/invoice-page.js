@@ -56,7 +56,7 @@ function InvoicePage({setActiveSection}) {
       </Tabs>
       <StepOneScreen value={value} index={0} />
       <StepTwoScreen value={value} index={1} />
-      <StepThreeScreen value={value} index={2} />
+      <StepThreeScreen value={value} setValue={setValue} index={2} />
     </div>
   )
 }
