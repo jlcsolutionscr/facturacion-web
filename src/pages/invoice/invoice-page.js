@@ -21,7 +21,9 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflow: 'hidden',
     backgroundColor: theme.palette.background.navbar,
-    color: theme.palette.primary.navbar
+    color: theme.palette.primary.navbar,
+    maxWidth: '900px',
+    margin: '0 auto 0 auto'
   },
   backButton: {
     position: 'absolute',

@@ -150,7 +150,7 @@ function StepTwoScreen({
                 {productDetails.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.Cantidad}</TableCell>
-                    <TableCell>{row.Descripcion}</TableCell>
+                    <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                     <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
                     <TableCell align='right'>
                       <IconButton className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>

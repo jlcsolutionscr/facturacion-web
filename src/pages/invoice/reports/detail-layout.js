@@ -9,16 +9,17 @@ import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    overflow: 'auto'
+    overflow: 'auto',
+    margin: '0 auto'
   },
   title: {
-    color: '#FFF',
+    color: theme.palette.text.primary,
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(20),
     marginBottom: '20px'
   },
   subTitle: {
-    color: '#FFF',
+    color: theme.palette.text.primary,
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(15),
     marginBottom: '20px'
@@ -77,7 +78,7 @@ function DetailLayout({reportName, summary, data, returnOnClick}) {
       rows={rows}
       rowsPerPage={8}
     />
-    <div style={{margin: '20px'}}>
+    <div style={{margin: '10px 0 10px 0'}}>
       <Button label='Regresar' onClick={() => returnOnClick()} />
     </div>
   </div>)

@@ -107,6 +107,18 @@ export const setInvoiceList = (list) => {
   }
 }
 
+const defaultCustomer = {
+  IdCliente: 1,
+  Nombre: 'CLIENTE DE CONTADO',
+  ParametroExoneracion: {
+    Descripcion: 'Ley especial'
+  },
+  NumDocExoneracion: '',
+  NombreInstExoneracion: '',
+  FechaEmisionDoc: '01/01/2000',
+  PorcentajeExoneracion: 0
+}
+
 export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
@@ -121,20 +133,10 @@ export function setInvoiceParameters (id) {
         dispatch(setCompany(companyEntity))
       }
       dispatch(setActiveSection(id))
-      const customer = {
-        IdCliente: 1,
-        Nombre: 'CLIENTE DE CONTADO',
-        ParametroExoneracion: {
-          Descripcion: 'Ley especial'
-        },
-        NumDocExoneracion: '',
-        NombreInstExoneracion: '',
-        FechaEmisionDoc: '01/01/2000',
-        PorcentajeExoneracion: 0
-      }
-      dispatch(setCustomer(customer))
+      
+      dispatch(setCustomer(defaultCustomer))
       dispatch(resetInvoice())
-      dispatch(setCustomerList([customer, ...customerList]))
+      dispatch(setCustomerList([defaultCustomer, ...customerList]))
       dispatch(setProductList(productList))
       dispatch(stopLoader())
     } catch (error) {
@@ -198,6 +200,7 @@ export function addDetails () {
         if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = customer.ParametroImpuesto.TasaImpuesto
         const item = {
           IdProducto: product.IdProducto,
+          Codigo: product.Codigo,
           Descripcion: description,
           Cantidad: quantity,
           PrecioVenta: price,
@@ -269,6 +272,7 @@ export const saveInvoice = () => {
 
 export const resetInvoice = () => {
   return async (dispatch) => {
+    dispatch(setCustomer(defaultCustomer))
     dispatch(setProduct(null))
     dispatch(setDescription(''))
     dispatch(setQuantity(1))

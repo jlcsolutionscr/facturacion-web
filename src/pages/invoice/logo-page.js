@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: 'hidden',
-    marginBottom: 'auto',
+    margin: '0 auto auto auto',
     padding: '20px',
     '@media (max-width:960px)': {
       padding: '15px'
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
   imagePreview: {
     borderRadius: theme.shape.borderRadius,
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    border: '1px solid rgba(0, 0, 0, 0.23)',
     textAlign: 'center',
     height: '160px',
     width: '350px',

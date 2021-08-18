@@ -22,7 +22,7 @@ import SummaryLayout from './reports/summary-layout'
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    marginBottom: 'auto',
+    margin: '0 auto auto auto',
     overflow: 'hidden'
   },
   firstLayout: {

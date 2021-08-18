@@ -53,6 +53,12 @@ function StepOneScreen({index, value, customer, customerList, getCustomer}) {
         </Grid>
         <Grid item xs={12} md={6}>
           <LabelField
+            label='Correo electrónico'
+            value={customer ? customer.CorreoElectronico : ''}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <LabelField
             label='Tipo de exoneración'
             value={customer ? customer.ParametroExoneracion.Descripcion : ''}
           />
