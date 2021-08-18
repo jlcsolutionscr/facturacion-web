@@ -21,24 +21,34 @@ import SummaryLayout from './reports/summary-layout'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: '#333',
-    marginBottom: 'auto'
+    backgroundColor: theme.palette.background.paper,
+    marginBottom: 'auto',
+    overflow: 'hidden'
   },
   firstLayout: {
-    padding: '3%'
-  },
-  secondLayout: {
-    padding: '2%',
-    overflow: 'auto',
-    margin: '0 20% 0 0',
+    padding: '20px',
     '@media (max-width:960px)': {
-      margin: '0 16% 0 0',
+      padding: '15px'
     },
     '@media (max-width:600px)': {
-      margin: '0 8% 0 0'
+      padding: '10px'
     },
     '@media (max-width:414px)': {
-      margin: '0 6% 0 0'
+      padding: '5px'
+    }
+  },
+  secondLayout: {
+    overflow: 'hidden',
+    margin: 'auto',
+    padding: '20px',
+    '@media (max-width:960px)': {
+      padding: '15px'
+    },
+    '@media (max-width:600px)': {
+      padding: '10px'
+    },
+    '@media (max-width:414px)': {
+      padding: '5px'
     }
   }
 }))

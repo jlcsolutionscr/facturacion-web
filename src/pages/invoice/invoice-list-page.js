@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 import { getInvoiceListByPageNumber, revokeInvoice } from 'store/invoice/actions'
 
-import Paper from '@material-ui/core/Paper'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -21,24 +20,40 @@ import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: '#333',
+    backgroundColor: theme.palette.background.paper,
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     marginBottom: 'auto'
   },
   dataContainer: {
-    backgroundColor: '#424242',
     display: 'flex',
     overflow: 'hidden',
-    margin: '2%'
+    margin: '20px',
+    '@media (max-width:960px)': {
+      margin: '15px'
+    },
+    '@media (max-width:600px)': {
+      margin: '10px'
+    },
+    '@media (max-width:414px)': {
+      margin: '5px'
+    }
   },
   icon: {
     padding: 0
   },
   buttonContainer: {
-    margin: '0 0 2% 2%',
-    order: 5
+    margin: '0 0 20px 20px',
+    '@media (max-width:960px)': {
+      margin: '0 0 10px 15px'
+    },
+    '@media (max-width:600px)': {
+      margin: '0 0 10px 10px'
+    },
+    '@media (max-width:414px)': {
+      margin: '0 0 5px 5px'
+    }
   },
   dialogActions: {
     margin: '0 20px 10px 20px'
@@ -81,7 +96,7 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
     { field: 'action', headerName: '' }
   ];
   return (
-    <Paper className={classes.root}>
+    <div className={classes.root}>
       <div className={classes.dataContainer}>
         <DataGrid
           minWidth={722}
@@ -112,7 +127,7 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
         </DialogActions>
         
       </Dialog>
-    </Paper>
+    </div>
   )
 }
 

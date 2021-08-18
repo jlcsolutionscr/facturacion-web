@@ -12,6 +12,9 @@ import Grid from '@material-ui/core/Grid'
 import Link from '@material-ui/core/Link'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
+
 import LogoImage from 'assets/img/login-logo.png'
 import BackgroundImage from 'assets/img/login-background.jpg'
 
@@ -32,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 5),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   avatar: {
     marginTop: theme.spacing(6),
@@ -47,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     width: '80%'
   },
   form: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(4)
   },
   footer: {
     marginTop: 'auto',
@@ -60,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   logo: {
-    position: 'relative',
+    position: 'relative'
   },
   message: {
     display: 'flex',
@@ -68,10 +71,11 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LoginPage({ login }) {
+function LoginPage({ login, isDarkMode, setDarkMode }) {
   const classes = useStyles()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  
   const [id, setId] = useState('')
   const handleOnChange = field => (event) => {
     if (field === 'username') setUsername(event.target.value)
@@ -136,6 +140,12 @@ function LoginPage({ login }) {
               </Button>
             </Box>
             <Grid container>
+              <Grid item xs={12} style={{textAlign: 'center'}}>
+                <FormControlLabel
+                  control={<Switch checked={isDarkMode} onChange={() => setDarkMode(!isDarkMode)} name="checkedA" />}
+                  label="Tema oscuro"
+                />
+              </Grid>
               <Grid item xs={12} style={{marginTop: '5%', textAlign: 'center'}}>
                 <Link onClick={preventDefault} variant='body2'>
                   Olvido su contraseña?

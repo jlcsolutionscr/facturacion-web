@@ -14,10 +14,19 @@ import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: '#333',
+    backgroundColor: theme.palette.background.paper,
     overflowY: 'hidden',
-    padding: '3%',
-    marginBottom: 'auto'
+    marginBottom: 'auto',
+    padding: '20px',
+    '@media (max-width:960px)': {
+      padding: '15px'
+    },
+    '@media (max-width:600px)': {
+      padding: '10px'
+    },
+    '@media (max-width:414px)': {
+      padding: '5px'
+    }
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
@@ -28,6 +37,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '20px'
   },
   imagePreview: {
+    borderRadius: theme.shape.borderRadius,
+    border: '1px solid rgba(255, 255, 255, 0.23)',
     textAlign: 'center',
     height: '160px',
     width: '350px',
@@ -56,7 +67,7 @@ function LogoPage({ setActiveSection, saveLogo }) {
     const logoBase64 = logo.substring(logo.indexOf(',') + 1)
     saveLogo(logoBase64)
   }
-  const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: '1px solid'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: '1px solid'}}/>)
+  const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: 'none'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: 'none'}}/>)
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>

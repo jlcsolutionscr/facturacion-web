@@ -14,7 +14,6 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     color: '#FFF',
-    marginTop: '20px',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(20),
     marginBottom: '20px'
@@ -28,16 +27,6 @@ const useStyles = makeStyles(theme => ({
   headerRange: {
     display: 'flex',
     flexDirection: 'row'
-  },
-  button: {
-    padding: '5px 15px',
-    backgroundColor: '#239BB5',
-    color: 'white',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
-    '&:hover': {
-      backgroundColor: '#29A4B4',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
-    }
   }
 }))
 

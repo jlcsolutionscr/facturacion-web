@@ -19,7 +19,7 @@ export const createStyle = makeStyles(theme => createStyles({
     fontSize: '1rem',
   },
   label: {
-    backgroundColor: '#333',
+    backgroundColor: theme.palette.background.paper,
     transform: 'translate(14px, -6px) scale(0.75)',
     transformOrigin: 'top left',
     zIndex: '1',
@@ -27,7 +27,7 @@ export const createStyle = makeStyles(theme => createStyles({
     left: '0',
     position: 'absolute',
     display: 'block',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: theme.palette.text.primary,
     lineHeight: '1',
     paddingInlineStart: '5px',
     paddingInlineEnd: '7px'
@@ -39,14 +39,10 @@ export const createStyle = makeStyles(theme => createStyles({
     position: 'relative',
     boxSizing: 'border-box',
     alignItems: 'center',
-    borderRadius: '4px',
-    width: '100%',
-    borderColor: 'rgba(0, 0, 0, 0.23)',
-    borderStyle: 'solid',
-    borderWidth: '1px'
+    width: '100%'
   },
   input: {
-    color: '#FFF',
+    color: theme.palette.text.primary,
     lineHeight: '1.1876em',
     width: '100%',
     height: '1.1876em',
@@ -58,22 +54,28 @@ export const createStyle = makeStyles(theme => createStyles({
     boxSizing: 'content-box',
     textRendering: 'auto',
     cursor: 'text',
-    borderRadius: '4px',
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    borderRadius: theme.shape.borderRadius,
+    border: '1px solid rgba(0, 0, 0, 0.23)',
     '&:focus': {
       outline: '0',
-      borderColor: '#90CAF9',
-      boxShadow: '0 0 0 1px #90CAF9 inset'
+      border: `2px solid ${theme.palette.primary.main}`,
+      borderBottom: 'none',
+      borderBottomLeftRadius: '0',
+      borderBottomRightRadius: '0'
     },
     '&:focus + label': {
-      color: '#90CAF9'
+      color: theme.palette.primary.main
     }
   },
   listContainer: {
-    overflow: 'auto'
+    overflow: 'auto',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderTop: 'none',
+    borderTopLeftRadius: '0',
+    borderTopRightRadius: '0'
   },
   item: {
-    color: '#FFF',
+    color: theme.palette.text.primary,
     lineHeight: '1.1876em',
     width: '100%',
     border: '0',

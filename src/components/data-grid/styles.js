@@ -2,14 +2,14 @@ import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 export const createStyle = makeStyles(theme => createStyles({
   root: {
-    backgroundColor: '#424242',
     width: '100%',
     display: 'flex'
   },
   paper: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    backgroundColor: theme.palette.background.table
   },
   tableContainer: {
     flex: '1 1 auto',

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
+import { ThemeProvider } from '@material-ui/core/styles'
 import Snackbar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import { ErrorIcon } from 'utils/iconsHelper'
@@ -13,6 +14,7 @@ import LoginPage from './login/login-page'
 import HomePage from './invoice/home-page'
 
 import { setErrorMessage } from 'store/ui/actions'
+import { darkTheme, lightTheme } from "utils/muiThemeProvider"
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -30,33 +32,36 @@ const useStyles = makeStyles(theme => ({
 function RoutingPage({ authenticated, errorMessage, isLoaderOpen, loaderText, setErrorMessage}) {
   const classes = useStyles()
   const size = useWindowSize()
+  const [isDarkMode, setDarkMode] = React.useState(false)
   const width = size.width > 320 ? size.width : 320
-  const component = !authenticated ? <LoginPage /> : <HomePage width={width} />
+  const component = !authenticated ? <LoginPage isDarkMode={isDarkMode} setDarkMode={setDarkMode} /> : <HomePage width={width} />
   return (
-    <div id='main_container' className={classes.container} style={{height: `${size.height}px`, width: `${size.width}px`}}>
-      <Loader isLoaderOpen={isLoaderOpen} loaderText={loaderText} />
-      {component}
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center'
-        }}
-        open={errorMessage !== ''}
-        autoHideDuration={6000}
-        onClose={() => setErrorMessage('')}
-      >
-        <SnackbarContent
-          className={classes.error}
-          aria-describedby='client-snackbar'
-          message={
-            <span id='client-snackbar' className={classes.message}>
-              <ErrorIcon className={classes.icon} />
-              {errorMessage}
-            </span>
-          }
-        />
-      </Snackbar>
-    </div>
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <div id='main_container' className={classes.container} style={{height: `${size.height}px`, width: `${size.width}px`}}>
+        <Loader isLoaderOpen={isLoaderOpen} loaderText={loaderText} />
+        {component}
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center'
+          }}
+          open={errorMessage !== ''}
+          autoHideDuration={6000}
+          onClose={() => setErrorMessage('')}
+        >
+          <SnackbarContent
+            className={classes.error}
+            aria-describedby='client-snackbar'
+            message={
+              <span id='client-snackbar' className={classes.message}>
+                <ErrorIcon className={classes.icon} />
+                {errorMessage}
+              </span>
+            }
+          />
+        </Snackbar>
+      </div>
+    </ThemeProvider>
   )
 }
 

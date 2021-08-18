@@ -5,7 +5,13 @@ export const createStyle = makeStyles(theme => createStyles({
   header: {
     flex: '0 1 auto',
     paddingTop: '0',
-    paddingBottom: '10px'
+    paddingBottom: '10px',
+    '@media (max-width:960px)': {
+      paddingBottom: '0'
+    },
+    '@media (max-width:600px)': {
+      paddingBottom: '10px'
+    }
   },
   banner: {
     backgroundImage: `url(${LogoImage})`,
@@ -28,9 +34,9 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   text: {
     textAlign: 'left',
-    margin: '30px 0 10px 120px',
+    margin: '30px 0 0 120px',
     '@media (max-width:600px)': {
-      margin: '30px 0 10px 110px'
+      margin: '30px 0 0 110px'
     },
     '@media (max-width:414px)': {
       margin: '20px 0 10px 90px'
@@ -76,13 +82,13 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   companyText: {
     fontFamily: '"Exo 2", sans-serif',
-    fontSize: theme.typography.pxToRem(32),
+    fontSize: theme.typography.pxToRem(30),
     fontStyle: 'italic',
     fontWeight: 600,
     textShadow: '4px 4px 6px rgba(0,0,0,0.45)',
     marginBottom: 0,
     '@media (max-width:600px)': {
-      fontSize: theme.typography.pxToRem(25)
+      fontSize: theme.typography.pxToRem(23)
     },
     '@media (max-width:414px)': {
       fontSize: theme.typography.pxToRem(20)

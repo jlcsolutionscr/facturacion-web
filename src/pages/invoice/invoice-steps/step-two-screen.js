@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflowY: 'auto',
     padding: '2%',
-    backgroundColor: '#333'
+    backgroundColor: theme.palette.background.paper
   },
   container: {
     display: 'flex',

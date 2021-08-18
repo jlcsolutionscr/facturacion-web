@@ -20,19 +20,19 @@ const useStyles = makeStyles(theme => ({
   branches: {
     width: '320px',
     padding: '4px 0 10px 0',
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    borderRadius: '8px'
+    backgroundColor: theme.palette.background.table,
+    borderRadius: theme.shape.borderRadius,
   },
   button: {
     width: '320px',
     padding: '15px 20px',
-    backgroundColor: 'rgba(0,0,0,0.65)',
+    backgroundColor: 'rgba(0,0,0,0.75)',
     color: 'white',
     borderColor: 'white',
     border: '0.6px solid',
     boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
     '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.45)',
+      backgroundColor: 'rgba(0,0,0,0.65)',
       boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
     },
     '@media (max-width:414px)': {
@@ -62,9 +62,9 @@ function MenuPage({
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
   const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
-    <Grid container align='center' spacing={2} >
+    <Grid style={{marginTop: '10px'}} container align='center' spacing={2}>
       {branchItems.length > 1 && <Grid item xs={12}>
-        <div  className={classes.branches}>
+        <div className={classes.branches}>
           <FormControl className={classes.form}>
             <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
             <Select

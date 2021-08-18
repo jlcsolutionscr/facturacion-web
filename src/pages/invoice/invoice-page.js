@@ -20,7 +20,8 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flex: 1,
     overflow: 'hidden',
-    backgroundColor: '#24A3B7'
+    backgroundColor: theme.palette.background.navbar,
+    color: theme.palette.primary.navbar
   },
   backButton: {
     position: 'absolute',
@@ -39,20 +40,15 @@ function InvoicePage({setActiveSection}) {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(0)}>
+        <IconButton aria-label='upload picture' component='span' onClick={() => setActiveSection(0)}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs
-        centered
-        value={value}
-        indicatorColor="primary"
-        onChange={handleChange}
-        aria-label="disabled tabs example"
+      <Tabs centered value={value} indicatorColor='secondary' onChange={handleChange}
       >
-        <Tab label="Cliente"/>
-        <Tab label="Detalle"/>
-        <Tab label="Generar"/>
+        <Tab label='Cliente'/>
+        <Tab label='Detalle'/>
+        <Tab label='Generar'/>
       </Tabs>
       <StepOneScreen value={value} index={0} />
       <StepTwoScreen value={value} index={1} />

@@ -26,15 +26,15 @@ const useStyles = makeStyles(theme => ({
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
-    margin: '40px 10% 3% 10%',
+    margin: '40px 10% 20px 10%',
     '@media (max-width:960px)': {
-      margin: '0px 8% 3% 8%',
+      margin: '0px 15px 15px 15px',
     },
     '@media (max-width:600px)': {
-      margin: '0px 4% 2% 4%',
+      margin: '0px 10px 10px 10px',
     },
     '@media (max-width:414px)': {
-      margin: '0px 3% 1% 3%'
+      margin: '0px 5px 5px 5px'
     }
   }
 }))

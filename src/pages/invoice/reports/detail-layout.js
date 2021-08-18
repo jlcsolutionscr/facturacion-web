@@ -9,12 +9,10 @@ import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   container: {
-    backgroundColor: '#333',
     overflow: 'auto'
   },
   title: {
     color: '#FFF',
-    marginTop: '40px',
     textAlign: 'center',
     fontSize: theme.typography.pxToRem(20),
     marginBottom: '20px'
@@ -27,8 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
   headerRange: {
     display: 'flex',
-    flexDirection: 'row',
-    width: 'inherit'
+    flexDirection: 'row'
   }
 }))
 

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflowY: 'auto',
     padding: '2%',
-    backgroundColor: '#333'
+    backgroundColor: theme.palette.background.paper
   },
   summary: {
     flexDirection: 'column',
@@ -33,13 +33,13 @@ const useStyles = makeStyles(theme => ({
   summaryTitle: {
     marginTop: '20px',
     fontWeight: '700',
-    color: '#FFF'
+    color: theme.palette.text.primary
   },
   columnRight: {
     textAlign: 'right'
   },
   summaryRow: {
-    color: '#FFF'
+    color: theme.palette.text.primary
   },
   centered: {
     display: 'flex',

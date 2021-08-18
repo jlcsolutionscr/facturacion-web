@@ -26,9 +26,19 @@ import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: '#333',
+    backgroundColor: theme.palette.background.paper,
     overflowY: 'auto',
-    padding: '3%'
+    marginBottom: 'auto',
+    padding: '20px',
+    '@media (max-width:960px)': {
+      padding: '15px'
+    },
+    '@media (max-width:600px)': {
+      padding: '10px'
+    },
+    '@media (max-width:414px)': {
+      padding: '5px'
+    }
   },
   errorLabel: {
     fontFamily: '"Exo 2", sans-serif',
