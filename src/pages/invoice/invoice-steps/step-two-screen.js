@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-let delayTimer = null;
+let delayTimer = null
 
 function StepTwoScreen({
   index,

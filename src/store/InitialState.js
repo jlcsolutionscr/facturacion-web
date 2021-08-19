@@ -22,7 +22,11 @@ export const INITIAL_STATE = {
   },
   customer: {
     customer: null,
-    customerList: []
+    customerList: [],
+    idTypeList: [],
+    rentTypeList: [],
+    priceTypeList: [],
+    exonerationTypeList: []
   },
   company: {
     company: null,

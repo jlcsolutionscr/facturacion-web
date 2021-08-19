@@ -82,7 +82,7 @@ export function saveCompany (certificate) {
       if (certificate !== '') {
         await saveCompanyCertificate(token, company.IdEmpresa, certificate)
       }
-      dispatch(setActiveSection(0))
+      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))
@@ -100,7 +100,7 @@ export function saveLogo (logo) {
       if (logo !== '') {
         await saveCompanyLogo(token, companyId, logo)
       }
-      dispatch(setActiveSection(0))
+      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))

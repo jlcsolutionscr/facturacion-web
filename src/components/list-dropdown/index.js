@@ -23,9 +23,9 @@ function ListDropdown({items, label, value, onChange, onItemSelected}) {
     document.addEventListener("click", outsideClickHandler)
     !open && setOpen(true)
   }
-  const listItems = items.map(item => (
-    <div key={item.Id} onClick={() => handleOnClick(item)}>
-      <span className={`${classes.item} ${classes.font}`}>{item.Descripcion}</span>
+  const listItems = items.map((item, index) => (
+    <div key={index} id={index} onClick={() => handleOnClick(item)}>
+      <span key={index} className={`${classes.item} ${classes.font}`}>{item.Descripcion}</span>
     </div>
   ))
   return (<div id="main-container" className={classes.container} onClick={(e) => e.stopPropagation()}>

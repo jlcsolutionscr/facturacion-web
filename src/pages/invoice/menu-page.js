@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
 import {  getCompany } from 'store/company/actions'
+import { setCustomerParameters } from 'store/customer/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
 import { getDocumentListFirstPage } from 'store/document/actions'
 import { logOut } from 'store/session/actions'
@@ -18,15 +19,19 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    marginBottom: 'auto'
+  },
   branches: {
-    width: '320px',
+    maxWidth: '500px',
     padding: '4px 0 10px 0',
     backgroundColor: theme.palette.background.table,
     borderRadius: theme.shape.borderRadius,
   },
   button: {
-    width: '320px',
-    padding: '15px 20px',
+    marginTop: '25px',
+    width: '280px',
+    padding: '15px',
     backgroundColor: 'rgba(0,0,0,0.75)',
     color: 'white',
     borderColor: 'white',
@@ -36,9 +41,13 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: 'rgba(0,0,0,0.65)',
       boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
     },
-    '@media (max-width:414px)': {
-      width: '100%',
-      maxWidth: '360px'
+    '&:disabled': {
+      color: 'rgba(255,255,255,0.65)',
+      backgroundColor: 'rgba(0,0,0,0.55)'
+    },
+    '@media (max-width:600px)': {
+      marginTop: '10px',
+      padding: '8px'
     }
   },
 }))
@@ -50,6 +59,7 @@ function MenuPage({
   branchList,
   setBranchId,
   setActiveSection,
+  setCustomerParameters,
   setInvoiceParameters,
   getInvoiceListFirstPage,
   getDocumentListFirstPage,
@@ -64,7 +74,7 @@ function MenuPage({
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
   const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
-    <Grid style={{marginTop: '10px'}} container align='center' spacing={2}>
+    <Grid className={classes.root} container align='center'>
       {branchItems.length > 1 && <Grid item xs={12}>
         <div className={classes.branches}>
           <FormControl className={classes.form}>
@@ -79,30 +89,30 @@ function MenuPage({
           </FormControl>
         </div>
       </Grid>}
-      {updateCompanyInfo && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>
-      </Grid>}
-      {updateCompanyInfo && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(2)}>Agregar logotipo</Button>
-      </Grid>}
-      {manageCustomers && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(3)}>Catálogo de clientes</Button>
-      </Grid>}
-      {manageProducts && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(4)}>Catálogo de productos</Button>
-      </Grid>}
-      {generateInvoice && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
-      </Grid>}
-      {generateInvoice && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => getInvoiceListFirstPage(6)}>Facturas electrónicas</Button>
-      </Grid>}
-      {manageDocuments && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => getDocumentListFirstPage(7)}>Documentos electrónicos</Button>
-      </Grid>}
-      {reportingMenu && <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
-      </Grid>}
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!updateCompanyInfo} classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!updateCompanyInfo} classes={{root: classes.button}} onClick={() => setActiveSection(2)}>Agregar logotipo</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!manageCustomers} classes={{root: classes.button}} onClick={() => setCustomerParameters(3)}>Catálogo de clientes</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => setActiveSection(4)}>Catálogo de productos</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => getInvoiceListFirstPage(6)}>Facturas electrónicas</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!manageDocuments} classes={{root: classes.button}} onClick={() => getDocumentListFirstPage(7)}>Documentos electrónicos</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!reportingMenu} classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
+      </Grid>
       <Grid item xs={12}>
         <Button classes={{root: classes.button}} onClick={() => logOut()}>Cerrar sesión</Button>
       </Grid>
@@ -124,6 +134,7 @@ const mapDispatchToProps = (dispatch) => {
     setActiveSection,
     setBranchId,
     getCompany,
+    setCustomerParameters,
     setInvoiceParameters,
     getInvoiceListFirstPage,
     getDocumentListFirstPage

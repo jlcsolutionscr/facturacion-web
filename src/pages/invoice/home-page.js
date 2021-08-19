@@ -7,6 +7,7 @@ import BannerImage from 'assets/img/menu-background.jpg'
 import MenuPage from './menu-page'
 import CompanyPage from './company-page'
 import LogoPage from './logo-page'
+import CustomerPage from './customer-page'
 import InvoicePage from './invoice-page'
 import InvoiceListPage from './invoice-list-page'
 import DocumentListPage from './document-list-page'
@@ -42,17 +43,18 @@ const useStyles = makeStyles(theme => ({
 
 function HomePage({ activeSection, companyName, companyIdentifier, width }) {
   const classes = useStyles()
+  const myRef = React.useRef(null)
   React.useEffect(() => {
-    window.scrollTo(0, 0)
+    myRef.current.scrollTo(0, 0)
   }, [activeSection])
   return (
     <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
       <Header companyName={companyName} companyIdentifier={companyIdentifier} />
-      <div className={classes.body}>
+      <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <LogoPage />}
-        {activeSection === 3 && <UnderConstructionPage />}
+        {activeSection === 3 && <CustomerPage />}
         {activeSection === 4 && <UnderConstructionPage />}
         {activeSection === 5 && <InvoicePage />}
         {activeSection === 6 && <InvoiceListPage />}

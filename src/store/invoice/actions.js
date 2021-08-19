@@ -111,7 +111,7 @@ const defaultCustomer = {
   IdCliente: 1,
   Nombre: 'CLIENTE DE CONTADO',
   ParametroExoneracion: {
-    Descripcion: 'Ley especial'
+    Descripcion: 'Compras autorizadas'
   },
   NumDocExoneracion: '',
   NombreInstExoneracion: '',
@@ -124,16 +124,14 @@ export function setInvoiceParameters (id) {
     const { companyId, token } = getState().session
     const { company } = getState().company
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
-      const customerList = await getCustomerList(token, companyId)
+      const customerList = await getCustomerList(token, companyId, '')
       const productList = await getProductList(token, companyId, 1, '')
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
       }
       dispatch(setActiveSection(id))
-      
       dispatch(setCustomer(defaultCustomer))
       dispatch(resetInvoice())
       dispatch(setCustomerList([defaultCustomer, ...customerList]))
@@ -262,6 +260,7 @@ export const saveInvoice = () => {
         summary
       )
       dispatch(setSuccessful(true))
+      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
@@ -333,6 +332,7 @@ export const revokeInvoice = (idInvoice) => {
       const index = list.findIndex(item => item.IdFactura === idInvoice)
       const newList = [...list.slice(0, index), { ...list[index], Anulando: true }, ...list.slice(index + 1)]
       dispatch(setInvoiceList(newList))
+      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))

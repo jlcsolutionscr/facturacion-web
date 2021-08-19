@@ -139,12 +139,12 @@ export async function getPriceTypeList(token) {
   }
 }
 
-export async function getCustomerList(token, companyId) {
+export async function getCustomerList(token, companyId, strFilter) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoClientes', Parametros: {IdEmpresa: " + companyId + ", NumeroPagina: 1, FilasPorPagina: 0}}"
+    const data = "{NombreMetodo: 'ObtenerListadoClientes', Parametros: {IdEmpresa: " + companyId + ", NumeroPagina: 1, FilasPorPagina: 0, Nombre: '" + strFilter + "'}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
-    return response.map(item => ({IdCliente: item.Id, Nombre: item.Descripcion }))
+    return response
   } catch (e) {
     throw e.message
   }
@@ -163,11 +163,11 @@ export async function getCustomerEntity(token, idCustomer) {
 
 export async function saveCustomerEntity(token, customer) {
   try {
-    const entidad = JSON.stringify(customer)
+
+    const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-07:00'}})
     let data = ""
     if (customer.IdCliente) {
       console.log('Actualizando cliente', entidad)
-
       data = "{NombreMetodo: 'ActualizarCliente', Entidad: " + entidad + "}"
     } else {
       data = "{NombreMetodo: 'AgregarCliente', Entidad: " + entidad + "}"
