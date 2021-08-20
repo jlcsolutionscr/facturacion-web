@@ -74,41 +74,35 @@ export const setRentTypeList = (list) => {
 export function updateCantonList (idProvincia) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().invoice
-    if (company.IdProvincia !== idProvincia) {
-      dispatch(startLoader())
-      try {
-        const cantonList = await getCantonList(token, idProvincia)
-        dispatch(setCantonList(cantonList))
-        const distritoList = await getDistritoList(token, idProvincia, 1)
-        dispatch(setDistritoList(distritoList))
-        const barrioList = await getBarrioList(token, idProvincia, 1, 1)
-        dispatch(setBarrioList(barrioList))
-        dispatch(stopLoader())
-      } catch (error) {
-        dispatch(setMessage(error.message))
-        dispatch(stopLoader())
+    dispatch(startLoader())
+    try {
+      const cantonList = await getCantonList(token, idProvincia)
+      dispatch(setCantonList(cantonList))
+      const distritoList = await getDistritoList(token, idProvincia, 1)
+      dispatch(setDistritoList(distritoList))
+      const barrioList = await getBarrioList(token, idProvincia, 1, 1)
+      dispatch(setBarrioList(barrioList))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error.message))
+      dispatch(stopLoader())
       }
-    }
   }
 }
 
 export function updateDistritoList (idProvincia, idCanton) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().invoice
-    if (company.IdCanton !== idCanton) {
-      dispatch(startLoader())
-      try {
-        const distritoList = await getDistritoList(token, idProvincia, idCanton)
-        dispatch(setDistritoList(distritoList))
-        const barrioList = await getBarrioList(token, idProvincia, idCanton, 1)
-        dispatch(setBarrioList(barrioList))
-        dispatch(stopLoader())
-      } catch (error) {
-        dispatch(setMessage(error.message))
-        dispatch(stopLoader())
-      }
+    dispatch(startLoader())
+    try {
+      const distritoList = await getDistritoList(token, idProvincia, idCanton)
+      dispatch(setDistritoList(distritoList))
+      const barrioList = await getBarrioList(token, idProvincia, idCanton, 1)
+      dispatch(setBarrioList(barrioList))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error.message))
+      dispatch(stopLoader())
     }
   }
 }
@@ -116,17 +110,14 @@ export function updateDistritoList (idProvincia, idCanton) {
 export function updateBarrioList (idProvincia, idCanton, idDistrito) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().invoice
-    if (company.IdDistrito !== idDistrito) {
-      dispatch(startLoader())
-      try {
-        const barrioList = await getBarrioList(token, idProvincia, idCanton, idDistrito)
-        dispatch(setBarrioList(barrioList))
-        dispatch(stopLoader())
-      } catch (error) {
-        dispatch(setMessage(error.message))
-        dispatch(stopLoader())
-      }
+    dispatch(startLoader())
+    try {
+      const barrioList = await getBarrioList(token, idProvincia, idCanton, idDistrito)
+      dispatch(setBarrioList(barrioList))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error.message))
+      dispatch(stopLoader())
     }
   }
 }

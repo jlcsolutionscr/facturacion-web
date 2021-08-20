@@ -60,16 +60,22 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
   }
   const handleSelectChange = (id, value) => {
     if (id === 'IdProvincia') {
-      setCompanyAttribute('IdProvincia', value)
       updateCantonList(value)
+      setCompanyAttribute('IdProvincia', value)
+      setCompanyAttribute('IdCanton', 1)
+      setCompanyAttribute('IdDistrito', 1)
+      setCompanyAttribute('IdBarrio', 1)
     } else if (id === 'IdCanton') {
-      setCompanyAttribute('IdCanton', value)
       updateDistritoList(company.IdProvincia, value)
+      setCompanyAttribute('IdCanton', value)
+      setCompanyAttribute('IdDistrito', 1)
+      setCompanyAttribute('IdBarrio', 1)
     } else if (id === 'IdDistrito') {
-      setCompanyAttribute('IdDistrito', value)
       updateBarrioList(company.IdProvincia, company.IdCanton, value)
+      setCompanyAttribute('IdDistrito', value)
+      setCompanyAttribute('IdBarrio', 1)
     } else {
-      setCompanyAttribute(id, value)
+      setCompanyAttribute('IdBarrio', value)
     }
   }
   const handleCertificateChange = event => {

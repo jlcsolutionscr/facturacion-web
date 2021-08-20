@@ -56,9 +56,9 @@ export function getCompany () {
     try {
       dispatch(setActiveSection(1))
       const company = await getCompanyEntity(token, companyId)
-      const cantonList = await getCantonList(token, 1)
-      const distritoList = await getDistritoList(token, 1, 1)
-      const barrioList = await getBarrioList(token, 1, 1, 1)
+      const cantonList = await getCantonList(token, company.IdProvincia)
+      const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton)
+      const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito)
       dispatch(setCompany(company))
       dispatch(setCantonList(cantonList))
       dispatch(setDistritoList(distritoList))
