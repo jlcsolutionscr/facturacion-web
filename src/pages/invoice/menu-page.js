@@ -21,20 +21,25 @@ import MenuItem from '@material-ui/core/MenuItem'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginBottom: 'auto'
+    maxWidth: '640px',
+    margin: '0 auto auto auto'
   },
   branches: {
-    maxWidth: '500px',
+    maxWidth: '590px',
     padding: '4px 0 10px 0',
     backgroundColor: theme.palette.background.table,
     borderRadius: theme.shape.borderRadius,
+    '@media (max-width:600px)': {
+      maxWidth: '380px'
+    }
   },
   button: {
     marginTop: '25px',
-    width: '280px',
-    padding: '15px',
+    width: '270px',
+    padding: '13px',
     backgroundColor: 'rgba(0,0,0,0.75)',
     color: 'white',
+    borderRadius: '25px',
     borderColor: 'white',
     border: '0.6px solid',
     boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
