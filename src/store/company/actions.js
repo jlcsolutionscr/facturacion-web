@@ -22,7 +22,8 @@ import {
   saveCompanyEntity,
   saveCompanyCertificate,
   saveCompanyLogo,
-  getReportData
+  getReportData,
+  sendReportEmail
 } from 'utils/domainHelper'
 
 import { ExportDataToXls } from 'utils/utilities'
@@ -158,6 +159,22 @@ export function exportReport (reportType, startDate, endDate) {
     } catch (error) {
       dispatch(setMessage(error.message))
       dispatch(stopLoader())
+    }
+  }
+}
+
+export function sendReportToEmail (reportName, startDate, endDate) {
+  return async (dispatch, getState) => {
+    const { companyId, branchId, token } = getState().session
+    dispatch(startLoader())
+    try {
+      await sendReportEmail(token, companyId, branchId, reportName, startDate, endDate)
+      dispatch(setMessage('Reporte enviado al correo satisfactoriamente', 'INFO'))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error))
+      dispatch(stopLoader())
+      
     }
   }
 }

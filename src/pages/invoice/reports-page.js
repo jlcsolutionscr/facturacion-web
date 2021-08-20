@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 import UAParser from 'ua-parser-js'
 
-import { setActiveSection } from 'store/ui/actions'
-import { setReportResults, generateReport, exportReport } from 'store/company/actions'
+import { setActiveSection, setMessage } from 'store/ui/actions'
+import { setReportResults, generateReport, exportReport, sendReportToEmail } from 'store/company/actions'
 
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
@@ -60,6 +60,8 @@ function ReportsPage({
   setReportResults,
   generateReport,
   exportReport,
+  sendReportToEmail,
+  setMessage,
   setActiveSection
 }) {
   const classes = useStyles()
@@ -83,20 +85,39 @@ function ReportsPage({
     const endDay = (endDate.getDate() < 10 ? '0' : '') + endDate.getDate()
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
-    if (type === 1) {
-      generateReport(reportType, startDateFormatted, endDateFormatted)
-    }
+    if (type === 1) generateReport(reportType, startDateFormatted, endDateFormatted)
     if (type === 2) exportReport(reportType, startDateFormatted, endDateFormatted)
+    if (type === 3) {
+      let reportLabel = ''
+      switch (reportType) {
+        case 1:
+          reportLabel = 'Documentos electrónicos emitidos'
+          break;
+        case 2:
+          reportLabel = 'Documentos electrónicos recibidos'
+          break;
+        case 3:
+          reportLabel = 'Resumen de comprobantes electrónicos'
+          break;
+        default:
+          reportLabel = ''
+      }
+      if (reportLabel !== '') {
+        sendReportToEmail(reportLabel, startDateFormatted, endDateFormatted)
+      } else {
+        setMessage('Debe seleccionar un reporte del listado disponible', 'INFO')
+      }
+    }
   }
   const handleBackButton = () => {
     setActiveSection(0)
     setReportResults([], null)
   }
   const reportName = reportType === 1
-    ? 'Reporte de documentos generados'
+    ? 'Reporte de documentos electrónicos emitidos'
     : reportType === 2
-      ? 'Reporte de documentos recibidos'
-      : 'Reporte resumen de documentos del período'
+      ? 'Reporte de documentos electrónicos recibidos'
+      : 'Reporte Resumen de comprobantes electrónicos'
   return (
     <div className={classes.root}>
       <Grid container>
@@ -135,8 +156,11 @@ function ReportsPage({
               />
             </Grid>
           </MuiPickersUtilsProvider>
-          <Grid item xs={isMobile ? 5 : 4} sm={3}>
-            <Button label='Generar' onClick={() => processReport(1)} />
+          <Grid item xs={isMobile ? 6 : 4} sm={3}>
+            <Button
+              label={isMobile ? 'Enviar al correo' : 'Generar'}
+              onClick={() => isMobile ? processReport(3) : processReport(1)}
+            />
           </Grid>
           {!isMobile &&<Grid item xs={4} sm={3}>
             <Button disabled={reportType === 3} label='Exportar' onClick={() => processReport(2)} />
@@ -174,9 +198,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActiveSection,
+    setMessage,
     setReportResults,
     generateReport,
-    exportReport
+    exportReport,
+    sendReportToEmail
   }, dispatch)
 }
 
