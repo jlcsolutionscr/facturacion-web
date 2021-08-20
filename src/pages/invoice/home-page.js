@@ -30,13 +30,13 @@ const useStyles = makeStyles(theme => ({
     overflowX: 'hidden',
     margin: '40px 10% 20px 10%',
     '@media (max-width:960px)': {
-      margin: '0px 15px 15px 15px',
+      margin: '0px 16px 16px 16px',
     },
     '@media (max-width:600px)': {
-      margin: '0px 10px 10px 10px',
+      margin: '0px 13px 13px 13px',
     },
     '@media (max-width:414px)': {
-      margin: '0px 5px 5px 5px'
+      margin: '0px 10px 10px 10px'
     }
   }
 }))

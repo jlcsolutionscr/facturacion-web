@@ -27,14 +27,14 @@ function StepOneScreen({index, value, customer, customerList, getCustomer}) {
   React.useEffect(() => {
     myRef.current.scrollTo(0, 0)
   }, [value])
-  const menuItems = customerList.map(item => { return <MenuItem key={item.IdCliente} value={item.IdCliente}>{item.Nombre}</MenuItem> })
+  const menuItems = customerList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={9} md={7}>
           <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Seleccione un cliente</InputLabel>
-            <Select value={customer ? customer.IdCliente : 0} onChange={(event) => getCustomer(event.target.value)}>
+            <Select value={customer ? customer.IdCliente : ''} onChange={(event) => getCustomer(event.target.value)}>
               {menuItems}
             </Select>
           </FormControl>

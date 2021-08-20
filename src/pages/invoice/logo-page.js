@@ -19,13 +19,13 @@ const useStyles = makeStyles(theme => ({
     margin: '0 auto auto auto',
     padding: '20px',
     '@media (max-width:960px)': {
-      padding: '15px'
+      padding: '16px'
     },
     '@media (max-width:600px)': {
-      padding: '10px'
+      padding: '13px'
     },
     '@media (max-width:414px)': {
-      padding: '5px'
+      padding: '10px'
     }
   },
   errorLabel: {

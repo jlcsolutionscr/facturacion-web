@@ -126,7 +126,6 @@ export function getCustomer (idCustomer) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       const customer = await getCustomerEntity(token, idCustomer)
       dispatch(setCustomer(customer))
@@ -143,7 +142,6 @@ export function filterCustomerList (text) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       let newList = await getCustomerList(token, companyId, text)
       dispatch(setCustomerList(newList))

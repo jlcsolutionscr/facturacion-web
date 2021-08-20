@@ -14,6 +14,7 @@ const sessionReducer = (state = {}, { type, payload }) => {
         companyId: payload.companyId,
         companyName: payload.companyName,
         companyIdentifier: payload.companyIdentifier,
+        reportList: payload.reportList,
         permissions: payload.user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
         branchList: payload.branchList,
         branchId: payload.branchList[0].Id,
@@ -23,7 +24,14 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: false,
+        userId: null,
+        companyId: null,
+        branchId: null,
+        companyName: '',
+        companyIdentifier: '',
+        reportList: [],
         permissions: [],
+        branchList: [],
         token: null
       }
     case SET_BRANCH_ID:

@@ -63,14 +63,15 @@ export function ExportDataToXls(filename, title, data) {
       Author: 'JLC Solutions CR',
       CreatedDate: new Date()
     }
-    wb.SheetNames.push('Test Sheet')
+    wb.SheetNames.push('Datos')
     const ws_data = []
-    ws_data.push(['TIPO','EMISOR/RECEPTOR', 'IDENTIFICACION', 'FECHA', 'CONSECUTIVO', 'SUBTOTAL', 'IMPUESTO', 'TOTAL'])
-    data.forEach(item => {
-      ws_data.push([item.TipoDocumento, item.Nombre, item.Identificacion, item.Fecha, item.Consecutivo, item.Total - item.Impuesto, item.Impuesto, item.Total])
+    const columns = Object.entries(data[0]).map(key => key[0])
+    ws_data.push(columns.map(key => key))
+    data.forEach(row => {
+      ws_data.push(columns.map(key => row[key]))
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data)
-    wb.Sheets['Test Sheet'] = ws
+    wb.Sheets['Datos'] = ws
     const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'array'})
     saveAs(new Blob([wbout],{type:'application/octet-stream'}), filename + '.xlsx')
   } catch (error) {

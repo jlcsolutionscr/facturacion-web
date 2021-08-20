@@ -18,6 +18,7 @@ export const INITIAL_STATE = {
     branchId: 1,
     companyName: '',
     companyIdentifier: '',
+    reportList: [],
     permissions: [],
     token: null
   },
@@ -33,9 +34,7 @@ export const INITIAL_STATE = {
     reportResults: [],
     reportSummary: {
       startDate: '01/01/2000',
-      endDate: '01/01/2000',
-      taxes: 0,
-      total: 0
+      endDate: '01/01/2000'
     },
   },
   invoice: {

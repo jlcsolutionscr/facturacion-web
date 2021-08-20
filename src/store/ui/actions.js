@@ -77,7 +77,6 @@ export function updateCantonList (idProvincia) {
     const { company } = getState().invoice
     if (company.IdProvincia !== idProvincia) {
       dispatch(startLoader())
-      dispatch(setMessage(''))
       try {
         const cantonList = await getCantonList(token, idProvincia)
         dispatch(setCantonList(cantonList))
@@ -100,7 +99,6 @@ export function updateDistritoList (idProvincia, idCanton) {
     const { company } = getState().invoice
     if (company.IdCanton !== idCanton) {
       dispatch(startLoader())
-      dispatch(setMessage(''))
       try {
         const distritoList = await getDistritoList(token, idProvincia, idCanton)
         dispatch(setDistritoList(distritoList))
@@ -121,7 +119,6 @@ export function updateBarrioList (idProvincia, idCanton, idDistrito) {
     const { company } = getState().invoice
     if (company.IdDistrito !== idDistrito) {
       dispatch(startLoader())
-      dispatch(setMessage(''))
       try {
         const barrioList = await getBarrioList(token, idProvincia, idCanton, idDistrito)
         dispatch(setBarrioList(barrioList))

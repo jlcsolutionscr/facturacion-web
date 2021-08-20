@@ -33,13 +33,13 @@ const useStyles = makeStyles(theme => ({
     margin: '0 auto auto auto',
     padding: '20px',
     '@media (max-width:960px)': {
-      padding: '15px'
+      padding: '16px'
     },
     '@media (max-width:600px)': {
-      padding: '10px'
+      padding: '13px'
     },
     '@media (max-width:414px)': {
-      padding: '5px'
+      padding: '10px'
     }
   },
   label: {
@@ -66,17 +66,17 @@ function CustomerPage({
   const classes = useStyles()
   const [filter, setFilter] = React.useState('')
   const idTypeItems = idTypeList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const rentTypeItems = []
   rentTypeList.forEach(item => {
-    if (item.Id > 1) rentTypeItems.push(<MenuItem value={item.Id}>{item.Descripcion}</MenuItem>)
+    if (item.Id > 1) rentTypeItems.push(<MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>)
   })
   const priceTypeItems = priceTypeList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const exonerationTypesItems = exonerationTypeList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   let disabled = true
   if (customer != null) {

@@ -107,7 +107,7 @@ export const setInvoiceList = (list) => {
   }
 }
 
-const defaultCustomer = {
+const customer = {
   IdCliente: 1,
   Nombre: 'CLIENTE DE CONTADO',
   ParametroExoneracion: {
@@ -132,9 +132,9 @@ export function setInvoiceParameters (id) {
         dispatch(setCompany(companyEntity))
       }
       dispatch(setActiveSection(id))
-      dispatch(setCustomer(defaultCustomer))
+      dispatch(setCustomer(customer))
       dispatch(resetInvoice())
-      dispatch(setCustomerList([defaultCustomer, ...customerList]))
+      dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       dispatch(setProductList(productList))
       dispatch(stopLoader())
     } catch (error) {
@@ -149,7 +149,6 @@ export function getProduct (idProduct) {
     const { token } = getState().session
     const { customer } = getState().customer
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
@@ -173,7 +172,6 @@ export function filterProductList (text) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       let newList = await getProductList(token, companyId, branchId, true, text)
       dispatch(setProductList(newList))
@@ -191,7 +189,7 @@ export function addDetails () {
     const { product } = getState().product
     const { productDetails, description, quantity, price } = getState().invoice
     try {
-      dispatch(setMessage(''))
+      
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
         let newProducts = null
         let tasaIva = product.ParametroImpuesto.TasaImpuesto
@@ -247,7 +245,6 @@ export const saveInvoice = () => {
     const { customer } = getState().customer
     const { paymentId, productDetails, summary } = getState().invoice
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       await saveInvoiceEntity(
         token,
@@ -271,7 +268,7 @@ export const saveInvoice = () => {
 
 export const resetInvoice = () => {
   return async (dispatch) => {
-    dispatch(setCustomer(defaultCustomer))
+    dispatch(setCustomer(customer))
     dispatch(setProduct(null))
     dispatch(setDescription(''))
     dispatch(setQuantity(1))

@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: props => props.isDarkMode ? '#2196f3' : '#1c54b2'
   },
   message: {
-    color: props => props.isDarkMode ? '#FFF' : '#000',
+    color: '#FFF',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between'
@@ -62,7 +62,7 @@ function RoutingPage({ authenticated, message, messageType, isLoaderOpen, loader
           TransitionComponent={Slide}
           autoHideDuration={6000}
           open={message !== ''}
-          onClose={() => setMessage('')}
+          onClose={() => setMessage('', messageType)}
         >
           <SnackbarContent
             classes={{

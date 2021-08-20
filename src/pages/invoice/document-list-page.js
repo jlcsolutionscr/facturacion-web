@@ -36,15 +36,15 @@ const useStyles = makeStyles(theme => ({
   dataContainer: {
     display: 'flex',
     overflow: 'hidden',
-    margin: '20px',
+    padding: '20px',
     '@media (max-width:960px)': {
-      margin: '15px'
+      padding: '16px'
     },
     '@media (max-width:600px)': {
-      margin: '10px'
+      padding: '13px'
     },
     '@media (max-width:414px)': {
-      margin: '5px'
+      padding: '10px'
     }
   },
   emailIcon: {

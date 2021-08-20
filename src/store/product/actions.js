@@ -96,11 +96,11 @@ export function setProductParameters (id) {
         IdEmpresa: companyId,
         IdProducto: 0,
         Tipo: 1,
-        IdLinea: 0,
+        IdLinea: '',
         Codigo: '',
         CodigoProveedor: '',
         CodigoClasificacion: '',
-        IdProveedor: 0,
+        IdProveedor: '',
         Descripcion: '',
         PrecioCosto: '',
         PrecioVenta1: '',
@@ -127,7 +127,6 @@ export function filterProductList (text) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       const list = await getProductList(token, companyId, branchId, false, text)
       dispatch(setProductList(list))
@@ -143,7 +142,6 @@ export function getProduct (idProduct) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       const product = await getProductEntity(token, idProduct, 1)
       dispatch(setProduct(product))

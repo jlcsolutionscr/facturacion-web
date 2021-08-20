@@ -107,6 +107,7 @@ export default function DataGrid({page, minWidth, dense, columns, rows, rowsCoun
                   >
                     {columns.map((cell, cellIndex) => (
                       <TableCell
+                        style={{whiteSpace: 'nowrap'}}
                         key={`${rowIndex}-${cellIndex}`}
                         component="th"
                         scope="row"

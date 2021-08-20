@@ -53,7 +53,6 @@ export function getCompany () {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       dispatch(setActiveSection(1))
       const company = await getCompanyEntity(token, companyId)
@@ -77,7 +76,6 @@ export function saveCompany (certificate) {
     const { token } = getState().session
     const { company } = getState().company
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       await saveCompanyEntity(token, company)
       if (certificate !== '') {
@@ -96,7 +94,6 @@ export function saveLogo (logo) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
       if (logo !== '') {
         await saveCompanyLogo(token, companyId, logo)
@@ -110,27 +107,16 @@ export function saveLogo (logo) {
   }
 }
 
-export function generateReport (reportType, startDate, endDate) {
+export function generateReport (reportName, startDate, endDate) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     dispatch(setReportResults([], null))
     try {
-      const list = await getReportData(token, reportType, companyId, branchId, startDate, endDate)
-      let taxes = 0
-      let total = 0
-      if (reportType !== 5) {
-        list.forEach(item => {
-          taxes += item.Impuesto
-          total += item.Total
-        })
-      }
+      const list = await getReportData(token, reportName, companyId, branchId, startDate, endDate)
       const summary = {
         startDate,
-        endDate,
-        taxes,
-        total
+        endDate
       }
       dispatch(setReportResults(list, summary))
       dispatch(stopLoader())
@@ -141,19 +127,13 @@ export function generateReport (reportType, startDate, endDate) {
   }
 }
 
-export function exportReport (reportType, startDate, endDate) {
+export function exportReport (reportName, startDate, endDate) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
-    dispatch(setMessage(''))
     try {
-      const list = await getReportData(token, reportType, companyId, branchId, startDate, endDate)
-      const fileName = reportType === 1
-        ? 'documentos_electronicos_generados'
-        : 'documentos_electronicos_recibidos'
-      const reportName = reportType === 1
-        ? 'Documentos electrónicos generados'
-        : 'Documentos electrónicos recibidos'
+      const list = await getReportData(token, reportName, companyId, branchId, startDate, endDate)
+      const fileName = reportName.replaceAll(" ", "_")
       ExportDataToXls(fileName, reportName, list)
       dispatch(stopLoader())
     } catch (error) {

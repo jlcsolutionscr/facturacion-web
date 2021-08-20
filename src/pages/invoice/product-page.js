@@ -31,13 +31,13 @@ const useStyles = makeStyles(theme => ({
     margin: '0 auto auto auto',
     padding: '20px',
     '@media (max-width:960px)': {
-      padding: '15px'
+      padding: '16px'
     },
     '@media (max-width:600px)': {
-      padding: '10px'
+      padding: '13px'
     },
     '@media (max-width:414px)': {
-      padding: '5px'
+      padding: '10px'
     }
   },
   label: {
@@ -64,16 +64,16 @@ function ProductPage({
   const classes = useStyles()
   const [filter, setFilter] = React.useState('')
   const productTypes = productTypeList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const categories = categoryList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const providers = providerList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const rentTypes = rentTypeList.map(item => {
-    return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
+    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const disabled = product.Codigo === '' ||
     product.Descripcion === '' ||
@@ -278,7 +278,7 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <FormControlLabel
             classes={{
               root: classes.label

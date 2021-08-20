@@ -42,7 +42,7 @@ function ListDropdown({items, label, value, onChange, onItemSelected}) {
     <div
       id="items-container"
       className={classes.listContainer}
-      style={{display: items.length > 0 && open ? 'block' : 'none', height: isMobile ? '100px' : '200px'}}
+      style={{display: items.length > 0 && open ? 'block' : 'none', height: isMobile ? '120px' : '230px'}}
     >
       {listItems}
     </div>

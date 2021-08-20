@@ -90,7 +90,6 @@ export const sendNotification = (idDocument, emailTo) => {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
-    dispatch(setDocumentDetails(''))
     try {
       await sendDocumentByEmail(token, idDocument, emailTo)
       dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
@@ -106,7 +105,6 @@ export const getDocumentDetails = (idDocument) => {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
-    dispatch(setDocumentDetails(''))
     try {
       const response = await getDocumentEntity(token, idDocument)
       const details = xmlToObject(response.Respuesta)

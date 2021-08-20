@@ -95,9 +95,9 @@ export async function getBranchList(token, idCompany) {
   }
 }
 
-export async function getReportData(token, reportType, idCompany, idBranch, startDate, endDate) {
+export async function getReportData(token, reportName, idCompany, idBranch, startDate, endDate) {
   try {
-    const data = "{NombreMetodo: 'ObtenerDatosReporte', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", TipoReporte: " + reportType + ", FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "'}}"
+    const data = "{NombreMetodo: 'ObtenerDatosReporte', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NombreReporte: '" + reportName + "', FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "'}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
@@ -113,7 +113,7 @@ export async function getIdTypeList(token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -124,7 +124,7 @@ export async function getRentTypeList(token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -135,7 +135,7 @@ export async function getPriceTypeList(token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -146,7 +146,7 @@ export async function getCustomerList(token, companyId, strFilter) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -157,7 +157,7 @@ export async function getCustomerEntity(token, idCustomer) {
     if (response === null) return null
     return { ...response, FechaEmisionDoc: response.FechaEmisionDoc.DateTime.substr(0,10) }
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -176,7 +176,7 @@ export async function saveCustomerEntity(token, customer) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -187,7 +187,7 @@ export async function getProductTypeList(token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -198,7 +198,7 @@ export async function getProductCategoryList(token, idCompany) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -209,7 +209,7 @@ export async function getProductProviderList(token, idCompany) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -220,7 +220,7 @@ export async function getProductList(token, idCompany, idBranch, activeOnly, fil
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -231,7 +231,7 @@ export async function getProductEntity(token, idProduct, idBranch) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -247,7 +247,7 @@ export async function saveProductEntity(token, product) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -258,7 +258,7 @@ export async function getExonerationTypeList(token) {
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -275,7 +275,7 @@ export async function getPaymentBankId(token, idCompany, paymentMethod) {
     if (response.length === 0) return null
     return response[0].Id
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -345,7 +345,7 @@ export function getInvoiceSummary(products, exonerationPercentage) {
       totalCosto: roundNumber(totalCosto, 2)
     }
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -431,7 +431,7 @@ export async function saveInvoiceEntity(
     let data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(factura) + "}"
     await post(APP_URL + "/ejecutarconsulta", token, data)
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -441,7 +441,7 @@ export async function revokeInvoiceEntity(token, idInvoice, idUser) {
     const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + idInvoice + ", IdUsuario: " + idUser + "}}"
     await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -452,7 +452,7 @@ export async function getInvoiceDetails(token, idInvoice) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -463,7 +463,7 @@ export async function getProcessedInvoiceListCount(token, idCompany, idBranch) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -474,7 +474,7 @@ export async function getProcessedInvoiceListPerPage(token, idCompany, idBranch,
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -485,7 +485,7 @@ export async function getDocumentListCount(token, idCompany, idBranch) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -496,7 +496,7 @@ export async function getDocumentListPerPage(token, idCompany, idBranch, pageNum
     if (response === null) return []
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -507,7 +507,7 @@ export async function getDocumentEntity(token, idDocument) {
     if (response === null) return null
     return response
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }
 
@@ -527,6 +527,6 @@ export async function sendReportEmail(token, idCompany, idBranch, reportName, st
       await post(APP_URL + "/ejecutar", token, data)
     }
   } catch (e) {
-    throw e.message
+    throw e.message ? e.message : e
   }
 }

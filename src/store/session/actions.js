@@ -12,10 +12,10 @@ import {
 
 import { userLogin, getBranchList } from 'utils/domainHelper'
 
-export const logIn = (user, companyId, branchList, companyName, companyIdentifier) => {
+export const logIn = (user, companyId, branchList, companyName, companyIdentifier, reportList) => {
   return {
     type: LOGIN,
-    payload: { user, companyId, branchList, companyName, companyIdentifier }
+    payload: { user, companyId, branchList, companyName, companyIdentifier, reportList }
   }
 }
 
@@ -34,15 +34,15 @@ export const setBranchId = (id) => {
 
 export function login (username, password, id) {
   return async (dispatch) => {
-    dispatch(setMessage(''))
     dispatch(startLoader())
     try {
       const user = await userLogin(username, password, id)
-      const company = user.UsuarioPorEmpresa[0]
-      const companyName = company.Empresa.NombreComercial || company.Empresa.NombreEmpresa
-      const companyIdentifier = company.Empresa.Identificacion
-      const branchList = await getBranchList(user.Token, company.IdEmpresa)
-      dispatch(logIn(user, company.IdEmpresa, branchList, companyName, companyIdentifier))
+      const company = user.UsuarioPorEmpresa[0].Empresa
+      const companyName = company.NombreComercial || company.NombreEmpresa
+      const companyIdentifier = company.Identificacion
+      const companyReports = company.ReportePorEmpresa
+      const branchList = await getBranchList(user.Token, user.UsuarioPorEmpresa[0].IdEmpresa)
+      dispatch(logIn(user, user.UsuarioPorEmpresa[0].IdEmpresa, branchList, companyName, companyIdentifier, companyReports))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(logOut())

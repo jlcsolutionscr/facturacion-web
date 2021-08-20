@@ -16,8 +16,7 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 
 import Button from 'components/button'
-import DetailLayout from './reports/detail-layout'
-import SummaryLayout from './reports/summary-layout'
+import ReportLayout from 'components/report-layout'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,13 +27,13 @@ const useStyles = makeStyles(theme => ({
   firstLayout: {
     padding: '20px',
     '@media (max-width:960px)': {
-      padding: '15px'
+      padding: '16px'
     },
     '@media (max-width:600px)': {
-      padding: '10px'
+      padding: '13px'
     },
     '@media (max-width:414px)': {
-      padding: '5px'
+      padding: '10px'
     }
   },
   secondLayout: {
@@ -42,19 +41,20 @@ const useStyles = makeStyles(theme => ({
     margin: 'auto',
     padding: '20px',
     '@media (max-width:960px)': {
-      padding: '15px'
+      padding: '16px'
     },
     '@media (max-width:600px)': {
-      padding: '10px'
+      padding: '13px'
     },
     '@media (max-width:414px)': {
-      padding: '5px'
+      padding: '10px'
     }
   }
 }))
 
 function ReportsPage({
   width,
+  reportList,
   reportSummary,
   reportResults,
   setReportResults,
@@ -74,7 +74,7 @@ function ReportsPage({
   const isMobile = !!result.device.type
   const today = new Date()
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
-  const [reportType, setReportType] = React.useState(1)
+  const [reportId, setReportId] = React.useState(reportList.length > 0 ? reportList[0].IdReporte : 0)
   const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth))
   const [viewLayout, setViewLayout] = React.useState(1)
@@ -85,23 +85,11 @@ function ReportsPage({
     const endDay = (endDate.getDate() < 10 ? '0' : '') + endDate.getDate()
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
-    if (type === 1) generateReport(reportType, startDateFormatted, endDateFormatted)
-    if (type === 2) exportReport(reportType, startDateFormatted, endDateFormatted)
+    const reportLabel = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte : ''
+    if (type === 1) generateReport(reportLabel, startDateFormatted, endDateFormatted)
+    if (type === 2) exportReport(reportLabel, startDateFormatted, endDateFormatted)
     if (type === 3) {
-      let reportLabel = ''
-      switch (reportType) {
-        case 1:
-          reportLabel = 'Documentos electrónicos emitidos'
-          break;
-        case 2:
-          reportLabel = 'Documentos electrónicos recibidos'
-          break;
-        case 3:
-          reportLabel = 'Resumen de comprobantes electrónicos'
-          break;
-        default:
-          reportLabel = ''
-      }
+      const reportLabel = reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte
       if (reportLabel !== '') {
         sendReportToEmail(reportLabel, startDateFormatted, endDateFormatted)
       } else {
@@ -113,11 +101,10 @@ function ReportsPage({
     setActiveSection(0)
     setReportResults([], null)
   }
-  const reportName = reportType === 1
-    ? 'Reporte de documentos electrónicos emitidos'
-    : reportType === 2
-      ? 'Reporte de documentos electrónicos recibidos'
-      : 'Reporte Resumen de comprobantes electrónicos'
+  const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte : ''
+  const reportItems = reportList.map(item => {
+    return <MenuItem key={item.IdReporte} value={item.IdReporte}>{item.CatalogoReporte.NombreReporte}</MenuItem>
+  })
   return (
     <div className={classes.root}>
       <Grid container>
@@ -127,12 +114,10 @@ function ReportsPage({
               <InputLabel id='demo-simple-select-label'>Seleccione el reporte:</InputLabel>
               <Select
                 id='TipoReporte'
-                value={reportType}
-                onChange={(event) => setReportType(event.target.value)}
+                value={reportId}
+                onChange={(event) => setReportId(event.target.value)}
               >
-                <MenuItem value={1}>DOCUMENTOS ELECTRONICOS EMITIDOS</MenuItem>
-                <MenuItem value={2}>DOCUMENTOS ELECTRONICOS RECIBIDOS</MenuItem>
-                <MenuItem value={3}>RESUMEN DE MOVIMIENTOS</MenuItem>
+                {reportItems}
               </Select>
             </FormControl>
           </Grid>
@@ -158,30 +143,25 @@ function ReportsPage({
           </MuiPickersUtilsProvider>
           <Grid item xs={isMobile ? 6 : 4} sm={3}>
             <Button
+              disabled={reportId === 0}
               label={isMobile ? 'Enviar al correo' : 'Generar'}
               onClick={() => isMobile ? processReport(3) : processReport(1)}
             />
           </Grid>
           {!isMobile &&<Grid item xs={4} sm={3}>
-            <Button disabled={reportType === 3} label='Exportar' onClick={() => processReport(2)} />
+            <Button disabled={reportId === 0} label='Exportar' onClick={() => processReport(2)} />
           </Grid>}
           <Grid item xs={isMobile ? 5 : 4} sm={3}>
             <Button label='Regresar' onClick={handleBackButton} />
           </Grid>
         </Grid>}
         {viewLayout === 2 && <Grid container spacing={3} className={classes.secondLayout} style={{width: `${width}px`}}>
-          {reportType !== 3 && <DetailLayout
+          <ReportLayout
             reportName={reportName}
             summary={reportSummary}
             data={reportResults}
             returnOnClick={() => setViewLayout(1)}
-          />}
-          {reportType === 3 && <SummaryLayout
-            reportName='Resumen de movimientos electrónicos'
-            summary={reportSummary}
-            data={reportResults}
-            returnOnClick={() => setViewLayout(1)}
-          />}
+          />
         </Grid>}
       </Grid>
     </div>
@@ -190,6 +170,7 @@ function ReportsPage({
 
 const mapStateToProps = (state) => {
   return {
+    reportList: state.session.reportList,
     reportResults: state.company.reportResults,
     reportSummary: state.company.reportSummary
   }
