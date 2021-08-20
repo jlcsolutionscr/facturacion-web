@@ -6,6 +6,7 @@ export const INITIAL_STATE = {
     cantonList: [],
     distritoList: [],
     barrioList: [],
+    rentTypeList: [],
     message: '',
     messageType: 'ERROR'
   },
@@ -24,7 +25,6 @@ export const INITIAL_STATE = {
     customer: null,
     customerList: [],
     idTypeList: [],
-    rentTypeList: [],
     priceTypeList: [],
     exonerationTypeList: []
   },
@@ -59,7 +59,10 @@ export const INITIAL_STATE = {
   },
   product: {
     product: null,
-    productList: []
+    productList: [],
+    productTypeList: [],
+    categoryList: [],
+    providerList: []
   },
   document: {
     listPage: 1,

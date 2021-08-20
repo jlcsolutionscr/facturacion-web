@@ -1,2 +1,6 @@
 export const SET_PRODUCT_LIST = 'product/SET_PRODUCT_LIST'
 export const SET_PRODUCT = 'product/SET_PRODUCT'
+export const SET_PRODUCT_TYPE_LIST = 'product/SET_PRODUCT_TYPE_LIST'
+export const SET_CATEGORY_LIST = 'product/SET_CATEGORY_LIST'
+export const SET_PROVIDER_LIST = 'product/SET_PROVIDER_LIST'
+export const SET_PRODUCT_ATTRIBUTE = 'product/SET_PRODUCT_ATTRIBUTE'

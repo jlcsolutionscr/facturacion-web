@@ -70,7 +70,7 @@ function CustomerPage({
   })
   const rentTypeItems = []
   rentTypeList.forEach(item => {
-    if (item.Id !== 1) rentTypeItems.push(<MenuItem value={item.Id}>{item.Descripcion}</MenuItem>)
+    if (item.Id > 1) rentTypeItems.push(<MenuItem value={item.Id}>{item.Descripcion}</MenuItem>)
   })
   const priceTypeItems = priceTypeList.map(item => {
     return <MenuItem value={item.Id}>{item.Descripcion}</MenuItem>
@@ -362,7 +362,7 @@ const mapStateToProps = (state) => {
     customerList: state.customer.customerList,
     idTypeList: state.customer.idTypeList,
     priceTypeList: state.customer.priceTypeList,
-    rentTypeList: state.customer.rentTypeList,
+    rentTypeList: state.ui.rentTypeList,
     exonerationTypeList: state.customer.exonerationTypeList,
     customer: state.customer.customer
   }

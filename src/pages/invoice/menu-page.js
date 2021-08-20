@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 import {  getCompany } from 'store/company/actions'
 import { setCustomerParameters } from 'store/customer/actions'
+import { setProductParameters } from 'store/product/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
 import { getDocumentListFirstPage } from 'store/document/actions'
 import { logOut } from 'store/session/actions'
@@ -60,6 +61,7 @@ function MenuPage({
   setBranchId,
   setActiveSection,
   setCustomerParameters,
+  setProductParameters,
   setInvoiceParameters,
   getInvoiceListFirstPage,
   getDocumentListFirstPage,
@@ -99,7 +101,7 @@ function MenuPage({
         <Button disabled={!manageCustomers} classes={{root: classes.button}} onClick={() => setCustomerParameters(3)}>Catálogo de clientes</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => setActiveSection(4)}>Catálogo de productos</Button>
+        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => setProductParameters(4)}>Catálogo de productos</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
@@ -135,6 +137,7 @@ const mapDispatchToProps = (dispatch) => {
     setBranchId,
     getCompany,
     setCustomerParameters,
+    setProductParameters,
     setInvoiceParameters,
     getInvoiceListFirstPage,
     getDocumentListFirstPage

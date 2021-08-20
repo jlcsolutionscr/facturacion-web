@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 
 import { ThemeProvider } from '@material-ui/core/styles'
 import Snackbar from '@material-ui/core/Snackbar'
+import Slide from '@material-ui/core/Slide'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import { ErrorIcon, InfoIcon } from 'utils/iconsHelper'
 import { makeStyles } from '@material-ui/core/styles'
@@ -20,22 +21,32 @@ const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex'
   },
-  error: {
-    backgroundColor: theme.palette.error.normal
+  snackbarMessage: {
+    width: '100%'
   },
-  info: {
-    backgroundColor: theme.palette.info.normal
+  snackbarError: {
+    backgroundColor: props => props.isDarkMode ? '#b23c17' : '#ab003c'
+  },
+  snackbarInfo: {
+    backgroundColor: props => props.isDarkMode ? '#2196f3' : '#1c54b2'
+  },
+  message: {
+    color: props => props.isDarkMode ? '#FFF' : '#000',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   icon: {
-    opacity: 0.9,
-    marginRight: theme.spacing(1)
+    width: '32px',
+    height: '32px',
+    opacity: 0.9
   }
 }))
 
 function RoutingPage({ authenticated, message, messageType, isLoaderOpen, loaderText, setMessage}) {
-  const classes = useStyles()
   const size = useWindowSize()
   const [isDarkMode, setDarkMode] = React.useState(false)
+  const classes = useStyles({isDarkMode: isDarkMode})
   const width = size.width > 320 ? size.width : 320
   const component = !authenticated ? <LoginPage isDarkMode={isDarkMode} setDarkMode={setDarkMode} /> : <HomePage width={width} />
   return (
@@ -48,18 +59,21 @@ function RoutingPage({ authenticated, message, messageType, isLoaderOpen, loader
             vertical: 'bottom',
             horizontal: 'center'
           }}
-          open={message !== ''}
+          TransitionComponent={Slide}
           autoHideDuration={6000}
+          open={message !== ''}
           onClose={() => setMessage('')}
         >
           <SnackbarContent
-            className={messageType === 'ERROR' ? classes.error : classes.info}
-            aria-describedby='client-snackbar'
+            classes={{
+              root: messageType === 'ERROR' ? classes.snackbarError : classes.snackbarInfo,
+              message: classes.snackbarMessage
+            }}
             message={
-              <span id='client-snackbar' className={classes.message}>
+              <div className={classes.message} id='client-snackbar'>
+                <span>{message}</span>
                 {messageType === 'ERROR' ? <ErrorIcon className={classes.icon} /> : <InfoIcon className={classes.icon} />}
-                {message}
-              </span>
+              </div>
             }
           />
         </Snackbar>

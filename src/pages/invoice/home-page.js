@@ -8,10 +8,10 @@ import MenuPage from './menu-page'
 import CompanyPage from './company-page'
 import LogoPage from './logo-page'
 import CustomerPage from './customer-page'
+import ProductPage from './product-page'
 import InvoicePage from './invoice-page'
 import InvoiceListPage from './invoice-list-page'
 import DocumentListPage from './document-list-page'
-import UnderConstructionPage from './under-construction'
 import ReportsPage from './reports-page'
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +55,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <LogoPage />}
         {activeSection === 3 && <CustomerPage />}
-        {activeSection === 4 && <UnderConstructionPage />}
+        {activeSection === 4 && <ProductPage />}
         {activeSection === 5 && <InvoicePage />}
         {activeSection === 6 && <InvoiceListPage />}
         {activeSection === 7 && <DocumentListPage />}

@@ -121,12 +121,12 @@ const defaultCustomer = {
 
 export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
+    const { companyId, branchId, token } = getState().session
     const { company } = getState().company
     dispatch(startLoader())
     try {
       const customerList = await getCustomerList(token, companyId, '')
-      const productList = await getProductList(token, companyId, 1, '')
+      const productList = await getProductList(token, companyId, branchId, true, '')
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
@@ -171,11 +171,11 @@ export function getProduct (idProduct) {
 
 export function filterProductList (text) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
+    const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     dispatch(setMessage(''))
     try {
-      let newList = await getProductList(token, companyId, 1, text)
+      let newList = await getProductList(token, companyId, branchId, true, text)
       dispatch(setProductList(newList))
       dispatch(stopLoader())
     } catch (error) {

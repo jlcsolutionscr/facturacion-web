@@ -2,7 +2,6 @@ import {
   SET_CUSTOMER_LIST,
   SET_CUSTOMER,
   SET_ID_TYPE_LIST,
-  SET_RENT_TYPE_LIST,
   SET_PRICE_TYPE_LIST,
   SET_EXONERATION_TYPE_LIST,
   SET_CUSTOMER_ATTRIBUTE
@@ -16,8 +15,6 @@ const customerReducer = (state = {}, { type, payload }) => {
       return { ...state, customer: payload.customer }
     case SET_ID_TYPE_LIST:
       return { ...state, idTypeList: payload.list }
-    case SET_RENT_TYPE_LIST:
-      return { ...state, rentTypeList: payload.list }
     case SET_PRICE_TYPE_LIST:
       return { ...state, priceTypeList: payload.list }
     case SET_EXONERATION_TYPE_LIST:

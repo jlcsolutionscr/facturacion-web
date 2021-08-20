@@ -2,7 +2,6 @@ import {
   SET_CUSTOMER_LIST,
   SET_CUSTOMER,
   SET_ID_TYPE_LIST,
-  SET_RENT_TYPE_LIST,
   SET_PRICE_TYPE_LIST,
   SET_EXONERATION_TYPE_LIST,
   SET_CUSTOMER_ATTRIBUTE
@@ -12,6 +11,7 @@ import {
   startLoader,
   stopLoader,
   setActiveSection,
+  setRentTypeList,
   setMessage
 } from 'store/ui/actions'
 
@@ -46,13 +46,6 @@ export const setIdTypeList = (list) => {
   }
 }
 
-export const setRentTypeList = (list) => {
-  return {
-    type: SET_RENT_TYPE_LIST,
-    payload: { list }
-  }
-}
-
 export const setPriceTypeList = (list) => {
   return {
     type: SET_PRICE_TYPE_LIST,
@@ -77,7 +70,8 @@ export const setCustomerAttribute = (attribute, value) => {
 export function setCustomerParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
-    const { idTypeList, rentTypeList, priceTypeList, exonerationTypeList } = getState().customer
+    const { rentTypeList } = getState().ui
+    const { idTypeList, priceTypeList, exonerationTypeList } = getState().customer
     dispatch(startLoader())
     try {
       const customerList = await getCustomerList(token, companyId, '')
