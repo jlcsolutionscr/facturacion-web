@@ -54,6 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 function ReportsPage({
   width,
+  permissions,
   reportList,
   reportSummary,
   reportResults,
@@ -72,9 +73,10 @@ function ReportsPage({
     }
   }, [reportResults])
   const isMobile = !!result.device.type
+  const isAccountingUser = permissions.filter(role => role.IdRole === 2).length > 0
   const today = new Date()
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
-  const [reportId, setReportId] = React.useState(reportList.length > 0 ? reportList[0].IdReporte : 0)
+  const [reportId, setReportId] = React.useState(reportList.length > 0 ? !isAccountingUser ? reportList[0].IdReporte : 50 : 0)
   const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth))
   const [viewLayout, setViewLayout] = React.useState(1)
@@ -102,8 +104,8 @@ function ReportsPage({
     setReportResults([], null)
   }
   const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte : ''
-  const reportItems = reportList.map(item => {
-    return <MenuItem key={item.IdReporte} value={item.IdReporte}>{item.CatalogoReporte.NombreReporte}</MenuItem>
+  const reportItems = reportList.filter(item => !isAccountingUser || (isAccountingUser && [50,51,52].includes(item.IdReporte))).map(rep => {
+    return <MenuItem key={rep.IdReporte} value={rep.IdReporte}>{rep.CatalogoReporte.NombreReporte}</MenuItem>
   })
   return (
     <div className={classes.root}>
@@ -170,6 +172,7 @@ function ReportsPage({
 
 const mapStateToProps = (state) => {
   return {
+    permissions: state.session.permissions,
     reportList: state.session.reportList,
     reportResults: state.company.reportResults,
     reportSummary: state.company.reportSummary
