@@ -11,13 +11,13 @@ const sessionReducer = (state = {}, { type, payload }) => {
         ...state,
         authenticated: true,
         userId: payload.user.IdUsuario,
-        companyId: payload.companyId,
-        companyName: payload.companyName,
-        companyIdentifier: payload.companyIdentifier,
-        reportList: payload.reportList,
+        companyId: payload.company.IdEmpresa,
+        companyName: payload.company.NombreComercial || payload.company.NombreEmpresa,
+        companyIdentifier: payload.company.Identificacion,
+        reportList: payload.company.ReportePorEmpresa,
         permissions: payload.user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
-        branchList: payload.branchList,
-        branchId: payload.branchList[0].Id,
+        branchList: payload.company.SucursalPorEmpresa.map(branch => ({Id: branch.IdSucursal, Descripcion: branch.NombreSucursal})),
+        branchId: payload.user.IdSucursal,
         token: payload.user.Token
       }
     case LOGOUT:

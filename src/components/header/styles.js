@@ -1,5 +1,6 @@
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import LogoImage from 'assets/img/company-logo.png'
+import LogoDarkImage from 'assets/img/company-logo-dark.png'
 
 export const createStyle = makeStyles(theme => createStyles({
   header: {
@@ -11,6 +12,9 @@ export const createStyle = makeStyles(theme => createStyles({
     },
     '@media (max-width:600px)': {
       paddingBottom: '10px'
+    },
+    '@media (max-width:414px)': {
+      backgroundImage: 'linear-gradient(to bottom, rgba(8, 65, 92,0.2), rgba(8, 65, 92,0.7), rgba(8, 65, 92, 1))'
     }
   },
   banner: {
@@ -28,6 +32,7 @@ export const createStyle = makeStyles(theme => createStyles({
       height: '95px'
     },
     '@media (max-width:414px)': {
+      backgroundImage: `url(${LogoDarkImage})`,
       backgroundSize: '75px 75px',
       height: '75px'
     }
@@ -39,7 +44,8 @@ export const createStyle = makeStyles(theme => createStyles({
       margin: '30px 0 0 110px'
     },
     '@media (max-width:414px)': {
-      margin: '20px 0 10px 90px'
+      margin: '20px 0 10px 90px',
+      color: 'rgba(0,0,0,0.65)'
     }
   },
   h2: {
@@ -91,7 +97,8 @@ export const createStyle = makeStyles(theme => createStyles({
       fontSize: theme.typography.pxToRem(23)
     },
     '@media (max-width:414px)': {
-      fontSize: theme.typography.pxToRem(20)
+      fontSize: theme.typography.pxToRem(20),
+      color: 'rgba(255,255,255,0.85)'
     }
   }
 }))

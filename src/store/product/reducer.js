@@ -7,6 +7,8 @@ import {
   SET_PRODUCT_ATTRIBUTE
 } from './types'
 
+import { LOGOUT } from 'store/session/types'
+
 const productReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_PRODUCT_LIST:
@@ -21,6 +23,8 @@ const productReducer = (state = {}, { type, payload }) => {
       return { ...state, providerList: payload.list }
     case SET_PRODUCT_ATTRIBUTE:
       return { ...state, product: {...state.product, [payload.attribute]: payload.value }}
+    case LOGOUT:
+      return { ...state, product: null, productList: [] }
     default:
       return state
   }

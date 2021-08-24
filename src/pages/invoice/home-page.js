@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import Header from 'components/header'
 import BannerImage from 'assets/img/menu-background.jpg'
+import Header from 'components/header'
 import MenuPage from './menu-page'
 import CompanyPage from './company-page'
 import LogoPage from './logo-page'
@@ -21,7 +21,11 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     backgroundImage: `url(${BannerImage})`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: `110% 100%`
+    backgroundSize: `110% 100%`,
+    '@media (max-width:414px)': {
+      backgroundImage: 'none',
+      backgroundColor: '#FFF'
+    }
   },
   body: {
     display: 'flex',
@@ -36,7 +40,7 @@ const useStyles = makeStyles(theme => ({
       margin: '0px 13px 13px 13px',
     },
     '@media (max-width:414px)': {
-      margin: '0px 10px 10px 10px'
+      margin: '10px 10px 10px 10px'
     }
   }
 }))

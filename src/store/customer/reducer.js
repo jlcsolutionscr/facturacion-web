@@ -7,6 +7,8 @@ import {
   SET_CUSTOMER_ATTRIBUTE
 } from './types'
 
+import { LOGOUT } from 'store/session/types'
+
 const customerReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_CUSTOMER_LIST:
@@ -21,6 +23,8 @@ const customerReducer = (state = {}, { type, payload }) => {
       return { ...state, exonerationTypeList: payload.list }
     case SET_CUSTOMER_ATTRIBUTE:
       return { ...state, customer: {...state.customer, [payload.attribute]: payload.value }}
+    case LOGOUT:
+      return { ...state, customer: null, customerList: [] }
     default:
       return state
   }

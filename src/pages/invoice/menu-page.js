@@ -18,6 +18,7 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,35 +26,62 @@ const useStyles = makeStyles(theme => ({
     margin: '0 auto auto auto'
   },
   branches: {
-    maxWidth: '590px',
-    padding: '4px 0 10px 0',
-    backgroundColor: theme.palette.background.table,
+    backgroundColor: theme.palette.background.branchPicker,
     borderRadius: theme.shape.borderRadius,
+    maxWidth: '590px',
+    padding: '5px 0 5px 0',
     '@media (max-width:600px)': {
-      maxWidth: '380px'
+      maxWidth: '350px'
+    },
+    '@media (max-width:414px)': {
+      maxWidth: '100%'
+    }
+  },
+  branchText: {
+    fontFamily: '"Exo 2", sans-serif',
+    fontSize: theme.typography.pxToRem(18),
+    fontStyle: 'italic',
+    fontWeight: 600,
+    marginBottom: 0,
+    '@media (max-width:600px)': {
+      fontSize: theme.typography.pxToRem(16)
+    },
+    '@media (max-width:414px)': {
+      fontSize: theme.typography.pxToRem(14)
     }
   },
   button: {
     marginTop: '25px',
     width: '270px',
     padding: '13px',
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    color: 'white',
+    backgroundColor: theme.palette.background.button,
+    color: 'rgba(255,255,255,0.85)',
     borderRadius: '25px',
-    borderColor: 'white',
-    border: '0.6px solid',
-    boxShadow: '6px 6px 6px rgba(0,0,0,0.55)',
+    border: '1px solid #FFFFFF',
+    boxShadow: '3px 3px 6px rgba(0,0,0,0.55)',
     '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.65)',
-      boxShadow: '3px 3px 6px rgba(0,0,0,0.55)'
+      color: '#FFF',
+      backgroundColor: theme.palette.background.hoveredButton,
+      boxShadow: '4px 4px 6px rgba(0,0,0,0.55)'
     },
     '&:disabled': {
       color: 'rgba(255,255,255,0.65)',
-      backgroundColor: 'rgba(0,0,0,0.55)'
+      backgroundColor: '#595959'
     },
     '@media (max-width:600px)': {
       marginTop: '10px',
       padding: '8px'
+    },
+    '@media (max-width:414px)': {
+      width: '100%',
+      marginTop: '2px',
+      border: 'none',
+      borderRadius: '2px',
+      boxShadow: 'none',
+      padding: '10px 0',
+      '&:hover': {
+        boxShadow: 'none'
+      }
     }
   },
 }))
@@ -79,21 +107,26 @@ function MenuPage({
   const generateInvoice = permissions.filter(role => role.IdRole === 203).length > 0
   const manageDocuments = permissions.filter(role => role.IdRole === 402).length > 0
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
+  const pickBranchOption = permissions.filter(role => role.IdRole === 48).length > 0
   const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <Grid className={classes.root} container align='center'>
-      {branchItems.length > 1 && <Grid item xs={12}>
+      {branchList.length > 1 && <Grid item xs={12}>
         <div className={classes.branches}>
-          <FormControl className={classes.form}>
-            <InputLabel id='demo-simple-select-label'>Seleccione la sucursal:</InputLabel>
-            <Select
-              id='Sucursal'
-              value={branchId}
-              onChange={(event) => setBranchId(event.target.value)}
-            >
-              {branchItems}
-            </Select>
-          </FormControl>
+          {pickBranchOption 
+            ? <FormControl>
+              <InputLabel>Seleccione la sucursal:</InputLabel>
+              <Select
+                id='Sucursal'
+                value={branchId}
+                onChange={(event) => setBranchId(event.target.value)}
+              >
+                {branchItems}
+              </Select>
+            </FormControl>
+            : <Typography className={classes.branchText} align='center' paragraph>
+              {`Sucursal: ${branchList.find(branch => branch.Id === branchId).Descripcion}`}
+            </Typography>}
         </div>
       </Grid>}
       <Grid item xs={12} sm={6}>

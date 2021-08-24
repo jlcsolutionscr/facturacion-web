@@ -4,6 +4,9 @@ import {
   SET_REPORT_RESULTS
 } from './types'
 
+import { LOGOUT } from 'store/session/types'
+
+
 const companyReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_COMPANY:
@@ -12,6 +15,8 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, company: {...state.company, [payload.attribute]: payload.value }}
     case SET_REPORT_RESULTS:
       return { ...state, reportResults: payload.list, reportSummary: payload.summary }
+    case LOGOUT:
+      return { ...state, company: null }
     default:
       return state
   }

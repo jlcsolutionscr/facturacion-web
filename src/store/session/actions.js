@@ -10,12 +10,12 @@ import {
   setMessage
 } from 'store/ui/actions'
 
-import { userLogin, getBranchList } from 'utils/domainHelper'
+import { userLogin } from 'utils/domainHelper'
 
-export const logIn = (user, companyId, branchList, companyName, companyIdentifier, reportList) => {
+export const logIn = (user, company) => {
   return {
     type: LOGIN,
-    payload: { user, companyId, branchList, companyName, companyIdentifier, reportList }
+    payload: { user, company }
   }
 }
 
@@ -37,12 +37,7 @@ export function login (username, password, id) {
     dispatch(startLoader())
     try {
       const user = await userLogin(username, password, id)
-      const company = user.UsuarioPorEmpresa[0].Empresa
-      const companyName = company.NombreComercial || company.NombreEmpresa
-      const companyIdentifier = company.Identificacion
-      const companyReports = company.ReportePorEmpresa
-      const branchList = await getBranchList(user.Token, user.UsuarioPorEmpresa[0].IdEmpresa)
-      dispatch(logIn(user, user.UsuarioPorEmpresa[0].IdEmpresa, branchList, companyName, companyIdentifier, companyReports))
+      dispatch(logIn(user, user.Empresa))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(logOut())
