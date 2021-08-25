@@ -100,10 +100,10 @@ function MenuPage({
 }) {
   const classes = useStyles()
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
-  const manageCustomers = permissions.filter(role => role.IdRole === 100).length > 0
-  const manageProducts = permissions.filter(role => role.IdRole === 103).length > 0
-  const generateInvoice = permissions.filter(role => role.IdRole === 203).length > 0
-  const manageDocuments = permissions.filter(role => role.IdRole === 402).length > 0
+  const manageCustomers = permissions.filter(role => [1, 100].includes(role.IdRole)).length > 0
+  const manageProducts = permissions.filter(role => [1, 103].includes(role.IdRole)).length > 0
+  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0
+  const manageDocuments = permissions.filter(role => [1, 402].includes(role.IdRole)).length > 0
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
   const pickBranchOption = permissions.filter(role => role.IdRole === 48).length > 0
   const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })

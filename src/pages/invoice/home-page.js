@@ -15,7 +15,7 @@ import InvoicePage from './invoice-page'
 import InvoiceListPage from './invoice-list-page'
 import DocumentListPage from './document-list-page'
 import ReportsPage from './reports-page'
-import BannerImage from 'assets/img/background-3.jpg'
+import BannerImage from 'assets/img/home-background.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
