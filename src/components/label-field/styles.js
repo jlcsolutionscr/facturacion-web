@@ -19,7 +19,7 @@ export const createStyle = makeStyles(theme => createStyles({
     fontSize: '1rem',
   },
   label: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.pages,
     transform: 'translate(14px, -6px) scale(0.75)',
     transformOrigin: 'top left',
     zIndex: '1',
@@ -54,7 +54,7 @@ export const createStyle = makeStyles(theme => createStyles({
     boxSizing: 'content-box',
     textRendering: 'auto',
     borderRadius: theme.shape.borderRadius,
-    border: '1px solid rgba(0, 0, 0, 0.23)',
+    border: `1px solid ${theme.palette.primary.border}`,
     '&:focus': {
       outline: '0',
       borderColor: theme.palette.primary.main,

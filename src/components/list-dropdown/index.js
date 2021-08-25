@@ -3,7 +3,7 @@ import UAParser from 'ua-parser-js'
 
 import { createStyle } from './styles'
 
-function ListDropdown({items, label, value, onChange, onItemSelected}) {
+function ListDropdown({items, label, value, disabled, onChange, onItemSelected}) {
   const classes = createStyle()
   const [open, setOpen] = React.useState(false)
   const result = new UAParser().getResult()
@@ -31,6 +31,7 @@ function ListDropdown({items, label, value, onChange, onItemSelected}) {
   return (<div id="main-container" className={classes.container} onClick={(e) => e.stopPropagation()}>
     <div id="input-container" className={classes.root}>
       <input
+        disabled={disabled}
         id="input-field" 
         className={`${classes.input} ${classes.font}`} 
         value={value}

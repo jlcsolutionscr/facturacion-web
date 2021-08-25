@@ -51,6 +51,7 @@ export const INITIAL_STATE = {
       impuesto: 0,
       total: 0,
     },
+    comment: '',
     successful: false,
     listPage: 1,
     listCount: 0,

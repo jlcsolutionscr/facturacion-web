@@ -20,9 +20,18 @@ import ReportLayout from 'components/report-layout'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
-    margin: '0 auto auto auto',
-    overflow: 'hidden'
+    backgroundColor: theme.palette.background.pages,
+    overflow: 'hidden',
+    margin: '20px auto auto auto',
+    '@media (max-width:960px)': {
+      marginTop: '16px'
+    },
+    '@media (max-width:600px)': {
+      marginTop: '13px'
+    },
+    '@media (max-width:414px)': {
+      marginTop: '10px'
+    }
   },
   firstLayout: {
     padding: '20px',

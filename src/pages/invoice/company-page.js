@@ -26,17 +26,20 @@ import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.pages,
     overflowY: 'auto',
-    margin: '0 auto auto auto',
+    margin: '20px auto auto auto',
     padding: '20px',
     '@media (max-width:960px)': {
+      marginTop: '16px',
       padding: '16px'
     },
     '@media (max-width:600px)': {
+      marginTop: '13px',
       padding: '13px'
     },
     '@media (max-width:414px)': {
+      marginTop: '10px',
       padding: '10px'
     }
   }

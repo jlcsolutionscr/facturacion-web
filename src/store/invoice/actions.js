@@ -5,6 +5,7 @@ import {
   SET_PRODUCTS_DETAIL,
   SET_SUMMARY,
   SET_PAYMENT_ID,
+  SET_COMMENT,
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
@@ -76,6 +77,13 @@ export const setPaymentId = (id) => {
   return {
     type: SET_PAYMENT_ID,
     payload: { id }
+  }
+}
+
+export const setComment = (comment) => {
+  return {
+    type: SET_COMMENT,
+    payload: { comment }
   }
 }
 
@@ -243,7 +251,7 @@ export const saveInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, productDetails, summary } = getState().invoice
+    const { paymentId, productDetails, summary, comment } = getState().invoice
     dispatch(startLoader())
     try {
       await saveInvoiceEntity(
@@ -254,7 +262,8 @@ export const saveInvoice = () => {
         branchId,
         company,
         customer,
-        summary
+        summary,
+        comment
       )
       dispatch(setSuccessful(true))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
@@ -276,6 +285,7 @@ export const resetInvoice = () => {
     dispatch(setProductsDetail([]))
     dispatch(setSummary({ gravado: 0, exonerado: 0, excento: 0, subTotal: 0, impuesto: 0,total: 0 }))
     dispatch(setPaymentId(1))
+    dispatch(setComment(''))
     dispatch(setSuccessful(false))
   }
 }

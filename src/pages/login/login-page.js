@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LoginPage({ login, isDarkMode, setDarkMode }) {
+function LoginPage({ login, isDarkMode, toggleDarkMode }) {
   const classes = useStyles()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -142,7 +142,7 @@ function LoginPage({ login, isDarkMode, setDarkMode }) {
             <Grid container>
               <Grid item xs={12} style={{textAlign: 'center'}}>
                 <FormControlLabel
-                  control={<Switch checked={isDarkMode} onChange={() => setDarkMode(!isDarkMode)} name="checkedA" />}
+                  control={<Switch checked={isDarkMode} onChange={() => toggleDarkMode(!isDarkMode)} name="checkedA" />}
                   label="Tema oscuro"
                 />
               </Grid>

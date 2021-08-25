@@ -357,7 +357,9 @@ export async function saveInvoiceEntity(
   branchId,
   company,
   customer,
-  summary) {
+  summary,
+  comment
+) {
   try {
     const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentId)
     const detalleFactura = []
@@ -406,7 +408,7 @@ export async function saveInvoiceEntity(
       IdCondicionVenta: 1,
       PlazoCredito: 0,
       Fecha: {DateTime: timeString},
-      TextoAdicional: '',
+      TextoAdicional: comment,
       IdVendedor: 1,
       Excento: summary.excento,
       Gravado: summary.gravado,

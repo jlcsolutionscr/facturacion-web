@@ -27,11 +27,11 @@ import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.pages,
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    marginBottom: 'auto'
+    margin: '10px auto auto auto'
   },
   dataContainer: {
     display: 'flex',

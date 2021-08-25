@@ -48,7 +48,7 @@ function RoutingPage({ authenticated, message, messageType, isLoaderOpen, loader
   const [isDarkMode, setDarkMode] = React.useState(false)
   const classes = useStyles({isDarkMode: isDarkMode})
   const width = size.width > 320 ? size.width : 320
-  const component = !authenticated ? <LoginPage isDarkMode={isDarkMode} setDarkMode={setDarkMode} /> : <HomePage width={width} />
+  const component = !authenticated ? <LoginPage isDarkMode={isDarkMode} toggleDarkMode={setDarkMode} /> : <HomePage width={width} isDarkMode={isDarkMode} toggleDarkMode={setDarkMode} />
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <div id='main_container' className={classes.container} style={{height: `${size.height}px`, width: `${size.width}px`}}>

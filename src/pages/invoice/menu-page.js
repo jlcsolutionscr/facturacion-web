@@ -9,7 +9,6 @@ import { setCustomerParameters } from 'store/customer/actions'
 import { setProductParameters } from 'store/product/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
 import { getDocumentListFirstPage } from 'store/document/actions'
-import { logOut } from 'store/session/actions'
 import { setBranchId } from 'store/session/actions'
 
 import Grid from '@material-ui/core/Grid'
@@ -23,7 +22,7 @@ import Typography from '@material-ui/core/Typography'
 const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: '640px',
-    margin: '0 auto auto auto'
+    margin: '20px auto auto auto'
   },
   branches: {
     backgroundColor: theme.palette.background.branchPicker,
@@ -97,8 +96,7 @@ function MenuPage({
   setProductParameters,
   setInvoiceParameters,
   getInvoiceListFirstPage,
-  getDocumentListFirstPage,
-  logOut
+  getDocumentListFirstPage
 }) {
   const classes = useStyles()
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
@@ -153,9 +151,6 @@ function MenuPage({
       <Grid item xs={12} sm={6}>
         <Button disabled={!reportingMenu} classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
       </Grid>
-      <Grid item xs={12}>
-        <Button classes={{root: classes.button}} onClick={() => logOut()}>Cerrar sesión</Button>
-      </Grid>
     </Grid>
   )
 }
@@ -170,7 +165,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    logOut,
     setActiveSection,
     setBranchId,
     getCompany,

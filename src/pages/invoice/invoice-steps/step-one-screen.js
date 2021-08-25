@@ -17,11 +17,11 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflowY: 'auto',
     padding: '2%',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.pages
   }
 }))
 
-function StepOneScreen({index, value, customer, customerList, getCustomer}) {
+function StepOneScreen({index, value, customer, customerList, successful, getCustomer}) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
@@ -34,7 +34,11 @@ function StepOneScreen({index, value, customer, customerList, getCustomer}) {
         <Grid item xs={12} sm={9} md={7}>
           <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Seleccione un cliente</InputLabel>
-            <Select value={customer ? customer.IdCliente : ''} onChange={(event) => getCustomer(event.target.value)}>
+            <Select
+              disabled={successful}
+              value={customer ? customer.IdCliente : ''}
+              onChange={(event) => getCustomer(event.target.value)}
+            >
               {menuItems}
             </Select>
           </FormControl>
@@ -95,7 +99,8 @@ function StepOneScreen({index, value, customer, customerList, getCustomer}) {
 const mapStateToProps = (state) => {
   return {
     customer: state.customer.customer,
-    customerList: state.customer.customerList
+    customerList: state.customer.customerList,
+    successful: state.invoice.successful
   }
 }
 

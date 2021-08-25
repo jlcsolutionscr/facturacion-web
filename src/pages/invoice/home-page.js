@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import BannerImage from 'assets/img/menu-background.jpg'
+import { logOut } from 'store/session/actions'
+
 import Header from 'components/header'
 import MenuPage from './menu-page'
 import CompanyPage from './company-page'
@@ -13,39 +15,42 @@ import InvoicePage from './invoice-page'
 import InvoiceListPage from './invoice-list-page'
 import DocumentListPage from './document-list-page'
 import ReportsPage from './reports-page'
+import BannerImage from 'assets/img/background-3.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-    backgroundImage: `url(${BannerImage})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: `110% 100%`,
     '@media (max-width:414px)': {
       backgroundImage: 'none',
       backgroundColor: '#FFF'
     }
   },
   body: {
+    backgroundImage: `url(${BannerImage})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: `100% 100%`,
     display: 'flex',
     flex: '1 1 auto',
     overflowY: 'auto',
     overflowX: 'hidden',
-    margin: '40px 10% 20px 10%',
+    backgroundColor: '#FFF',
+    padding: '0px 10% 20px 10%',
     '@media (max-width:960px)': {
-      margin: '0px 16px 16px 16px',
+      padding: '0 16px 16px 16px',
     },
     '@media (max-width:600px)': {
-      margin: '0px 13px 13px 13px',
+      padding: '0 13px 13px 13px',
     },
     '@media (max-width:414px)': {
-      margin: '10px 10px 10px 10px'
+      backgroundImage: `none`,
+      padding: '0 10px 10px 10px'
     }
   }
 }))
 
-function HomePage({ activeSection, companyName, companyIdentifier, width }) {
+function HomePage({ activeSection, companyName, companyIdentifier, width, isDarkMode, toggleDarkMode, logOut }) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
@@ -53,7 +58,7 @@ function HomePage({ activeSection, companyName, companyIdentifier, width }) {
   }, [activeSection])
   return (
     <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
-      <Header companyName={companyName} companyIdentifier={companyIdentifier} />
+      <Header companyName={companyName} companyIdentifier={companyIdentifier} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} logOut={logOut} />
       <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
@@ -81,4 +86,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, null)(HomePage)
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ logOut }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

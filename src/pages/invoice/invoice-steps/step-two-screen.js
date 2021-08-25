@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflowY: 'auto',
     padding: '2%',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.pages
   },
   container: {
     display: 'flex',
@@ -97,6 +97,7 @@ function StepTwoScreen({
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <ListDropdown
+              disabled={successful}
               label='Seleccione un producto'
               items={productList}
               value={filter}
@@ -106,6 +107,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={12}>
             <TextField
+              disabled={successful}
               label='Descripción'
               id='Descripcion'
               value={description}
@@ -116,6 +118,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={3}>
             <TextField
+              disabled={successful}
               label='Cantidad'
               id='Cantidad'
               value={quantity}
@@ -127,6 +130,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={6}>
             <TextField
+              disabled={successful}
               label='Precio'
               value={price}
               fullWidth

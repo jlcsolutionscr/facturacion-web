@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setPaymentId, saveInvoice, resetInvoice } from 'store/invoice/actions'
+import { setPaymentId, setComment, saveInvoice, resetInvoice } from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 
 import Button from 'components/button'
+import TextField from 'components/text-field'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
@@ -19,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflowY: 'auto',
     padding: '2%',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.pages
   },
   summary: {
     flexDirection: 'column',
@@ -53,8 +54,10 @@ function StepThreeScreen({
   index,
   summary,
   paymentId,
+  comment,
   successful,
   setPaymentId,
+  setComment,
   saveInvoice,
   resetInvoice,
   setValue
@@ -79,6 +82,17 @@ function StepThreeScreen({
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
+        <Grid item xs={12} className={classes.centered}>
+          <TextField
+            disabled={successful}
+            label='Observaciones'
+            id='Observacion'
+            value={comment}
+            fullWidth
+            variant='outlined'
+            onChange={(event) => setComment(event.target.value)}
+          />
+        </Grid>
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
           <Grid container spacing={2} className={classes.details}>
@@ -124,6 +138,7 @@ function StepThreeScreen({
           <FormControl style={{width: '215px', textAlign: 'left'}}>
             <InputLabel id='demo-simple-select-label'>Seleccione la forma de pago:</InputLabel>
             <Select
+              disabled={successful}
               id='Sucursal'
               value={paymentId}
               onChange={(event) => setPaymentId(event.target.value)}
@@ -144,6 +159,7 @@ const mapStateToProps = (state) => {
   return {
     paymentId: state.invoice.paymentId,
     summary: state.invoice.summary,
+    comment: state.invoice.comment,
     successful: state.invoice.successful,
     branchList: state.ui.branchList,
     error: state.invoice.error
@@ -153,6 +169,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setPaymentId,
+    setComment,
     saveInvoice,
     resetInvoice
   }, dispatch)
