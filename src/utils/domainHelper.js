@@ -1,4 +1,6 @@
 import { encryptString, roundNumber, getWithResponse, post, postWithResponse } from './utilities'
+import { saveAs } from 'file-saver'
+
 const SERVICE_URL = process.env.REACT_APP_SERVER_URL
 const APP_URL = `${SERVICE_URL}/PuntoventaWCF.svc`
 
@@ -528,6 +530,29 @@ export async function sendReportEmail(token, idCompany, idBranch, reportName, st
       const data = "{NombreMetodo: 'EnviarReportePorCorreoElectronico', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NombreReporte: '" + reportName + "', FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "', FormatoReporte: 'PDF'}}"
       await post(APP_URL + "/ejecutar", token, data)
     }
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function generateInvoicePDF(token, idInvoice) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + idInvoice + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response.length > 0) {
+      const byteArray = new Uint8Array(response);
+      const file = new Blob([byteArray], { type: "application/octet-stream" })
+      saveAs(file, `Factura-${idInvoice}.pdf`)
+    }
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function sendInvoicePDF(token, idInvoice) {
+  try {
+    const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdFactura: " + idInvoice + "}}"
+    await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e.message ? e.message : e
   }

@@ -136,7 +136,7 @@ function DocumentListPage({
     if (details !== '' ) setDocumentDetails('')
   }
   const rows = list.map(row => {
-    const buttonDisabled = row.NombreReceptor === 'CLIENTE DE CONTADO' || row.EsMensajeReceptor === 'S' || row.EstadoEnvio !== 'aceptado'
+    const buttonDisabled = row.IdTipoDocumento > 1 || row.EstadoEnvio !== 'aceptado'
     return ({
       id: row.IdDocumento,
       ref: row.Consecutivo,

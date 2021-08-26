@@ -35,7 +35,9 @@ import {
   saveInvoiceEntity,
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
-  revokeInvoiceEntity
+  revokeInvoiceEntity,
+  generateInvoicePDF,
+  sendInvoicePDF
 } from 'utils/domainHelper'
 
 export const setDescription = (description) => {
@@ -340,6 +342,34 @@ export const revokeInvoice = (idInvoice) => {
       const newList = [...list.slice(0, index), { ...list[index], Anulando: true }, ...list.slice(index + 1)]
       dispatch(setInvoiceList(newList))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const generatePDF = (idInvoice) => {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    dispatch(startLoader())
+    try {
+      await generateInvoicePDF(token, idInvoice)
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const sendInvoiceNotification = (idInvoice) => {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    dispatch(startLoader())
+    try {
+      await sendInvoicePDF(token, idInvoice)
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))

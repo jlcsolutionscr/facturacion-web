@@ -2,9 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
+import UAParser from 'ua-parser-js'
 
 import { setActiveSection } from 'store/ui/actions'
-import { getInvoiceListByPageNumber, revokeInvoice } from 'store/invoice/actions'
+import { getInvoiceListByPageNumber, revokeInvoice, generatePDF, sendInvoiceNotification } from 'store/invoice/actions'
 
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -15,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
 import Button from 'components/button'
-import { RemoveCircleIcon } from 'utils/iconsHelper'
+import { DownloadPdfIcon, RemoveCircleIcon } from 'utils/iconsHelper'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
@@ -60,10 +61,27 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber, revokeInvoice, setActiveSection }) {
+function InvoiceListPage({
+  listPage,
+  listCount,
+  list,
+  getInvoiceListByPageNumber,
+  revokeInvoice,
+  setActiveSection,
+  generatePDF,
+  sendInvoiceNotification
+}) {
+  const result = new UAParser().getResult()
   const classes = useStyles()
   const [invoiceId, setInvoiceId] = React.useState(null)
   const [dialogOpen, setDialogOpen] = React.useState(false)
+  const isMobile = !!result.device.type
+  const handlePdfButtonClick = (id) => {
+    if (isMobile)
+      sendInvoiceNotification(id)
+    else
+      generatePDF(id)
+  }
   const handleRevokeButtonClick = (id) => {
     setInvoiceId(id)
     setDialogOpen(true)
@@ -79,7 +97,12 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
       name: row.NombreCliente,
       taxes: formatCurrency(row.Impuesto),
       amount: formatCurrency(row.Total),
-      action: (
+      action1: (
+        <IconButton disabled={row.Anulando} className={classes.icon} color="primary" component="span" onClick={() => handlePdfButtonClick(row.IdFactura)}>
+          <DownloadPdfIcon className={classes.icon} />
+        </IconButton>
+      ),
+      action2: (
         <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura)}>
           <RemoveCircleIcon className={classes.icon} />
         </IconButton>
@@ -93,7 +116,8 @@ function InvoiceListPage({ listPage, listCount, list, getInvoiceListByPageNumber
     { field: 'name', headerName: 'Nombre' },
     { field: 'taxes', headerName: 'Impuesto', type: 'number' },
     { field: 'amount', headerName: 'Total', type: 'number' },
-    { field: 'action', headerName: '' }
+    { field: 'action1', headerName: '' },
+    { field: 'action2', headerName: '' }
   ];
   return (
     <div className={classes.root}>
@@ -140,7 +164,13 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getInvoiceListByPageNumber, revokeInvoice, setActiveSection }, dispatch)
+  return bindActionCreators({
+    getInvoiceListByPageNumber,
+    revokeInvoice,
+    generatePDF,
+    sendInvoiceNotification,
+    setActiveSection
+  }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InvoiceListPage)
