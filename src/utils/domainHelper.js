@@ -169,7 +169,6 @@ export async function saveCustomerEntity(token, customer) {
     const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-07:00'}})
     let data = ""
     if (customer.IdCliente) {
-      console.log('Actualizando cliente', entidad)
       data = "{NombreMetodo: 'ActualizarCliente', Entidad: " + entidad + "}"
     } else {
       data = "{NombreMetodo: 'AgregarCliente', Entidad: " + entidad + "}"
