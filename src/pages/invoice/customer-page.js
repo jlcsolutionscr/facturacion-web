@@ -118,6 +118,11 @@ function CustomerPage({
     const dateText = `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`
     setCustomerAttribute('FechaEmisionDoc', dateText)
   }
+  const handleItemSelected = (item) => {
+    getCustomer(item.Id)
+    setFilter('')
+    filterCustomerList('')
+  }
   const handleOnClose = () => {
     setCustomer(null)
     setActiveSection(0)
@@ -158,7 +163,7 @@ function CustomerPage({
             label='Seleccione un cliente'
             items={customerList}
             value={filter}
-            onItemSelected={(item) => getCustomer(item.Id)}
+            onItemSelected={handleItemSelected}
             onChange={handleOnFilterChange}
           />
         </Grid>

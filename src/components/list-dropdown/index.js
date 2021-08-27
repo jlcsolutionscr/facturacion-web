@@ -20,7 +20,7 @@ function ListDropdown({items, label, value, disabled, onChange, onItemSelected})
     onItemSelected(item)
   }
   const onFocus = (e) => {
-    document.addEventListener("click", outsideClickHandler)
+    document.addEventListener('click', outsideClickHandler)
     !open && setOpen(true)
   }
   const listItems = items.map((item, index) => (
@@ -28,20 +28,20 @@ function ListDropdown({items, label, value, disabled, onChange, onItemSelected})
       <span key={index} className={`${classes.item} ${classes.font}`}>{item.Descripcion}</span>
     </div>
   ))
-  return (<div id="main-container" className={classes.container} onClick={(e) => e.stopPropagation()}>
-    <div id="input-container" className={classes.root}>
+  return (<div id='main-container' className={classes.container} onClick={(e) => e.stopPropagation()}>
+    <div id='input-container' className={classes.root}>
       <input
         disabled={disabled}
-        id="input-field" 
+        id='input-field' 
         className={`${classes.input} ${classes.font}`} 
         value={value}
         onClick={onFocus}
         onChange={onChange}
       />
-      <label id="main-container" className={`${classes.label} ${classes.font}`}>{label}</label>
+      <label id='main-container' className={`${classes.label} ${classes.font}`}>{label}</label>
     </div>
     <div
-      id="items-container"
+      id='items-container'
       className={classes.listContainer}
       style={{display: items.length > 0 && open ? 'block' : 'none', height: isMobile ? '120px' : '230px'}}
     >

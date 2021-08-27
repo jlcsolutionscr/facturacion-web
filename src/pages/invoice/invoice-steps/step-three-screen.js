@@ -3,16 +3,25 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { setPaymentId, setComment, saveInvoice, resetInvoice } from 'store/invoice/actions'
+import {
+  setPaymentId,
+  setComment,
+  saveInvoice,
+  resetInvoice,
+  generateInvoiceTicket,
+  setTicket
+} from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import Dialog from '@material-ui/core/Dialog'
 
 import Button from 'components/button'
 import TextField from 'components/text-field'
+import Ticket from 'components/ticket'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
@@ -56,10 +65,14 @@ function StepThreeScreen({
   paymentId,
   comment,
   successful,
+  invoiceId,
+  ticket,
   setPaymentId,
   setComment,
   saveInvoice,
   resetInvoice,
+  generateInvoiceTicket,
+  setTicket,
   setValue
 }) {
   const { gravado, exonerado, excento, subTotal, impuesto, total } = summary
@@ -78,6 +91,9 @@ function StepThreeScreen({
       resetInvoice()
       setValue(0)
     }
+  }
+  const handleOnPrintButton = () => {
+    generateInvoiceTicket(invoiceId)
   }
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
@@ -150,17 +166,25 @@ function StepThreeScreen({
         <Grid item xs={12} className={classes.centered}>
           <Button disabled={buttonDisabled} label={successful ? 'Nueva factura': 'Generar'} onClick={handleOnPress} />
         </Grid>
+        {successful && <Grid item xs={12} className={classes.centered}>
+          <Button disabled={buttonDisabled} label='Imprimir' onClick={handleOnPrintButton} />
+        </Grid>}
       </Grid>
+      <Dialog id="print-dialog" onClose={() => setTicket(null)} open={ticket !== null}>
+        <Ticket data={ticket} />
+      </Dialog>
     </div>
   )
 }
 
 const mapStateToProps = (state) => {
   return {
+    invoiceId: state.invoice.invoiceId,
     paymentId: state.invoice.paymentId,
     summary: state.invoice.summary,
     comment: state.invoice.comment,
     successful: state.invoice.successful,
+    ticket: state.invoice.ticket,
     branchList: state.ui.branchList,
     error: state.invoice.error
   }
@@ -171,7 +195,9 @@ const mapDispatchToProps = (dispatch) => {
     setPaymentId,
     setComment,
     saveInvoice,
-    resetInvoice
+    resetInvoice,
+    generateInvoiceTicket,
+    setTicket
   }, dispatch)
 }
 

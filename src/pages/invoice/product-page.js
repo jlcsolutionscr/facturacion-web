@@ -98,6 +98,11 @@ function ProductPage({
       filterProductList(event.target.value)
     }, 500)
   }
+  const handleItemSelected = (item) => {
+    getProduct(item.Id)
+    setFilter('')
+    filterProductList('')
+  }
   const handleOnClose = () => {
     setProduct(null)
     setActiveSection(0)
@@ -110,7 +115,7 @@ function ProductPage({
             label='Seleccione un producto'
             items={productList}
             value={filter}
-            onItemSelected={(item) => getProduct(item.Id)}
+            onItemSelected={handleItemSelected}
             onChange={handleOnFilterChange}
           />
         </Grid>

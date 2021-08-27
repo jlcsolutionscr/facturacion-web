@@ -114,11 +114,15 @@ export function generateReport (reportName, startDate, endDate) {
     dispatch(setReportResults([], null))
     try {
       const list = await getReportData(token, reportName, companyId, branchId, startDate, endDate)
-      const summary = {
-        startDate,
-        endDate
+      if (list.length > 0) {
+        const summary = {
+          startDate,
+          endDate
+        }
+        dispatch(setReportResults(list, summary))
+      } else {
+        dispatch(setMessage('No existen registros para el rango de fecha seleccionado.', 'INFO'))
       }
-      dispatch(setReportResults(list, summary))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))
@@ -133,8 +137,12 @@ export function exportReport (reportName, startDate, endDate) {
     dispatch(startLoader())
     try {
       const list = await getReportData(token, reportName, companyId, branchId, startDate, endDate)
-      const fileName = reportName.replaceAll(" ", "_")
-      ExportDataToXls(fileName, reportName, list)
+      if (list.length > 0) {
+        const fileName = reportName.replaceAll(" ", "_")
+        ExportDataToXls(fileName, reportName, list)
+      } else {
+        dispatch(setMessage('No existen registros para el rango de fecha seleccionado.', 'INFO'))
+      }
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))

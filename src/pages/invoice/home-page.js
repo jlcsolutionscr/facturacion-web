@@ -79,8 +79,8 @@ const mapStateToProps = (state) => {
     isLoaderOpen: state.ui.isLoaderOpen,
     loaderText: state.ui.loaderText,
     activeSection: state.ui.activeSection,
-    companyName: state.session.companyName,
-    companyIdentifier: state.session.companyIdentifier,
+    companyName: state.session.company.NombreComercial || state.session.company.NombreEmpresa,
+    companyIdentifier: state.session.company.Identificacion,
     branchList: state.session.branchList,
     branchId: state.session.branchId
   }

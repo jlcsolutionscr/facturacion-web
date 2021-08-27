@@ -88,6 +88,8 @@ function StepTwoScreen({
   }
   const handleItemSelected = (item) => {
     getProduct(item.Id)
+    setFilter('')
+    filterProductList('')
   }
   let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
   const display = value !== index ? 'none' : 'flex'

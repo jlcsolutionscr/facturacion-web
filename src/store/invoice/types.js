@@ -9,4 +9,5 @@ export const SET_SUCCESSFUL = 'invoice/SET_SUCCESSFUL'
 export const SET_LIST_PAGE = 'invoice/SET_LIST_PAGE'
 export const SET_LIST_COUNT = 'invoice/SET_LIST_COUNT'
 export const SET_LIST = 'invoice/SET_LIST'
-
+export const SET_TICKET = 'invoice/SET_TICKET'
+export const RESET_INVOICE = 'invoice/RESET_INVOICE'

@@ -9,7 +9,9 @@ import {
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
-  SET_LIST
+  SET_LIST,
+  SET_TICKET,
+  RESET_INVOICE
 } from './types'
 
 import {
@@ -37,8 +39,11 @@ import {
   getProcessedInvoiceListPerPage,
   revokeInvoiceEntity,
   generateInvoicePDF,
-  sendInvoicePDF
+  sendInvoicePDF,
+  getInvoiceEntity
 } from 'utils/domainHelper'
+
+import { createTicket } from 'utils/utilities'
 
 export const setDescription = (description) => {
   return {
@@ -89,10 +94,10 @@ export const setComment = (comment) => {
   }
 }
 
-export const setSuccessful = (success) => {
+export const setSuccessful = (id, success) => {
   return {
     type: SET_SUCCESSFUL,
-    payload: { success }
+    payload: { id, success }
   }
 }
 
@@ -117,9 +122,23 @@ export const setInvoiceList = (list) => {
   }
 }
 
+export const setTicket = (ticket) => {
+  return {
+    type: SET_TICKET,
+    payload: { ticket }
+  }
+}
+
+export const resetInvoice = () => {
+  return {
+    type: RESET_INVOICE
+  }
+}
+
 const customer = {
   IdCliente: 1,
   Nombre: 'CLIENTE DE CONTADO',
+  IdTipoExoneracion: 1,
   ParametroExoneracion: {
     Descripcion: 'Compras autorizadas'
   },
@@ -256,7 +275,7 @@ export const saveInvoice = () => {
     const { paymentId, productDetails, summary, comment } = getState().invoice
     dispatch(startLoader())
     try {
-      await saveInvoiceEntity(
+      const invoiceId = await saveInvoiceEntity(
         token,
         userId,
         productDetails,
@@ -267,28 +286,13 @@ export const saveInvoice = () => {
         summary,
         comment
       )
-      dispatch(setSuccessful(true))
+      dispatch(setSuccessful(invoiceId, true))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setMessage(error))
     }
-  }
-}
-
-export const resetInvoice = () => {
-  return async (dispatch) => {
-    dispatch(setCustomer(customer))
-    dispatch(setProduct(null))
-    dispatch(setDescription(''))
-    dispatch(setQuantity(1))
-    dispatch(setPrice(0))
-    dispatch(setProductsDetail([]))
-    dispatch(setSummary({ gravado: 0, exonerado: 0, excento: 0, subTotal: 0, impuesto: 0,total: 0 }))
-    dispatch(setPaymentId(1))
-    dispatch(setComment(''))
-    dispatch(setSuccessful(false))
   }
 }
 
@@ -350,12 +354,12 @@ export const revokeInvoice = (idInvoice) => {
   }
 }
 
-export const generatePDF = (idInvoice) => {
+export const generatePDF = (idInvoice, ref) => {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
     try {
-      await generateInvoicePDF(token, idInvoice)
+      await generateInvoicePDF(token, idInvoice, ref)
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))
@@ -370,6 +374,24 @@ export const sendInvoiceNotification = (idInvoice) => {
     dispatch(startLoader())
     try {
       await sendInvoicePDF(token, idInvoice)
+      dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const generateInvoiceTicket = (idInvoice) => {
+  return async (dispatch, getState) => {
+    const { token, userCode, company, branchList, branchId } = getState().session
+    dispatch(startLoader())
+    try {
+      const invoice = await getInvoiceEntity(token, idInvoice)
+      const branchName = branchList.find(x => x.Id === branchId).Descripcion
+      const ticket = createTicket(userCode, company, invoice, branchName)
+      dispatch(setTicket(ticket))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))

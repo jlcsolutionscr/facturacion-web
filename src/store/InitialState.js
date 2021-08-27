@@ -13,11 +13,10 @@ export const INITIAL_STATE = {
   session: {
     authenticated: false,
     userId: null,
+    userCode: '',
     companyId: null,
     branchList: [],
     branchId: 1,
-    companyName: '',
-    companyIdentifier: '',
     reportList: [],
     permissions: [],
     token: null
@@ -38,6 +37,7 @@ export const INITIAL_STATE = {
     },
   },
   invoice: {
+    invoiceId: null,
     description: '',
     quantity: 1,
     price: 0,
@@ -55,7 +55,8 @@ export const INITIAL_STATE = {
     successful: false,
     listPage: 1,
     listCount: 0,
-    list: []
+    list: [],
+    ticket: null
   },
   product: {
     product: null,

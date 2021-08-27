@@ -18,12 +18,12 @@ function Header({ companyName, companyIdentifier, isDarkMode, toggleDarkMode, lo
   return (
     <div className={classes.header}>
       <div className={classes.banner} />
-      <Tooltip title="Cambiar tema" aria-label="cambiar tema">
+      <Tooltip title='Cambiar tema' aria-label='cambiar tema'>
         <IconButton className={classes.toogle} aria-label='upload picture' component='span' onClick={() => toggleDarkMode(!isDarkMode)}>
           {isDarkMode ? <DarkModeIcon className={classes.icon} /> : <LightModeIcon className={classes.icon} />}
         </IconButton>
       </Tooltip>
-      <Tooltip title="Cerrar sessión" aria-label="cerrar sessión">
+      <Tooltip title='Cerrar sessión' aria-label='cerrar sessión'>
         <IconButton className={classes.logout} aria-label='upload picture' component='span' onClick={() => logOut()}>
           <LogOutIcon className={classes.icon} />
         </IconButton>

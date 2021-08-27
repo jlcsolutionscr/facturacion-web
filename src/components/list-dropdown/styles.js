@@ -13,7 +13,7 @@ export const createStyle = makeStyles(theme => createStyles({
     width: '100%'
   },
   font: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     fontWeight: '400',
     letterSpacing: '0.00938em',
     fontSize: '1rem',

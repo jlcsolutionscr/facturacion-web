@@ -9,6 +9,8 @@ import {
   SET_RENT_TYPE_LIST
 } from './types'
 
+import { LOGOUT } from 'store/session/types'
+
 const uiReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case START_LOADER:
@@ -27,6 +29,8 @@ const uiReducer = (state = {}, { type, payload }) => {
       return { ...state, barrioList: payload.list }
     case SET_RENT_TYPE_LIST:
       return { ...state, rentTypeList: payload.list }
+    case LOGOUT:
+      return { ...state, activeSection: 0 }
     default:
       return state
   }

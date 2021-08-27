@@ -117,7 +117,7 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   companyText: {
     color: 'rgba(255,255,255,0.85)',
-    fontFamily: '"Exo 2", sans-serif',
+    fontFamily: "'Exo 2', sans-serif",
     fontSize: theme.typography.pxToRem(25),
     fontStyle: 'italic',
     fontWeight: 600,

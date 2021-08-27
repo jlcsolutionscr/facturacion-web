@@ -9,8 +9,12 @@ import {
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
-  SET_LIST
+  SET_LIST,
+  SET_TICKET,
+  RESET_INVOICE
 } from './types'
+
+import { LOGOUT } from 'store/session/types'
 
 const companyReducer = (state = {}, { type, payload }) => {
   switch (type) {
@@ -29,13 +33,39 @@ const companyReducer = (state = {}, { type, payload }) => {
     case SET_COMMENT:
       return { ...state, comment: payload.comment }
     case SET_SUCCESSFUL:
-      return { ...state, successful: payload.success }
+      return { ...state, invoiceId: payload.id, successful: payload.success }
     case SET_LIST_PAGE:
       return { ...state, listPage: payload.page }
     case SET_LIST_COUNT:
       return { ...state, listCount: payload.count }
     case SET_LIST:
       return { ...state, list: payload.list }
+    case SET_TICKET:
+      return { ...state, ticket: payload.ticket }
+    case LOGOUT:
+    case RESET_INVOICE:
+      return {
+        invoiceId: null,
+        description: '',
+        quantity: 1,
+        price: 0,
+        productDetails: [],
+        paymentId: 1,
+        summary: {
+          gravado: 0,
+          exonerado: 0,
+          excento: 0,
+          subTotal: 0,
+          impuesto: 0,
+          total: 0,
+        },
+        comment: '',
+        successful: false,
+        listPage: 1,
+        listCount: 0,
+        list: [],
+        ticket: null
+      }
     default:
       return state
   }

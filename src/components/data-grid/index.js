@@ -38,24 +38,24 @@ function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
-        aria-label="first page"
+        aria-label='first page'
       >
         <FirstPageIcon />
       </IconButton>
-      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label='previous page'>
         <KeyboardArrowLeftIcon />
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
+        aria-label='next page'
       >
         <KeyboardArrowRightIcon />
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
+        aria-label='last page'
       >
         <LastPageIcon />
       </IconButton>
@@ -83,7 +83,7 @@ export default function DataGrid({page, minWidth, dense, columns, rows, rowsCoun
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableContainer className={classes.tableContainer}>
-          <Table style={tableStyle} size={dense ? "small" : "medium"}>
+          <Table style={tableStyle} size={dense ? 'small' : 'medium'}>
             <TableHead>
               <TableRow>
                 {columns.map((cell) => (
@@ -109,8 +109,8 @@ export default function DataGrid({page, minWidth, dense, columns, rows, rowsCoun
                       <TableCell
                         style={{whiteSpace: 'nowrap'}}
                         key={`${rowIndex}-${cellIndex}`}
-                        component="th"
-                        scope="row"
+                        component='th'
+                        scope='row'
                         padding='normal'
                         align={cell.type && cell.type === 'number' ? 'right' : 'left'}
                       >
@@ -131,7 +131,7 @@ export default function DataGrid({page, minWidth, dense, columns, rows, rowsCoun
         {page !== undefined && <TablePagination
           className={classes.pagination}
           rowsPerPageOptions={[]}
-          component="div"
+          component='div'
           count={rowsCount}
           rowsPerPage={rowsPerPage}
           page={page}

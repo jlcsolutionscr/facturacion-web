@@ -10,15 +10,16 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         authenticated: true,
-        userId: payload.user.IdUsuario,
+        userId: payload.company.Usuario.IdUsuario,
+        userCode: payload.company.Usuario.CodigoUsuario,
         companyId: payload.company.IdEmpresa,
-        companyName: payload.company.NombreComercial || payload.company.NombreEmpresa,
-        companyIdentifier: payload.company.Identificacion,
-        reportList: payload.company.ReportePorEmpresa,
-        permissions: payload.user.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
+        company: payload.company,
+        reportList: payload.company.ReportePorEmpresa.map(report => ({IdReporte: report.IdReporte, NombreReporte: report.CatalogoReporte.NombreReporte})),
+        permissions: payload.company.Usuario.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
         branchList: payload.company.SucursalPorEmpresa.map(branch => ({Id: branch.IdSucursal, Descripcion: branch.NombreSucursal})),
-        branchId: payload.user.IdSucursal,
-        token: payload.user.Token
+        branchId: payload.company.EquipoRegistrado.IdSucursal,
+        terminalId: payload.company.EquipoRegistrado.IdTerminal,
+        token: payload.company.Usuario.Token
       }
     case LOGOUT:
       return {
@@ -27,8 +28,8 @@ const sessionReducer = (state = {}, { type, payload }) => {
         userId: null,
         companyId: null,
         branchId: null,
-        companyName: '',
-        companyIdentifier: '',
+        terminalId: null,
+        company: null,
         reportList: [],
         permissions: [],
         branchList: [],

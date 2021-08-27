@@ -433,7 +433,8 @@ export async function saveInvoiceEntity(
       DesglosePagoFactura: desglosePagoFactura
     }
     let data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(factura) + "}"
-    await post(APP_URL + "/ejecutarconsulta", token, data)
+    let invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    return invoiceId.split("-")[0]
   } catch (e) {
     throw e.message ? e.message : e
   }
@@ -449,12 +450,12 @@ export async function revokeInvoiceEntity(token, idInvoice, idUser) {
   }
 }
 
-export async function getInvoiceDetails(token, idInvoice) {
+export async function getInvoiceEntity(token, idInvoice) {
   try {
     const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + idInvoice + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
-    return response
+    return { ...response, Fecha: response.Fecha.DateTime.substr(0,10) }
   } catch (e) {
     throw e.message ? e.message : e
   }
@@ -535,14 +536,14 @@ export async function sendReportEmail(token, idCompany, idBranch, reportName, st
   }
 }
 
-export async function generateInvoicePDF(token, idInvoice) {
+export async function generateInvoicePDF(token, idInvoice, ref) {
   try {
     const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + idInvoice + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response.length > 0) {
       const byteArray = new Uint8Array(response);
       const file = new Blob([byteArray], { type: "application/octet-stream" })
-      saveAs(file, `Factura-${idInvoice}.pdf`)
+      saveAs(file, `Factura-${ref}.pdf`)
     }
   } catch (e) {
     throw e.message ? e.message : e

@@ -4,13 +4,10 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Grid from '@material-ui/core/Grid'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
 
 import LabelField from 'components/label-field'
-import { getCustomer } from 'store/customer/actions'
+import ListDropdown from 'components/list-dropdown'
+import { getCustomer, filterCustomerList } from 'store/customer/actions'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -21,27 +18,41 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function StepOneScreen({index, value, customer, customerList, successful, getCustomer}) {
+let delayTimer = null
+
+function StepOneScreen({index, value, customer, customerList, successful, filterCustomerList, getCustomer}) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
     myRef.current.scrollTo(0, 0)
   }, [value])
-  const menuItems = customerList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const [filter, setFilter] = React.useState('')
+  const handleOnFilterChange = (event) => {
+    setFilter(event.target.value)
+    if (delayTimer) {  
+      clearTimeout(delayTimer)
+    }
+    delayTimer = setTimeout(() => {
+      filterCustomerList(event.target.value)
+    }, 500)
+  }
+  const handleItemSelected = (item) => {
+    getCustomer(item.Id)
+    setFilter('')
+    filterCustomerList('')
+  }
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={9} md={7}>
-          <FormControl fullWidth>
-            <InputLabel id='demo-simple-select-label'>Seleccione un cliente</InputLabel>
-            <Select
-              disabled={successful}
-              value={customer ? customer.IdCliente : ''}
-              onChange={(event) => getCustomer(event.target.value)}
-            >
-              {menuItems}
-            </Select>
-          </FormControl>
+          <ListDropdown
+            disabled={successful}
+            label='Seleccione un cliente'
+            items={customerList}
+            value={filter}
+            onItemSelected={handleItemSelected}
+            onChange={handleOnFilterChange}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <LabelField
@@ -105,7 +116,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCustomer }, dispatch)
+  return bindActionCreators({ getCustomer, filterCustomerList }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen)

@@ -96,11 +96,11 @@ function ReportsPage({
     const endDay = (endDate.getDate() < 10 ? '0' : '') + endDate.getDate()
     const endMonth = ((endDate.getMonth() + 1) < 10 ? '0' : '') + (endDate.getMonth() + 1)
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`
-    const reportLabel = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte : ''
+    const reportLabel = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte : ''
     if (type === 1) generateReport(reportLabel, startDateFormatted, endDateFormatted)
     if (type === 2) exportReport(reportLabel, startDateFormatted, endDateFormatted)
     if (type === 3) {
-      const reportLabel = reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte
+      const reportLabel = reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte
       if (reportLabel !== '') {
         sendReportToEmail(reportLabel, startDateFormatted, endDateFormatted)
       } else {
@@ -112,9 +112,9 @@ function ReportsPage({
     setActiveSection(0)
     setReportResults([], null)
   }
-  const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].CatalogoReporte.NombreReporte : ''
+  const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte : ''
   const reportItems = reportList.filter(item => !isAccountingUser || (isAccountingUser && [50,51,52].includes(item.IdReporte))).map(rep => {
-    return <MenuItem key={rep.IdReporte} value={rep.IdReporte}>{rep.CatalogoReporte.NombreReporte}</MenuItem>
+    return <MenuItem key={rep.IdReporte} value={rep.IdReporte}>{rep.NombreReporte}</MenuItem>
   })
   return (
     <div className={classes.root}>
