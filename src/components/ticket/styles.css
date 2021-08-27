@@ -1,3 +1,10 @@
+.ticket {
+  font-size: 14px;
+  font-family: 'Times New Roman';
+  flex-direction: column;
+  width: 345px;
+}
+
 .description {
   width: 100%;
   text-align: left;
@@ -15,13 +22,6 @@
 .exempt {
   width: 5%;
   text-align: right;
-}
-
-.ticket {
-  font-size: 12px;
-  font-family: 'Times New Roman';
-  flex-direction: column;
-  width: 230px;
 }
 
 .button {
