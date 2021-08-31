@@ -175,6 +175,7 @@ function createTicket(userCode, company, invoice, branchName, lineWidth) {
     align: Align.Right
   })
   if (invoice.TextoAdicional && invoice.TextoAdicional.length > 0) {
+    lines.push({text: ''})
     const otherText = splitLines(invoice.TextoAdicional, lineWidth)
     otherText.forEach(line => {
       lines.push({
@@ -183,6 +184,20 @@ function createTicket(userCode, company, invoice, branchName, lineWidth) {
       })
     })
   }
+  lines.push({text: ''})
+  lines.push({
+    text: 'AUTORIZADO MEDIANTE RESOLUCION',
+    align: Align.Center
+  })
+  lines.push({
+    text: 'DGT-R-033-2019 DEL 20-JUN-2019 V4.3',
+    align: Align.Center
+  })
+  lines.push({text: ''})
+  lines.push({
+    text: 'GRACIAS POR PREFERIRNOS',
+    align: Align.Center
+  })
   return lines
 }
 
