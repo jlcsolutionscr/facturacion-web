@@ -198,6 +198,11 @@ function createTicket(userCode, company, invoice, branchName, lineWidth) {
     text: 'GRACIAS POR PREFERIRNOS',
     align: Align.Center
   })
+  lines.push({text: ''})
+  lines.push({
+    text: 'POWERED BY: JLC SOLUTIONS CR',
+    align: Align.Center
+  })
   return lines
 }
 
