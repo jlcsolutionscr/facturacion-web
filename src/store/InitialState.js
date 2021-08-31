@@ -15,10 +15,13 @@ export const INITIAL_STATE = {
     userId: null,
     userCode: '',
     companyId: null,
+    company: null,
+    device: null,
     branchList: [],
     branchId: 1,
     reportList: [],
     permissions: [],
+    printer: null,
     token: null
   },
   customer: {

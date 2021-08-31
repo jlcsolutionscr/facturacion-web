@@ -114,51 +114,6 @@ export async function getWithResponse(endpointURL, token) {
   }
 }
 
-export function createTicket(userCode, company, invoice, branchName) {
-  const header = {
-    date: invoice.Fecha,
-    user: userCode,
-    title: 'TIQUETE DE FACTURA',
-    companyTitle: company.NombreComercial,
-    location: company.Direccion,
-    telephone1: company.Telefono1,
-    companyName: company.NombreEmpresa,
-    identifier: company.Identificacion,
-    email: company.CorreoNotificacion,
-    branchName: branchName,
-    docType: invoice.Cliente.IdCliente === 1 ? 'TIQUETE ELECTRONICO' : 'FACTURA ELECTRONICA',
-    consec1: invoice.IdDocElectronico !== null ? invoice.IdDocElectronico.substring(0, 25) : null,
-    consec2: invoice.IdDocElectronico !== null ? invoice.IdDocElectronico.substring(25) : null,
-    invoiceId: invoice.ConsecFactura,
-    invoiceDate: invoice.Fecha,
-    vendorName: userCode,
-    customerName: invoice.Cliente.Nombre,
-    customerPhone: invoice.Cliente.Telefono
-  }
-  const payments = invoice.DesglosePagoFactura.map(row => (
-    {id: row.IdFormaPago, description: row.FormaPago.Descripcion, amount: row.MontoLocal}
-  ))
-  const details = invoice.DetalleFactura.map(row => (
-    {id: row.IdConsecutivo, quantity: row.Cantidad, description: row.Descripcion, amount: row.PrecioVenta, exempt: row.Excento ? 'E' : 'G'}
-  ))
-  const footer = {
-    subTotal: invoice.Total - invoice.Impuesto,
-    discount: 0,
-    taxes: invoice.Impuesto,
-    total: invoice.Total,
-    payment: invoice.MontoPagado,
-    change: invoice.MontoPagado - invoice.Total,
-    observations: invoice.TextoAdicional
-  }
-  const ticket = {
-    header,
-    payments,
-    details,
-    footer
-  }
-  return ticket
-}
-
 export async function post(endpointURL, token, datos) {
   try {
     const headers = {

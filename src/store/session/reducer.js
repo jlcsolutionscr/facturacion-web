@@ -1,7 +1,9 @@
 import {
   LOGIN,
   LOGOUT,
-  SET_BRANCH_ID
+  SET_COMPANY,
+  SET_BRANCH_ID,
+  SET_PRINTER
 } from './types'
 
 const sessionReducer = (state = {}, { type, payload }) => {
@@ -14,6 +16,7 @@ const sessionReducer = (state = {}, { type, payload }) => {
         userCode: payload.company.Usuario.CodigoUsuario,
         companyId: payload.company.IdEmpresa,
         company: payload.company,
+        device: payload.company.EquipoRegistrado,
         reportList: payload.company.ReportePorEmpresa.map(report => ({IdReporte: report.IdReporte, NombreReporte: report.CatalogoReporte.NombreReporte})),
         permissions: payload.company.Usuario.RolePorUsuario.map(role => ({IdUsuario: role.IdUsuario, IdRole: role.IdRole})),
         branchList: payload.company.SucursalPorEmpresa.map(branch => ({Id: branch.IdSucursal, Descripcion: branch.NombreSucursal})),
@@ -35,8 +38,12 @@ const sessionReducer = (state = {}, { type, payload }) => {
         branchList: [],
         token: null
       }
+    case SET_COMPANY:
+      return { ...state, company: { ...state.company, ...payload.company} }
     case SET_BRANCH_ID:
       return { ...state, branchId: payload.id }
+    case SET_PRINTER:
+      return { ...state, printer: payload.device }
     default:
       return state
   }

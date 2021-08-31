@@ -4,6 +4,8 @@ import {
   SET_REPORT_RESULTS
 } from './types'
 
+import { setCompany as setSessionCompany }  from 'store/session/actions'
+
 import {
   setActiveSection,
   startLoader,
@@ -81,6 +83,7 @@ export function saveCompany (certificate) {
       if (certificate !== '') {
         await saveCompanyCertificate(token, company.IdEmpresa, certificate)
       }
+      dispatch(setSessionCompany(company))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {

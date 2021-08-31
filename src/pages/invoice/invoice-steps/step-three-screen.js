@@ -8,8 +8,7 @@ import {
   setComment,
   saveInvoice,
   resetInvoice,
-  generateInvoiceTicket,
-  setTicket
+  generateInvoiceTicket
 } from 'store/invoice/actions'
 
 import Grid from '@material-ui/core/Grid'
@@ -17,11 +16,9 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import Dialog from '@material-ui/core/Dialog'
 
 import Button from 'components/button'
 import TextField from 'components/text-field'
-import Ticket from 'components/ticket'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
@@ -72,7 +69,6 @@ function StepThreeScreen({
   saveInvoice,
   resetInvoice,
   generateInvoiceTicket,
-  setTicket,
   setValue
 }) {
   const { gravado, exonerado, excento, subTotal, impuesto, total } = summary
@@ -170,9 +166,6 @@ function StepThreeScreen({
           <Button disabled={buttonDisabled} label='Imprimir' onClick={handleOnPrintButton} />
         </Grid>}
       </Grid>
-      <Dialog id="print-dialog" onClose={() => setTicket(null)} open={ticket !== null}>
-        <Ticket data={ticket} />
-      </Dialog>
     </div>
   )
 }
@@ -196,8 +189,7 @@ const mapDispatchToProps = (dispatch) => {
     setComment,
     saveInvoice,
     resetInvoice,
-    generateInvoiceTicket,
-    setTicket
+    generateInvoiceTicket
   }, dispatch)
 }
 

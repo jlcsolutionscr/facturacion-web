@@ -21,6 +21,8 @@ import {
   setActiveSection
 } from 'store/ui/actions'
 
+import { setPrinter } from 'store/session/actions'
+
 import { setCompany } from 'store/company/actions'
 
 import { setCustomer, setCustomerList } from 'store/customer/actions'
@@ -43,7 +45,7 @@ import {
   getInvoiceEntity
 } from 'utils/domainHelper'
 
-import { createTicket } from 'utils/utilities'
+import { printInvoice, getDeviceFromUsb } from 'utils/printing'
 
 export const setDescription = (description) => {
   return {
@@ -385,13 +387,23 @@ export const sendInvoiceNotification = (idInvoice) => {
 
 export const generateInvoiceTicket = (idInvoice) => {
   return async (dispatch, getState) => {
-    const { token, userCode, company, branchList, branchId } = getState().session
+    const { token, printer, userCode, company, device, branchList, branchId } = getState().session
     dispatch(startLoader())
     try {
       const invoice = await getInvoiceEntity(token, idInvoice)
       const branchName = branchList.find(x => x.Id === branchId).Descripcion
-      const ticket = createTicket(userCode, company, invoice, branchName)
-      dispatch(setTicket(ticket))
+      let localPrinter = await getDeviceFromUsb(printer)
+      if (localPrinter !== printer) dispatch(setPrinter(localPrinter))
+      if (localPrinter) {
+        printInvoice(
+          localPrinter,
+          userCode,
+          company,
+          invoice,
+          branchName,
+          device.AnchoLinea
+        )
+      }
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))

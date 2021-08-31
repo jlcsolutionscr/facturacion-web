@@ -10,8 +10,7 @@ import {
   revokeInvoice,
   generatePDF,
   sendInvoiceNotification,
-  generateInvoiceTicket,
-  setTicket
+  generateInvoiceTicket
 } from 'store/invoice/actions'
 
 import Dialog from '@material-ui/core/Dialog'
@@ -23,7 +22,6 @@ import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
 import Button from 'components/button'
-import Ticket from 'components/ticket'
 import { PrinterIcon, DownloadPdfIcon, RemoveCircleIcon } from 'utils/iconsHelper'
 import { formatCurrency } from 'utils/utilities'
 
@@ -172,9 +170,6 @@ function InvoiceListPage({
           <Button label='Anular' autoFocus onClick={handleConfirmButtonClick} />
         </DialogActions>
       </Dialog>
-      <Dialog id="print-dialog" onClose={() => setTicket(null)} open={ticket !== null}>
-        <Ticket data={ticket} />
-      </Dialog>
     </div>
   )
 }
@@ -195,8 +190,7 @@ const mapDispatchToProps = (dispatch) => {
     generatePDF,
     sendInvoiceNotification,
     setActiveSection,
-    generateInvoiceTicket,
-    setTicket
+    generateInvoiceTicket
   }, dispatch)
 }
 

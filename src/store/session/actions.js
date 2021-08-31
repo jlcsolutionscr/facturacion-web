@@ -1,7 +1,9 @@
 import {
   LOGIN,
   LOGOUT,
-  SET_BRANCH_ID
+  SET_COMPANY,
+  SET_BRANCH_ID,
+  SET_PRINTER
 } from './types'
 
 import {
@@ -25,10 +27,24 @@ export const logOut = () => {
   }
 }
 
+export const setCompany = (company) => {
+  return {
+    type: SET_COMPANY,
+    payload: { company }
+  }
+}
+
 export const setBranchId = (id) => {
   return {
     type: SET_BRANCH_ID,
     payload: { id }
+  }
+}
+
+export const setPrinter = (device) => {
+  return {
+    type: SET_PRINTER,
+    payload: { device }
   }
 }
 
