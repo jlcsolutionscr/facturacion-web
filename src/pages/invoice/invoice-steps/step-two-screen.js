@@ -4,6 +4,10 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Grid from '@material-ui/core/Grid'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -37,6 +41,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden'
+  },
+  formControl: {
+    minWidth: '150px'
   },
   bottom: {
     margin: '10px 0 10px 0',
@@ -76,6 +83,7 @@ function StepTwoScreen({
   React.useEffect(() => {
     myRef.current.scrollTo(0, 0)
   }, [value])
+  const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
   const handleOnFilterChange = (event) => {
     setFilter(event.target.value)
@@ -83,25 +91,45 @@ function StepTwoScreen({
       clearTimeout(delayTimer)
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value)
+      filterProductList(event.target.value, filterType)
     }, 500)
   }
   const handleItemSelected = (item) => {
     getProduct(item.Id)
     setFilter('')
-    filterProductList('')
+    filterProductList('', filterType)
   }
+  const handleFilterTypeChange = () => {
+    setFilterType(filterType === 1 ? 2 : 1)
+    setFilter('')
+    filterProductList('', filterType)
+  }
+  const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
   let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
   const display = value !== index ? 'none' : 'flex'
   return (<div ref={myRef} className={classes.root} style={{display: display}}>
     <div className={classes.container}>
       <div>
         <Grid container spacing={2}>
+          <Grid item xs={12} md={3}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="filter-type-select-label">Filtrar producto por:</InputLabel>
+              <Select
+                labelId="filter-type-select-label"
+                id="filter-type-select"
+                value={filterType}
+                onChange={handleFilterTypeChange}
+              >
+                <MenuItem value={1}>Código</MenuItem>
+                <MenuItem value={2}>Descripción</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid item xs={12}>
             <ListDropdown
               disabled={successful}
               label='Seleccione un producto'
-              items={productList}
+              items={products}
               value={filter}
               onItemSelected={handleItemSelected}
               onChange={handleOnFilterChange}

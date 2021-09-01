@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
       padding: '10px'
     }
   },
+  formControl: {
+    minWidth: '150px'
+  },
   label: {
     color: theme.palette.text.primary
   }
@@ -65,6 +68,7 @@ function ProductPage({
   setActiveSection
 }) {
   const classes = useStyles()
+  const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
   const productTypes = productTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
@@ -78,6 +82,7 @@ function ProductPage({
   const rentTypes = rentTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
+  const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
   const disabled = product.Codigo === '' ||
     product.Descripcion === '' ||
     product.PrecioCosto === '' ||
@@ -95,31 +100,50 @@ function ProductPage({
       clearTimeout(delayTimer)
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value)
+      filterProductList(event.target.value, filterType)
     }, 500)
   }
   const handleItemSelected = (item) => {
     getProduct(item.Id)
     setFilter('')
-    filterProductList('')
+    filterProductList('', filterType)
   }
   const handleOnClose = () => {
     setProduct(null)
     setActiveSection(0)
   }
+  const handleFilterTypeChange = () => {
+    setFilterType(filterType === 1 ? 2 : 1)
+    setFilter('')
+    filterProductList('', filterType)
+  }
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
+        <Grid item xs={12} md={3}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="filter-type-select-label">Filtrar producto por:</InputLabel>
+            <Select
+              labelId="filter-type-select-label"
+              id="filter-type-select"
+              value={filterType}
+              onChange={handleFilterTypeChange}
+            >
+              <MenuItem value={1}>Código</MenuItem>
+              <MenuItem value={2}>Descripción</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
         <Grid item xs={12}>
           <ListDropdown
             label='Seleccione un producto'
-            items={productList}
+            items={products}
             value={filter}
             onItemSelected={handleItemSelected}
             onChange={handleOnFilterChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <FormControl fullWidth>
             <InputLabel id='Tipo'>Seleccione el tipo de producto</InputLabel>
             <Select

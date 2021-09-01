@@ -157,7 +157,7 @@ export function setInvoiceParameters (id) {
     dispatch(startLoader())
     try {
       const customerList = await getCustomerList(token, companyId, '')
-      const productList = await getProductList(token, companyId, branchId, true, '')
+      const productList = await getProductList(token, companyId, branchId, true, '', 1)
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
@@ -199,12 +199,12 @@ export function getProduct (idProduct) {
   }
 }
 
-export function filterProductList (text) {
+export function filterProductList (text, type) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     try {
-      let newList = await getProductList(token, companyId, branchId, true, text)
+      let newList = await getProductList(token, companyId, branchId, true, text, type)
       dispatch(setProductList(newList))
       dispatch(stopLoader())
     } catch (error) {

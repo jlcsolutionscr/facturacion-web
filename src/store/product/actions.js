@@ -74,7 +74,7 @@ export function setProductParameters (id) {
     const { productTypeList, categoryList, providerList } = getState().product
     dispatch(startLoader())
     try {
-      let list = await getProductList(token, companyId, branchId, false, '')
+      let list = await getProductList(token, companyId, branchId, false, '', 1)
       dispatch(setProductList(list))
       if (productTypeList.length === 0) {
         list = await getProductTypeList(token)
@@ -123,12 +123,12 @@ export function setProductParameters (id) {
   }
 }
 
-export function filterProductList (text) {
+export function filterProductList (text, type) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     try {
-      const list = await getProductList(token, companyId, branchId, false, text)
+      const list = await getProductList(token, companyId, branchId, false, text, type)
       dispatch(setProductList(list))
       dispatch(stopLoader())
     } catch (error) {

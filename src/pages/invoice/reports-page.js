@@ -121,7 +121,7 @@ function ReportsPage({
       <Grid container>
         {viewLayout === 1 && <Grid container spacing={3} className={classes.firstLayout}>
           <Grid item xs={12} sm={12}>
-            <FormControl className={classes.form}>
+            <FormControl>
               <InputLabel id='demo-simple-select-label'>Seleccione el reporte:</InputLabel>
               <Select
                 id='TipoReporte'
