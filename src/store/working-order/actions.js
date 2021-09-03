@@ -15,7 +15,7 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET
+  RESET_ORDER
 } from './types'
 
 import {
@@ -48,6 +48,7 @@ import {
   getPriceTransformedWithRate
 } from 'utils/domainHelper'
 
+import { defaultCustomer } from 'utils/defaults'
 import { printWorkingOrder, getDeviceFromUsb } from 'utils/printing'
 
 export const setDescription = (description) => {
@@ -164,21 +165,8 @@ export const setWorkingOrderList = (list) => {
 
 export const resetWorkingOrder = () => {
   return {
-    type: RESET
+    type: RESET_ORDER
   }
-}
-
-const customer = {
-  IdCliente: 1,
-  Nombre: 'CLIENTE DE CONTADO',
-  IdTipoExoneracion: 1,
-  ParametroExoneracion: {
-    Descripcion: 'Compras autorizadas'
-  },
-  NumDocExoneracion: '',
-  NombreInstExoneracion: '',
-  FechaEmisionDoc: '01/01/2000',
-  PorcentajeExoneracion: 0
 }
 
 export function setWorkingOrderParameters () {
@@ -194,7 +182,7 @@ export function setWorkingOrderParameters () {
         dispatch(setCompany(companyEntity))
       }
       dispatch(resetWorkingOrder())
-      dispatch(setCustomer(customer))
+      dispatch(setCustomer(defaultCustomer))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       dispatch(setProductList(productList))
       dispatch(setActiveSection(21))

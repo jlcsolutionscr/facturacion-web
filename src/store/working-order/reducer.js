@@ -15,7 +15,7 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET
+  RESET_ORDER
 } from './types'
 
 import { LOGOUT } from 'store/session/types'
@@ -55,7 +55,7 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
     case SET_LIST:
       return { ...state, list: payload.list }
     case LOGOUT:
-    case RESET:
+    case RESET_ORDER:
       return {
         ...state,
         workingOrderId: 0,

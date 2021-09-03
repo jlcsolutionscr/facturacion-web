@@ -47,7 +47,7 @@ export const createStyle = makeStyles(theme => createStyles({
     width: '100%',
     height: '1.1876em',
     margin: '0',
-    display: 'block',
+    display: 'flex',
     padding: '10.5px 14px',
     minWidth: '0',
     background: 'none',
@@ -63,5 +63,8 @@ export const createStyle = makeStyles(theme => createStyles({
     '&:focus + label': {
       color: theme.palette.primary.main
     }
+  },
+  innerText: {
+    overflowX: 'auto'
   }
 }))

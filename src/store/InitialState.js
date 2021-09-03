@@ -7,6 +7,8 @@ export const INITIAL_STATE = {
     distritoList: [],
     barrioList: [],
     rentTypeList: [],
+    idTypeList: [],
+    exonerationTypeList: [],
     message: '',
     messageType: 'ERROR'
   },
@@ -24,20 +26,25 @@ export const INITIAL_STATE = {
     printer: null,
     token: null
   },
-  customer: {
-    customer: null,
-    customerList: [],
-    idTypeList: [],
-    priceTypeList: [],
-    exonerationTypeList: []
-  },
   company: {
     company: null,
     reportResults: [],
     reportSummary: {
       startDate: '01/01/2000',
       endDate: '01/01/2000'
-    },
+    }
+  },
+  customer: {
+    customer: null,
+    customerList: [],
+    priceTypeList: []
+  },
+  product: {
+    product: null,
+    productList: [],
+    productTypeList: [],
+    categoryList: [],
+    providerList: []
   },
   invoice: {
     invoiceId: 0,
@@ -87,12 +94,36 @@ export const INITIAL_STATE = {
     listCount: 0,
     list: []
   },
-  product: {
-    product: null,
-    productList: [],
-    productTypeList: [],
-    categoryList: [],
-    providerList: []
+  receipt: {
+    receiptId: 0,
+    issuerIdType: '',
+    issuerId: '',
+    issuerName: '',
+    issuerAddress: '',
+    issuerPhone: '',
+    issuerEmail: '',
+    productCode: '',
+    productDescription: '',
+    productQuantity: 1,
+    productTaxType: 8,
+    productTaxRate: 0,
+    productUnit: 'UND',
+    productPrice: 0,
+    productDetails: [],
+    summary: {
+      gravado: 0,
+      exonerado: 0,
+      excento: 0,
+      subTotal: 0,
+      impuesto: 0,
+      total: 0,
+    },
+    exonerationType: 1,
+    exonerationRef: '',
+    exonerationIssuer: '',
+    exonerationDate: '01/01/2000',
+    exonerationPercentage: 0,
+    successful: false
   },
   document: {
     listPage: 1,

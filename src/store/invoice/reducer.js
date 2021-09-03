@@ -11,7 +11,7 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET
+  RESET_INVOICE
 } from './types'
 
 import { LOGOUT } from 'store/session/types'
@@ -43,7 +43,7 @@ const invoiceReducer = (state = {}, { type, payload }) => {
     case SET_LIST:
       return { ...state, list: payload.list }
     case LOGOUT:
-    case RESET:
+    case RESET_INVOICE:
       return {
         ...state,
         invoiceId: 0,

@@ -357,7 +357,7 @@ export async function saveInvoiceEntity(
     const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentId)
     const invoiceDetails = []
     productDetails.forEach(item => {
-      const detalle = {
+      const detail = {
         IdFactura: 0,
         IdProducto: item.IdProducto,
         Descripcion: item.Descripcion,
@@ -368,7 +368,7 @@ export async function saveInvoiceEntity(
         CostoInstalacion: 0,
         PorcentajeIVA: item.PorcentajeIVA
       }
-      invoiceDetails.push(detalle)
+      invoiceDetails.push(detail)
     })
     const invoicePayments = [{
       IdConsecutivo: 0,
@@ -493,7 +493,7 @@ export async function saveWorkingOrderEntity(
   try {
     const workingOrderDetails = []
     productDetails.forEach(item => {
-      const detalle = {
+      const detail = {
         IdOrden: orderId,
         IdProducto: item.IdProducto,
         Codigo: item.Codigo,
@@ -504,7 +504,7 @@ export async function saveWorkingOrderEntity(
         PorcentajeIVA: item.PorcentajeIVA,
         PorcDescuento: 0
       }
-      workingOrderDetails.push(detalle)
+      workingOrderDetails.push(detail)
     })
     const workingOrderDate = new Date()
     const dd = (workingOrderDate.getDate() < 10 ? '0' : '') + workingOrderDate.getDate()

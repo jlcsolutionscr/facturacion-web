@@ -370,10 +370,10 @@ function CustomerPage({
 const mapStateToProps = (state) => {
   return {
     customerList: state.customer.customerList,
-    idTypeList: state.customer.idTypeList,
+    idTypeList: state.ui.idTypeList,
     priceTypeList: state.customer.priceTypeList,
     rentTypeList: state.ui.rentTypeList,
-    exonerationTypeList: state.customer.exonerationTypeList,
+    exonerationTypeList: state.ui.exonerationTypeList,
     customer: state.customer.customer
   }
 }
