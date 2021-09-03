@@ -12,6 +12,8 @@ import LogoPage from './logo-page'
 import CustomerPage from './customer-page'
 import ProductPage from './product-page'
 import InvoicePage from './invoice-page'
+import WorkingOrderListPage from './working-order-list-page'
+import WorkingOrderPage from './working-order-page'
 import InvoiceListPage from './invoice-list-page'
 import DocumentListPage from './document-list-page'
 import ReportsPage from './reports-page'
@@ -68,7 +70,9 @@ function HomePage({ activeSection, companyName, companyIdentifier, width, isDark
         {activeSection === 5 && <InvoicePage />}
         {activeSection === 6 && <InvoiceListPage />}
         {activeSection === 7 && <DocumentListPage />}
+        {activeSection === 8 && <WorkingOrderListPage />}
         {activeSection === 20 && <ReportsPage width={width} />}
+        {activeSection === 21 && <WorkingOrderPage />}
       </div>
     </div>
   )

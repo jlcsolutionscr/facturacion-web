@@ -2,16 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
-import UAParser from 'ua-parser-js'
 
 import { setActiveSection } from 'store/ui/actions'
 import {
-  getInvoiceListByPageNumber,
-  revokeInvoice,
-  generatePDF,
-  sendInvoiceNotification,
-  generateInvoiceTicket
-} from 'store/invoice/actions'
+  getWorkingOrderListByPageNumber,
+  setWorkingOrderParameters,
+  revokeWorkingOrder,
+  openWorkingOrder,
+  generateWorkingOrderTicket
+} from 'store/working-order/actions'
 
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -22,7 +21,7 @@ import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
 import Button from 'components/button'
-import { PrinterIcon, DownloadPdfIcon, DeleteIcon } from 'utils/iconsHelper'
+import { EditIcon, PrinterIcon, DeleteIcon } from 'utils/iconsHelper'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
@@ -51,7 +50,9 @@ const useStyles = makeStyles(theme => ({
     padding: 0
   },
   buttonContainer: {
+    display: 'flex',
     margin: '0 0 20px 20px',
+    width: '100%',
     '@media (max-width:960px)': {
       margin: '0 0 10px 15px'
     },
@@ -67,38 +68,33 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function InvoiceListPage({
+function WorkingOrderListPage({
   listPage,
   listCount,
   list,
-  getInvoiceListByPageNumber,
-  revokeInvoice,
+  getWorkingOrderListByPageNumber,
+  setWorkingOrderParameters,
+  revokeWorkingOrder,
   setActiveSection,
-  generatePDF,
-  sendInvoiceNotification,
-  generateInvoiceTicket
+  openWorkingOrder,
+  generateWorkingOrderTicket
 }) {
-  const result = new UAParser().getResult()
   const classes = useStyles()
-  const [invoiceId, setInvoiceId] = React.useState(null)
+  const [workingOrderId, setWorkingOrderId] = React.useState(null)
   const [dialogOpen, setDialogOpen] = React.useState(false)
-  const isMobile = !!result.device.type
   const printReceipt = (id) => {
-    generateInvoiceTicket(id)
+    generateWorkingOrderTicket(id)
   }
-  const handlePdfButtonClick = (id, ref) => {
-    if (isMobile)
-      sendInvoiceNotification(id)
-    else
-      generatePDF(id, ref)
+  const handleOpenOrderClick = (id) => {
+    openWorkingOrder(id)
   }
   const handleRevokeButtonClick = (id) => {
-    setInvoiceId(id)
+    setWorkingOrderId(id)
     setDialogOpen(true)
   }
   const handleConfirmButtonClick = () => {
     setDialogOpen(false)
-    revokeInvoice(invoiceId)
+    revokeWorkingOrder(workingOrderId)
   }
   const rows = list.map((row) => (
     {
@@ -108,13 +104,13 @@ function InvoiceListPage({
       taxes: formatCurrency(row.Impuesto),
       amount: formatCurrency(row.Total),
       action1: (
-        <IconButton disabled={row.Anulando} className={classes.icon} component="span" onClick={() => printReceipt(row.IdFactura)}>
-          <PrinterIcon className={classes.icon} />
+        <IconButton disabled={row.Anulando} className={classes.icon} color="primary" component="span" onClick={() => handleOpenOrderClick(row.IdFactura)}>
+          <EditIcon className={classes.icon} />
         </IconButton>
       ),
       action2: (
-        <IconButton disabled={row.Anulando} className={classes.icon} color="primary" component="span" onClick={() => handlePdfButtonClick(row.IdFactura, row.Consecutivo)}>
-          <DownloadPdfIcon className={classes.icon} />
+        <IconButton disabled={row.Anulando} className={classes.icon} component="span" onClick={() => printReceipt(row.IdFactura)}>
+          <PrinterIcon className={classes.icon} />
         </IconButton>
       ),
       action3: (
@@ -130,13 +126,11 @@ function InvoiceListPage({
     { field: 'date', headerName: 'Fecha' },
     { field: 'name', headerName: 'Nombre' },
     { field: 'taxes', headerName: 'Impuesto', type: 'number' },
-    { field: 'amount', headerName: 'Total', type: 'number' }
+    { field: 'amount', headerName: 'Total', type: 'number' },
+    { field: 'action1', headerName: '' },
+    { field: 'action2', headerName: '' },
+    { field: 'action3', headerName: '' }
   ];
-  if (!isMobile) {
-    columns.push({ field: 'action1', headerName: '' })
-  }
-  columns.push({ field: 'action2', headerName: '' })
-  columns.push({ field: 'action3', headerName: '' })
   return (
     <div className={classes.root}>
       <div className={classes.dataContainer}>
@@ -149,18 +143,19 @@ function InvoiceListPage({
           rowsCount={listCount}
           rowsPerPage={10}
           onPageChange={(page) => {
-            getInvoiceListByPageNumber(page + 1)
+            getWorkingOrderListByPageNumber(page + 1)
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label='Regresar' onClick={() => setActiveSection(0)} />
+        <Button label='Nueva Orden' onClick={() => setWorkingOrderParameters()} />
+        <Button style={{marginLeft: '10px'}} label='Regresar' onClick={() => setActiveSection(0)} />
       </div>
       <Dialog id="revoke-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
-        <DialogTitle>Anular factura</DialogTitle>
+        <DialogTitle>Anular orden de servicio</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {`Desea proceder con la anulación de la factura número ${invoiceId}?`}
+            {`Desea proceder con la anulación de la orden de servicio número ${workingOrderId}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
@@ -174,22 +169,22 @@ function InvoiceListPage({
 
 const mapStateToProps = (state) => {
   return {
-    listPage: state.invoice.listPage,
-    listCount: state.invoice.listCount,
-    list: state.invoice.list,
-    ticket: state.invoice.ticket
+    listPage: state.workingOrder.listPage,
+    listCount: state.workingOrder.listCount,
+    list: state.workingOrder.list,
+    ticket: state.workingOrder.ticket
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getInvoiceListByPageNumber,
-    revokeInvoice,
-    generatePDF,
-    sendInvoiceNotification,
+    getWorkingOrderListByPageNumber,
+    setWorkingOrderParameters,
+    revokeWorkingOrder,
+    openWorkingOrder,
     setActiveSection,
-    generateInvoiceTicket
+    generateWorkingOrderTicket
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceListPage)
+export default connect(mapStateToProps, mapDispatchToProps)(WorkingOrderListPage)

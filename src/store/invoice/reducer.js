@@ -5,18 +5,18 @@ import {
   SET_PRODUCTS_DETAIL,
   SET_SUMMARY,
   SET_PAYMENT_ID,
+  SET_ORDER_ID,
   SET_COMMENT,
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  SET_TICKET,
-  RESET_INVOICE
+  RESET
 } from './types'
 
 import { LOGOUT } from 'store/session/types'
 
-const companyReducer = (state = {}, { type, payload }) => {
+const invoiceReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_DESCRIPTION:
       return { ...state, description: payload.description }
@@ -30,6 +30,8 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, summary: payload.summary }
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
+    case SET_ORDER_ID:
+      return { ...state, orderId: payload.id }
     case SET_COMMENT:
       return { ...state, comment: payload.comment }
     case SET_SUCCESSFUL:
@@ -40,17 +42,17 @@ const companyReducer = (state = {}, { type, payload }) => {
       return { ...state, listCount: payload.count }
     case SET_LIST:
       return { ...state, list: payload.list }
-    case SET_TICKET:
-      return { ...state, ticket: payload.ticket }
     case LOGOUT:
-    case RESET_INVOICE:
+    case RESET:
       return {
-        invoiceId: null,
+        ...state,
+        invoiceId: 0,
         description: '',
         quantity: 1,
         price: 0,
         productDetails: [],
         paymentId: 1,
+        orderId: 0,
         summary: {
           gravado: 0,
           exonerado: 0,
@@ -60,15 +62,11 @@ const companyReducer = (state = {}, { type, payload }) => {
           total: 0,
         },
         comment: '',
-        successful: false,
-        listPage: 1,
-        listCount: 0,
-        list: [],
-        ticket: null
+        successful: false
       }
     default:
       return state
   }
 }
 
-export default companyReducer
+export default invoiceReducer

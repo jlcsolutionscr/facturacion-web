@@ -4,10 +4,14 @@ import {
   SET_PRICE,
   SET_PRODUCTS_DETAIL,
   SET_SUMMARY,
-  SET_PAYMENT_ID,
-  SET_ORDER_ID,
-  SET_COMMENT,
-  SET_SUCCESSFUL,
+  SET_DELIVERY_PHONE,
+  SET_DELIVERY_ADDRESS,
+  SET_DELIVERY_DESCRIPTION,
+  SET_DELIVERY_DATE,
+  SET_DELIVERY_TIME,
+  SET_DELIVERY_DETAILS,
+  SET_ID,
+  SET_STATUS,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
@@ -22,13 +26,11 @@ import {
 } from 'store/ui/actions'
 
 import { setPrinter } from 'store/session/actions'
-
 import { setCompany } from 'store/company/actions'
-
 import { setCustomer, setCustomerList } from 'store/customer/actions'
-
 import { setProduct, setProductList } from 'store/product/actions'
 
+import { roundNumber } from 'utils/utilities'
 import {
   getCompanyEntity,
   getCustomerList,
@@ -36,16 +38,17 @@ import {
   getProductEntity,
   getCustomerPrice,
   getProductSummary,
-  saveInvoiceEntity,
-  getProcessedInvoiceListCount,
-  getProcessedInvoiceListPerPage,
-  revokeInvoiceEntity,
-  generateInvoicePDF,
-  sendInvoicePDF,
-  getInvoiceEntity
+  saveWorkingOrderEntity,
+  getWorkingOrderListCount,
+  getWorkingOrderListPerPage,
+  revokeWorkingOrderEntity,
+  generateWorkingOrderPDF,
+  sendWorkingOrderPDF,
+  getWorkingOrderEntity,
+  getPriceTransformedWithRate
 } from 'utils/domainHelper'
 
-import { printInvoice, getDeviceFromUsb } from 'utils/printing'
+import { printWorkingOrder, getDeviceFromUsb } from 'utils/printing'
 
 export const setDescription = (description) => {
   return {
@@ -82,56 +85,84 @@ export const setSummary = (summary) => {
   }
 }
 
-export const setPaymentId = (id) => {
+export const setDeliveryPhone = (phone) => {
   return {
-    type: SET_PAYMENT_ID,
+    type: SET_DELIVERY_PHONE,
+    payload: { phone }
+  }
+}
+
+export const setDeliveryAddress = (address) => {
+  return {
+    type: SET_DELIVERY_ADDRESS,
+    payload: { address }
+  }
+}
+
+export const setDeliveryDescription = (description) => {
+  return {
+    type: SET_DELIVERY_DESCRIPTION,
+    payload: { description }
+  }
+}
+
+export const setDeliveryDate = (date) => {
+  return {
+    type: SET_DELIVERY_DATE,
+    payload: { date }
+  }
+}
+
+export const setDeliveryTime = (time) => {
+  return {
+    type: SET_DELIVERY_TIME,
+    payload: { time }
+  }
+}
+
+export const setDeliveryDetails = (details) => {
+  return {
+    type: SET_DELIVERY_DETAILS,
+    payload: { details }
+  }
+}
+
+export const setWorkingOrderId = (id) => {
+  return {
+    type: SET_ID,
     payload: { id }
   }
 }
 
-export const setOrderId = (id) => {
+export const setStatus = (status) => {
   return {
-    type: SET_ORDER_ID,
-    payload: { id }
+    type: SET_STATUS,
+    payload: { status }
   }
 }
 
-export const setComment = (comment) => {
-  return {
-    type: SET_COMMENT,
-    payload: { comment }
-  }
-}
-
-export const setSuccessful = (id, success) => {
-  return {
-    type: SET_SUCCESSFUL,
-    payload: { id, success }
-  }
-}
-
-export const setInvoiceListPage = (page) => {
+export const setWorkingOrderListPage = (page) => {
   return {
     type: SET_LIST_PAGE,
     payload: { page }
   }
 }
 
-export const setInvoiceListCount = (count) => {
+export const setWorkingOrderListCount = (count) => {
   return {
     type: SET_LIST_COUNT,
     payload: { count }
   }
 }
 
-export const setInvoiceList = (list) => {
+export const setWorkingOrderList = (list) => {
   return {
     type: SET_LIST,
     payload: { list }
   }
 }
 
-export const resetInvoice = () => {
+export const resetWorkingOrder = () => {
   return {
     type: RESET
   }
@@ -150,7 +181,7 @@ const customer = {
   PorcentajeExoneracion: 0
 }
 
-export function setInvoiceParameters (id) {
+export function setWorkingOrderParameters () {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     const { company } = getState().company
@@ -162,11 +193,11 @@ export function setInvoiceParameters (id) {
         const companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
       }
-      dispatch(resetInvoice())
+      dispatch(resetWorkingOrder())
       dispatch(setCustomer(customer))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       dispatch(setProductList(productList))
-      dispatch(setActiveSection(id))
+      dispatch(setActiveSection(21))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
@@ -218,7 +249,7 @@ export function addDetails () {
   return async (dispatch, getState) => {
     const { customer } = getState().customer
     const { product } = getState().product
-    const { productDetails, description, quantity, price } = getState().invoice
+    const { productDetails, description, quantity, price } = getState().workingOrder
     try {
       
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
@@ -260,7 +291,7 @@ export function addDetails () {
 export const removeDetails = (id) => {
   return (dispatch, getState) => {
     const { customer } = getState().customer
-    const { productDetails } = getState().invoice
+    const { productDetails } = getState().workingOrder
     const index = productDetails.findIndex(item => item.IdProducto === id)
     const newProducts = [...productDetails.slice(0, index), ...productDetails.slice(index + 1)]
     dispatch(setProductsDetail(newProducts))
@@ -269,27 +300,42 @@ export const removeDetails = (id) => {
   }
 }
 
-export const saveInvoice = () => {
+export const saveWorkingOrder = () => {
   return async (dispatch, getState) => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, orderId, productDetails, summary, comment } = getState().invoice
+    const {
+      workingOrderId,
+      productDetails,
+      summary,
+      deliveryPhone,
+      deliveryAddress,
+      deliveryDescription,
+      deliveryDate,
+      deliveryTime,
+      deliveryDetails
+    } = getState().workingOrder
     dispatch(startLoader())
     try {
-      const invoiceId = await saveInvoiceEntity(
+      const newId = await saveWorkingOrderEntity(
         token,
+        workingOrderId,
         userId,
         productDetails,
-        paymentId,
-        orderId,
         branchId,
         company,
         customer,
         summary,
-        comment
+        deliveryPhone,
+        deliveryAddress,
+        deliveryDescription,
+        deliveryDate,
+        deliveryTime,
+        deliveryDetails
       )
-      dispatch(setSuccessful(invoiceId, true))
+      if (newId) dispatch(setWorkingOrderId(newId))
+      dispatch(setStatus('ready'))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
@@ -299,35 +345,19 @@ export const saveInvoice = () => {
   }
 }
 
-export function loadInvoiceFromWorkingOrder () {
-  return async (dispatch, getState) => {
-    const { workingOrderId, productDetails, summary } = getState().workingOrder
-    try {
-      dispatch(setOrderId(workingOrderId))
-      dispatch(setProductsDetail(productDetails))
-      dispatch(setSummary(summary))
-      dispatch(setSuccessful(0, false))
-      dispatch(setActiveSection(5))
-    } catch (error) {
-      const message = error.message ? error.message : error
-      dispatch(setMessage(message))
-    }
-  }
-}
-
-export const getInvoiceListFirstPage = (id) => {
+export const getWorkingOrderListFirstPage = (id) => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session
     dispatch(startLoader())
     try {
-      dispatch(setInvoiceListPage(1))
-      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId)
-      dispatch(setInvoiceListCount(recordCount))
+      dispatch(setWorkingOrderListPage(1))
+      const recordCount = await getWorkingOrderListCount(token, companyId, branchId, false)
+      dispatch(setWorkingOrderListCount(recordCount))
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10)
-        dispatch(setInvoiceList(newList))
+        const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, 1, 10)
+        dispatch(setWorkingOrderList(newList))
       } else {
-        dispatch(setInvoiceList([]))
+        dispatch(setWorkingOrderList([]))
       }
       if (id) dispatch(setActiveSection(id))
       dispatch(stopLoader())
@@ -338,14 +368,14 @@ export const getInvoiceListFirstPage = (id) => {
   }
 }
 
-export const getInvoiceListByPageNumber = (pageNumber) => {
+export const getWorkingOrderListByPageNumber = (pageNumber) => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session
     dispatch(startLoader())
     try {
-      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, pageNumber, 10)
-      dispatch(setInvoiceListPage(pageNumber))
-      dispatch(setInvoiceList(newList))
+      const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, pageNumber, 10)
+      dispatch(setWorkingOrderListPage(pageNumber))
+      dispatch(setWorkingOrderList(newList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))
@@ -354,16 +384,16 @@ export const getInvoiceListByPageNumber = (pageNumber) => {
   }
 }
 
-export const revokeInvoice = (idInvoice) => {
+export const revokeWorkingOrder = (id) => {
   return async (dispatch, getState) => {
     const { token, userId } = getState().session
-    const { list } = getState().invoice
+    const { list } = getState().workingOrder
     dispatch(startLoader())
     try {
-      await revokeInvoiceEntity(token, idInvoice, userId)
-      const index = list.findIndex(item => item.IdFactura === idInvoice)
+      await revokeWorkingOrderEntity(token, id, userId)
+      const index = list.findIndex(item => item.IdFactura === id)
       const newList = [...list.slice(0, index), { ...list[index], Anulando: true }, ...list.slice(index + 1)]
-      dispatch(setInvoiceList(newList))
+      dispatch(setWorkingOrderList(newList))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
@@ -373,12 +403,58 @@ export const revokeInvoice = (idInvoice) => {
   }
 }
 
-export const generatePDF = (idInvoice, ref) => {
+
+export const openWorkingOrder = (id) => {
   return async (dispatch, getState) => {
-    const { token } = getState().session
+    const { token, companyId, branchId } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
-      await generateInvoicePDF(token, idInvoice, ref)
+      const workingOrder = await getWorkingOrderEntity(token, id)
+      const customerList = await getCustomerList(token, companyId, '')
+      const productList = await getProductList(token, companyId, branchId, true, '', 1)
+      if (company === null) {
+        const companyEntity = await getCompanyEntity(token, companyId)
+        dispatch(setCompany(companyEntity))
+      }
+      dispatch(setWorkingOrderId(workingOrder.IdOrden))
+      dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
+      dispatch(setProductList(productList))
+      const customer = {
+        IdCliente: workingOrder.IdCliente,
+        Nombre: workingOrder.NombreCliente,
+        IdTipoExoneracion: workingOrder.Cliente.IdTipoExoneracion,
+        ParametroExoneracion: {
+          Descripcion: workingOrder.Cliente.ParametroExoneracion.Descripcion
+        },
+        NumDocExoneracion: workingOrder.Cliente.NumDocExoneracion,
+        NombreInstExoneracion: workingOrder.Cliente.NombreInstExoneracion,
+        FechaEmisionDoc: workingOrder.Cliente.FechaEmisionDoc,
+        PorcentajeExoneracion: workingOrder.Cliente.PorcentajeExoneracion
+      }
+      dispatch(setCustomer(customer))
+      const details = workingOrder.DetalleOrdenServicio.map(detail => ({
+        IdProducto: detail.IdProducto,
+        Codigo: detail.Codigo,
+        Descripcion: detail.Descripcion,
+        Cantidad: detail.Cantidad,
+        PrecioVenta: roundNumber(getPriceTransformedWithRate(detail.PrecioVenta, detail.PorcentajeIVA, true), 2),
+        Excento: detail.Excento,
+        PrecioCosto: detail.Producto.PrecioCosto,
+        CostoInstalacion: 0,
+        PorcentajeIVA: detail.PorcentajeIVA
+      }))
+      dispatch(setProductsDetail(details))
+      const summary = getProductSummary(details, workingOrder.PorcentajeExoneracion)
+      dispatch(setSummary(summary))
+      dispatch(setDeliveryPhone(workingOrder.Telefono))
+      dispatch(setDeliveryAddress(workingOrder.Direccion))
+      dispatch(setDeliveryDescription(workingOrder.Descripcion))
+      dispatch(setDeliveryDate(workingOrder.FechaEntrega))
+      dispatch(setDeliveryTime(workingOrder.HoraEntrega))
+      dispatch(setDeliveryDetails(workingOrder.OtrosDetalles))
+      dispatch(setActiveSection(21))
+      dispatch(setStatus('ready'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))
@@ -387,12 +463,26 @@ export const generatePDF = (idInvoice, ref) => {
   }
 }
 
-export const sendInvoiceNotification = (idInvoice) => {
+export const generatePDF = (id, ref) => {
   return async (dispatch, getState) => {
     const { token } = getState().session
     dispatch(startLoader())
     try {
-      await sendInvoicePDF(token, idInvoice)
+      await generateWorkingOrderPDF(token, id, ref)
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const sendWorkingOrderNotification = (id) => {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    dispatch(startLoader())
+    try {
+      await sendWorkingOrderPDF(token, id)
       dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
@@ -402,17 +492,17 @@ export const sendInvoiceNotification = (idInvoice) => {
   }
 }
 
-export const generateInvoiceTicket = (idInvoice) => {
+export const generateWorkingOrderTicket = (id) => {
   return async (dispatch, getState) => {
     const { token, printer, userCode, company, device, branchList, branchId } = getState().session
     dispatch(startLoader())
     try {
-      const invoice = await getInvoiceEntity(token, idInvoice)
+      const invoice = await getWorkingOrderEntity(token, id)
       const branchName = branchList.find(x => x.Id === branchId).Descripcion
       let localPrinter = await getDeviceFromUsb(printer)
       if (localPrinter !== printer) dispatch(setPrinter(localPrinter))
       if (localPrinter) {
-        printInvoice(
+        printWorkingOrder(
           localPrinter,
           userCode,
           company,

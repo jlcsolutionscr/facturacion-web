@@ -32,7 +32,7 @@ function ListDropdown({items, label, value, disabled, onChange, onItemSelected})
     <div id='input-container' className={classes.root}>
       <input
         disabled={disabled}
-        id='input-field' 
+        id={`input-field-${label}`}
         className={`${classes.input} ${classes.font}`} 
         value={value}
         onClick={onFocus}

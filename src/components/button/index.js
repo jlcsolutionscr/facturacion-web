@@ -8,7 +8,7 @@ import { createStyle } from './styles'
 export default function Button({disabled, style, negative, autoFocus, label, onClick}) {
   const classes = createStyle()
   let styles = {}
-  if (negative) styles = { ...styles, backgroundColor: '#505050'}
+  if (negative) styles = {backgroundColor: '#505050'}
   return (
     <div style={style}>
       <MuiButton variant='contained' disabled={disabled} style={styles} className={classes.button} autoFocus={autoFocus} onClick={onClick}>

@@ -63,7 +63,6 @@ function StepThreeScreen({
   comment,
   successful,
   invoiceId,
-  ticket,
   setPaymentId,
   setComment,
   saveInvoice,
@@ -160,7 +159,7 @@ function StepThreeScreen({
           </FormControl>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button disabled={buttonDisabled} label={successful ? 'Nueva factura': 'Generar'} onClick={handleOnPress} />
+          <Button disabled={buttonDisabled} label={successful ? 'Nueva factura': 'Agregar'} onClick={handleOnPress} />
         </Grid>
         {successful && <Grid item xs={12} className={classes.centered}>
           <Button disabled={buttonDisabled} label='Imprimir' onClick={handleOnPrintButton} />
@@ -177,7 +176,6 @@ const mapStateToProps = (state) => {
     summary: state.invoice.summary,
     comment: state.invoice.comment,
     successful: state.invoice.successful,
-    ticket: state.invoice.ticket,
     branchList: state.ui.branchList,
     error: state.invoice.error
   }

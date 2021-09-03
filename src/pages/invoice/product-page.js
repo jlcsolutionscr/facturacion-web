@@ -24,6 +24,9 @@ import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
 import Button from 'components/button'
 
+import { getPriceTransformed } from 'utils/domainHelper'
+import { roundNumber } from 'utils/utilities'
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.pages,
@@ -70,6 +73,19 @@ function ProductPage({
   const classes = useStyles()
   const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
+  const calculatePrice = (value, taxId) => (roundNumber(getPriceTransformed(value, taxId, false), 2))
+  const [untaxPrice1, setUntaxPrice1] = React.useState(0)
+  const [untaxPrice2, setUntaxPrice2] = React.useState(0)
+  const [untaxPrice3, setUntaxPrice3] = React.useState(0)
+  const [untaxPrice4, setUntaxPrice4] = React.useState(0)
+  const [untaxPrice5, setUntaxPrice5] = React.useState(0)
+  React.useEffect(() => {
+    setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto))
+    setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto))
+    setUntaxPrice3(calculatePrice(product.PrecioVenta3, product.IdImpuesto))
+    setUntaxPrice4(calculatePrice(product.PrecioVenta4, product.IdImpuesto))
+    setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto))
+  }, [product]);
   const productTypes = productTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
@@ -93,6 +109,55 @@ function ProductPage({
     product.PrecioVenta5 === ''
   const handleChange = event => {
     setProductAttribute(event.target.id, event.target.value)
+  }
+  const handlePriceChange = event => {
+    const untaxPrice = roundNumber(getPriceTransformed(event.target.value, product.IdImpuesto, false), 2)
+    setUntaxPrice1(untaxPrice)
+    setUntaxPrice2(untaxPrice)
+    setUntaxPrice3(untaxPrice)
+    setUntaxPrice4(untaxPrice)
+    setUntaxPrice5(untaxPrice)
+    setProductAttribute('PrecioVenta1', event.target.value)
+    setProductAttribute('PrecioVenta2', event.target.value)
+    setProductAttribute('PrecioVenta3', event.target.value)
+    setProductAttribute('PrecioVenta4', event.target.value)
+    setProductAttribute('PrecioVenta5', event.target.value)
+  }
+
+  const handleUntaxPriceChange = event => {
+    const taxPrice = roundNumber(getPriceTransformed(event.target.value, product.IdImpuesto, true), 2)
+    switch (event.target.id) {
+      case 'untaxPrice1':
+        setUntaxPrice1(event.target.value)
+        setUntaxPrice2(event.target.value)
+        setUntaxPrice3(event.target.value)
+        setUntaxPrice4(event.target.value)
+        setUntaxPrice5(event.target.value)
+        setProductAttribute('PrecioVenta1', taxPrice)
+        setProductAttribute('PrecioVenta2', taxPrice)
+        setProductAttribute('PrecioVenta3', taxPrice)
+        setProductAttribute('PrecioVenta4', taxPrice)
+        setProductAttribute('PrecioVenta5', taxPrice)
+        break
+      case 'untaxPrice2':
+        setUntaxPrice2(event.target.value)
+        setProductAttribute('PrecioVenta2', taxPrice)
+        break
+      case 'untaxPrice3':
+        setUntaxPrice3(event.target.value)
+        setProductAttribute('PrecioVenta3', taxPrice)
+        break
+      case 'untaxPrice4':
+        setUntaxPrice4(event.target.value)
+        setProductAttribute('PrecioVenta4', taxPrice)
+        break
+      case 'untaxPrice5':
+        setUntaxPrice5(event.target.value)
+        setProductAttribute('PrecioVenta5', taxPrice)
+        break
+      default:
+        break
+    }
   }
   const handleOnFilterChange = event => {
     setFilter(event.target.value)
@@ -169,6 +234,7 @@ function ProductPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='Codigo'
             value={product.Codigo}
             label='Código'
@@ -179,6 +245,7 @@ function ProductPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='CodigoProveedor'
             value={product.CodigoProveedor}
             label='Codigo proveedor'
@@ -189,6 +256,7 @@ function ProductPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='CodigoClasificacion'
             value={product.CodigoClasificacion}
             label='Codigo CABYS'
@@ -233,18 +301,41 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
+            id='untaxPrice1'
+            value={untaxPrice1}
+            label='Precio sin impuesto'
+            fullWidth
+            variant='outlined'
+            numericFormat
+            onChange={handleUntaxPriceChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            required
             id='PrecioVenta1'
             value={product.PrecioVenta1}
             label='Precio de venta 1'
             fullWidth
             variant='outlined'
             numericFormat
-            onChange={handleChange}
+            onChange={handlePriceChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
+          <TextField
+            id='untaxPrice2'
+            value={untaxPrice2}
+            label='Precio sin impuesto'
+            fullWidth
+            variant='outlined'
+            numericFormat
+            onChange={handleUntaxPriceChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
           <TextField
             id='PrecioVenta2'
             value={product.PrecioVenta2}
@@ -255,7 +346,18 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
+          <TextField
+            id='untaxPrice3'
+            value={untaxPrice3}
+            label='Precio sin impuesto'
+            fullWidth
+            variant='outlined'
+            numericFormat
+            onChange={handleUntaxPriceChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
           <TextField
             id='PrecioVenta3'
             value={product.PrecioVenta3}
@@ -266,7 +368,18 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
+          <TextField
+            id='untaxPrice4'
+            value={untaxPrice4}
+            label='Precio sin impuesto'
+            fullWidth
+            variant='outlined'
+            numericFormat
+            onChange={handleUntaxPriceChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
           <TextField
             id='PrecioVenta4'
             value={product.PrecioVenta4}
@@ -277,7 +390,18 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
+          <TextField
+            id='untaxPrice5'
+            value={untaxPrice5}
+            label='Precio sin impuesto'
+            fullWidth
+            variant='outlined'
+            numericFormat
+            onChange={handleUntaxPriceChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
           <TextField
             id='PrecioVenta5'
             value={product.PrecioVenta5}

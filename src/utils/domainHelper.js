@@ -166,13 +166,8 @@ export async function getCustomerEntity(token, idCustomer) {
 export async function saveCustomerEntity(token, customer) {
   try {
 
-    const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-07:00'}})
-    let data = ""
-    if (customer.IdCliente) {
-      data = "{NombreMetodo: 'ActualizarCliente', Entidad: " + entidad + "}"
-    } else {
-      data = "{NombreMetodo: 'AgregarCliente', Entidad: " + entidad + "}"
-    }
+    const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-06:00'}})
+    const data = "{NombreMetodo: '" + (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") + "', Entidad: " + entidad + "}"
     const response = await post(APP_URL + "/ejecutar", token, data)
     if (response === null) return null
     return response
@@ -239,11 +234,7 @@ export async function getProductEntity(token, idProduct, idBranch) {
 export async function saveProductEntity(token, product) {
   try {
     const entidad = JSON.stringify(product)
-    let data = ""
-    if (product.IdProducto)
-      data = "{NombreMetodo: 'ActualizarProducto', Entidad: " + entidad + "}"
-    else
-      data = "{NombreMetodo: 'AgregarProducto', Entidad: " + entidad + "}"
+    const data = "{NombreMetodo: '" + (product.IdProducto ? "ActualizarProducto" : "AgregarProducto") + "', Entidad: " + entidad + "}"
     const response = await post(APP_URL + "/ejecutar", token, data)
     if (response === null) return null
     return response
@@ -308,7 +299,7 @@ export function getCustomerPrice(customer, product) {
   return customerPrice
 }
 
-export function getInvoiceSummary(products, exonerationPercentage) {
+export function getProductSummary(products, exonerationPercentage) {
   try {
     let gravado = 0
     let exonerado = 0
@@ -355,6 +346,7 @@ export async function saveInvoiceEntity(
   userId,
   productDetails,
   paymentId,
+  orderId,
   branchId,
   company,
   customer,
@@ -363,7 +355,7 @@ export async function saveInvoiceEntity(
 ) {
   try {
     const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentId)
-    const detalleFactura = []
+    const invoiceDetails = []
     productDetails.forEach(item => {
       const detalle = {
         IdFactura: 0,
@@ -376,9 +368,9 @@ export async function saveInvoiceEntity(
         CostoInstalacion: 0,
         PorcentajeIVA: item.PorcentajeIVA
       }
-      detalleFactura.push(detalle)
+      invoiceDetails.push(detalle)
     })
-    const desglosePagoFactura = [{
+    const invoicePayments = [{
       IdConsecutivo: 0,
       IdFactura: 0,
       IdFormaPago: paymentId,
@@ -389,14 +381,14 @@ export async function saveInvoiceEntity(
       MontoLocal: summary.total,
       MontoForaneo: summary.total
     }]
-    const fechaFactura = new Date()
-    const dd = (fechaFactura.getDate() < 10 ? '0' : '') + fechaFactura.getDate()
-    const MM = ((fechaFactura.getMonth() + 1) < 10 ? '0' : '') + (fechaFactura.getMonth() + 1)
-    const HH = (fechaFactura.getHours() < 10 ? '0' : '') + fechaFactura.getHours()
-    const mm = (fechaFactura.getMinutes() < 10 ? '0' : '') + fechaFactura.getMinutes()
-    const ss = (fechaFactura.getSeconds() < 10 ? '0' : '') + fechaFactura.getSeconds()
-    const timeString = dd + '/' + MM + '/' + fechaFactura.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-07:00'
-    const factura = {
+    const invoiceDate = new Date()
+    const dd = (invoiceDate.getDate() < 10 ? '0' : '') + invoiceDate.getDate()
+    const MM = ((invoiceDate.getMonth() + 1) < 10 ? '0' : '') + (invoiceDate.getMonth() + 1)
+    const HH = (invoiceDate.getHours() < 10 ? '0' : '') + invoiceDate.getHours()
+    const mm = (invoiceDate.getMinutes() < 10 ? '0' : '') + invoiceDate.getMinutes()
+    const ss = (invoiceDate.getSeconds() < 10 ? '0' : '') + invoiceDate.getSeconds()
+    const timeString = dd + '/' + MM + '/' + invoiceDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+    const invoice = {
       IdEmpresa: company.IdEmpresa,
       IdSucursal: branchId,
       IdTerminal: 1,
@@ -421,17 +413,17 @@ export async function saveInvoiceEntity(
       IdTipoExoneracion: customer.IdTipoExoneracion,
       NumDocExoneracion: customer.NumDocExoneracion,
       NombreInstExoneracion: customer.NombreInstExoneracion,
-      FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-07:00'},
+      FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-06:00'},
       PorcentajeExoneracion: customer.PorcentajeExoneracion,
       IdCxC: 0,
       IdAsiento: 0,
       IdMovBanco: 0,
-      IdOrdenServicio: 0,
+      IdOrdenServicio: orderId,
       IdProforma: 0,
-      DetalleFactura: detalleFactura,
-      DesglosePagoFactura: desglosePagoFactura
+      DetalleFactura: invoiceDetails,
+      DesglosePagoFactura: invoicePayments
     }
-    let data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(factura) + "}"
+    const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}"
     let invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     return invoiceId.split("-")[0]
   } catch (e) {
@@ -440,18 +432,18 @@ export async function saveInvoiceEntity(
 }
 
 
-export async function revokeInvoiceEntity(token, idInvoice, idUser) {
+export async function revokeInvoiceEntity(token, invoiceId, idUser) {
   try {
-    const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + idInvoice + ", IdUsuario: " + idUser + "}}"
+    const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + invoiceId + ", IdUsuario: " + idUser + "}}"
     await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e.message ? e.message : e
   }
 }
 
-export async function getInvoiceEntity(token, idInvoice) {
+export async function getInvoiceEntity(token, invoiceId) {
   try {
-    const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + idInvoice + "}}"
+    const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + invoiceId + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     return { ...response, Fecha: response.Fecha.DateTime.substr(0,10) }
@@ -474,6 +466,127 @@ export async function getProcessedInvoiceListCount(token, idCompany, idBranch) {
 export async function getProcessedInvoiceListPerPage(token, idCompany, idBranch, pageNumber, rowPerPage) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: " + pageNumber + ",FilasPorPagina: " + rowPerPage + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function saveWorkingOrderEntity(
+  token,
+  orderId,
+  userId,
+  productDetails,
+  branchId,
+  company,
+  customer,
+  summary,
+  deliveryPhone,
+  deliveryAddress,
+  deliveryDescription,
+  deliveryDate,
+  deliveryTime,
+  deliveryDetails
+) {
+  try {
+    const workingOrderDetails = []
+    productDetails.forEach(item => {
+      const detalle = {
+        IdOrden: orderId,
+        IdProducto: item.IdProducto,
+        Codigo: item.Codigo,
+        Descripcion: item.Descripcion,
+        Cantidad: item.Cantidad,
+        PrecioVenta: roundNumber(item.PrecioVenta / (1 + (item.PorcentajeIVA / 100)), 3),
+        Excento: item.Excento,
+        PorcentajeIVA: item.PorcentajeIVA,
+        PorcDescuento: 0
+      }
+      workingOrderDetails.push(detalle)
+    })
+    const workingOrderDate = new Date()
+    const dd = (workingOrderDate.getDate() < 10 ? '0' : '') + workingOrderDate.getDate()
+    const MM = ((workingOrderDate.getMonth() + 1) < 10 ? '0' : '') + (workingOrderDate.getMonth() + 1)
+    const HH = (workingOrderDate.getHours() < 10 ? '0' : '') + workingOrderDate.getHours()
+    const mm = (workingOrderDate.getMinutes() < 10 ? '0' : '') + workingOrderDate.getMinutes()
+    const ss = (workingOrderDate.getSeconds() < 10 ? '0' : '') + workingOrderDate.getSeconds()
+    const timeString = dd + '/' + MM + '/' + workingOrderDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+    const workingOrder = {
+      IdEmpresa: company.IdEmpresa,
+      IdSucursal: branchId,
+      IdTerminal: 1,
+      IdOrden: orderId,
+      IdUsuario: userId,
+      IdTipoMoneda: 1,
+      IdCliente: customer.IdCliente,
+      NombreCliente: customer.Nombre,
+      Fecha: {DateTime: timeString},
+      IdVendedor: 1,
+      Telefono: deliveryPhone,
+      Direccion: deliveryAddress,
+      Descripcion: deliveryDescription,
+      FechaEntrega: deliveryDate,
+      HoraEntrega: deliveryTime,
+      OtrosDetalles: deliveryDetails,
+      Excento: summary.excento,
+      Gravado: summary.gravado,
+      Exonerado: summary.exonerado,
+      Descuento: 0,
+      Impuesto: summary.impuesto,
+      MontoAdelanto: 0,
+      MontoPagado: 0,
+      Nulo: false,
+      DetalleOrdenServicio: workingOrderDetails
+    }
+    const data = "{NombreMetodo: '" + (orderId === 0 ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") + "', Entidad: " + JSON.stringify(workingOrder) + "}"
+    if (orderId === 0) {
+      let invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+      return invoiceId.split("-")[0]
+    } else {
+      await post(APP_URL + "/ejecutar", token, data)
+    }
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+
+export async function revokeWorkingOrderEntity(token, workingOrderId, idUser) {
+  try {
+    const data = "{NombreMetodo: 'AnularOrdenServicio', Parametros: {IdOrdenServicio: " + workingOrderId + ", IdUsuario: " + idUser + "}}"
+    await post(APP_URL + "/ejecutar", token, data)
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function getWorkingOrderEntity(token, workingOrderId) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerOrdenServicio', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return null
+    return { ...response, Fecha: response.Fecha.DateTime.substr(0,10), Cliente: { ...response.Cliente, FechaEmisionDoc: response.Cliente.FechaEmisionDoc.DateTime.substr(0,10) } }
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function getWorkingOrderListCount(token, idCompany, idBranch, bolApplied) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerTotalListaOrdenServicio', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", Aplicado: '" + bolApplied + "'}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return null
+    return response
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function getWorkingOrderListPerPage(token, idCompany, idBranch, bolApplied, pageNumber, rowPerPage) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerListadoOrdenServicio', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: " + pageNumber + ", Aplicado: '" + bolApplied + "', FilasPorPagina: " + rowPerPage + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
@@ -535,9 +648,9 @@ export async function sendReportEmail(token, idCompany, idBranch, reportName, st
   }
 }
 
-export async function generateInvoicePDF(token, idInvoice, ref) {
+export async function generateInvoicePDF(token, invoiceId, ref) {
   try {
-    const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + idInvoice + "}}"
+    const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + invoiceId + "}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response.length > 0) {
       const byteArray = new Uint8Array(response);
@@ -549,11 +662,79 @@ export async function generateInvoicePDF(token, idInvoice, ref) {
   }
 }
 
-export async function sendInvoicePDF(token, idInvoice) {
+export async function sendInvoicePDF(token, invoiceId) {
   try {
-    const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdFactura: " + idInvoice + "}}"
+    const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdFactura: " + invoiceId + "}}"
     await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e.message ? e.message : e
   }
+}
+
+export async function generateWorkingOrderPDF(token, workingOrderId, ref) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response.length > 0) {
+      const byteArray = new Uint8Array(response);
+      const file = new Blob([byteArray], { type: "application/octet-stream" })
+      saveAs(file, `Factura-${ref}.pdf`)
+    }
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function sendWorkingOrderPDF(token, workingOrderId) {
+  try {
+    const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
+    await post(APP_URL + "/ejecutar", token, data)
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export function getPriceTransformed(price, taxId, withTaxes) {
+  function withTaxesFunc (a, b) { return a * b }
+  function noTaxesFunc (a, b) { return a / b }
+  let untaxPrice = 0
+  const taxOperation = withTaxes ? withTaxesFunc : noTaxesFunc
+  switch (taxId) {
+    case 1:
+      untaxPrice = price
+      break;
+    case 2:
+      untaxPrice = taxOperation(price, 1.01)
+      break;
+    case 3:
+      untaxPrice = taxOperation(price, 1.02)
+      break;
+    case 4:
+      untaxPrice = taxOperation(price, 1.04)
+      break;
+    case 5:
+      untaxPrice = price
+      break;
+    case 6:
+      untaxPrice = taxOperation(price, 1.04)
+      break;
+    case 7:
+      untaxPrice = taxOperation(price, 1.08)
+      break;
+    case 8:
+      untaxPrice = taxOperation(price, 1.13)
+      break;
+    default:
+      untaxPrice = price
+  }
+  return untaxPrice
+}
+
+export function getPriceTransformedWithRate(price, taxRate, withTaxes) {
+  function withTaxesFunc (a, b) { return a * b }
+  function noTaxesFunc (a, b) { return a / b }
+  const taxOperation = withTaxes ? withTaxesFunc : noTaxesFunc
+  const rate = taxRate / 100
+  const untaxPrice = taxOperation(price, (1 + rate))
+  return untaxPrice
 }

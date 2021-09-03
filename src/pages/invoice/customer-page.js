@@ -181,6 +181,7 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='Identificacion'
             value={customer.Identificacion}
             label='Identificación'
@@ -193,6 +194,7 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='Nombre'
             value={customer.Nombre}
             label='Nombre del cliente'
@@ -203,7 +205,6 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
-            required
             id='NombreComercial'
             value={customer.NombreComercial}
             label='Nombre Comercial'
@@ -225,6 +226,7 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='Telefono'
             value={customer.Telefono}
             label='Teléfono'
@@ -236,7 +238,6 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
-            required
             id='Fax'
             value={customer.Fax}
             label='Fax'
@@ -248,6 +249,7 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            required
             id='CorreoElectronico'
             value={customer.CorreoElectronico}
             label='Correo electrónico'

@@ -9,6 +9,7 @@ import LabelField from 'components/label-field'
 import TextField from 'components/text-field'
 import ListDropdown from 'components/list-dropdown'
 import { getCustomer, setCustomerAttribute, filterCustomerList } from 'store/customer/actions'
+import { setStatus } from 'store/working-order/actions'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -29,6 +30,7 @@ function StepOneScreen({
   successful,
   filterCustomerList,
   getCustomer,
+  setStatus,
   setCustomerAttribute
 }) {
   const classes = useStyles()
@@ -48,8 +50,13 @@ function StepOneScreen({
   }
   const handleItemSelected = (item) => {
     getCustomer(item.Id)
+    setStatus('on-progress')
     setFilter('')
     filterCustomerList('')
+  }
+  const handleCustomerNameChange = (event) => {
+    setCustomerAttribute('Nombre', event.target.value)
+    setStatus('on-progress')
   }
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
@@ -71,7 +78,7 @@ function StepOneScreen({
             label='Nombre del cliente'
             fullWidth
             variant='outlined'
-            onChange={(event) => setCustomerAttribute('Nombre', event.target.value)}
+            onChange={handleCustomerNameChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -125,12 +132,12 @@ const mapStateToProps = (state) => {
   return {
     customer: state.customer.customer,
     customerList: state.customer.customerList,
-    successful: state.invoice.successful
+    successful: state.workingOrder.successful
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCustomer, setCustomerAttribute, filterCustomerList }, dispatch)
+  return bindActionCreators({ getCustomer, filterCustomerList, setCustomerAttribute, setStatus }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen)

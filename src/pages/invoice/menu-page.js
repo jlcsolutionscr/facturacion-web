@@ -9,6 +9,7 @@ import { setCustomerParameters } from 'store/customer/actions'
 import { setProductParameters } from 'store/product/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
 import { getDocumentListFirstPage } from 'store/document/actions'
+import { getWorkingOrderListFirstPage } from 'store/working-order/actions'
 import { setBranchId } from 'store/session/actions'
 
 import Grid from '@material-ui/core/Grid'
@@ -96,7 +97,8 @@ function MenuPage({
   setProductParameters,
   setInvoiceParameters,
   getInvoiceListFirstPage,
-  getDocumentListFirstPage
+  getDocumentListFirstPage,
+  getWorkingOrderListFirstPage
 }) {
   const classes = useStyles()
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0
@@ -105,6 +107,7 @@ function MenuPage({
   const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0
   const manageDocuments = permissions.filter(role => [1, 402].includes(role.IdRole)).length > 0
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
+  const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0
   const pickBranchOption = permissions.filter(role => role.IdRole === 48).length > 0
   const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
@@ -149,6 +152,9 @@ function MenuPage({
         <Button disabled={!manageDocuments} classes={{root: classes.button}} onClick={() => getDocumentListFirstPage(7)}>Documentos electrónicos</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
+        <Button disabled={!generateWorkingOrder} classes={{root: classes.button}} onClick={() => getWorkingOrderListFirstPage(8)}>Ordenes de servicio</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
         <Button disabled={!reportingMenu} classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
       </Grid>
     </Grid>
@@ -172,7 +178,8 @@ const mapDispatchToProps = (dispatch) => {
     setProductParameters,
     setInvoiceParameters,
     getInvoiceListFirstPage,
-    getDocumentListFirstPage
+    getDocumentListFirstPage,
+    getWorkingOrderListFirstPage
   }, dispatch)
 }
 
