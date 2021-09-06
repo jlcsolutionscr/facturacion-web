@@ -4,21 +4,19 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import {
-  setDeliveryPhone,
-  setDeliveryAddress,
-  setDeliveryDescription,
-  setDeliveryDate,
-  setDeliveryTime,
-  setDeliveryDetails,
+  setDeliveryAttribute,
+  setPaymentId,
   saveWorkingOrder,
-  resetWorkingOrder,
-  generateWorkingOrderTicket
+  generateWorkingOrderTicket,
+  generateInvoice,
+  generateInvoiceTicket
 } from 'store/working-order/actions'
 
-import { loadInvoiceFromWorkingOrder } from 'store/invoice/actions'
-
 import Grid from '@material-ui/core/Grid'
+import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
 
 import Button from 'components/button'
 import TextField from 'components/text-field'
@@ -73,25 +71,21 @@ function StepThreeScreen({
   value,
   index,
   summary,
+  paymentId,
   deliveryPhone,
   deliveryAddress,
   deliveryDescription,
   deliveryDate,
   deliveryTime,
   deliveryDetails,
-  successful,
   workingOrderId,
   status,
-  setDeliveryPhone,
-  setDeliveryAddress,
-  setDeliveryDescription,
-  setDeliveryDate,
-  setDeliveryTime,
-  setDeliveryDetails,
+  setDeliveryAttribute,
+  setPaymentId,
   saveWorkingOrder,
-  resetWorkingOrder,
   generateWorkingOrderTicket,
-  loadInvoiceFromWorkingOrder,
+  generateInvoice,
+  generateInvoiceTicket,
   setValue
 }) {
   const { gravado, exonerado, excento, subTotal, impuesto, total } = summary
@@ -100,13 +94,15 @@ function StepThreeScreen({
   React.useEffect(() => {
     myRef.current.scrollTo(0, 0)
   }, [value])
-  const buttonDisabled = total === 0 || status === 'ready'
-  const handleOnSaveButtonClick = () => {
-    if (!successful) {
-      saveWorkingOrder()
+  const fieldDisabled = status === 'converted'
+  const buttonDisabled = total === 0 || status === 'ready' || status === 'converted'
+  let paymentMethods = [{Id: 1, Descripcion: 'EFECTIVO'}, {Id: 2, Descripcion: 'TARJETA'}, {Id: 3, Descripcion: 'CHEQUE'}, {Id: 4, Descripcion: 'TRANSFERENCIA'}]
+  const paymentItems = paymentMethods.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const handleOnPrintClick = () => {
+    if (status === 'converted') {
+      generateInvoiceTicket()
     } else {
-      resetWorkingOrder()
-      setValue(0)
+      generateWorkingOrderTicket(workingOrderId)
     }
   }
   return (
@@ -114,68 +110,68 @@ function StepThreeScreen({
       <Grid container spacing={2} className={classes.gridContainer}>
         <Grid item xs={12} className={classes.centered}>
           <TextField
-            disabled={successful}
+            disabled={fieldDisabled}
             label='Teléfono'
             id='Telefono'
             value={deliveryPhone}
             fullWidth
             variant='outlined'
-            onChange={(event) => setDeliveryPhone(event.target.value)}
+            onChange={(event) => setDeliveryAttribute('phone', event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.centered}>
           <TextField
-            disabled={successful}
+            disabled={fieldDisabled}
             label='Dirección'
             id='Direccion'
             value={deliveryAddress}
             fullWidth
             variant='outlined'
-            onChange={(event) => setDeliveryAddress(event.target.value)}
+            onChange={(event) => setDeliveryAttribute('address', event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.centered}>
           <TextField
-            disabled={successful}
+            disabled={fieldDisabled}
             label='Descripción'
             id='ThreeDescripcion'
             value={deliveryDescription}
             fullWidth
             variant='outlined'
-            onChange={(event) => setDeliveryDescription(event.target.value)}
+            onChange={(event) => setDeliveryAttribute('description', event.target.value)}
           />
         </Grid>
         <Grid item xs={6} className={classes.centered}>
           <TextField
-            disabled={successful}
+            disabled={fieldDisabled}
             label='Fecha de entrega'
             id='FechaDeEntrega'
             value={deliveryDate}
             fullWidth
             variant='outlined'
-            onChange={(event) => setDeliveryDate(event.target.value)}
+            onChange={(event) => setDeliveryAttribute('date', event.target.value)}
           />
         </Grid>
         <Grid item xs={6} className={classes.centered}>
           <TextField
-            disabled={successful}
+            disabled={fieldDisabled}
             label='Hora de entrega'
             id='HoraDeEntrega'
             value={deliveryTime}
             fullWidth
             variant='outlined'
-            onChange={(event) => setDeliveryTime(event.target.value)}
+            onChange={(event) => setDeliveryAttribute('time', event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.centered}>
           <TextField
-            disabled={successful}
+            disabled={status === 'converted'}
             label='Observaciones'
             id='Observaciones'
             value={deliveryDetails}
             fullWidth
             variant='outlined'
-            onChange={(event) => setDeliveryDetails(event.target.value)}
+            onChange={(event) => setDeliveryAttribute('details', event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
@@ -219,14 +215,30 @@ function StepThreeScreen({
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
-          <Button disabled={buttonDisabled} label={successful ? 'Nueva orden': workingOrderId > 0 ? 'Actualizar' : 'Agregar'} onClick={handleOnSaveButtonClick} />
-        </Grid>
-        {status === 'ready' && <Grid item xs={6} className={classes.right}>
-          <Button label='Imprimir' onClick={() => generateWorkingOrderTicket(workingOrderId)} />
+        {status === 'on-progress' && <Grid item xs={12} className={classes.centered}>
+          <Button 
+            disabled={buttonDisabled}
+            label={workingOrderId > 0 ? 'Actualizar' : 'Agregar'}
+            onClick={() => saveWorkingOrder()}
+          />
         </Grid>}
-        {status === 'ready' && <Grid item xs={6} className={classes.left}>
-          <Button label='Facturar' onClick={() => loadInvoiceFromWorkingOrder()} />
+        {(status === 'ready' || status === 'converted') && <Grid item xs={12} className={classes.centered}>
+          <Button label={status === 'ready' ? 'Imprimir Orden' : 'Imprimir Factura'} onClick={handleOnPrintClick} />
+        </Grid>}
+        {status === 'ready' && <Grid item xs={12} className={classes.centered}>
+          <FormControl style={{width: '215px', textAlign: 'left'}}>
+            <InputLabel id='demo-simple-select-label'>Seleccione la forma de pago:</InputLabel>
+            <Select
+              id='forma-Pago'
+              value={paymentId}
+              onChange={(event) => setPaymentId(event.target.value)}
+            >
+              {paymentItems}
+            </Select>
+          </FormControl>
+        </Grid>}
+        {status === 'ready' && <Grid item xs={12} className={classes.centered}>
+          <Button label='Facturar' onClick={() => generateInvoice()} />
         </Grid>}
       </Grid>
     </div>
@@ -238,13 +250,13 @@ const mapStateToProps = (state) => {
     workingOrderId: state.workingOrder.workingOrderId,
     status: state.workingOrder.status,
     summary: state.workingOrder.summary,
+    paymentId: state.workingOrder.paymentId,
     deliveryPhone: state.workingOrder.deliveryPhone,
     deliveryAddress: state.workingOrder.deliveryAddress,
     deliveryDescription: state.workingOrder.deliveryDescription,
     deliveryDate: state.workingOrder.deliveryDate,
     deliveryTime: state.workingOrder.deliveryTime,
     deliveryDetails: state.workingOrder.deliveryDetails,
-    successful: state.workingOrder.successful,
     ticket: state.workingOrder.ticket,
     branchList: state.ui.branchList,
     error: state.workingOrder.error
@@ -253,16 +265,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    setDeliveryPhone,
-    setDeliveryAddress,
-    setDeliveryDescription,
-    setDeliveryDate,
-    setDeliveryTime,
-    setDeliveryDetails,
+    setDeliveryAttribute,
+    setPaymentId,
     saveWorkingOrder,
-    resetWorkingOrder,
     generateWorkingOrderTicket,
-    loadInvoiceFromWorkingOrder
+    generateInvoice,
+    generateInvoiceTicket
   }, dispatch)
 }
 

@@ -69,7 +69,7 @@ function StepTwoScreen({
   quantity,
   price,
   productDetails,
-  successful,
+  status,
   getProduct,
   setDescription,
   setQuantity,
@@ -105,7 +105,8 @@ function StepTwoScreen({
     filterProductList('', filterType)
   }
   const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
-  let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
+  const fieldDisabled = status === 'converted'
+  let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && fieldDisabled === false
   const display = value !== index ? 'none' : 'flex'
   return (<div ref={myRef} className={classes.root} style={{display: display}}>
     <div className={classes.container}>
@@ -127,7 +128,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={12}>
             <ListDropdown
-              disabled={successful}
+              disabled={fieldDisabled}
               label='Seleccione un producto'
               items={products}
               value={filter}
@@ -137,7 +138,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={12}>
             <TextField
-              disabled={successful}
+              disabled={fieldDisabled}
               label='Descripción'
               id='Descripcion'
               value={description}
@@ -148,7 +149,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={3}>
             <TextField
-              disabled={successful}
+              disabled={fieldDisabled}
               label='Cantidad'
               id='Cantidad'
               value={quantity}
@@ -160,7 +161,7 @@ function StepTwoScreen({
           </Grid>
           <Grid item xs={6}>
             <TextField
-              disabled={successful}
+              disabled={fieldDisabled}
               label='Precio'
               value={price}
               fullWidth
@@ -187,7 +188,7 @@ function StepTwoScreen({
                     <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                     <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
                     <TableCell align='right'>
-                      <IconButton className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
+                      <IconButton disabled={fieldDisabled} className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
                         <RemoveCircleIcon />
                       </IconButton>
                     </TableCell>
@@ -210,7 +211,7 @@ const mapStateToProps = (state) => {
     price: state.workingOrder.price,
     productList: state.product.productList,
     productDetails: state.workingOrder.productDetails,
-    successful: state.workingOrder.successful
+    status: state.workingOrder.status
   }
 }
 

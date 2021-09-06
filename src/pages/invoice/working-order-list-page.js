@@ -81,19 +81,19 @@ function WorkingOrderListPage({
 }) {
   const classes = useStyles()
   const [workingOrderId, setWorkingOrderId] = React.useState(null)
-  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [dialogOpen, setDialogOpen] = React.useState({open: false, id: 0})
   const printReceipt = (id) => {
     generateWorkingOrderTicket(id)
   }
   const handleOpenOrderClick = (id) => {
     openWorkingOrder(id)
   }
-  const handleRevokeButtonClick = (id) => {
+  const handleRevokeButtonClick = (id, ref) => {
     setWorkingOrderId(id)
-    setDialogOpen(true)
+    setDialogOpen({open: true, id: ref})
   }
   const handleConfirmButtonClick = () => {
-    setDialogOpen(false)
+    setDialogOpen({open: false, id: 0})
     revokeWorkingOrder(workingOrderId)
   }
   const rows = list.map((row) => (
@@ -114,7 +114,7 @@ function WorkingOrderListPage({
         </IconButton>
       ),
       action3: (
-        <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura)}>
+        <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura, row.Consecutivo)}>
           <DeleteIcon className={classes.icon} />
         </IconButton>
       )
@@ -151,11 +151,11 @@ function WorkingOrderListPage({
         <Button label='Nueva Orden' onClick={() => setWorkingOrderParameters()} />
         <Button style={{marginLeft: '10px'}} label='Regresar' onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog id="revoke-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
+      <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0})} open={dialogOpen.open}>
         <DialogTitle>Anular orden de servicio</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {`Desea proceder con la anulación de la orden de servicio número ${workingOrderId}?`}
+            {`Desea proceder con la anulación de la orden de servicio número ${dialogOpen.id}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>

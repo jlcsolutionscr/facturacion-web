@@ -2,15 +2,12 @@ import {
   SET_DESCRIPTION,
   SET_QUANTITY,
   SET_PRICE,
-  SET_PRODUCTS_DETAIL,
+  SET_DETAILS_LIST,
   SET_SUMMARY,
-  SET_DELIVERY_PHONE,
-  SET_DELIVERY_ADDRESS,
-  SET_DELIVERY_DESCRIPTION,
-  SET_DELIVERY_DATE,
-  SET_DELIVERY_TIME,
-  SET_DELIVERY_DETAILS,
+  SET_PAYMENT_ID,
+  SET_DELIVERY_ATTRIBUTE,
   SET_ID,
+  SET_INVOICE_ID,
   SET_STATUS,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
@@ -45,11 +42,13 @@ import {
   generateWorkingOrderPDF,
   sendWorkingOrderPDF,
   getWorkingOrderEntity,
+  getInvoiceEntity,
+  saveInvoiceEntity,
   getPriceTransformedWithRate
 } from 'utils/domainHelper'
 
 import { defaultCustomer } from 'utils/defaults'
-import { printWorkingOrder, getDeviceFromUsb } from 'utils/printing'
+import { printWorkingOrder, printInvoice, getDeviceFromUsb } from 'utils/printing'
 
 export const setDescription = (description) => {
   return {
@@ -72,9 +71,9 @@ export const setPrice = (price) => {
   }
 }
 
-export const setProductsDetail = (details) => {
+export const setDetailsList = (details) => {
   return {
-    type: SET_PRODUCTS_DETAIL,
+    type: SET_DETAILS_LIST,
     payload: { details }
   }
 }
@@ -86,51 +85,30 @@ export const setSummary = (summary) => {
   }
 }
 
-export const setDeliveryPhone = (phone) => {
+export const setPaymentId = (id) => {
   return {
-    type: SET_DELIVERY_PHONE,
-    payload: { phone }
+    type: SET_PAYMENT_ID,
+    payload: { id }
   }
 }
 
-export const setDeliveryAddress = (address) => {
+export const setDeliveryAttribute = (attribute, value) => {
   return {
-    type: SET_DELIVERY_ADDRESS,
-    payload: { address }
-  }
-}
-
-export const setDeliveryDescription = (description) => {
-  return {
-    type: SET_DELIVERY_DESCRIPTION,
-    payload: { description }
-  }
-}
-
-export const setDeliveryDate = (date) => {
-  return {
-    type: SET_DELIVERY_DATE,
-    payload: { date }
-  }
-}
-
-export const setDeliveryTime = (time) => {
-  return {
-    type: SET_DELIVERY_TIME,
-    payload: { time }
-  }
-}
-
-export const setDeliveryDetails = (details) => {
-  return {
-    type: SET_DELIVERY_DETAILS,
-    payload: { details }
+    type: SET_DELIVERY_ATTRIBUTE,
+    payload: { attribute, value }
   }
 }
 
 export const setWorkingOrderId = (id) => {
   return {
     type: SET_ID,
+    payload: { id }
+  }
+}
+
+export const setInvoiceId = (id) => {
+  return {
+    type: SET_INVOICE_ID,
     payload: { id }
   }
 }
@@ -261,7 +239,7 @@ export function addDetails () {
         } else {
           newProducts = [...productDetails, item]
         }
-        dispatch(setProductsDetail(newProducts))
+        dispatch(setDetailsList(newProducts))
         const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
         dispatch(setSummary(summary))
         dispatch(setProduct(null))
@@ -282,7 +260,7 @@ export const removeDetails = (id) => {
     const { productDetails } = getState().workingOrder
     const index = productDetails.findIndex(item => item.IdProducto === id)
     const newProducts = [...productDetails.slice(0, index), ...productDetails.slice(index + 1)]
-    dispatch(setProductsDetail(newProducts))
+    dispatch(setDetailsList(newProducts))
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
     dispatch(setSummary(summary))
   }
@@ -297,12 +275,8 @@ export const saveWorkingOrder = () => {
       workingOrderId,
       productDetails,
       summary,
-      deliveryPhone,
-      deliveryAddress,
-      deliveryDescription,
-      deliveryDate,
-      deliveryTime,
-      deliveryDetails
+      delivery,
+      listPage
     } = getState().workingOrder
     dispatch(startLoader())
     try {
@@ -315,14 +289,19 @@ export const saveWorkingOrder = () => {
         company,
         customer,
         summary,
-        deliveryPhone,
-        deliveryAddress,
-        deliveryDescription,
-        deliveryDate,
-        deliveryTime,
-        deliveryDetails
+        delivery.phone,
+        delivery.address,
+        delivery.description,
+        delivery.date,
+        delivery.time,
+        delivery.details
       )
-      if (newId) dispatch(setWorkingOrderId(newId))
+      if (newId) {
+        dispatch(setWorkingOrderId(newId))
+        dispatch(getWorkingOrderListFirstPage(null))
+      } else {
+        dispatch(getWorkingOrderListByPageNumber(listPage))
+      }
       dispatch(setStatus('ready'))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
@@ -375,15 +354,11 @@ export const getWorkingOrderListByPageNumber = (pageNumber) => {
 export const revokeWorkingOrder = (id) => {
   return async (dispatch, getState) => {
     const { token, userId } = getState().session
-    const { list } = getState().workingOrder
     dispatch(startLoader())
     try {
       await revokeWorkingOrderEntity(token, id, userId)
-      const index = list.findIndex(item => item.IdFactura === id)
-      const newList = [...list.slice(0, index), { ...list[index], Anulando: true }, ...list.slice(index + 1)]
-      dispatch(setWorkingOrderList(newList))
+      dispatch(getWorkingOrderListFirstPage(null))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
-      dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))
       dispatch(stopLoader())
@@ -432,17 +407,77 @@ export const openWorkingOrder = (id) => {
         CostoInstalacion: 0,
         PorcentajeIVA: detail.PorcentajeIVA
       }))
-      dispatch(setProductsDetail(details))
+      dispatch(setDetailsList(details))
       const summary = getProductSummary(details, workingOrder.PorcentajeExoneracion)
       dispatch(setSummary(summary))
-      dispatch(setDeliveryPhone(workingOrder.Telefono))
-      dispatch(setDeliveryAddress(workingOrder.Direccion))
-      dispatch(setDeliveryDescription(workingOrder.Descripcion))
-      dispatch(setDeliveryDate(workingOrder.FechaEntrega))
-      dispatch(setDeliveryTime(workingOrder.HoraEntrega))
-      dispatch(setDeliveryDetails(workingOrder.OtrosDetalles))
+      dispatch(setDeliveryAttribute('phone', workingOrder.Telefono))
+      dispatch(setDeliveryAttribute('address', workingOrder.Direccion))
+      dispatch(setDeliveryAttribute('description', workingOrder.Descripcion))
+      dispatch(setDeliveryAttribute('date', workingOrder.FechaEntrega))
+      dispatch(setDeliveryAttribute('time', workingOrder.HoraEntrega))
+      dispatch(setDeliveryAttribute('details', workingOrder.OtrosDetalles))
+      dispatch(setPaymentId(1))
       dispatch(setActiveSection(21))
       dispatch(setStatus('ready'))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setMessage(error))
+      dispatch(stopLoader())
+    }
+  }
+}
+
+export const generateInvoice = () => {
+  return async (dispatch, getState) => {
+    const { token, userId, branchId } = getState().session
+    const { company } = getState().company
+    const { customer } = getState().customer
+    const { paymentId, workingOrderId, productDetails, summary } = getState().workingOrder
+    dispatch(startLoader())
+    try {
+      const invoiceId = await saveInvoiceEntity(
+        token,
+        userId,
+        productDetails,
+        paymentId,
+        workingOrderId,
+        branchId,
+        company,
+        customer,
+        summary,
+        ''
+      )
+      dispatch(setInvoiceId(invoiceId))
+      dispatch(getWorkingOrderListFirstPage(null))
+      dispatch(setStatus('converted'))
+      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export const generateInvoiceTicket = () => {
+  return async (dispatch, getState) => {
+    const { token, printer, userCode, company, device, branchList, branchId } = getState().session
+    const { invoiceId } = getState().workingOrder
+    dispatch(startLoader())
+    try {
+      const invoice = await getInvoiceEntity(token, invoiceId)
+      const branchName = branchList.find(x => x.Id === branchId).Descripcion
+      let localPrinter = await getDeviceFromUsb(printer)
+      if (localPrinter !== printer) dispatch(setPrinter(localPrinter))
+      if (localPrinter) {
+        printInvoice(
+          localPrinter,
+          userCode,
+          company,
+          invoice,
+          branchName,
+          device.AnchoLinea
+        )
+      }
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))

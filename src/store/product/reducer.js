@@ -7,6 +7,8 @@ import {
   SET_PRODUCT_ATTRIBUTE
 } from './types'
 
+import { RESET_INVOICE } from 'store/invoice/types'
+import { RESET_ORDER } from 'store/working-order/types'
 import { LOGOUT } from 'store/session/types'
 
 const productReducer = (state = {}, { type, payload }) => {
@@ -23,6 +25,9 @@ const productReducer = (state = {}, { type, payload }) => {
       return { ...state, providerList: payload.list }
     case SET_PRODUCT_ATTRIBUTE:
       return { ...state, product: {...state.product, [payload.attribute]: payload.value }}
+    case RESET_INVOICE:
+    case RESET_ORDER:
+      return { ...state, product: null }
     case LOGOUT:
       return { ...state, product: null, productList: [] }
     default:

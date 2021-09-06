@@ -2,10 +2,9 @@ import {
   SET_DESCRIPTION,
   SET_QUANTITY,
   SET_PRICE,
-  SET_PRODUCTS_DETAIL,
+  SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_PAYMENT_ID,
-  SET_ORDER_ID,
   SET_COMMENT,
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
@@ -69,9 +68,9 @@ export const setPrice = (price) => {
   }
 }
 
-export const setProductsDetail = (details) => {
+export const setDetailsList = (details) => {
   return {
-    type: SET_PRODUCTS_DETAIL,
+    type: SET_DETAILS_LIST,
     payload: { details }
   }
 }
@@ -86,13 +85,6 @@ export const setSummary = (summary) => {
 export const setPaymentId = (id) => {
   return {
     type: SET_PAYMENT_ID,
-    payload: { id }
-  }
-}
-
-export const setOrderId = (id) => {
-  return {
-    type: SET_ORDER_ID,
     payload: { id }
   }
 }
@@ -232,7 +224,7 @@ export function addDetails () {
         } else {
           newProducts = [...productDetails, item]
         }
-        dispatch(setProductsDetail(newProducts))
+        dispatch(setDetailsList(newProducts))
         const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
         dispatch(setSummary(summary))
         dispatch(setProduct(null))
@@ -253,7 +245,7 @@ export const removeDetails = (id) => {
     const { productDetails } = getState().invoice
     const index = productDetails.findIndex(item => item.IdProducto === id)
     const newProducts = [...productDetails.slice(0, index), ...productDetails.slice(index + 1)]
-    dispatch(setProductsDetail(newProducts))
+    dispatch(setDetailsList(newProducts))
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
     dispatch(setSummary(summary))
   }
@@ -264,7 +256,7 @@ export const saveInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, orderId, productDetails, summary, comment } = getState().invoice
+    const { paymentId, productDetails, summary, comment } = getState().invoice
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
@@ -272,7 +264,7 @@ export const saveInvoice = () => {
         userId,
         productDetails,
         paymentId,
-        orderId,
+        0,
         branchId,
         company,
         customer,
@@ -285,22 +277,6 @@ export const saveInvoice = () => {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setMessage(error))
-    }
-  }
-}
-
-export function loadInvoiceFromWorkingOrder () {
-  return async (dispatch, getState) => {
-    const { workingOrderId, productDetails, summary } = getState().workingOrder
-    try {
-      dispatch(setOrderId(workingOrderId))
-      dispatch(setProductsDetail(productDetails))
-      dispatch(setSummary(summary))
-      dispatch(setSuccessful(0, false))
-      dispatch(setActiveSection(5))
-    } catch (error) {
-      const message = error.message ? error.message : error
-      dispatch(setMessage(message))
     }
   }
 }
@@ -347,15 +323,11 @@ export const getInvoiceListByPageNumber = (pageNumber) => {
 export const revokeInvoice = (idInvoice) => {
   return async (dispatch, getState) => {
     const { token, userId } = getState().session
-    const { list } = getState().invoice
     dispatch(startLoader())
     try {
       await revokeInvoiceEntity(token, idInvoice, userId)
-      const index = list.findIndex(item => item.IdFactura === idInvoice)
-      const newList = [...list.slice(0, index), { ...list[index], Anulando: true }, ...list.slice(index + 1)]
-      dispatch(setInvoiceList(newList))
+      dispatch(getInvoiceListFirstPage(null))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
-      dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error))
       dispatch(stopLoader())

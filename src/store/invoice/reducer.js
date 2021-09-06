@@ -2,10 +2,9 @@ import {
   SET_DESCRIPTION,
   SET_QUANTITY,
   SET_PRICE,
-  SET_PRODUCTS_DETAIL,
+  SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_PAYMENT_ID,
-  SET_ORDER_ID,
   SET_COMMENT,
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
@@ -13,6 +12,8 @@ import {
   SET_LIST,
   RESET_INVOICE
 } from './types'
+
+import { defaultInvoice } from 'utils/defaults'
 
 import { LOGOUT } from 'store/session/types'
 
@@ -24,14 +25,12 @@ const invoiceReducer = (state = {}, { type, payload }) => {
       return { ...state, quantity: payload.quantity }
     case SET_PRICE:
       return { ...state, price: payload.price }
-    case SET_PRODUCTS_DETAIL:
+    case SET_DETAILS_LIST:
       return { ...state, productDetails: payload.details }
     case SET_SUMMARY:
       return { ...state, summary: payload.summary }
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
-    case SET_ORDER_ID:
-      return { ...state, orderId: payload.id }
     case SET_COMMENT:
       return { ...state, comment: payload.comment }
     case SET_SUCCESSFUL:
@@ -46,23 +45,7 @@ const invoiceReducer = (state = {}, { type, payload }) => {
     case RESET_INVOICE:
       return {
         ...state,
-        invoiceId: 0,
-        description: '',
-        quantity: 1,
-        price: 0,
-        productDetails: [],
-        paymentId: 1,
-        orderId: 0,
-        summary: {
-          gravado: 0,
-          exonerado: 0,
-          excento: 0,
-          subTotal: 0,
-          impuesto: 0,
-          total: 0,
-        },
-        comment: '',
-        successful: false
+        ...defaultInvoice,
       }
     default:
       return state

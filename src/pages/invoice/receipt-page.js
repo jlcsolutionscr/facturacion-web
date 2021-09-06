@@ -9,7 +9,6 @@ import LabelField from 'components/label-field'
 import TextField from 'components/text-field'
 import ListDropdown from 'components/list-dropdown'
 import { getCustomer, setCustomerAttribute, filterCustomerList } from 'store/customer/actions'
-import { setStatus } from 'store/working-order/actions'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -22,15 +21,14 @@ const useStyles = makeStyles(theme => ({
 
 let delayTimer = null
 
-function StepOneScreen({
+function ReceiptPage({
   index,
   value,
   customer,
   customerList,
-  status,
+  successful,
   filterCustomerList,
   getCustomer,
-  setStatus,
   setCustomerAttribute
 }) {
   const classes = useStyles()
@@ -50,20 +48,15 @@ function StepOneScreen({
   }
   const handleItemSelected = (item) => {
     getCustomer(item.Id)
-    setStatus('on-progress')
     setFilter('')
     filterCustomerList('')
-  }
-  const handleCustomerNameChange = (event) => {
-    setCustomerAttribute('Nombre', event.target.value)
-    setStatus('on-progress')
   }
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={9} md={7}>
           <ListDropdown
-            disabled={status === 'converted'}
+            disabled={successful}
             label='Seleccione un cliente'
             items={customerList}
             value={filter}
@@ -73,13 +66,12 @@ function StepOneScreen({
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            disabled={status === 'converted'}
             required
             value={customer.Nombre}
             label='Nombre del cliente'
             fullWidth
             variant='outlined'
-            onChange={handleCustomerNameChange}
+            onChange={(event) => setCustomerAttribute('Nombre', event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -133,12 +125,12 @@ const mapStateToProps = (state) => {
   return {
     customer: state.customer.customer,
     customerList: state.customer.customerList,
-    status: state.workingOrder.status
+    successful: state.invoice.successful
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCustomer, filterCustomerList, setCustomerAttribute, setStatus }, dispatch)
+  return bindActionCreators({ getCustomer, setCustomerAttribute, filterCustomerList }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ReceiptPage)

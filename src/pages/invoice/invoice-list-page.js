@@ -81,7 +81,7 @@ function InvoiceListPage({
   const result = new UAParser().getResult()
   const classes = useStyles()
   const [invoiceId, setInvoiceId] = React.useState(null)
-  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [dialogOpen, setDialogOpen] = React.useState({open: false, id: 0})
   const isMobile = !!result.device.type
   const printReceipt = (id) => {
     generateInvoiceTicket(id)
@@ -92,12 +92,12 @@ function InvoiceListPage({
     else
       generatePDF(id, ref)
   }
-  const handleRevokeButtonClick = (id) => {
+  const handleRevokeButtonClick = (id, ref) => {
     setInvoiceId(id)
-    setDialogOpen(true)
+    setDialogOpen({open: true, id: ref})
   }
   const handleConfirmButtonClick = () => {
-    setDialogOpen(false)
+    setDialogOpen({open: false, id: 0})
     revokeInvoice(invoiceId)
   }
   const rows = list.map((row) => (
@@ -118,7 +118,7 @@ function InvoiceListPage({
         </IconButton>
       ),
       action3: (
-        <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura)}>
+        <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura, row.Consecutivo)}>
           <DeleteIcon className={classes.icon} />
         </IconButton>
       )
@@ -156,15 +156,15 @@ function InvoiceListPage({
       <div className={classes.buttonContainer}>
         <Button label='Regresar' onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog id="revoke-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
+      <Dialog id="revoke-dialog" onClose={() => setDialogOpen({open: false, id: 0})} open={dialogOpen.open}>
         <DialogTitle>Anular factura</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {`Desea proceder con la anulación de la factura número ${invoiceId}?`}
+            {`Desea proceder con la anulación de la factura número ${dialogOpen.id}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button negative label='Cerrar' onClick={() => setDialogOpen(false)} />
+          <Button negative label='Cerrar' onClick={() => setDialogOpen({open: false, id: 0})} />
           <Button label='Anular' autoFocus onClick={handleConfirmButtonClick} />
         </DialogActions>
       </Dialog>

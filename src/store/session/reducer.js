@@ -6,6 +6,8 @@ import {
   SET_PRINTER
 } from './types'
 
+import { defaultSession } from 'utils/defaults'
+
 const sessionReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case LOGIN:
@@ -25,19 +27,7 @@ const sessionReducer = (state = {}, { type, payload }) => {
         token: payload.company.Usuario.Token
       }
     case LOGOUT:
-      return {
-        ...state,
-        authenticated: false,
-        userId: null,
-        companyId: null,
-        branchId: null,
-        terminalId: null,
-        company: null,
-        reportList: [],
-        permissions: [],
-        branchList: [],
-        token: null
-      }
+      return defaultSession
     case SET_COMPANY:
       return { ...state, company: { ...state.company, ...payload.company} }
     case SET_BRANCH_ID:

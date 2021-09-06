@@ -12,7 +12,7 @@ import {
   SET_PRODUCT_TAX_RATE,
   SET_PRODUCT_UNIT,
   SET_PRODUCT_PRICE,
-  SET_PRODUCTS_DETAIL,
+  SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_EXONERATION_TYPE,
   SET_EXONERATION_REF,
@@ -135,7 +135,7 @@ export const setProductPrice = (price) => {
 
 export const setProductsDetail = (details) => {
   return {
-    type: SET_PRODUCTS_DETAIL,
+    type: SET_DETAILS_LIST,
     payload: { details }
   }
 }
