@@ -200,7 +200,7 @@ export function addDetails () {
   return async (dispatch, getState) => {
     const { customer } = getState().customer
     const { product } = getState().product
-    const { productDetails, description, quantity, price } = getState().invoice
+    const { detailsList, description, quantity, price } = getState().invoice
     try {
       
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
@@ -218,11 +218,11 @@ export function addDetails () {
           CostoInstalacion: 0,
           PorcentajeIVA: tasaIva
         }
-        const index = productDetails.findIndex(item => item.IdProducto === product.IdProducto)
+        const index = detailsList.findIndex(item => item.IdProducto === product.IdProducto)
         if (index >= 0) {
-          newProducts = [...productDetails.slice(0, index), { ...item, Cantidad: item.Cantidad + productDetails[index].Cantidad }, ...productDetails.slice(index + 1)]
+          newProducts = [...detailsList.slice(0, index), { ...item, Cantidad: item.Cantidad + detailsList[index].Cantidad }, ...detailsList.slice(index + 1)]
         } else {
-          newProducts = [...productDetails, item]
+          newProducts = [...detailsList, item]
         }
         dispatch(setDetailsList(newProducts))
         const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
@@ -242,9 +242,9 @@ export function addDetails () {
 export const removeDetails = (id) => {
   return (dispatch, getState) => {
     const { customer } = getState().customer
-    const { productDetails } = getState().invoice
-    const index = productDetails.findIndex(item => item.IdProducto === id)
-    const newProducts = [...productDetails.slice(0, index), ...productDetails.slice(index + 1)]
+    const { detailsList } = getState().invoice
+    const index = detailsList.findIndex(item => item.IdProducto === id)
+    const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)]
     dispatch(setDetailsList(newProducts))
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
     dispatch(setSummary(summary))
@@ -256,13 +256,13 @@ export const saveInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, productDetails, summary, comment } = getState().invoice
+    const { paymentId, detailsList, summary, comment } = getState().invoice
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
         token,
         userId,
-        productDetails,
+        detailsList,
         paymentId,
         0,
         branchId,

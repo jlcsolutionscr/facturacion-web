@@ -97,14 +97,12 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
   const barrioItems = barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
           <TextField
             id='NombreComercial'
             value={company ? company.NombreComercial : ''}
             label='Nombre comercial'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -113,8 +111,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='CodigoActividad'
             value={company ? company.CodigoActividad : ''}
             label='Codigo actividad'
-            fullWidth
-            variant='outlined'
             inputProps={{maxLength: 6}}
             numericFormat
             onChange={handleChange}
@@ -180,8 +176,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='Direccion'
             value={company ? company.Direccion : ''}
             label='Dirección'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -191,8 +185,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='Telefono1'
             value={company ? company.Telefono1 : ''}
             label='Teléfono 1'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -202,8 +194,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='Telefono2'
             value={company ? company.Telefono2 : ''}
             label='Teléfono 2'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -214,8 +204,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='CorreoNotificacion'
             value={company ? company.CorreoNotificacion : ''}
             label='Correo para notificaciones'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -225,8 +213,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='UsuarioHacienda'
             value={company ? company.UsuarioHacienda : ''}
             label='Usuario ATV'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -236,8 +222,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='ClaveHacienda'
             value={company ? company.ClaveHacienda : ''}
             label='Clave ATV'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -247,8 +231,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='NombreCertificado'
             value={company ? company.NombreCertificado : ''}
             label='Llave criptográfica'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -270,8 +252,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             id='PinCertificado'
             value={company ? company.PinCertificado : ''}
             label='Pin de llave criptográfica'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>

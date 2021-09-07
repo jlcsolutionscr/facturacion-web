@@ -9,6 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
@@ -68,7 +69,7 @@ function StepTwoScreen({
   description,
   quantity,
   price,
-  productDetails,
+  detailsList,
   status,
   getProduct,
   setDescription,
@@ -142,8 +143,6 @@ function StepTwoScreen({
               label='Descripción'
               id='Descripcion'
               value={description}
-              fullWidth
-              variant='outlined'
               onChange={(event) => setDescription(event.target.value)}
             />
           </Grid>
@@ -153,9 +152,7 @@ function StepTwoScreen({
               label='Cantidad'
               id='Cantidad'
               value={quantity}
-              fullWidth
               numericFormat
-              variant='outlined'
               onChange={(event) => setQuantity(event.target.value)}
             />
           </Grid>
@@ -164,9 +161,7 @@ function StepTwoScreen({
               disabled={fieldDisabled}
               label='Precio'
               value={price}
-              fullWidth
               numericFormat
-              variant='outlined'
               onChange={(event) => setPrice(event.target.value)}
             />
           </Grid>
@@ -181,10 +176,18 @@ function StepTwoScreen({
         <Grid container spacing={2} style={{overflowY: 'auto'}}>
           <Grid item xs={12}>
             <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell align='right'>Cantidad</TableCell>
+                  <TableCell>Descripción</TableCell>
+                  <TableCell align='right'>Total</TableCell>
+                  <TableCell align='right'> - </TableCell>
+                </TableRow>
+              </TableHead>
               <TableBody>
-                {productDetails.map((row, index) => (
+                {detailsList.map((row, index) => (
                   <TableRow key={index}>
-                    <TableCell>{row.Cantidad}</TableCell>
+                    <TableCell align='right'>{row.Cantidad}</TableCell>
                     <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                     <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
                     <TableCell align='right'>
@@ -210,7 +213,7 @@ const mapStateToProps = (state) => {
     product: state.product.product,
     price: state.workingOrder.price,
     productList: state.product.productList,
-    productDetails: state.workingOrder.productDetails,
+    detailsList: state.workingOrder.detailsList,
     status: state.workingOrder.status
   }
 }

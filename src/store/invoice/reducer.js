@@ -26,7 +26,7 @@ const invoiceReducer = (state = {}, { type, payload }) => {
     case SET_PRICE:
       return { ...state, price: payload.price }
     case SET_DETAILS_LIST:
-      return { ...state, productDetails: payload.details }
+      return { ...state, detailsList: payload.details }
     case SET_SUMMARY:
       return { ...state, summary: payload.summary }
     case SET_PAYMENT_ID:

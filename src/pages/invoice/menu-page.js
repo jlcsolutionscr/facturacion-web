@@ -8,6 +8,7 @@ import {  getCompany } from 'store/company/actions'
 import { setCustomerParameters } from 'store/customer/actions'
 import { setProductParameters } from 'store/product/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
+import { setReceiptParameters } from 'store/receipt/actions'
 import { getDocumentListFirstPage } from 'store/document/actions'
 import { getWorkingOrderListFirstPage } from 'store/working-order/actions'
 import { setBranchId } from 'store/session/actions'
@@ -96,6 +97,7 @@ function MenuPage({
   setCustomerParameters,
   setProductParameters,
   setInvoiceParameters,
+  setReceiptParameters,
   getInvoiceListFirstPage,
   getDocumentListFirstPage,
   getWorkingOrderListFirstPage
@@ -146,13 +148,16 @@ function MenuPage({
         <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => getInvoiceListFirstPage(6)}>Facturas electrónicas</Button>
+        <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => setReceiptParameters(6)}>Factura de compra</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!manageDocuments} classes={{root: classes.button}} onClick={() => getDocumentListFirstPage(7)}>Documentos electrónicos</Button>
+        <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => getInvoiceListFirstPage(7)}>Facturas electrónicas</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!generateWorkingOrder} classes={{root: classes.button}} onClick={() => getWorkingOrderListFirstPage(8)}>Ordenes de servicio</Button>
+        <Button disabled={!manageDocuments} classes={{root: classes.button}} onClick={() => getDocumentListFirstPage(8)}>Documentos electrónicos</Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button disabled={!generateWorkingOrder} classes={{root: classes.button}} onClick={() => getWorkingOrderListFirstPage(9)}>Ordenes de servicio</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Button disabled={!reportingMenu} classes={{root: classes.button}} onClick={() => setActiveSection(20)}>Menu de reportes</Button>
@@ -177,6 +182,7 @@ const mapDispatchToProps = (dispatch) => {
     setCustomerParameters,
     setProductParameters,
     setInvoiceParameters,
+    setReceiptParameters,
     getInvoiceListFirstPage,
     getDocumentListFirstPage,
     getWorkingOrderListFirstPage

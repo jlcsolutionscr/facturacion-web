@@ -31,7 +31,7 @@ export const defaultInvoice = {
   description: '',
   quantity: 1,
   price: 0,
-  productDetails: [],
+  detailsList: [],
   paymentId: 1,
   summary: {
     gravado: 0,
@@ -52,7 +52,7 @@ export const defaultWorkingOrder = {
   description: '',
   quantity: 1,
   price: 0,
-  productDetails: [],
+  detailsList: [],
   paymentId: 1,
   summary: {
     gravado: 0,
@@ -75,9 +75,10 @@ export const defaultWorkingOrder = {
 export const defaultReceipt = {
   receiptId: 0,
   issuer: {
-    idType: '',
+    idType: 0,
     id: '',
     name: '',
+    comercialName: '',
     address: '',
     phone: '',
     email: ''
@@ -87,11 +88,10 @@ export const defaultReceipt = {
     description: '',
     quantity: 1,
     taxType: 8,
-    taxRate: 0,
     unit: 'UND',
     price: 0
   },
-  productList: [],
+  detailsList: [],
   summary: {
     gravado: 0,
     exonerado: 0,

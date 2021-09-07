@@ -45,7 +45,7 @@ function WorkOrderPage({setActiveSection}) {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label='upload picture' component='span' onClick={() => setActiveSection(8)}>
+        <IconButton aria-label='upload picture' component='span' onClick={() => setActiveSection(9)}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

@@ -344,7 +344,7 @@ export function getProductSummary(products, exonerationPercentage) {
 export async function saveInvoiceEntity(
   token,
   userId,
-  productDetails,
+  detailsList,
   paymentId,
   orderId,
   branchId,
@@ -356,7 +356,7 @@ export async function saveInvoiceEntity(
   try {
     const bankId = await getPaymentBankId(token, company.IdEmpresa, paymentId)
     const invoiceDetails = []
-    productDetails.forEach(item => {
+    detailsList.forEach(item => {
       const detail = {
         IdFactura: 0,
         IdProducto: item.IdProducto,
@@ -478,7 +478,7 @@ export async function saveWorkingOrderEntity(
   token,
   orderId,
   userId,
-  productDetails,
+  detailsList,
   branchId,
   company,
   customer,
@@ -492,7 +492,7 @@ export async function saveWorkingOrderEntity(
 ) {
   try {
     const workingOrderDetails = []
-    productDetails.forEach(item => {
+    detailsList.forEach(item => {
       const detail = {
         IdOrden: orderId,
         IdProducto: item.IdProducto,
@@ -694,40 +694,103 @@ export async function sendWorkingOrderPDF(token, workingOrderId) {
   }
 }
 
+export async function saveReceiptEntity(
+  token,
+  userId,
+  branchId,
+  company,
+  issuer,
+  exoneration,
+  detailsList,
+  summary
+) {
+  try {
+    const receiptDetails = []
+    detailsList.forEach((item, index) => {
+      const detail = {
+        Linea: index + 1,
+        Cantidad: item.Cantidad,
+        Codigo: item.Codigo,
+        Descripcion: item.Descripcion,
+        IdImpuesto: item.IdImpuesto,
+        PorcentajeIVA: item.PorcentajeIVA,
+        UnidadMedida: item.UnidadMedida,
+        PrecioVenta: roundNumber(item.PrecioVenta / (1 + (item.PorcentajeIVA / 100)), 3),
+      }
+      receiptDetails.push(detail)
+    })
+    const receiptDate = new Date()
+    const dd = (receiptDate.getDate() < 10 ? '0' : '') + receiptDate.getDate()
+    const MM = ((receiptDate.getMonth() + 1) < 10 ? '0' : '') + (receiptDate.getMonth() + 1)
+    const HH = (receiptDate.getHours() < 10 ? '0' : '') + receiptDate.getHours()
+    const mm = (receiptDate.getMinutes() < 10 ? '0' : '') + receiptDate.getMinutes()
+    const ss = (receiptDate.getSeconds() < 10 ? '0' : '') + receiptDate.getSeconds()
+    const timeString = dd + '/' + MM + '/' + receiptDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+    const receipt = {
+      IdEmpresa: company.IdEmpresa,
+      IdSucursal: branchId,
+      IdTerminal: 1,
+      IdUsuario: userId,
+      IdTipoMoneda: 1,
+      Fecha: {DateTime: timeString},
+      IdCondicionVenta: 1,
+      PlazoCredito: 0,
+      NombreEmisor: issuer.name,
+      IdTipoIdentificacion: issuer.idType,
+      IdentificacionEmisor: issuer.id,
+      NombreComercialEmisor: issuer.comercialName,
+      TelefonoEmisor: issuer.phone,
+      IdProvinciaEmisor: 1,
+      IdCantonEmisor: 1,
+      IdDistritoEmisor: 1,
+      IdBarrioEmisor: 1,
+      DireccionEmisor: issuer.address,
+      CorreoElectronicoEmisor: issuer.email,
+      IdTipoExoneracion: exoneration.type,
+      NumDocExoneracion: exoneration.ref,
+      NombreInstExoneracion: exoneration.issuerName,
+      FechaEmisionDoc: {DateTime: exoneration.date + ' 22:59:59 GMT-06:00'},
+      PorcentajeExoneracion: exoneration.percentage,
+      TextoAdicional: '',
+      Excento: summary.excento,
+      Gravado: summary.gravado,
+      Exonerado: summary.exonerado,
+      Descuento: 0,
+      Impuesto: summary.impuesto,
+      DetalleFacturaCompra: receiptDetails
+    }
+    const data = "{NombreMetodo: 'AgregarFacturaCompra', Entidad: " + JSON.stringify(receipt) + "}"
+    let receiptId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    return receiptId
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
 export function getPriceTransformed(price, taxId, withTaxes) {
   function withTaxesFunc (a, b) { return a * b }
   function noTaxesFunc (a, b) { return a / b }
-  let untaxPrice = 0
   const taxOperation = withTaxes ? withTaxesFunc : noTaxesFunc
   switch (taxId) {
     case 1:
-      untaxPrice = price
-      break;
+      return price
     case 2:
-      untaxPrice = taxOperation(price, 1.01)
-      break;
+      return taxOperation(price, 1.01)
     case 3:
-      untaxPrice = taxOperation(price, 1.02)
-      break;
+      return taxOperation(price, 1.02)
     case 4:
-      untaxPrice = taxOperation(price, 1.04)
-      break;
+      return taxOperation(price, 1.04)
     case 5:
-      untaxPrice = price
-      break;
+      return price
     case 6:
-      untaxPrice = taxOperation(price, 1.04)
-      break;
+      return taxOperation(price, 1.04)
     case 7:
-      untaxPrice = taxOperation(price, 1.08)
-      break;
+      return taxOperation(price, 1.08)
     case 8:
-      untaxPrice = taxOperation(price, 1.13)
-      break;
+      return taxOperation(price, 1.13)
     default:
-      untaxPrice = price
+      return price
   }
-  return untaxPrice
 }
 
 export function getPriceTransformedWithRate(price, taxRate, withTaxes) {
@@ -737,4 +800,27 @@ export function getPriceTransformedWithRate(price, taxRate, withTaxes) {
   const rate = taxRate / 100
   const untaxPrice = taxOperation(price, (1 + rate))
   return untaxPrice
+}
+
+export function getTaxRateByType(taxId) {
+  switch (taxId) {
+    case 1:
+      return 0
+    case 2:
+      return 1
+    case 3:
+      return 2
+    case 4:
+      return 4
+    case 5:
+      return 0
+    case 6:
+      return 4
+    case 7:
+      return 8
+    case 8:
+      return 13
+    default:
+      return 0
+  }
 }

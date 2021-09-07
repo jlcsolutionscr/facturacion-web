@@ -171,8 +171,7 @@ const mapStateToProps = (state) => {
   return {
     listPage: state.workingOrder.listPage,
     listCount: state.workingOrder.listCount,
-    list: state.workingOrder.list,
-    ticket: state.workingOrder.ticket
+    list: state.workingOrder.list
   }
 }
 

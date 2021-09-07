@@ -215,7 +215,7 @@ export function addDetails () {
   return async (dispatch, getState) => {
     const { customer } = getState().customer
     const { product } = getState().product
-    const { productDetails, description, quantity, price } = getState().workingOrder
+    const { detailsList, description, quantity, price } = getState().workingOrder
     try {
       
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
@@ -233,11 +233,11 @@ export function addDetails () {
           CostoInstalacion: 0,
           PorcentajeIVA: tasaIva
         }
-        const index = productDetails.findIndex(item => item.IdProducto === product.IdProducto)
+        const index = detailsList.findIndex(item => item.IdProducto === product.IdProducto)
         if (index >= 0) {
-          newProducts = [...productDetails.slice(0, index), { ...item, Cantidad: item.Cantidad + productDetails[index].Cantidad }, ...productDetails.slice(index + 1)]
+          newProducts = [...detailsList.slice(0, index), { ...item, Cantidad: item.Cantidad + detailsList[index].Cantidad }, ...detailsList.slice(index + 1)]
         } else {
-          newProducts = [...productDetails, item]
+          newProducts = [...detailsList, item]
         }
         dispatch(setDetailsList(newProducts))
         const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
@@ -257,9 +257,9 @@ export function addDetails () {
 export const removeDetails = (id) => {
   return (dispatch, getState) => {
     const { customer } = getState().customer
-    const { productDetails } = getState().workingOrder
-    const index = productDetails.findIndex(item => item.IdProducto === id)
-    const newProducts = [...productDetails.slice(0, index), ...productDetails.slice(index + 1)]
+    const { detailsList } = getState().workingOrder
+    const index = detailsList.findIndex(item => item.IdProducto === id)
+    const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)]
     dispatch(setDetailsList(newProducts))
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
     dispatch(setSummary(summary))
@@ -273,7 +273,7 @@ export const saveWorkingOrder = () => {
     const { customer } = getState().customer
     const {
       workingOrderId,
-      productDetails,
+      detailsList,
       summary,
       delivery,
       listPage
@@ -284,7 +284,7 @@ export const saveWorkingOrder = () => {
         token,
         workingOrderId,
         userId,
-        productDetails,
+        detailsList,
         branchId,
         company,
         customer,
@@ -432,13 +432,13 @@ export const generateInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, workingOrderId, productDetails, summary } = getState().workingOrder
+    const { paymentId, workingOrderId, detailsList, summary } = getState().workingOrder
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
         token,
         userId,
-        productDetails,
+        detailsList,
         paymentId,
         workingOrderId,
         branchId,

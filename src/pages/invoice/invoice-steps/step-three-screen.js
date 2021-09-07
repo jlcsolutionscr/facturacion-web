@@ -99,8 +99,6 @@ function StepThreeScreen({
             label='Observaciones'
             id='Observacion'
             value={comment}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setComment(event.target.value)}
           />
         </Grid>

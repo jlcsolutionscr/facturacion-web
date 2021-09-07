@@ -98,8 +98,6 @@ function DocumentListPage({
         <TextField
           value={email}
           label='Dirección electrónica'
-          fullWidth
-          variant='outlined'
           onChange={(e) => setEmail(e.target.value)}
         />
       </DialogContent>

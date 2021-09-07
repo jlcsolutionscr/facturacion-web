@@ -4,6 +4,7 @@ import companyReducer from './company/reducer'
 import customerReducer from './customer/reducer'
 import productReducer from './product/reducer'
 import invoiceReducer from './invoice/reducer'
+import receiptReducer from './receipt/reducer'
 import workingOrderReducer from './working-order/reducer'
 import documentReducer from './document/reducer'
 import sessionReducer from './session/reducer'
@@ -14,6 +15,7 @@ export default combineReducers({
   customer: customerReducer,
   product: productReducer,
   invoice: invoiceReducer,
+  receipt: receiptReducer,
   document: documentReducer,
   workingOrder: workingOrderReducer,
   session: sessionReducer,

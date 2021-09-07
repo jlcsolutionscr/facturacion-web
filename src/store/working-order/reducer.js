@@ -28,7 +28,7 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
     case SET_PRICE:
       return { ...state, price: payload.price }
     case SET_DETAILS_LIST:
-      return { ...state, productDetails: payload.details, status: 'on-progress' }
+      return { ...state, status: 'on-progress', detailsList: payload.details }
     case SET_SUMMARY:
       return { ...state, summary: payload.summary }
     case SET_PAYMENT_ID:

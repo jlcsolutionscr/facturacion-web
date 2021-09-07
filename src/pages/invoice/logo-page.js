@@ -73,14 +73,12 @@ function LogoPage({ setActiveSection, saveLogo }) {
   const imagePreview = logo !== '' ? (<img style={{height: '100%', width: '100%', border: 'none'}} src={logo} alt='Seleccione un archivo'/>) : (<div style={{height: '100%', width: '100%', border: 'none'}}/>)
   return (
     <div className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={6} sm={6}>
           <TextField
             disabled={true}
             value={filename}
             id='Logotipo'
-            fullWidth
-            variant='outlined'
           />
         </Grid>
         <Grid item xs={2} sm={2}>

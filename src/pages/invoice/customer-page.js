@@ -26,6 +26,8 @@ import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
 import Button from 'components/button'
 
+import { convertStringToDate, convertDateToString } from 'utils/utilities'
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.pages,
@@ -112,12 +114,6 @@ function CustomerPage({
     setCustomerAttribute('AplicaTasaDiferenciada', !customer.AplicaTasaDiferenciada)
     if (customer.AplicaTasaDiferenciada) setCustomerAttribute('IdImpuesto', 8)
   }
-  const handleDateChange = (date) => {
-    const dayFormatted = (date.getDate() < 10 ? '0' : '') + date.getDate()
-    const monthFormatted = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
-    const dateText = `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`
-    setCustomerAttribute('FechaEmisionDoc', dateText)
-  }
   const handleItemSelected = (item) => {
     getCustomer(item.Id)
     setFilter('')
@@ -128,36 +124,31 @@ function CustomerPage({
     setActiveSection(0)
   }
   let idPlaceholder = ''
-    let idMaxLength = 0
-    switch (customer.IdTipoIdentificacion) {
-      case 0:
-        idPlaceholder = '999999999'
-        idMaxLength = 9
-        break
-      case 1:
-        idPlaceholder = '9999999999'
-        idMaxLength = 10
-        break
-      case 2:
-        idPlaceholder = '999999999999'
-        idMaxLength = 12
-        break
-      case 3:
-        idPlaceholder = '9999999999'
-        idMaxLength = 10
-        break
-      default:
-        idPlaceholder = '999999999'
-        idMaxLength = 9
-    }
-  let formattedDate = new Date(2000, 0, 1)
-  if (customer && customer.FechaEmisionDoc) {
-    const splitDate = customer.FechaEmisionDoc.split("/")
-    formattedDate = new Date(parseInt(splitDate[2]), parseInt(splitDate[1]) - 1, parseInt(splitDate[0]))
+  let idMaxLength = 0
+  switch (customer.IdTipoIdentificacion) {
+    case 0:
+      idPlaceholder = '999999999'
+      idMaxLength = 9
+      break
+    case 1:
+      idPlaceholder = '9999999999'
+      idMaxLength = 10
+      break
+    case 2:
+      idPlaceholder = '999999999999'
+      idMaxLength = 12
+      break
+    case 3:
+      idPlaceholder = '9999999999'
+      idMaxLength = 10
+      break
+    default:
+      idPlaceholder = '999999999'
+      idMaxLength = 9
   }
   return (
     <div className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <ListDropdown
             label='Seleccione un cliente'
@@ -167,7 +158,7 @@ function CustomerPage({
             onChange={handleOnFilterChange}
           />
         </Grid>
-      <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
             <InputLabel id='IdTipoIdentificacion'>Tipo de identificación</InputLabel>
             <Select
@@ -186,9 +177,7 @@ function CustomerPage({
             value={customer.Identificacion}
             label='Identificación'
             placeholder={idPlaceholder}
-            fullWidth
             inputProps={{maxLength: idMaxLength}}
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -198,8 +187,6 @@ function CustomerPage({
             id='Nombre'
             value={customer.Nombre}
             label='Nombre del cliente'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -208,8 +195,6 @@ function CustomerPage({
             id='NombreComercial'
             value={customer.NombreComercial}
             label='Nombre Comercial'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -219,8 +204,6 @@ function CustomerPage({
             id='Direccion'
             value={customer.Direccion}
             label='Dirección'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -230,8 +213,6 @@ function CustomerPage({
             id='Telefono'
             value={customer.Telefono}
             label='Teléfono'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -241,8 +222,6 @@ function CustomerPage({
             id='Fax'
             value={customer.Fax}
             label='Fax'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -253,8 +232,6 @@ function CustomerPage({
             id='CorreoElectronico'
             value={customer.CorreoElectronico}
             label='Correo electrónico'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -315,8 +292,6 @@ function CustomerPage({
             id='NumDocExoneracion'
             value={customer.NumDocExoneracion}
             label='Documento de exoneración'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -325,8 +300,6 @@ function CustomerPage({
             id='NombreInstExoneracion'
             value={customer.NombreInstExoneracion}
             label='Nombre de institución'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -335,8 +308,8 @@ function CustomerPage({
             <DatePicker
               label='Fecha exoneración'
               format='dd/MM/yyyy'
-              value={formattedDate}
-              onChange={handleDateChange}
+              value={convertStringToDate(customer.FechaEmisionDoc)}
+              onChange={(event) => setCustomerAttribute('FechaEmisionDoc', convertDateToString(event.target.value))}
               animateYearScrolling
             />
           </Grid>
@@ -346,8 +319,6 @@ function CustomerPage({
             id='PorcentajeExoneracion'
             value={customer.PorcentajeExoneracion}
             label='Porcentaje de exoneración'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />

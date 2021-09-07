@@ -184,7 +184,7 @@ function ProductPage({
   }
   return (
     <div className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <FormControl className={classes.formControl}>
             <InputLabel id="filter-type-select-label">Filtrar producto por:</InputLabel>
@@ -238,8 +238,6 @@ function ProductPage({
             id='Codigo'
             value={product.Codigo}
             label='Código'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -249,8 +247,6 @@ function ProductPage({
             id='CodigoProveedor'
             value={product.CodigoProveedor}
             label='Codigo proveedor'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -260,8 +256,6 @@ function ProductPage({
             id='CodigoClasificacion'
             value={product.CodigoClasificacion}
             label='Codigo CABYS'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -284,8 +278,6 @@ function ProductPage({
             id='Descripcion'
             value={product.Descripcion}
             label='Descripción'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>
@@ -295,8 +287,6 @@ function ProductPage({
             id='PrecioCosto'
             value={product.PrecioCosto}
             label='Precio costo'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -306,8 +296,6 @@ function ProductPage({
             id='untaxPrice1'
             value={untaxPrice1}
             label='Precio sin impuesto'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleUntaxPriceChange}
           />
@@ -318,8 +306,6 @@ function ProductPage({
             id='PrecioVenta1'
             value={product.PrecioVenta1}
             label='Precio de venta 1'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handlePriceChange}
           />
@@ -329,8 +315,6 @@ function ProductPage({
             id='untaxPrice2'
             value={untaxPrice2}
             label='Precio sin impuesto'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleUntaxPriceChange}
           />
@@ -340,8 +324,6 @@ function ProductPage({
             id='PrecioVenta2'
             value={product.PrecioVenta2}
             label='Precio de venta 2'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -351,8 +333,6 @@ function ProductPage({
             id='untaxPrice3'
             value={untaxPrice3}
             label='Precio sin impuesto'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleUntaxPriceChange}
           />
@@ -362,8 +342,6 @@ function ProductPage({
             id='PrecioVenta3'
             value={product.PrecioVenta3}
             label='Precio de venta3'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -373,8 +351,6 @@ function ProductPage({
             id='untaxPrice4'
             value={untaxPrice4}
             label='Precio sin impuesto'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleUntaxPriceChange}
           />
@@ -384,8 +360,6 @@ function ProductPage({
             id='PrecioVenta4'
             value={product.PrecioVenta4}
             label='Precio de venta 4'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -395,8 +369,6 @@ function ProductPage({
             id='untaxPrice5'
             value={untaxPrice5}
             label='Precio sin impuesto'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleUntaxPriceChange}
           />
@@ -406,8 +378,6 @@ function ProductPage({
             id='PrecioVenta5'
             value={product.PrecioVenta5}
             label='Precio de venta 5'
-            fullWidth
-            variant='outlined'
             numericFormat
             onChange={handleChange}
           />
@@ -429,8 +399,6 @@ function ProductPage({
             id='Observacion'
             value={product.Observacion}
             label='Observación'
-            fullWidth
-            variant='outlined'
             onChange={handleChange}
           />
         </Grid>

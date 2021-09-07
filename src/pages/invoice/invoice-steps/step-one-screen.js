@@ -69,8 +69,6 @@ function StepOneScreen({
             required
             value={customer.Nombre}
             label='Nombre del cliente'
-            fullWidth
-            variant='outlined'
             onChange={(event) => setCustomerAttribute('Nombre', event.target.value)}
           />
         </Grid>

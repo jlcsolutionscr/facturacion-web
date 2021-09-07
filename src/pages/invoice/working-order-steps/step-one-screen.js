@@ -77,8 +77,6 @@ function StepOneScreen({
             required
             value={customer.Nombre}
             label='Nombre del cliente'
-            fullWidth
-            variant='outlined'
             onChange={handleCustomerNameChange}
           />
         </Grid>

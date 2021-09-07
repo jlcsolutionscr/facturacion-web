@@ -1,24 +1,9 @@
 import {
-  SET_ISSUER_ID_TYPE,
-  SET_ISSUER_ID,
-  SET_ISSUER_NAME,
-  SET_ISSUER_ADDRESS,
-  SET_ISSUER_PHONE,
-  SET_ISSUER_EMAIL,
-  SET_PRODUCT_CODE,
-  SET_PRODUCT_DESCRIPTION,
-  SET_PRODUCT_QUANTITY,
-  SET_PRODUCT_TAX_TYPE,
-  SET_PRODUCT_TAX_RATE,
-  SET_PRODUCT_UNIT,
-  SET_PRODUCT_PRICE,
+  SET_ISSUER_DETAILS,
+  SET_PRODUCT_DETAILS,
   SET_DETAILS_LIST,
   SET_SUMMARY,
-  SET_EXONERATION_TYPE,
-  SET_EXONERATION_REF,
-  SET_EXONERATION_ISSUER,
-  SET_EXONERATION_DATE,
-  SET_EXONERATION_PERCENTAGE,
+  SET_EXONERATION_DETAILS,
   SET_SUCCESSFUL,
   RESET_RECEIPT
 } from './types'
@@ -39,101 +24,29 @@ import {
   getCompanyEntity,
   getIdTypeList,
   getRentTypeList,
-  getExonerationTypeList
+  getTaxRateByType,
+  getExonerationTypeList,
+  getProductSummary,
+  saveReceiptEntity
 } from 'utils/domainHelper'
 
-export const setIssuerIdType = (type) => {
+import { roundNumber } from 'utils/utilities'
+
+export const setIssuerDetails = (attribute, value) => {
   return {
-    type: SET_ISSUER_ID_TYPE,
-    payload: { type }
+    type: SET_ISSUER_DETAILS,
+    payload: { attribute, value }
   }
 }
 
-export const setIssuerId = (id) => {
+export const setProductDetails = (attribute, value) => {
   return {
-    type: SET_ISSUER_ID,
-    payload: { id }
+    type: SET_PRODUCT_DETAILS,
+    payload: { attribute, value }
   }
 }
 
-export const setIssuerName = (name) => {
-  return {
-    type: SET_ISSUER_NAME,
-    payload: { name }
-  }
-}
-
-export const setIssuerAddress = (address) => {
-  return {
-    type: SET_ISSUER_ADDRESS,
-    payload: { address }
-  }
-}
-
-export const setIssuerPhone = (phone) => {
-  return {
-    type: SET_ISSUER_PHONE,
-    payload: { phone }
-  }
-}
-
-export const setIssuerEmail = (email) => {
-  return {
-    type: SET_ISSUER_EMAIL,
-    payload: { email }
-  }
-}
-
-export const setProductCode = (code) => {
-  return {
-    type: SET_PRODUCT_CODE,
-    payload: { code }
-  }
-}
-
-export const setProductDescription = (description) => {
-  return {
-    type: SET_PRODUCT_DESCRIPTION,
-    payload: { description }
-  }
-}
-
-export const setProductQuantity = (quantity) => {
-  return {
-    type: SET_PRODUCT_QUANTITY,
-    payload: { quantity }
-  }
-}
-
-export const setProductTaxType = (type) => {
-  return {
-    type: SET_PRODUCT_TAX_TYPE,
-    payload: { type }
-  }
-}
-
-export const setProductTaxRate = (rate) => {
-  return {
-    type: SET_PRODUCT_TAX_RATE,
-    payload: { rate }
-  }
-}
-
-export const setProductUnit = (unit) => {
-  return {
-    type: SET_PRODUCT_UNIT,
-    payload: { unit }
-  }
-}
-
-export const setProductPrice = (price) => {
-  return {
-    type: SET_PRODUCT_PRICE,
-    payload: { price }
-  }
-}
-
-export const setProductsDetail = (details) => {
+export const setDetailsList = (details) => {
   return {
     type: SET_DETAILS_LIST,
     payload: { details }
@@ -147,38 +60,10 @@ export const setSummary = (summary) => {
   }
 }
 
-export const setExonerationType = (type) => {
+export const setExonerationDetails = (attribute, value) => {
   return {
-    type: SET_EXONERATION_TYPE,
-    payload: { type }
-  }
-}
-
-export const setExonerationRef = (ref) => {
-  return {
-    type: SET_EXONERATION_REF,
-    payload: { ref }
-  }
-}
-
-export const setExonerationIssuer = (issuer) => {
-  return {
-    type: SET_EXONERATION_ISSUER,
-    payload: { issuer }
-  }
-}
-
-export const setExonerationDate = (date) => {
-  return {
-    type: SET_EXONERATION_DATE,
-    payload: { date }
-  }
-}
-
-export const setExonerationPercentage = (percentage) => {
-  return {
-    type: SET_EXONERATION_PERCENTAGE,
-    payload: { percentage }
+    type: SET_EXONERATION_DETAILS,
+    payload: { attribute, value }
   }
 }
 
@@ -219,6 +104,79 @@ export function setReceiptParameters (id) {
       }
       dispatch(resetReceipt())
       dispatch(setActiveSection(id))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export function addDetails () {
+  return (dispatch, getState) => {
+    const { exoneration, product, detailsList } = getState().receipt
+    try {
+      
+      if (product != null && product.code && product.taxType && product.description !== '' && product.quantity > 0 &&  product.price > 0) {
+        let newProducts = null
+        let taxParam = getTaxRateByType(product.taxType)
+        const item = {
+          Cantidad: product.quantity,
+          Codigo: product.code,
+          Descripcion: product.description,
+          IdImpuesto: product.taxType,
+          PorcentajeIVA: taxParam,
+          UnidadMedida: product.unit,
+          PrecioVenta: roundNumber(product.price * (1 + (taxParam / 100)), 2),
+        }
+        newProducts = [...detailsList, item]
+        dispatch(setDetailsList(newProducts))
+        const summary = getProductSummary(newProducts, exoneration.percentage)
+        dispatch(setSummary(summary))
+        dispatch(setProductDetails('code', ''))
+        dispatch(setProductDetails('description', ''))
+        dispatch(setProductDetails('taxType', 8))
+        dispatch(setProductDetails('unit', 'UND'))
+        dispatch(setProductDetails('quantity', 1))
+        dispatch(setProductDetails('price', 0))
+      }
+    } catch (error) {
+      const message = error.message ? error.message : error
+      dispatch(setMessage(message))
+    }
+  }
+}
+
+export const removeDetails = (id) => {
+  return (dispatch, getState) => {
+    const { exoneration, detailsList } = getState().receipt
+    const index = detailsList.findIndex(item => item.IdProducto === id)
+    const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)]
+    dispatch(setDetailsList(newProducts))
+    const summary = getProductSummary(newProducts, exoneration.percentage)
+    dispatch(setSummary(summary))
+  }
+}
+
+export const saveReceipt = () => {
+  return async (dispatch, getState) => {
+    const { token, userId, branchId } = getState().session
+    const { company } = getState().company
+    const { issuer, exoneration, detailsList, summary } = getState().receipt
+    dispatch(startLoader())
+    try {
+      await saveReceiptEntity(
+        token,
+        userId,
+        branchId,
+        company,
+        issuer,
+        exoneration,
+        detailsList,
+        summary
+      )
+      dispatch(setSuccessful(true))
+      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())

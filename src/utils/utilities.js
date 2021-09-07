@@ -31,6 +31,21 @@ export function arrayToString (byteArray) {
   return String.fromCharCode.apply(null, byteArray)
 }
 
+export function convertStringToDate(value) {
+  let formattedDate = new Date(2000, 0, 1)
+  if (value !== '') {
+    const splitDate = value.split("/")
+    formattedDate = new Date(parseInt(splitDate[2]), parseInt(splitDate[1]) - 1, parseInt(splitDate[0]))
+  }
+  return formattedDate
+}
+
+export function convertDateToString(date) {
+  const dayFormatted = (date.getDate() < 10 ? '0' : '') + date.getDate()
+  const monthFormatted = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
+  return `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`
+}
+
 export function xmlToObject (value) {
   const parser = new xmlParser()
   const text = String.fromCharCode.apply(null, value)

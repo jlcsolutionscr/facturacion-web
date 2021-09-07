@@ -12,25 +12,26 @@ import { defaultReceipt } from 'utils/defaults'
 
 import { LOGOUT } from 'store/session/types'
 
-const recepitReducer = (state = {}, { type, payload }) => {
+const receiptReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_ISSUER_DETAILS:
       return { ...state, issuer: {...state.issuer, [payload.attribute]: payload.value }}
     case SET_PRODUCT_DETAILS:
       return { ...state, product: {...state.product, [payload.attribute]: payload.value }}
     case SET_DETAILS_LIST:
-      return { ...state, productList: payload.details }
+      return { ...state, detailsList: payload.details }
     case SET_SUMMARY:
       return { ...state, summary: payload.summary }
     case SET_EXONERATION_DETAILS:
       return { ...state, exoneration: {...state.exoneration, [payload.attribute]: payload.value }}
     case SET_SUCCESSFUL:
-      return { ...state, successful: payload.successful }
+      return { ...state, successful: true }
     case RESET_RECEIPT:
     case LOGOUT:
       return defaultReceipt
     default:
+      return state
   }
 }
 
-export default recepitReducer
+export default receiptReducer

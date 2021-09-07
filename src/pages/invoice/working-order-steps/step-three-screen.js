@@ -114,8 +114,6 @@ function StepThreeScreen({
             label='Teléfono'
             id='Telefono'
             value={deliveryPhone}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setDeliveryAttribute('phone', event.target.value)}
           />
         </Grid>
@@ -125,8 +123,6 @@ function StepThreeScreen({
             label='Dirección'
             id='Direccion'
             value={deliveryAddress}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setDeliveryAttribute('address', event.target.value)}
           />
         </Grid>
@@ -136,8 +132,6 @@ function StepThreeScreen({
             label='Descripción'
             id='ThreeDescripcion'
             value={deliveryDescription}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setDeliveryAttribute('description', event.target.value)}
           />
         </Grid>
@@ -147,8 +141,6 @@ function StepThreeScreen({
             label='Fecha de entrega'
             id='FechaDeEntrega'
             value={deliveryDate}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setDeliveryAttribute('date', event.target.value)}
           />
         </Grid>
@@ -158,8 +150,6 @@ function StepThreeScreen({
             label='Hora de entrega'
             id='HoraDeEntrega'
             value={deliveryTime}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setDeliveryAttribute('time', event.target.value)}
           />
         </Grid>
@@ -169,8 +159,6 @@ function StepThreeScreen({
             label='Observaciones'
             id='Observaciones'
             value={deliveryDetails}
-            fullWidth
-            variant='outlined'
             onChange={(event) => setDeliveryAttribute('details', event.target.value)}
           />
         </Grid>
