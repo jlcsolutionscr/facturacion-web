@@ -265,6 +265,7 @@ export const saveInvoice = () => {
         detailsList,
         paymentId,
         0,
+        0,
         branchId,
         company,
         customer,

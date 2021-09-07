@@ -5,6 +5,7 @@ import {
   SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_PAYMENT_ID,
+  SET_CASH_ADVANCE,
   SET_DELIVERY_ATTRIBUTE,
   SET_ID,
   SET_INVOICE_ID,
@@ -89,6 +90,13 @@ export const setPaymentId = (id) => {
   return {
     type: SET_PAYMENT_ID,
     payload: { id }
+  }
+}
+
+export const setCashAdvance = (cash) => {
+  return {
+    type: SET_CASH_ADVANCE,
+    payload: { cash }
   }
 }
 
@@ -381,6 +389,7 @@ export const openWorkingOrder = (id) => {
         dispatch(setCompany(companyEntity))
       }
       dispatch(setWorkingOrderId(workingOrder.IdOrden))
+      dispatch(setCashAdvance(workingOrder.MontoAdelanto))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       dispatch(setProductList(productList))
       const customer = {
@@ -432,7 +441,7 @@ export const generateInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, workingOrderId, detailsList, summary } = getState().workingOrder
+    const { paymentId, cashAdvance, workingOrderId, detailsList, summary } = getState().workingOrder
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
@@ -440,6 +449,7 @@ export const generateInvoice = () => {
         userId,
         detailsList,
         paymentId,
+        cashAdvance,
         workingOrderId,
         branchId,
         company,

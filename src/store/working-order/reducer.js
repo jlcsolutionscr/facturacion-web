@@ -4,6 +4,7 @@ import {
   SET_PRICE,
   SET_DETAILS_LIST,
   SET_PAYMENT_ID,
+  SET_CASH_ADVANCE,
   SET_SUMMARY,
   SET_DELIVERY_ATTRIBUTE,
   SET_ID,
@@ -33,6 +34,8 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
       return { ...state, summary: payload.summary }
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
+    case SET_CASH_ADVANCE:
+      return { ...state, cashAdvance: payload.cash }
     case SET_DELIVERY_ATTRIBUTE:
       return { ...state, status: 'on-progress', delivery: {...state.delivery, [payload.attribute]: payload.value }}
     case SET_ID:

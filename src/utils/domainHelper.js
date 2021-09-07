@@ -346,6 +346,7 @@ export async function saveInvoiceEntity(
   userId,
   detailsList,
   paymentId,
+  cashAdvance,
   orderId,
   branchId,
   company,
@@ -378,8 +379,8 @@ export async function saveInvoiceEntity(
       IdCuentaBanco: bankId,
       TipoTarjeta: '',
       NroMovimiento: '',
-      MontoLocal: summary.total,
-      MontoForaneo: summary.total
+      MontoLocal: summary.total - cashAdvance,
+      TipoDeCambio: 1
     }]
     const invoiceDate = new Date()
     const dd = (invoiceDate.getDate() < 10 ? '0' : '') + invoiceDate.getDate()
@@ -410,6 +411,7 @@ export async function saveInvoiceEntity(
       Impuesto: summary.impuesto,
       TotalCosto: summary.totalCosto,
       MontoPagado: summary.total,
+      MontoAdelanto: cashAdvance,
       IdTipoExoneracion: customer.IdTipoExoneracion,
       NumDocExoneracion: customer.NumDocExoneracion,
       NombreInstExoneracion: customer.NombreInstExoneracion,

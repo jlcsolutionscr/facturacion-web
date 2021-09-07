@@ -54,6 +54,7 @@ export const defaultWorkingOrder = {
   price: 0,
   detailsList: [],
   paymentId: 1,
+  cashAdvance: 0,
   summary: {
     gravado: 0,
     exonerado: 0,
