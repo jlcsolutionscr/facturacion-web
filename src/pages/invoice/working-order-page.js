@@ -13,6 +13,7 @@ import { BackArrowIcon } from 'utils/iconsHelper'
 import StepOneScreen from './working-order-steps/step-one-screen'
 import StepTwoScreen from './working-order-steps/step-two-screen'
 import StepThreeScreen from './working-order-steps/step-three-screen'
+import StepFourScreen from './working-order-steps/step-four-screen'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -39,7 +40,7 @@ function WorkOrderPage({setActiveSection}) {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setValue(newValue)
   };
 
   return (
@@ -53,11 +54,13 @@ function WorkOrderPage({setActiveSection}) {
       >
         <Tab label='Cliente'/>
         <Tab label='Detalle'/>
+        <Tab label='Otros'/>
         <Tab label='Generar'/>
       </Tabs>
       <StepOneScreen value={value} index={0} />
       <StepTwoScreen value={value} index={1} />
-      <StepThreeScreen value={value} setValue={setValue} index={2} />
+      <StepThreeScreen value={value} index={2} />
+      <StepFourScreen value={value} index={3} />
     </div>
   )
 }
