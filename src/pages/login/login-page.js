@@ -16,7 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
 import LogoImage from 'assets/img/login-logo.png'
-import BackgroundImage from 'assets/img/login-background.jpg'
+import BackgroundImage from 'assets/img/login-background.webp'
 
 const useStyles = makeStyles(theme => ({
   root: {
