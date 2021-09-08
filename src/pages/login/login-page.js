@@ -15,8 +15,9 @@ import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
-import LogoImage from 'assets/img/login-logo.png'
-import BackgroundImage from 'assets/img/login-background.webp'
+import LogoImage from 'assets/img/login-logo.webp'
+import LoginImage from 'assets/img/login-background.webp'
+import LoginImageJpg from 'assets/img/login-background.webp'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,10 +26,13 @@ const useStyles = makeStyles(theme => ({
     }
   },
   image: {
-    backgroundImage: `url(${BackgroundImage})`,
+    backgroundImage: `url(${LoginImageJpg})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundPosition: 'top'
+    backgroundPosition: 'top',
+    '& .webp': {
+      backgroundImage: `url(${LoginImage})`
+    }
   },
   paper: {
     height: `${window.innerHeight}px`,

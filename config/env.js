@@ -8,6 +8,7 @@ const paths = require('./paths');
 delete require.cache[require.resolve('./paths')];
 
 const NODE_ENV = process.env.NODE_ENV;
+const REACT_APP_ENV = process.env.REACT_APP_ENV;
 if (!NODE_ENV) {
   throw new Error(
     'The NODE_ENV environment variable is required but was not specified.'
@@ -16,13 +17,8 @@ if (!NODE_ENV) {
 
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 const dotenvFiles = [
-  `${paths.dotenv}.${NODE_ENV}.local`,
-  // Don't include `.env.local` for `test` environment
-  // since normally you expect tests to produce the same
-  // results for everyone
-  NODE_ENV !== 'test' && `${paths.dotenv}.local`,
-  `${paths.dotenv}.${NODE_ENV}`,
-  paths.dotenv,
+  REACT_APP_ENV === 'production' && `${paths.dotenv}.${NODE_ENV}`,
+  REACT_APP_ENV !== 'production' && paths.dotenv,
 ].filter(Boolean);
 
 // Load environment variables from .env* files. Suppress warnings using silent
@@ -39,6 +35,9 @@ dotenvFiles.forEach(dotenvFile => {
     );
   }
 });
+
+console.log('dotenvFiles', dotenvFiles);
+console.log('NODE_ENV', process.env.NODE_ENV);
 
 // We support resolving modules according to `NODE_PATH`.
 // This lets you use absolute paths in imports inside large monorepos:
@@ -99,6 +98,8 @@ function getClientEnvironment(publicUrl) {
       return env;
     }, {}),
   };
+
+  console.log('stringified', stringified);
 
   return { raw, stringified };
 }

@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from '@material-ui/core/styles'
-import LogoDarkImage from 'assets/img/company-logo-dark.png'
+import LogoDarkImage from 'assets/img/company-logo-dark.webp'
 
 export const createStyle = makeStyles(theme => createStyles({
   header: {
