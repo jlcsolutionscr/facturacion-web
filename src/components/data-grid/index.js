@@ -16,23 +16,18 @@ import { createStyle } from './styles'
 
 function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
   const classes = createStyle()
-
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0)
   }
-
   const handleBackButtonClick = (event) => {
     onPageChange(event, page - 1)
   }
-
   const handleNextButtonClick = (event) => {
     onPageChange(event, page + 1)
   }
-
   const handleLastPageButtonClick = (event) => {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
   }
-
   return (
     <div className={classes.paginationActions}>
       <IconButton
@@ -70,23 +65,23 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 }
 
-export default function DataGrid({page, minWidth, dense, columns, rows, rowsCount, rowsPerPage, onPageChange}) {
+export default function DataGrid({page, minWidth, showHeader, dense, columns, rows, rowsCount, rowsPerPage, rowActionValue, onPageChange, rowAction }) {
   const classes = createStyle()
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowsCount - page * rowsPerPage)
-  const maxHeight = page === undefined ? rowsPerPage * (dense ? 37 : 53) : 0
+  const emptyRows = rowsPerPage !== undefined ? rowsPerPage - Math.min(rowsPerPage, rowsCount - (page ? page : 1) * rowsPerPage) : 0
+  const height = rowsPerPage !== undefined ? rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0) : 0
   let tableStyle = {
     color: 'white',
     minWidth: minWidth
   }
-  if (maxHeight > 0) tableStyle = { ...tableStyle, display: 'list-item', maxHeight: maxHeight }
+  if (height > 0) tableStyle = { ...tableStyle, display: 'list-item', height: height }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableContainer className={classes.tableContainer}>
           <Table style={tableStyle} size={dense ? 'small' : 'medium'}>
-            <TableHead>
+            {showHeader && <TableHead>
               <TableRow>
-                {columns.map((cell) => (
+                {columns.filter((col) => !col.hidden).map((cell) => (
                   <TableCell
                     key={cell.field}
                     align={cell.type && cell.type === 'number' ? 'right' : 'left'}
@@ -96,7 +91,7 @@ export default function DataGrid({page, minWidth, dense, columns, rows, rowsCoun
                   </TableCell>
                 ))}
               </TableRow>
-            </TableHead>
+            </TableHead>}
             <TableBody>
               {rows.map((row, rowIndex) => {
                 return (
@@ -104,8 +99,9 @@ export default function DataGrid({page, minWidth, dense, columns, rows, rowsCoun
                     hover
                     tabIndex={-1}
                     key={rowIndex}
+                    onDoubleClick={() => rowAction ? rowAction(row[rowActionValue]) : null}
                   >
-                    {columns.map((cell, cellIndex) => (
+                    {columns.filter((col) => !col.hidden).map((cell, cellIndex) => (
                       <TableCell
                         style={{whiteSpace: 'nowrap'}}
                         key={`${rowIndex}-${cellIndex}`}

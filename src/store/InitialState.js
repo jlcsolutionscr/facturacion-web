@@ -33,7 +33,8 @@ export const INITIAL_STATE = {
     productList: [],
     productTypeList: [],
     categoryList: [],
-    providerList: []
+    providerList: [],
+    clasificationList: []
   },
   invoice: { ...defaultInvoice, listPage: 1, listCount: 0, list: [] },
   workingOrder: { ...defaultWorkingOrder, listPage: 1, listCount: 0, list: [] },

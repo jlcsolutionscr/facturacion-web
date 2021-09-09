@@ -24,7 +24,6 @@ import {
   getCompanyEntity,
   getIdTypeList,
   getRentTypeList,
-  getTaxRateByType,
   getExonerationTypeList,
   getProductSummary,
   saveReceiptEntity
@@ -114,12 +113,12 @@ export function setReceiptParameters (id) {
 
 export function addDetails () {
   return (dispatch, getState) => {
+    const { rentTypeList } = getState().ui
     const { exoneration, product, detailsList } = getState().receipt
     try {
-      
       if (product != null && product.code && product.taxType && product.description !== '' && product.quantity > 0 &&  product.price > 0) {
         let newProducts = null
-        let taxParam = getTaxRateByType(product.taxType)
+        let taxParam = rentTypeList.find(elm => elm.Id === product.taxType).Valor
         const item = {
           Cantidad: product.quantity,
           Codigo: product.code,

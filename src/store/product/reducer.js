@@ -4,6 +4,7 @@ import {
   SET_PRODUCT_TYPE_LIST,
   SET_CATEGORY_LIST,
   SET_PROVIDER_LIST,
+  SET_CLASIFICATION_LIST,
   SET_PRODUCT_ATTRIBUTE
 } from './types'
 
@@ -23,6 +24,8 @@ const productReducer = (state = {}, { type, payload }) => {
       return { ...state, categoryList: payload.list }
     case SET_PROVIDER_LIST:
       return { ...state, providerList: payload.list }
+    case SET_CLASIFICATION_LIST:
+      return { ...state, clasificationList: payload.list }
     case SET_PRODUCT_ATTRIBUTE:
       return { ...state, product: {...state.product, [payload.attribute]: payload.value }}
     case RESET_INVOICE:

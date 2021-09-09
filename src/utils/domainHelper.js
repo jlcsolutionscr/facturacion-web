@@ -769,60 +769,22 @@ export async function saveReceiptEntity(
   }
 }
 
-export function getPriceTransformed(price, taxId, withTaxes) {
-  function withTaxesFunc (a, b) { return a * b }
-  function noTaxesFunc (a, b) { return a / b }
-  const taxOperation = withTaxes ? withTaxesFunc : noTaxesFunc
-  switch (taxId) {
-    case 1:
-      return price
-    case 2:
-      return taxOperation(price, 1.01)
-    case 3:
-      return taxOperation(price, 1.02)
-    case 4:
-      return taxOperation(price, 1.04)
-    case 5:
-      return price
-    case 6:
-      return taxOperation(price, 1.04)
-    case 7:
-      return taxOperation(price, 1.08)
-    case 8:
-      return taxOperation(price, 1.13)
-    default:
-      return price
+export async function getProductClasificationList(token, filter) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerListadoClasificacionProducto', Parametros: {NumeroPagina: 1, FilasPorPagina: " + 100 + ", Descripcion: '" + filter + "'}}";
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message ? e.message : e
   }
 }
 
-export function getPriceTransformedWithRate(price, taxRate, withTaxes) {
+export function getPriceFromTaxRate(price, taxRate, withTaxes) {
   function withTaxesFunc (a, b) { return a * b }
   function noTaxesFunc (a, b) { return a / b }
   const taxOperation = withTaxes ? withTaxesFunc : noTaxesFunc
   const rate = taxRate / 100
   const untaxPrice = taxOperation(price, (1 + rate))
   return untaxPrice
-}
-
-export function getTaxRateByType(taxId) {
-  switch (taxId) {
-    case 1:
-      return 0
-    case 2:
-      return 1
-    case 3:
-      return 2
-    case 4:
-      return 4
-    case 5:
-      return 0
-    case 6:
-      return 4
-    case 7:
-      return 8
-    case 8:
-      return 13
-    default:
-      return 0
-  }
 }

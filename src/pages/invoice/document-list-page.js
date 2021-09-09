@@ -169,6 +169,7 @@ function DocumentListPage({
     <div className={classes.root}>
       <div className={classes.dataContainer}>
         <DataGrid
+          showHeader
           minWidth={1100}
           dense
           page={listPage - 1}

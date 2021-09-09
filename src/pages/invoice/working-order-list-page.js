@@ -135,6 +135,7 @@ function WorkingOrderListPage({
     <div className={classes.root}>
       <div className={classes.dataContainer}>
         <DataGrid
+          showHeader
           minWidth={722}
           dense
           page={listPage - 1}

@@ -37,6 +37,7 @@ function DetailLayout({reportName, summary, data, returnOnClick}) {
       </div>
     </div>
     <DataGrid
+      showHeader
       dense
       columns={columns}
       rows={rows}

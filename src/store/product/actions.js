@@ -4,6 +4,7 @@ import {
   SET_PRODUCT_TYPE_LIST,
   SET_CATEGORY_LIST,
   SET_PROVIDER_LIST,
+  SET_CLASIFICATION_LIST,
   SET_PRODUCT_ATTRIBUTE
 } from './types'
 
@@ -20,6 +21,7 @@ import {
   getProductTypeList,
   getProductCategoryList,
   getProductProviderList,
+  getProductClasificationList,
   getRentTypeList,
   getProductEntity,
   saveProductEntity
@@ -56,6 +58,13 @@ export const setCategoryList = (list) => {
 export const setProviderList = (list) => {
   return {
     type: SET_PROVIDER_LIST,
+    payload: { list }
+  }
+}
+
+export const setClasificationList = (list) => {
+  return {
+    type: SET_CLASIFICATION_LIST,
     payload: { list }
   }
 }
@@ -130,6 +139,21 @@ export function filterProductList (text, type) {
     try {
       const list = await getProductList(token, companyId, branchId, false, text, type)
       dispatch(setProductList(list))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export function filterClasificationList (text) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    dispatch(startLoader())
+    try {
+      const list = await getProductClasificationList(token, text)
+      dispatch(setClasificationList(list))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())

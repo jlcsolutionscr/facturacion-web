@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
-import IconButton from '@material-ui/core/IconButton'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import Table from '@material-ui/core/Table'
@@ -15,12 +14,19 @@ import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
+import Dialog from '@material-ui/core/Dialog'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogActions from '@material-ui/core/DialogActions'
+import IconButton from '@material-ui/core/IconButton'
 
+import DataGrid from 'components/data-grid'
 import TextField from 'components/text-field'
+import LabelField from 'components/label-field'
 import Button from 'components/button'
-import { AddCircleIcon, RemoveCircleIcon } from 'utils/iconsHelper'
+import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from 'utils/iconsHelper'
 
 import { setActiveSection } from 'store/ui/actions'
+import { filterClasificationList } from 'store/product/actions'
 import {
   setIssuerDetails,
   setExonerationDetails,
@@ -73,13 +79,19 @@ const useStyles = makeStyles(theme => ({
   },
   innerButton: {
     padding: '0px'
+  },
+  icon: {
+    padding: '7px'
   }
 }))
+
+let delayTimer = null
 
 function ReceiptPage({
   idTypeList,
   issuer,
   exonerationTypeList,
+  clasificationList,
   exoneration,
   rentTypeList,
   product,
@@ -89,22 +101,58 @@ function ReceiptPage({
   setExonerationDetails,
   setIssuerDetails,
   setProductDetails,
+  filterClasificationList,
   addDetails,
   removeDetails,
   saveReceipt,
   setActiveSection
 }) {
   const classes = useStyles()
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [clasificationFilter, setClasificationFilter] = React.useState('')
   const idTypeItems = idTypeList.map(item => {
-    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
-  })
-  const rentTypes = rentTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const exonerationTypesItems = exonerationTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const addDisabled = product.code === '' || product.description === '' || product.unit === '' || product.quantity === '' || product.price === ''
+  const handleClasificationClick = () => {
+    setDialogOpen(true)
+    setClasificationFilter('')
+    filterClasificationList('')
+  }
+  const handleClasificationFilterChange = (event) => {
+    setClasificationFilter(event.target.value)
+    if (delayTimer) {  
+      clearTimeout(delayTimer)
+    }
+    delayTimer = setTimeout(() => {
+      filterClasificationList(event.target.value)
+    }, 500)
+  }
+  const handleClasificationRowClick = (code) => {
+    if (code !== '') {
+      const codeEntity = clasificationList.find(elm => elm.Id === code)
+      const taxRateId = codeEntity ? rentTypeList.find(elm => elm.Valor === codeEntity.Impuesto).Id : undefined
+      setProductDetails('code', code)
+      if (taxRateId) setProductDetails('taxType', taxRateId)
+    }
+    setDialogOpen(false)
+  }
+  const rows = clasificationList.map((row) => (
+    {
+      id: row.Id,
+      taxRate: row.Impuesto,
+      description: row.Descripcion
+    }
+  ))
+  const columns = [
+    { field: 'id', headerName: 'Código', hidden: true },
+    { field: 'taxRate', headerName: 'IVA', type: 'number' },
+    { field: 'description', headerName: 'Descripcion' }
+    
+  ];
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -229,7 +277,7 @@ function ReceiptPage({
         <Grid style={{textAlign: 'center'}} item xs={12}>
           <span>Detalle de la factura</span>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={10} sm={4}>
           <TextField
             disabled={successful}
             label='Código'
@@ -238,17 +286,18 @@ function ReceiptPage({
             onChange={(event) => setProductDetails('code', event.target.value)}
           />
         </Grid>
-        <Grid item xs={8}>
-          <FormControl fullWidth>
-            <Select
-              disabled={successful}
-              id='IdImpuesto'
-              value={product.taxType}
-              onChange={(event) => setProductDetails('taxType', event.target.value)}
-            >
-              {rentTypes}
-            </Select>
-          </FormControl>
+        <Grid item sm={1}>
+          <IconButton className={classes.icon} aria-label='upload picture' component='span' onClick={handleClasificationClick}>
+            <SearchIcon />
+          </IconButton>
+        </Grid>
+        <Grid item xs={12} sm={7}>
+          <LabelField
+            disabled
+            id='TasaIva'
+            value={rentTypeList.find(elm => elm.Id === product.taxType).Descripcion}
+            label='Tasa del IVA'
+          />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -331,6 +380,36 @@ function ReceiptPage({
           <Button label='Regresar' onClick={() => setActiveSection(0)} />
         </Grid>
       </Grid>
+      <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                id='ClasificationFilter'
+                value={clasificationFilter}
+                label='Ingrese el criterio de búsqueda'
+                onChange={handleClasificationFilterChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <DataGrid
+                rowAction={handleClasificationRowClick}
+                rowActionValue='id'
+                showHeader
+                minWidth={722}
+                dense
+                columns={columns}
+                rows={rows}
+                rowsPerPage={10}
+                rowsCount={Math.min(100, rows.length)}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button negative label='Cerrar' onClick={() => setDialogOpen(false)} />
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
@@ -338,6 +417,7 @@ function ReceiptPage({
 const mapStateToProps = (state) => {
   return {
     idTypeList: state.ui.idTypeList,
+    clasificationList: state.product.clasificationList,
     issuer: state.receipt.issuer,
     exonerationTypeList: state.ui.exonerationTypeList,
     exoneration: state.receipt.exoneration,
@@ -354,6 +434,7 @@ const mapDispatchToProps = (dispatch) => {
     setIssuerDetails,
     setExonerationDetails,
     setProductDetails,
+    filterClasificationList,
     addDetails,
     removeDetails,
     saveReceipt,

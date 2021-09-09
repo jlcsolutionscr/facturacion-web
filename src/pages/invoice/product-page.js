@@ -8,6 +8,7 @@ import {
   getProduct,
   setProduct,
   filterProductList,
+  filterClasificationList,
   setProductAttribute,
   saveProduct
 } from 'store/product/actions'
@@ -19,13 +20,20 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import Dialog from '@material-ui/core/Dialog'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogActions from '@material-ui/core/DialogActions'
+import IconButton from '@material-ui/core/IconButton'
 
+import DataGrid from 'components/data-grid'
 import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
+import LabelField from 'components/label-field'
 import Button from 'components/button'
 
-import { getPriceTransformed } from 'utils/domainHelper'
+import { getPriceFromTaxRate } from 'utils/domainHelper'
 import { roundNumber } from 'utils/utilities'
+import { SearchIcon } from 'utils/iconsHelper'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,6 +59,13 @@ const useStyles = makeStyles(theme => ({
   },
   label: {
     color: theme.palette.text.primary
+  },
+  dataContainer: {
+    display: 'flex',
+    overflow: 'hidden'
+  },
+  icon: {
+    padding: '7px'
   }
 }))
 
@@ -62,10 +77,12 @@ function ProductPage({
   productTypeList,
   categoryList,
   providerList,
+  clasificationList,
   rentTypeList,
   getProduct,
   setProduct,
   filterProductList,
+  filterClasificationList,
   setProductAttribute,
   saveProduct,
   setActiveSection
@@ -73,19 +90,21 @@ function ProductPage({
   const classes = useStyles()
   const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
-  const calculatePrice = (value, taxId) => (roundNumber(getPriceTransformed(value, taxId, false), 2))
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [clasificationFilter, setClasificationFilter] = React.useState('')
   const [untaxPrice1, setUntaxPrice1] = React.useState(0)
   const [untaxPrice2, setUntaxPrice2] = React.useState(0)
   const [untaxPrice3, setUntaxPrice3] = React.useState(0)
   const [untaxPrice4, setUntaxPrice4] = React.useState(0)
   const [untaxPrice5, setUntaxPrice5] = React.useState(0)
   React.useEffect(() => {
+    const calculatePrice = (value, taxId) => (roundNumber(getPriceFromTaxRate(value, rentTypeList.find(elm => elm.Id === taxId).Valor, false), 2))
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto))
     setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto))
     setUntaxPrice3(calculatePrice(product.PrecioVenta3, product.IdImpuesto))
     setUntaxPrice4(calculatePrice(product.PrecioVenta4, product.IdImpuesto))
     setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto))
-  }, [product]);
+  }, [product, rentTypeList]);
   const productTypes = productTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
@@ -93,9 +112,6 @@ function ProductPage({
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const providers = providerList.map(item => {
-    return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
-  })
-  const rentTypes = rentTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
@@ -111,7 +127,7 @@ function ProductPage({
     setProductAttribute(event.target.id, event.target.value)
   }
   const handlePriceChange = event => {
-    const untaxPrice = roundNumber(getPriceTransformed(event.target.value, product.IdImpuesto, false), 2)
+    const untaxPrice = roundNumber(getPriceFromTaxRate(event.target.value, rentTypeList.find(elm => elm.Id === product.IdImpuesto).Valor, false), 2)
     setUntaxPrice1(untaxPrice)
     setUntaxPrice2(untaxPrice)
     setUntaxPrice3(untaxPrice)
@@ -125,7 +141,7 @@ function ProductPage({
   }
 
   const handleUntaxPriceChange = event => {
-    const taxPrice = roundNumber(getPriceTransformed(event.target.value, product.IdImpuesto, true), 2)
+    const taxPrice = roundNumber(getPriceFromTaxRate(event.target.value, rentTypeList.find(elm => elm.Id === product.IdImpuesto).Valor, true), 2)
     switch (event.target.id) {
       case 'untaxPrice1':
         setUntaxPrice1(event.target.value)
@@ -182,6 +198,42 @@ function ProductPage({
     setFilter('')
     filterProductList('', filterType)
   }
+  const handleClasificationClick = () => {
+    setDialogOpen(true)
+    setClasificationFilter('')
+    filterClasificationList('')
+  }
+  const handleClasificationFilterChange = (event) => {
+    setClasificationFilter(event.target.value)
+    if (delayTimer) {  
+      clearTimeout(delayTimer)
+    }
+    delayTimer = setTimeout(() => {
+      filterClasificationList(event.target.value)
+    }, 500)
+  }
+  const handleClasificationRowClick = (code) => {
+    if (code !== '') {
+      const codeEntity = clasificationList.find(elm => elm.Id === code)
+      const taxRateId = codeEntity ? rentTypeList.find(elm => elm.Valor === codeEntity.Impuesto).Id : undefined
+      setProductAttribute('CodigoClasificacion', code)
+      if (taxRateId) setProductAttribute('IdImpuesto', taxRateId)
+    }
+    setDialogOpen(false)
+  }
+  const rows = clasificationList.map((row) => (
+    {
+      id: row.Id,
+      taxRate: row.Impuesto,
+      description: row.Descripcion
+    }
+  ))
+  const columns = [
+    { field: 'id', headerName: 'Código', hidden: true },
+    { field: 'taxRate', headerName: 'IVA', type: 'number' },
+    { field: 'description', headerName: 'Descripcion' }
+    
+  ];
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -250,7 +302,7 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={10} sm={6}>
           <TextField
             required
             id='CodigoClasificacion'
@@ -258,6 +310,19 @@ function ProductPage({
             label='Codigo CABYS'
             numericFormat
             onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={2} sm={1}>
+          <IconButton className={classes.icon} aria-label='upload picture' component='span' onClick={handleClasificationClick}>
+            <SearchIcon />
+          </IconButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <LabelField
+            disabled
+            id='TasaIva'
+            value={rentTypeList.find(elm => elm.Id === product.IdImpuesto).Descripcion}
+            label='Tasa del IVA'
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -382,18 +447,6 @@ function ProductPage({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id='IdImpuesto'>Seleccione la tasa del IVA</InputLabel>
-            <Select
-              id='IdImpuesto'
-              value={product.IdImpuesto}
-              onChange={(event) => setProductAttribute('IdImpuesto', event.target.value)}
-            >
-              {rentTypes}
-            </Select>
-          </FormControl>
-        </Grid>
         <Grid item xs={12}>
           <TextField
             id='Observacion'
@@ -429,6 +482,36 @@ function ProductPage({
           <Button label='Regresar' onClick={handleOnClose} />
         </Grid>
       </Grid>
+      <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                id='ClasificationFilter'
+                value={clasificationFilter}
+                label='Ingrese el criterio de búsqueda'
+                onChange={handleClasificationFilterChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <DataGrid
+                rowAction={handleClasificationRowClick}
+                rowActionValue='id'
+                showHeader
+                minWidth={722}
+                dense
+                columns={columns}
+                rows={rows}
+                rowsPerPage={10}
+                rowsCount={Math.min(100, rows.length)}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button negative label='Cerrar' onClick={() => setDialogOpen(false)} />
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
@@ -440,6 +523,7 @@ const mapStateToProps = (state) => {
     productTypeList: state.product.productTypeList,
     categoryList: state.product.categoryList,
     providerList: state.product.providerList,
+    clasificationList: state.product.clasificationList,
     rentTypeList: state.ui.rentTypeList
   }
 }
@@ -450,6 +534,7 @@ const mapDispatchToProps = (dispatch) => {
     getProduct,
     setProduct,
     filterProductList,
+    filterClasificationList,
     setProductAttribute,
     saveProduct
   }, dispatch)

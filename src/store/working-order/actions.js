@@ -45,7 +45,7 @@ import {
   getWorkingOrderEntity,
   getInvoiceEntity,
   saveInvoiceEntity,
-  getPriceTransformedWithRate
+  getPriceFromTaxRate
 } from 'utils/domainHelper'
 
 import { defaultCustomer } from 'utils/defaults'
@@ -410,7 +410,7 @@ export const openWorkingOrder = (id) => {
         Codigo: detail.Codigo,
         Descripcion: detail.Descripcion,
         Cantidad: detail.Cantidad,
-        PrecioVenta: roundNumber(getPriceTransformedWithRate(detail.PrecioVenta, detail.PorcentajeIVA, true), 2),
+        PrecioVenta: roundNumber(getPriceFromTaxRate(detail.PrecioVenta, detail.PorcentajeIVA, true), 2),
         Excento: detail.Excento,
         PrecioCosto: detail.Producto.PrecioCosto,
         CostoInstalacion: 0,

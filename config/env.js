@@ -36,9 +36,6 @@ dotenvFiles.forEach(dotenvFile => {
   }
 });
 
-console.log('dotenvFiles', dotenvFiles);
-console.log('NODE_ENV', process.env.NODE_ENV);
-
 // We support resolving modules according to `NODE_PATH`.
 // This lets you use absolute paths in imports inside large monorepos:
 // https://github.com/facebook/create-react-app/issues/253.
