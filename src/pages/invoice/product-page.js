@@ -303,13 +303,10 @@ function ProductPage({
           />
         </Grid>
         <Grid item xs={10} sm={6}>
-          <TextField
-            required
+          <LabelField
             id='CodigoClasificacion'
             value={product.CodigoClasificacion}
             label='Codigo CABYS'
-            numericFormat
-            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={2} sm={1}>

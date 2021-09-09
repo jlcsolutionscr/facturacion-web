@@ -278,12 +278,10 @@ function ReceiptPage({
           <span>Detalle de la factura</span>
         </Grid>
         <Grid item xs={10} sm={4}>
-          <TextField
-            disabled={successful}
-            label='Código'
+          <LabelField
+            label='Código CABYS'
             id='Codigo'
             value={product.code}
-            onChange={(event) => setProductDetails('code', event.target.value)}
           />
         </Grid>
         <Grid item sm={1}>
@@ -293,7 +291,6 @@ function ReceiptPage({
         </Grid>
         <Grid item xs={12} sm={7}>
           <LabelField
-            disabled
             id='TasaIva'
             value={rentTypeList.find(elm => elm.Id === product.taxType).Descripcion}
             label='Tasa del IVA'
