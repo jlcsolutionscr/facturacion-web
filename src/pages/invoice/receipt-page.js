@@ -120,7 +120,6 @@ function ReceiptPage({
   const exonerationTypesItems = exonerationTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
-  const addDisabled = product.code === '' || product.description === '' || product.unit === '' || product.quantity === '' || product.price === '' || product.price === 0
   const handleIdTypeChange = value => {
     setIssuerDetails('idType', value)
     setIssuerDetails('id', '')
@@ -185,6 +184,8 @@ function ReceiptPage({
     { field: 'description', headerName: 'Descripcion' }
     
   ];
+  const addDisabled = product.code.length < 13 || product.description === '' || product.unit === '' || product.quantity === '' || product.price === '' || product.price === 0
+  
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -316,6 +317,7 @@ function ReceiptPage({
             disabled={successful}
             label='Código CABYS'
             id='Codigo'
+            inputProps={{maxLength: 13}}
             value={product.code}
             onChange={(event) => validateProductCode(event.target.value)}
           />
