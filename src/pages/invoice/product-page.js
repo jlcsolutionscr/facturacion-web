@@ -10,6 +10,7 @@ import {
   filterProductList,
   filterClasificationList,
   setProductAttribute,
+  validateProductCode,
   saveProduct
 } from 'store/product/actions'
 
@@ -84,6 +85,7 @@ function ProductPage({
   filterProductList,
   filterClasificationList,
   setProductAttribute,
+  validateProductCode,
   saveProduct,
   setActiveSection
 }) {
@@ -303,10 +305,12 @@ function ProductPage({
           />
         </Grid>
         <Grid item xs={10} sm={6}>
-          <LabelField
+          <TextField
+            required
             id='CodigoClasificacion'
             value={product.CodigoClasificacion}
             label='Codigo CABYS'
+            onChange={(event) => validateProductCode(event.target.value)}
           />
         </Grid>
         <Grid item xs={2} sm={1}>
@@ -533,6 +537,7 @@ const mapDispatchToProps = (dispatch) => {
     filterProductList,
     filterClasificationList,
     setProductAttribute,
+    validateProductCode,
     saveProduct
   }, dispatch)
 }

@@ -26,6 +26,8 @@ import {
   getRentTypeList,
   getExonerationTypeList,
   getProductSummary,
+  getCustomerByIdentifier,
+  getProductClasification,
   saveReceiptEntity
 } from 'utils/domainHelper'
 
@@ -104,6 +106,55 @@ export function setReceiptParameters (id) {
       dispatch(resetReceipt())
       dispatch(setActiveSection(id))
       dispatch(stopLoader())
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export function validateCustomerIdentifier (identifier) {
+  return async (dispatch, getState) => {
+    const { token, companyId } = getState().session
+    const { issuer } = getState().receipt
+    try {
+      dispatch(setIssuerDetails('id', identifier))
+      if (issuer.idType === 0 && identifier.length === 9) {
+        dispatch(startLoader())
+        const customer = await getCustomerByIdentifier(token, companyId, identifier)
+        if (customer) {
+          dispatch(setIssuerDetails('name', customer.Nombre))
+        } else {
+          dispatch(setIssuerDetails('name', ''))
+        }
+        dispatch(stopLoader())
+      }
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setIssuerDetails('name',''))
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export function validateProductCode (code) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { rentTypeList } = getState().ui
+    try {
+      dispatch(setProductDetails('code', code))
+      if (code.length === 13) {
+        dispatch(startLoader())
+        const clasification = await getProductClasification(token, code)
+        if (clasification) {
+          let taxType = rentTypeList.find(elm => elm.Valor === clasification.Impuesto).Id
+          dispatch(setProductDetails('taxType', taxType))
+        } else {
+          dispatch(setMessage('El código CABYS ingresado no se encuentra registrado en el sistema. Por favor verifique su información. . .'))
+          dispatch(setProductDetails('taxType', 8))
+        }
+        dispatch(stopLoader())
+      }
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setMessage(error))

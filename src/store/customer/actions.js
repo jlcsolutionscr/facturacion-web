@@ -22,6 +22,7 @@ import {
   getPriceTypeList,
   getExonerationTypeList,
   getCustomerEntity,
+  getCustomerByIdentifier,
   saveCustomerEntity
 } from 'utils/domainHelper'
 
@@ -119,6 +120,30 @@ export function getCustomer (idCustomer) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setCustomer(null))
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export function validateCustomerIdentifier (identifier) {
+  return async (dispatch, getState) => {
+    const { token, companyId } = getState().session
+    dispatch(startLoader())
+    try {
+      const customer = await getCustomerByIdentifier(token, companyId, identifier)
+      if (customer) {
+        if (customer.IdCliente > 0) {
+          dispatch(setMessage('Ya existe un cliente con la identificación ingresada'))
+        } else {
+          dispatch(setCustomerAttribute('Nombre', customer.Nombre))
+        }
+      } else {
+        dispatch(setCustomerAttribute('Nombre', ''))
+      }
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setCustomerAttribute('Nombre', ''))
       dispatch(setMessage(error))
     }
   }

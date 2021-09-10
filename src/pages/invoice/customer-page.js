@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 import {
   getCustomer,
+  validateCustomerIdentifier,
   setCustomer,
   filterCustomerList,
   setCustomerAttribute,
@@ -62,6 +63,7 @@ function CustomerPage({
   exonerationTypeList,
   customer,
   getCustomer,
+  validateCustomerIdentifier,
   setCustomer,
   filterCustomerList,
   setCustomerAttribute,
@@ -96,10 +98,18 @@ function CustomerPage({
   }
   const handleChange = event => {
     setCustomerAttribute(event.target.id, event.target.value)
+    if (
+      event.target.id === 'Identificacion' &&
+      customer.IdTipoIdentificacion === 0 &&
+      event.target.value.length === 9
+    ) {
+      validateCustomerIdentifier(event.target.value)
+    }
   }
   const handleIdTypeChange = value => {
     setCustomerAttribute('IdTipoIdentificacion', value)
     setCustomerAttribute('Identificacion', '')
+    setCustomerAttribute('Nombre', '')
   }
   const handleOnFilterChange = event => {
     setFilter(event.target.value)
@@ -353,6 +363,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActiveSection,
     getCustomer,
+    validateCustomerIdentifier,
     setCustomer,
     filterCustomerList,
     setCustomerAttribute,

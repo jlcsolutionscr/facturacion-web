@@ -24,6 +24,7 @@ import {
   getProductClasificationList,
   getRentTypeList,
   getProductEntity,
+  getProductClasification,
   saveProductEntity
 } from 'utils/domainHelper'
 
@@ -173,6 +174,31 @@ export function getProduct (idProduct) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setProduct(null))
+      dispatch(setMessage(error))
+    }
+  }
+}
+
+export function validateProductCode (code) {
+  return async (dispatch, getState) => {
+    const { token } = getState().session
+    const { rentTypeList } = getState().ui
+    try {
+      dispatch(setProductAttribute('CodigoClasificacion', code))
+      if (code.length === 13) {
+        dispatch(startLoader())
+        const clasification = await getProductClasification(token, code)
+        if (clasification) {
+          let taxType = rentTypeList.find(elm => elm.Valor === clasification.Impuesto).Id
+          dispatch(setProductAttribute('IdImpuesto', taxType))
+        } else {
+          dispatch(setMessage('El código CABYS ingresado no se encuentra registrado en el sistema. Por favor verifique su información. . .'))
+          dispatch(setProductAttribute('IdImpuesto', 8))
+        }
+        dispatch(stopLoader())
+      }
+    } catch (error) {
+      dispatch(stopLoader())
       dispatch(setMessage(error))
     }
   }

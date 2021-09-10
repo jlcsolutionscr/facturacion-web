@@ -29,6 +29,8 @@ import { setActiveSection } from 'store/ui/actions'
 import { filterClasificationList } from 'store/product/actions'
 import {
   setIssuerDetails,
+  validateCustomerIdentifier,
+  validateProductCode,
   setExonerationDetails,
   setProductDetails,
   addDetails,
@@ -100,6 +102,8 @@ function ReceiptPage({
   successful,
   setExonerationDetails,
   setIssuerDetails,
+  validateCustomerIdentifier,
+  validateProductCode,
   setProductDetails,
   filterClasificationList,
   addDetails,
@@ -116,7 +120,7 @@ function ReceiptPage({
   const exonerationTypesItems = exonerationTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
-  const addDisabled = product.code === '' || product.description === '' || product.unit === '' || product.quantity === '' || product.price === ''
+  const addDisabled = product.code === '' || product.description === '' || product.unit === '' || product.quantity === '' || product.price === '' || product.price === 0
   const handleClasificationClick = () => {
     setDialogOpen(true)
     setClasificationFilter('')
@@ -174,7 +178,7 @@ function ReceiptPage({
             required
             value={issuer.id}
             label='Identificación'
-            onChange={(event) => setIssuerDetails('id', event.target.value)}
+            onChange={(event) => validateCustomerIdentifier(event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -278,10 +282,12 @@ function ReceiptPage({
           <span>Detalle de la factura</span>
         </Grid>
         <Grid item xs={10} sm={4}>
-          <LabelField
+          <TextField
+            disabled={successful}
             label='Código CABYS'
             id='Codigo'
             value={product.code}
+            onChange={(event) => validateProductCode(event.target.value)}
           />
         </Grid>
         <Grid item sm={1}>
@@ -429,6 +435,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setIssuerDetails,
+    validateCustomerIdentifier,
+    validateProductCode,
     setExonerationDetails,
     setProductDetails,
     filterClasificationList,
