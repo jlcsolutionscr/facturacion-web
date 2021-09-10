@@ -310,6 +310,7 @@ function ProductPage({
             id='CodigoClasificacion'
             value={product.CodigoClasificacion}
             label='Codigo CABYS'
+            inputProps={{maxLength: 13}}
             onChange={(event) => validateProductCode(event.target.value)}
           />
         </Grid>
