@@ -20,6 +20,8 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 
 import TextField from 'components/text-field'
 import Button from 'components/button'
@@ -253,6 +255,22 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             value={company ? company.PinCertificado : ''}
             label='Pin de llave criptográfica'
             onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            classes={{
+              root: classes.label
+            }}
+            control={
+              <Checkbox
+                checked={company.PrecioVentaIncluyeIVA}
+                onChange={(event) => setCompanyAttribute('PrecioVentaIncluyeIVA', !company.PrecioVentaIncluyeIVA)}
+                name="AplicaTasaDiferenciada"
+                color="primary"
+              />
+            }
+            label="Incluir IVA en precio de venta"
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>

@@ -271,8 +271,9 @@ export async function getPaymentBankId(token, idCompany, paymentMethod) {
   }
 }
 
-export function getCustomerPrice(customer, product) {
+export function getCustomerPrice(customer, product, company) {
   let customerPrice = 0
+  let taxRate = product.ParametroImpuesto.TasaImpuesto
   switch (customer.IdTipoPrecio) {
     case 1:
       customerPrice = product.PrecioVenta1
@@ -292,11 +293,13 @@ export function getCustomerPrice(customer, product) {
     default:
       customerPrice = product.PrecioVenta1
   }
+  customerPrice = roundNumber(customerPrice / (1 + (taxRate / 100)), 3)
   if (customer.AplicaTasaDiferenciada) {
-    customerPrice = roundNumber(customerPrice / (1 + (product.ParametroImpuesto.TasaImpuesto / 100)), 3)
-    customerPrice = roundNumber(customerPrice * (1 + (customer.ParametroImpuesto.TasaImpuesto / 100)), 2)
+    taxRate = customer.ParametroImpuesto.TasaImpuesto
+    if (taxRate > 0) customerPrice = roundNumber(customerPrice * (1 + (taxRate / 100)), 2)
   }
-  return customerPrice
+  if (company.PrecioVentaIncluyeIVA && taxRate > 0) customerPrice = customerPrice * (1 + (taxRate / 100))
+  return roundNumber(customerPrice, 2)
 }
 
 export function getProductSummary(products, exonerationPercentage) {

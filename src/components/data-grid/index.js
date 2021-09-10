@@ -67,7 +67,7 @@ TablePaginationActions.propTypes = {
 
 export default function DataGrid({page, minWidth, showHeader, dense, columns, rows, rowsCount, rowsPerPage, rowActionValue, onPageChange, rowAction }) {
   const classes = createStyle()
-  const emptyRows = rowsPerPage !== undefined ? rowsPerPage - Math.min(rowsPerPage, rowsCount - (page ? page : 1) * rowsPerPage) : 0
+  const emptyRows = rowsPerPage !== undefined ? rowsPerPage - (Math.min(rowsPerPage, rowsCount - (page !== undefined ? page : 1) * rowsPerPage)) : 0
   const height = rowsPerPage !== undefined ? rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0) : 0
   let tableStyle = {
     color: 'white',

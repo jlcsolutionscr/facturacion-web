@@ -159,13 +159,13 @@ export function setInvoiceParameters (id) {
 
 export function getProduct (idProduct) {
   return async (dispatch, getState) => {
-    const { token } = getState().session
+    const { token, company } = getState().session
     const { customer } = getState().customer
     dispatch(startLoader())
     try {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
-      if (customer != null) price = getCustomerPrice(customer, product)
+      if (customer != null) price = getCustomerPrice(customer, product, company)
       dispatch(setDescription(product.Descripcion))
       dispatch(setQuantity(1))
       dispatch(setPrice(price))
@@ -198,6 +198,7 @@ export function filterProductList (text, type) {
 
 export function addDetails () {
   return async (dispatch, getState) => {
+    const { company } = getState().session
     const { customer } = getState().customer
     const { product } = getState().product
     const { detailsList, description, quantity, price } = getState().invoice
@@ -207,12 +208,14 @@ export function addDetails () {
         let newProducts = null
         let tasaIva = product.ParametroImpuesto.TasaImpuesto
         if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = customer.ParametroImpuesto.TasaImpuesto
+        let finalPrice = price
+        if (!company.PrecioVentaIncluyeIVA && tasaIva > 0) finalPrice = price * (1 + (tasaIva / 100))
         const item = {
           IdProducto: product.IdProducto,
           Codigo: product.Codigo,
           Descripcion: description,
           Cantidad: quantity,
-          PrecioVenta: price,
+          PrecioVenta: finalPrice,
           Excento: tasaIva === 0,
           PrecioCosto: product.PrecioCosto,
           CostoInstalacion: 0,
