@@ -264,7 +264,7 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
             }}
             control={
               <Checkbox
-                checked={company.PrecioVentaIncluyeIVA}
+                checked={company ? company.PrecioVentaIncluyeIVA : true}
                 onChange={(event) => setCompanyAttribute('PrecioVentaIncluyeIVA', !company.PrecioVentaIncluyeIVA)}
                 name="AplicaTasaDiferenciada"
                 color="primary"
