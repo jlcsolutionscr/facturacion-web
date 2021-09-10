@@ -121,6 +121,11 @@ function ReceiptPage({
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
   const addDisabled = product.code === '' || product.description === '' || product.unit === '' || product.quantity === '' || product.price === '' || product.price === 0
+  const handleIdTypeChange = value => {
+    setIssuerDetails('idType', value)
+    setIssuerDetails('id', '')
+    setIssuerDetails('name', '')
+  }
   const handleClasificationClick = () => {
     setDialogOpen(true)
     setClasificationFilter('')
@@ -144,6 +149,29 @@ function ReceiptPage({
     }
     setDialogOpen(false)
   }
+  let idPlaceholder = ''
+  let idMaxLength = 0
+  switch (issuer.idType) {
+    case 0:
+      idPlaceholder = '999999999'
+      idMaxLength = 9
+      break
+    case 1:
+      idPlaceholder = '9999999999'
+      idMaxLength = 10
+      break
+    case 2:
+      idPlaceholder = '999999999999'
+      idMaxLength = 12
+      break
+    case 3:
+      idPlaceholder = '9999999999'
+      idMaxLength = 10
+      break
+    default:
+      idPlaceholder = '999999999'
+      idMaxLength = 9
+  }
   const rows = clasificationList.map((row) => (
     {
       id: row.Id,
@@ -166,7 +194,7 @@ function ReceiptPage({
               disabled={successful}
               id='IdTipoIdentificacion'
               value={issuer.idType}
-              onChange={(event) => setIssuerDetails('idType', event.target.value)}
+              onChange={(event) => handleIdTypeChange(event.target.value)}
             >
               {idTypeItems}
             </Select>
@@ -175,6 +203,8 @@ function ReceiptPage({
         <Grid item xs={12} md={6}>
           <TextField
             disabled={successful}
+            placeholder={idPlaceholder}
+            inputProps={{maxLength: idMaxLength}}
             required
             value={issuer.id}
             label='Identificación'
