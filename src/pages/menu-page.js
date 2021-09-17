@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
   branches: {
     backgroundColor: theme.palette.background.branchPicker,
     borderRadius: theme.shape.borderRadius,
-    maxWidth: '590px',
     padding: '5px 0 5px 0',
     '@media (max-width:600px)': {
       maxWidth: '350px'
@@ -37,6 +36,10 @@ const useStyles = makeStyles(theme => ({
     '@media (max-width:414px)': {
       maxWidth: '100%'
     }
+  },
+  formControl: {
+    maxWidth: '590px',
+    minWidth: '200px'
   },
   branchText: {
     fontFamily: '"Exo 2", sans-serif',
@@ -117,7 +120,7 @@ function MenuPage({
       {branchList.length > 1 && <Grid item xs={12}>
         <div className={classes.branches}>
           {pickBranchOption 
-            ? <FormControl>
+            ? <FormControl className={classes.formControl}>
               <InputLabel>Seleccione la sucursal:</InputLabel>
               <Select
                 id='Sucursal'

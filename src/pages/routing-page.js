@@ -11,8 +11,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Loader from 'components/loader'
 import useWindowSize from 'hooks/use-window-size'
-import LoginPage from './login/login-page'
-import HomePage from './invoice/home-page'
+import LoginPage from './login-page'
+import HomePage from './home-page'
 
 import { setMessage } from 'store/ui/actions'
 import { darkTheme, lightTheme } from "utils/muiThemeProvider"

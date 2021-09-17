@@ -39,10 +39,5 @@ export const INITIAL_STATE = {
   invoice: { ...defaultInvoice, listPage: 1, listCount: 0, list: [] },
   workingOrder: { ...defaultWorkingOrder, listPage: 1, listCount: 0, list: [] },
   receipt: defaultReceipt,
-  document: {
-    listPage: 1,
-    listCount: 0,
-    list: [],
-    details: ''
-  }
+  document: { listPage: 1, listCount: 0, list: [], details: '' }
 }
