@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function WorkingOrderPage({setActiveSection}) {
+function RestaurantOrderPage({setActiveSection}) {
   const classes = useStyles()
   const [value, setValue] = useState(0);
 
@@ -69,4 +69,4 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({setActiveSection}, dispatch)
 }
 
-export default connect(null, mapDispatchToProps)(WorkingOrderPage)
+export default connect(null, mapDispatchToProps)(RestaurantOrderPage)

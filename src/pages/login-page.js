@@ -129,6 +129,12 @@ function LoginPage({ login, isDarkMode, toggleDarkMode }) {
               id='id'
               value={id}
               onChange={handleOnChange('id')}
+              onKeyPress={(ev) => {
+                if (ev.key === 'Enter') {
+                  handleLoginClick()
+                  ev.preventDefault()
+                }
+              }}
             />
           </form>
           <div className={classes.footer}>

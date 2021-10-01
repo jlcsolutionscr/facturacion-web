@@ -325,14 +325,14 @@ export const saveWorkingOrder = () => {
 
 export const getWorkingOrderListFirstPage = (id) => {
   return async (dispatch, getState) => {
-    const { token, companyId, branchId } = getState().session
+    const { token, companyId, branchId, company } = getState().session
     dispatch(startLoader())
     try {
       dispatch(setWorkingOrderListPage(1))
       const recordCount = await getWorkingOrderListCount(token, companyId, branchId, false)
       dispatch(setWorkingOrderListCount(recordCount))
       if (recordCount > 0) {
-        const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, 1, 10)
+        const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, 1, company.Modalidad === 1 ? 10 : 100)
         dispatch(setWorkingOrderList(newList))
       } else {
         dispatch(setWorkingOrderList([]))

@@ -14,7 +14,9 @@ import ProductPage from './product-page'
 import InvoicePage from './invoice-page'
 import ReceiptPage from './receipt-page'
 import WorkingOrderListPage from './working-order-list-page'
+import RestaurantOrderListPage from './restaurant-order-list-page'
 import WorkingOrderPage from './working-order-page'
+import RestaurantOrderPage from './restaurant-order-page'
 import InvoiceListPage from './invoice-list-page'
 import DocumentListPage from './document-list-page'
 import ReportsPage from './reports-page'
@@ -53,7 +55,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function HomePage({ activeSection, companyName, companyIdentifier, width, isDarkMode, toggleDarkMode, logOut }) {
+function HomePage({ activeSection, mode, companyName, companyIdentifier, width, isDarkMode, toggleDarkMode, logOut }) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
@@ -72,9 +74,9 @@ function HomePage({ activeSection, companyName, companyIdentifier, width, isDark
         {activeSection === 6 && <ReceiptPage />}
         {activeSection === 7 && <InvoiceListPage />}
         {activeSection === 8 && <DocumentListPage />}
-        {activeSection === 9 && <WorkingOrderListPage />}
+        {activeSection === 9 ? mode === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
         {activeSection === 20 && <ReportsPage width={width} />}
-        {activeSection === 21 && <WorkingOrderPage />}
+        {activeSection === 21 ? mode === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
       </div>
     </div>
   )
@@ -85,6 +87,7 @@ const mapStateToProps = (state) => {
     isLoaderOpen: state.ui.isLoaderOpen,
     loaderText: state.ui.loaderText,
     activeSection: state.ui.activeSection,
+    mode: state.session.company.Modalidad,
     companyName: state.session.company.NombreComercial || state.session.company.NombreEmpresa,
     companyIdentifier: state.session.company.Identificacion,
     branchList: state.session.branchList,
