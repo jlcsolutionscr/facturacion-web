@@ -45,26 +45,27 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.primary.navbar,
     maxWidth: '900px',
+    margin: '10px auto auto auto',
     padding: '10px'
   },
   bottom: {
-    margin: '10px 0 10px 0',
+    margin: '0',
     display: 'flex',
     overflow: 'hidden'
   },
   buttonContainer: {
     display: 'flex',
-    margin: '10px 0 20px 20px',
+    margin: '10px 0 0 20px',
     width: '100%',
     height: '50px',
     '@media (max-width:960px)': {
-      margin: '10px 0 10px 15px'
+      margin: '10px 0 0 15px'
     },
     '@media (max-width:600px)': {
-      margin: '10px 0 10px 10px'
+      margin: '10px 0 0 10px'
     },
     '@media (max-width:414px)': {
-      margin: '10px 0 5px 5px'
+      margin: '10px 0 0 5px'
     }
   }
 }))
