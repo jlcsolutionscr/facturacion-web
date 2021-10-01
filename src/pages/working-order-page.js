@@ -38,11 +38,9 @@ const useStyles = makeStyles(theme => ({
 function WorkingOrderPage({setActiveSection}) {
   const classes = useStyles()
   const [value, setValue] = useState(0);
-
   const handleChange = (event, newValue) => {
     setValue(newValue)
   };
-
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>

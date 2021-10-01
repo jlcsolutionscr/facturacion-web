@@ -73,6 +73,7 @@ const useStyles = makeStyles(theme => ({
 let delayTimer = null
 
 function RestaurantOrderPage({
+  permissions,
   workingOrderId,
   customerName,
   product,
@@ -113,6 +114,10 @@ function RestaurantOrderPage({
     getProduct(item.Id)
     setFilter('')
     filterProductList('', 2)
+  }
+  const handlePriceChange = (event) => {
+    const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0
+    isPriceChangeEnabled && setPrice(event.target.value)
   }
   const fieldDisabled = status === 'converted'
   let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && fieldDisabled === false
@@ -175,7 +180,7 @@ function RestaurantOrderPage({
               label='Precio'
               value={price}
               numericFormat
-              onChange={(event) => setPrice(event.target.value)}
+              onChange={handlePriceChange}
             />
           </Grid>
           <Grid item xs={2}>
@@ -229,6 +234,7 @@ function RestaurantOrderPage({
 
 const mapStateToProps = (state) => {
   return {
+    permissions: state.session.permissions,
     customerName: state.customer.customer.Nombre,
     workingOrderId: state.workingOrder.workingOrderId,
     description: state.workingOrder.description,

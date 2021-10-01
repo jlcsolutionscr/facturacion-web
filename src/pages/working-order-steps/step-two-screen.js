@@ -64,6 +64,7 @@ let delayTimer = null
 function StepTwoScreen({
   index,
   value,
+  permissions,
   productList,
   product,
   description,
@@ -104,6 +105,10 @@ function StepTwoScreen({
     setFilterType(filterType === 1 ? 2 : 1)
     setFilter('')
     filterProductList('', filterType)
+  }
+  const handlePriceChange = (event) => {
+    const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0
+    isPriceChangeEnabled && setPrice(event.target.value)
   }
   const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
   const fieldDisabled = status === 'converted'
@@ -162,7 +167,7 @@ function StepTwoScreen({
               label='Precio'
               value={price}
               numericFormat
-              onChange={(event) => setPrice(event.target.value)}
+              onChange={handlePriceChange}
             />
           </Grid>
           <Grid item xs={2}>
@@ -208,6 +213,7 @@ function StepTwoScreen({
 
 const mapStateToProps = (state) => {
   return {
+    permissions: state.session.permissions,
     description: state.workingOrder.description,
     quantity: state.workingOrder.quantity,
     product: state.product.product,
