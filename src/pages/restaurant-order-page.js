@@ -52,6 +52,21 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     overflow: 'hidden'
   },
+  buttonContainer: {
+    display: 'flex',
+    margin: '10px 0 20px 20px',
+    width: '100%',
+    height: '50px',
+    '@media (max-width:960px)': {
+      margin: '10px 0 10px 15px'
+    },
+    '@media (max-width:600px)': {
+      margin: '10px 0 10px 10px'
+    },
+    '@media (max-width:414px)': {
+      margin: '10px 0 5px 5px'
+    }
+  }
 }))
 
 let delayTimer = null
@@ -199,22 +214,13 @@ function RestaurantOrderPage({
           </Grid>
         </Grid>
       </div>
-      <div>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Button
-              disabled={status !== 'on-progress'}
-              label={workingOrderId > 0 ? 'Actualizar' : 'Agregar'}
-              onClick={() => saveWorkingOrder()}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Button 
-              label='Regresar'
-              onClick={() => setActiveSection(9)}
-            />
-          </Grid>
-        </Grid>
+      <div className={classes.buttonContainer}>
+        <Button
+          disabled={status !== 'on-progress'}
+          label={workingOrderId > 0 ? 'Actualizar' : 'Agregar'}
+          onClick={() => saveWorkingOrder()}
+        />
+        <Button style={{marginLeft: '10px'}} label='Regresar' onClick={() => setActiveSection(9)} />
       </div>
     </div>
   )
