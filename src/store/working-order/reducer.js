@@ -13,7 +13,8 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET_ORDER
+  RESET_ORDER,
+  SET_SERVICE_POINT_LIST
 } from './types'
 
 import { defaultWorkingOrder } from 'utils/defaults'
@@ -50,6 +51,8 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
       return { ...state, listCount: payload.count }
     case SET_LIST:
       return { ...state, list: payload.list }
+    case SET_SERVICE_POINT_LIST:
+      return { ...state, servicePointList: payload.list }
     case LOGOUT:
     case RESET_ORDER:
       return {

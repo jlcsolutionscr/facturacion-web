@@ -83,6 +83,8 @@ function RestaurantOrderPage({
   status,
   productList,
   detailsList,
+  summary,
+  servicePointList,
   setCustomerAttribute,
   setStatus,
   getProduct,
@@ -119,10 +121,8 @@ function RestaurantOrderPage({
     const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0
     isPriceChangeEnabled && setPrice(event.target.value)
   }
-  const fieldDisabled = status === 'converted'
-  let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && fieldDisabled === false
-  let spotsList = [{Id: 'MESA 1', Descripcion: 'MESA 1'}, {Id: 'MESA 2', Descripcion: 'MESA 2'}, {Id: 'MESA 3', Descripcion: 'MESA 3'}, {Id: 'MESA 4', Descripcion: 'MESA 4'}]
-  const paymentItems = spotsList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null
+  const paymentItems = servicePointList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.container}>
       <div>
@@ -147,7 +147,6 @@ function RestaurantOrderPage({
           </Grid>}
           <Grid item xs={12}>
             <ListDropdown
-              disabled={fieldDisabled}
               label='Seleccione un producto'
               items={productList}
               value={filter}
@@ -157,7 +156,6 @@ function RestaurantOrderPage({
           </Grid>
           <Grid item xs={12}>
             <TextField
-              disabled={fieldDisabled}
               label='Descripción'
               id='Descripcion'
               value={description}
@@ -166,7 +164,6 @@ function RestaurantOrderPage({
           </Grid>
           <Grid item xs={3}>
             <TextField
-              disabled={fieldDisabled}
               label='Cantidad'
               id='Cantidad'
               value={quantity}
@@ -176,7 +173,6 @@ function RestaurantOrderPage({
           </Grid>
           <Grid item xs={6}>
             <TextField
-              disabled={fieldDisabled}
               label='Precio'
               value={price}
               numericFormat
@@ -209,7 +205,7 @@ function RestaurantOrderPage({
                     <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                     <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
                     <TableCell align='right'>
-                      <IconButton disabled={fieldDisabled} className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
+                      <IconButton className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto, index)}>
                         <RemoveCircleIcon />
                       </IconButton>
                     </TableCell>
@@ -222,7 +218,7 @@ function RestaurantOrderPage({
       </div>
       <div className={classes.buttonContainer}>
         <Button
-          disabled={status !== 'on-progress'}
+          disabled={status !== 'on-progress' || summary.total === 0}
           label={workingOrderId > 0 ? 'Actualizar' : 'Agregar'}
           onClick={() => saveWorkingOrder()}
         />
@@ -236,6 +232,7 @@ const mapStateToProps = (state) => {
   return {
     permissions: state.session.permissions,
     customerName: state.customer.customer.Nombre,
+    servicePointList: state.workingOrder.servicePointList,
     workingOrderId: state.workingOrder.workingOrderId,
     description: state.workingOrder.description,
     quantity: state.workingOrder.quantity,
@@ -243,6 +240,7 @@ const mapStateToProps = (state) => {
     price: state.workingOrder.price,
     productList: state.product.productList,
     detailsList: state.workingOrder.detailsList,
+    summary: state.workingOrder.summary,
     status: state.workingOrder.status
   }
 }

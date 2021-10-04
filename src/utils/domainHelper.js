@@ -291,6 +291,17 @@ export async function getPaymentBankId(token, companyId, paymentMethod) {
   }
 }
 
+export async function getServicePointList(token, companyId, branchId, bolActive, strDescription) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerListadoPuntoDeServicio', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", FiltraActivos: '" + bolActive + "', Descripcion: '" + strDescription + "'}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
 export function getCustomerPrice(customer, product, company) {
   let customerPrice = 0
   let taxRate = product.ParametroImpuesto.TasaImpuesto

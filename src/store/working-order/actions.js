@@ -13,7 +13,8 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET_ORDER
+  RESET_ORDER,
+  SET_SERVICE_POINT_LIST
 } from './types'
 
 import {
@@ -45,7 +46,8 @@ import {
   getWorkingOrderEntity,
   getInvoiceEntity,
   saveInvoiceEntity,
-  getPriceFromTaxRate
+  getPriceFromTaxRate,
+  getServicePointList
 } from 'utils/domainHelper'
 
 import { defaultCustomer } from 'utils/defaults'
@@ -155,13 +157,26 @@ export const resetWorkingOrder = () => {
   }
 }
 
+export const setServicePointList = (list) => {
+  return {
+    type: SET_SERVICE_POINT_LIST,
+    payload: { list }
+  }
+}
+
 export function setWorkingOrderParameters () {
   return async (dispatch, getState) => {
-    const { companyId, branchId, token } = getState().session
+    const { companyId, branchId, company: sessionCompany, token } = getState().session
     const { company } = getState().company
     dispatch(startLoader())
     try {
-      const customerList = await getCustomerList(token, companyId, '')
+      if (sessionCompany.Modalidad === 1) {
+        const customerList = await getCustomerList(token, companyId, '')
+        dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
+      } else {
+        const servicePointList = await getServicePointList(token, companyId, branchId, true, '');
+        dispatch(setServicePointList(servicePointList))
+      }
       const productList = await getProductList(token, companyId, branchId, true, '', 1)
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
@@ -169,7 +184,7 @@ export function setWorkingOrderParameters () {
       }
       dispatch(resetWorkingOrder())
       dispatch(setCustomer(defaultCustomer))
-      dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
+      
       dispatch(setProductList(productList))
       dispatch(setActiveSection(21))
       dispatch(stopLoader())
@@ -244,9 +259,13 @@ export function addDetails () {
           CostoInstalacion: 0,
           PorcentajeIVA: tasaIva
         }
-        const index = detailsList.findIndex(item => item.IdProducto === product.IdProducto)
-        if (index >= 0) {
-          newProducts = [...detailsList.slice(0, index), { ...item, Cantidad: item.Cantidad + detailsList[index].Cantidad }, ...detailsList.slice(index + 1)]
+        if (company.Modalidad === 1) {
+          const index = detailsList.findIndex(item => item.IdProducto === product.IdProducto)
+          if (index >= 0) {
+            newProducts = [...detailsList.slice(0, index), { ...item, Cantidad: item.Cantidad + detailsList[index].Cantidad }, ...detailsList.slice(index + 1)]
+          } else {
+            newProducts = [...detailsList, item]
+          }
         } else {
           newProducts = [...detailsList, item]
         }
@@ -265,11 +284,11 @@ export function addDetails () {
   }
 }
 
-export const removeDetails = (id) => {
+export const removeDetails = (id, pos) => {
   return (dispatch, getState) => {
     const { customer } = getState().customer
     const { detailsList } = getState().workingOrder
-    const index = detailsList.findIndex(item => item.IdProducto === id)
+    const index = detailsList.findIndex((item, index) => item.IdProducto === id && index === pos)
     const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)]
     dispatch(setDetailsList(newProducts))
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)

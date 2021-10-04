@@ -196,7 +196,7 @@ function StepTwoScreen({
                     <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                     <TableCell align='right'>{formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}</TableCell>
                     <TableCell align='right'>
-                      <IconButton disabled={fieldDisabled} className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto)}>
+                      <IconButton disabled={fieldDisabled} className={classes.innerButton} color="secondary" component="span" onClick={() => removeDetails(row.IdProducto, index)}>
                         <RemoveCircleIcon />
                       </IconButton>
                     </TableCell>

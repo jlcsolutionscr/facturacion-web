@@ -37,7 +37,7 @@ export const INITIAL_STATE = {
     clasificationList: []
   },
   invoice: { ...defaultInvoice, listPage: 1, listCount: 0, list: [] },
-  workingOrder: { ...defaultWorkingOrder, listPage: 1, listCount: 0, list: [] },
+  workingOrder: { ...defaultWorkingOrder, listPage: 1, listCount: 0, list: [], servicePointList: [] },
   receipt: defaultReceipt,
   document: { listPage: 1, listCount: 0, list: [], details: '' }
 }
