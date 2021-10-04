@@ -130,7 +130,7 @@ function WorkingOrderListPage({
     { field: 'action1', headerName: '' },
     { field: 'action2', headerName: '' },
     { field: 'action3', headerName: '' }
-  ];
+  ]
   return (
     <div className={classes.root}>
       <div className={classes.dataContainer}>

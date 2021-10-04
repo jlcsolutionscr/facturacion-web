@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -183,7 +183,7 @@ function ReceiptPage({
     { field: 'taxRate', headerName: 'IVA', type: 'number' },
     { field: 'description', headerName: 'Descripcion' }
     
-  ];
+  ]
   const addDisabled = product.code.length < 13 || product.description === '' || product.unit === '' || product.quantity === '' || product.price === '' || product.price === 0
   
   return (

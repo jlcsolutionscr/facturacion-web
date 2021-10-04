@@ -164,7 +164,7 @@ function DocumentListPage({
     { field: 'amount', headerName: 'Total', type: 'number' },
     { field: 'email', headerName: '' },
     { field: 'details', headerName: '' }
-  ];
+  ]
   return (
     <div className={classes.root}>
       <div className={classes.dataContainer}>

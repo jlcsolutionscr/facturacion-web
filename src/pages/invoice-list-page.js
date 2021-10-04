@@ -131,7 +131,7 @@ function InvoiceListPage({
     { field: 'name', headerName: 'Nombre' },
     { field: 'taxes', headerName: 'Impuesto', type: 'number' },
     { field: 'amount', headerName: 'Total', type: 'number' }
-  ];
+  ]
   if (!isMobile) {
     columns.push({ field: 'action1', headerName: '' })
   }

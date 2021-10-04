@@ -106,7 +106,7 @@ function ProductPage({
     setUntaxPrice3(calculatePrice(product.PrecioVenta3, product.IdImpuesto))
     setUntaxPrice4(calculatePrice(product.PrecioVenta4, product.IdImpuesto))
     setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto))
-  }, [product, rentTypeList]);
+  }, [product, rentTypeList])
   const productTypes = productTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
@@ -235,7 +235,7 @@ function ProductPage({
     { field: 'taxRate', headerName: 'IVA', type: 'number' },
     { field: 'description', headerName: 'Descripcion' }
     
-  ];
+  ]
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>

@@ -22,4 +22,4 @@ export const createStyle = makeStyles(theme => createStyles({
     flexShrink: 0,
     marginLeft: theme.spacing(2.5)
   }
-}));
+}))

@@ -5,8 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import IconButton from '@material-ui/core/IconButton'
 
 import { BackArrowIcon } from 'utils/iconsHelper'
@@ -37,10 +37,10 @@ const useStyles = makeStyles(theme => ({
 
 function WorkingOrderPage({setActiveSection}) {
   const classes = useStyles()
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(0)
   const handleChange = (event, newValue) => {
     setValue(newValue)
-  };
+  }
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
