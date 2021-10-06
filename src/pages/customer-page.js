@@ -228,9 +228,6 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControlLabel
-            classes={{
-              root: classes.label
-            }}
             control={
               <Checkbox
                 checked={customer.AplicaTasaDiferenciada}

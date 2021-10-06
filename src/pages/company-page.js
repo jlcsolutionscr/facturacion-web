@@ -259,9 +259,6 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
-            classes={{
-              root: classes.label
-            }}
             control={
               <Checkbox
                 checked={company ? company.PrecioVentaIncluyeIVA : true}

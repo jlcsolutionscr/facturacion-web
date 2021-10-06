@@ -230,9 +230,20 @@ export async function getProductProviderList(token, companyId) {
   }
 }
 
-export async function getProductList(token, companyId, branchId, activeOnly, filterText, type) {
+export async function getProductListCount(token, companyId, branchId, activeOnly, page, filterText, type) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NumeroPagina: 1, FilasPorPagina: 50, IncluyeServicios: 'true', FiltraActivos: '" + activeOnly + "', IdLinea: 0, Codigo: '" + (type === 1 ? filterText : '') + "', Descripcion: '" + (type === 2 ? filterText : '') + "'}}"
+    const data = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NumeroPagina: " + page + ", FilasPorPagina: 8, IncluyeServicios: 'true', FiltraActivos: '" + activeOnly + "', IdLinea: 0, Codigo: '" + (type === 1 ? filterText : '') + "', Descripcion: '" + (type === 2 ? filterText : '') + "'}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return null
+    return response
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function getProductListPerPage(token, companyId, branchId, activeOnly, page, filterText, type) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NumeroPagina: " + page + ", FilasPorPagina: 7, IncluyeServicios: 'true', FiltraActivos: '" + activeOnly + "', IdLinea: 0, Codigo: '" + (type === 1 ? filterText : '') + "', Descripcion: '" + (type === 2 ? filterText : '') + "'}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response

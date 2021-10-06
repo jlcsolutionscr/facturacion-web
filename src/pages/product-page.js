@@ -27,7 +27,6 @@ import DialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
-import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
 import LabelField from 'components/label-field'
 import Button from 'components/button'
@@ -55,9 +54,6 @@ const useStyles = makeStyles(theme => ({
       padding: '10px'
     }
   },
-  formControl: {
-    minWidth: '150px'
-  },
   label: {
     color: theme.palette.text.primary
   },
@@ -74,15 +70,12 @@ let delayTimer = null
 
 function ProductPage({
   product,
-  productList,
   productTypeList,
   categoryList,
   providerList,
   clasificationList,
   rentTypeList,
-  getProduct,
   setProduct,
-  filterProductList,
   filterClasificationList,
   setProductAttribute,
   validateProductCode,
@@ -90,8 +83,6 @@ function ProductPage({
   setActiveSection
 }) {
   const classes = useStyles()
-  const [filterType, setFilterType] = React.useState(2)
-  const [filter, setFilter] = React.useState('')
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [clasificationFilter, setClasificationFilter] = React.useState('')
   const [untaxPrice1, setUntaxPrice1] = React.useState(0)
@@ -116,7 +107,6 @@ function ProductPage({
   const providers = providerList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
-  const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
   const disabled = product.Codigo === '' ||
     product.Descripcion === '' ||
     product.PrecioCosto === '' ||
@@ -177,28 +167,9 @@ function ProductPage({
         break
     }
   }
-  const handleOnFilterChange = event => {
-    setFilter(event.target.value)
-    if (delayTimer) {  
-      clearTimeout(delayTimer)
-    }
-    delayTimer = setTimeout(() => {
-      filterProductList(event.target.value, filterType)
-    }, 500)
-  }
-  const handleItemSelected = (item) => {
-    getProduct(item.Id)
-    setFilter('')
-    filterProductList('', filterType)
-  }
   const handleOnClose = () => {
     setProduct(null)
-    setActiveSection(0)
-  }
-  const handleFilterTypeChange = () => {
-    setFilterType(filterType === 1 ? 2 : 1)
-    setFilter('')
-    filterProductList('', filterType)
+    setActiveSection(4)
   }
   const handleClasificationClick = () => {
     setDialogOpen(true)
@@ -239,29 +210,6 @@ function ProductPage({
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={3}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="filter-type-select-label">Filtrar producto por:</InputLabel>
-            <Select
-              labelId="filter-type-select-label"
-              id="filter-type-select"
-              value={filterType}
-              onChange={handleFilterTypeChange}
-            >
-              <MenuItem value={1}>Código</MenuItem>
-              <MenuItem value={2}>Descripción</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <ListDropdown
-            label='Seleccione un producto'
-            items={products}
-            value={filter}
-            onItemSelected={handleItemSelected}
-            onChange={handleOnFilterChange}
-          />
-        </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
             <InputLabel id='Tipo'>Seleccione el tipo de producto</InputLabel>

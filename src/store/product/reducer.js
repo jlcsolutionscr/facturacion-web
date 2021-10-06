@@ -1,5 +1,7 @@
 import {
-  SET_PRODUCT_LIST,
+  SET_LIST_PAGE,
+  SET_LIST_COUNT,
+  SET_LIST,
   SET_PRODUCT,
   SET_PRODUCT_TYPE_LIST,
   SET_CATEGORY_LIST,
@@ -14,8 +16,12 @@ import { LOGOUT } from 'store/session/types'
 
 const productReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case SET_PRODUCT_LIST:
-      return { ...state, productList: payload.list }
+    case SET_LIST_PAGE:
+      return { ...state, listPage: payload.page }
+    case SET_LIST_COUNT:
+      return { ...state, listCount: payload.count }
+    case SET_LIST:
+      return { ...state, list: payload.list }
     case SET_PRODUCT:
       return { ...state, product: payload.product }
     case SET_PRODUCT_TYPE_LIST:

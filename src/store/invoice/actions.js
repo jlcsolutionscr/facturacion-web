@@ -31,7 +31,7 @@ import { setProduct, setProductList } from 'store/product/actions'
 import {
   getCompanyEntity,
   getCustomerListPerPage,
-  getProductList,
+  getProductListPerPage,
   getProductEntity,
   getCustomerPrice,
   getProductSummary,
@@ -139,7 +139,7 @@ export function setInvoiceParameters (id) {
     dispatch(startLoader())
     try {
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
-      const productList = await getProductList(token, companyId, branchId, true, '', 1)
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
@@ -186,7 +186,7 @@ export function filterProductList (text, type) {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     try {
-      let newList = await getProductList(token, companyId, branchId, true, text, type)
+      let newList = await getProductListPerPage(token, companyId, branchId, true, 1, text, type)
       dispatch(setProductList(newList))
       dispatch(stopLoader())
     } catch (error) {

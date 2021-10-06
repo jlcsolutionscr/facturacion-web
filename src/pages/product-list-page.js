@@ -5,12 +5,15 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
 import {
-  getCustomerListFirstPage,
-  getCustomerListByPageNumber,
-  openCustomer,
-} from 'store/customer/actions'
+  getProductListFirstPage,
+  getProductListByPageNumber,
+  openProduct,
+} from 'store/product/actions'
 
 import Grid from '@material-ui/core/Grid'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
@@ -69,6 +72,9 @@ const useStyles = makeStyles(theme => ({
       margin: '0 0 5px 5px'
     }
   },
+  formControl: {
+    minWidth: '145px'
+  },
   dialogActions: {
     margin: '0 20px 10px 20px'
   }
@@ -76,24 +82,31 @@ const useStyles = makeStyles(theme => ({
 
 let delayTimer = null
 
-function CustomerListPage({
+function ProductListPage({
   listPage,
   listCount,
   list,
-  getCustomerListFirstPage,
-  getCustomerListByPageNumber,
-  openCustomer,
+  getProductListFirstPage,
+  getProductListByPageNumber,
+  openProduct,
   setActiveSection
 }) {
   const classes = useStyles()
   const [filter, setFilter] = React.useState('')
+  const [filterType, setFilterType] = React.useState(2)
+  const handleFilterTypeChange = () => {
+    const newFilterType = filterType === 1 ? 2 : 1
+    setFilterType(newFilterType)
+    setFilter('')
+    getProductListFirstPage(null, filter, newFilterType)
+  }
   const handleOnFilterChange = event => {
     setFilter(event.target.value)
     if (delayTimer) {  
       clearTimeout(delayTimer)
     }
     delayTimer = setTimeout(() => {
-      getCustomerListFirstPage(null, event.target.value)
+      getProductListFirstPage(null, event.target.value, filterType)
     }, 500)
   }
   const rows = list.map((row) => (
@@ -101,7 +114,7 @@ function CustomerListPage({
       id: row.Id,
       name: row.Descripcion,
       action1: (
-        <IconButton className={classes.icon} color="primary" component="span" onClick={() => openCustomer(row.Id)}>
+        <IconButton className={classes.icon} color="primary" component="span" onClick={() => openProduct(row.Id)}>
           <EditIcon className={classes.icon} />
         </IconButton>
       )
@@ -117,10 +130,15 @@ function CustomerListPage({
     <div className={classes.root}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
+          <FormGroup>
+            <FormControlLabel control={<Switch value={filterType === 1} onChange={handleFilterTypeChange} />} label="Filtrar producto por código" />
+          </FormGroup>
+        </Grid>
+        <Grid item xs={12}>
           <TextField
             id='text-filter-id'
             value={filter}
-            label='Filtro por nombre'
+            label={`Filtro por ${filterType === 1 ? 'código' : 'descripción'}`}
             onChange={handleOnFilterChange}
           />
         </Grid>
@@ -134,14 +152,14 @@ function CustomerListPage({
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={8}
+          rowsPerPage={7}
           onPageChange={(page) => {
-            getCustomerListByPageNumber(page + 1, filter)
+            getProductListByPageNumber(page + 1, filter)
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label='Agregar cliente' onClick={() => openCustomer(null)} />
+        <Button label='Agregar producto' onClick={() => openProduct(null)} />
         <Button style={{marginLeft: '10px'}} label='Regresar' onClick={() => setActiveSection(0)} />
       </div>
     </div>
@@ -150,19 +168,19 @@ function CustomerListPage({
 
 const mapStateToProps = (state) => {
   return {
-    listPage: state.customer.listPage,
-    listCount: state.customer.listCount,
-    list: state.customer.list
+    listPage: state.product.listPage,
+    listCount: state.product.listCount,
+    list: state.product.list
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getCustomerListFirstPage,
-    getCustomerListByPageNumber,
-    openCustomer,
+    getProductListFirstPage,
+    getProductListByPageNumber,
+    openProduct,
     setActiveSection
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerListPage)
+export default connect(mapStateToProps, mapDispatchToProps)(ProductListPage)

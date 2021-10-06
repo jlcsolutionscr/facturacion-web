@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { setActiveSection } from 'store/ui/actions'
 import {  getCompany } from 'store/company/actions'
 import { getCustomerListFirstPage } from 'store/customer/actions'
-import { setProductParameters } from 'store/product/actions'
+import { getProductListFirstPage } from 'store/product/actions'
 import { setInvoiceParameters, getInvoiceListFirstPage } from 'store/invoice/actions'
 import { setReceiptParameters } from 'store/receipt/actions'
 import { getDocumentListFirstPage } from 'store/document/actions'
@@ -98,7 +98,7 @@ function MenuPage({
   setBranchId,
   setActiveSection,
   getCustomerListFirstPage,
-  setProductParameters,
+  getProductListFirstPage,
   setInvoiceParameters,
   setReceiptParameters,
   getInvoiceListFirstPage,
@@ -145,7 +145,7 @@ function MenuPage({
         <Button disabled={!manageCustomers} classes={{root: classes.button}} onClick={() => getCustomerListFirstPage(3, '')}>Catálogo de clientes</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => setProductParameters(4)}>Catálogo de productos</Button>
+        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => getProductListFirstPage(4, '')}>Catálogo de productos</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>
@@ -183,7 +183,7 @@ const mapDispatchToProps = (dispatch) => {
     setBranchId,
     getCompany,
     getCustomerListFirstPage,
-    setProductParameters,
+    getProductListFirstPage,
     setInvoiceParameters,
     setReceiptParameters,
     getInvoiceListFirstPage,
