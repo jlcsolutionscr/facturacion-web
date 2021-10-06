@@ -112,7 +112,7 @@ function ProductListPage({
   const rows = list.map((row) => (
     {
       id: row.Id,
-      name: row.Descripcion,
+      name: filterType === 1 ? `${row.Codigo} - ${row.Descripcion}` : row.Descripcion,
       action1: (
         <IconButton className={classes.icon} color="primary" component="span" onClick={() => openProduct(row.Id)}>
           <EditIcon className={classes.icon} />
