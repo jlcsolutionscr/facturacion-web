@@ -5,10 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
 import {
-  getCustomer,
   validateCustomerIdentifier,
   setCustomer,
-  filterCustomerList,
   setCustomerAttribute,
   saveCustomer
 } from 'store/customer/actions'
@@ -23,7 +21,6 @@ import Checkbox from '@material-ui/core/Checkbox'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 
-import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
 import Button from 'components/button'
 
@@ -53,8 +50,6 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-let delayTimer = null
-
 function CustomerPage({
   customerList,
   idTypeList,
@@ -62,16 +57,13 @@ function CustomerPage({
   rentTypeList,
   exonerationTypeList,
   customer,
-  getCustomer,
   validateCustomerIdentifier,
   setCustomer,
-  filterCustomerList,
   setCustomerAttribute,
   saveCustomer,
   setActiveSection
 }) {
   const classes = useStyles()
-  const [filter, setFilter] = React.useState('')
   const idTypeItems = idTypeList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
@@ -111,27 +103,13 @@ function CustomerPage({
     setCustomerAttribute('Identificacion', '')
     setCustomerAttribute('Nombre', '')
   }
-  const handleOnFilterChange = event => {
-    setFilter(event.target.value)
-    if (delayTimer) {  
-      clearTimeout(delayTimer)
-    }
-    delayTimer = setTimeout(() => {
-      filterCustomerList(event.target.value)
-    }, 500)
-  }
   const handleCheckboxChange = () => {
     setCustomerAttribute('AplicaTasaDiferenciada', !customer.AplicaTasaDiferenciada)
     if (customer.AplicaTasaDiferenciada) setCustomerAttribute('IdImpuesto', 8)
   }
-  const handleItemSelected = (item) => {
-    getCustomer(item.Id)
-    setFilter('')
-    filterCustomerList('')
-  }
   const handleOnClose = () => {
     setCustomer(null)
-    setActiveSection(0)
+    setActiveSection(3)
   }
   let idPlaceholder = ''
   let idMaxLength = 0
@@ -159,15 +137,6 @@ function CustomerPage({
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <ListDropdown
-            label='Seleccione un cliente'
-            items={customerList}
-            value={filter}
-            onItemSelected={handleItemSelected}
-            onChange={handleOnFilterChange}
-          />
-        </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
             <InputLabel id='IdTipoIdentificacion'>Tipo de identificación</InputLabel>
@@ -362,10 +331,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActiveSection,
-    getCustomer,
     validateCustomerIdentifier,
     setCustomer,
-    filterCustomerList,
     setCustomerAttribute,
     saveCustomer
   }, dispatch)

@@ -30,7 +30,7 @@ import { setProduct, setProductList } from 'store/product/actions'
 
 import {
   getCompanyEntity,
-  getCustomerList,
+  getCustomerListPerPage,
   getProductList,
   getProductEntity,
   getCustomerPrice,
@@ -138,7 +138,7 @@ export function setInvoiceParameters (id) {
     const { company } = getState().company
     dispatch(startLoader())
     try {
-      const customerList = await getCustomerList(token, companyId, '')
+      const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductList(token, companyId, branchId, true, '', 1)
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)

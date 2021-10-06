@@ -141,9 +141,20 @@ export async function getPriceTypeList(token) {
   }
 }
 
-export async function getCustomerList(token, companyId, strFilter) {
+export async function getCustomerListCount(token, companyId, strFilter) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoClientes', Parametros: {IdEmpresa: " + companyId + ", NumeroPagina: 1, FilasPorPagina: 0, Nombre: '" + strFilter + "'}}"
+    const data = "{NombreMetodo: 'ObtenerTotalListaClientes', Parametros: {IdEmpresa: " + companyId + ", Nombre: '" + strFilter + "'}}"
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return null
+    return response
+  } catch (e) {
+    throw e.message ? e.message : e
+  }
+}
+
+export async function getCustomerListPerPage(token, companyId, pageNumber, rowsPerPage, strFilter) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerListadoClientes', Parametros: {IdEmpresa: " + companyId + ", NumeroPagina: " + pageNumber + ", FilasPorPagina: " + rowsPerPage + ", Nombre: '" + strFilter + "'}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response

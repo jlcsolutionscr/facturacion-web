@@ -25,7 +25,9 @@ export const INITIAL_STATE = {
   },
   customer: {
     customer: null,
-    customerList: [],
+    listPage: 1,
+    listCount: 0,
+    list: [],
     priceTypeList: []
   },
   product: {

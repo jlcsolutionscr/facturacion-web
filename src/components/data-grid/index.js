@@ -73,7 +73,7 @@ export default function DataGrid({page, minWidth, showHeader, dense, columns, ro
     color: 'white',
     minWidth: minWidth
   }
-  if (height > 0) tableStyle = { ...tableStyle, display: 'list-item', height: height }
+  if (height > 0) tableStyle = { ...tableStyle, display: 'list-table', height: height }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -86,6 +86,7 @@ export default function DataGrid({page, minWidth, showHeader, dense, columns, ro
                     key={cell.field}
                     align={cell.type && cell.type === 'number' ? 'right' : 'left'}
                     padding='normal'
+                    style={{width: cell.width || 'auto'}}
                   >
                     {cell.headerName}
                   </TableCell>

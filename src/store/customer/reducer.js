@@ -1,5 +1,7 @@
 import {
-  SET_CUSTOMER_LIST,
+  SET_LIST_PAGE,
+  SET_LIST_COUNT,
+  SET_LIST,
   SET_CUSTOMER,
   SET_PRICE_TYPE_LIST,
   SET_CUSTOMER_ATTRIBUTE
@@ -13,8 +15,12 @@ import { defaultCustomer } from 'utils/defaults'
 
 const customerReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case SET_CUSTOMER_LIST:
-      return { ...state, customerList: payload.list }
+    case SET_LIST_PAGE:
+      return { ...state, listPage: payload.page }
+    case SET_LIST_COUNT:
+      return { ...state, listCount: payload.count }
+    case SET_LIST:
+      return { ...state, list: payload.list }
     case SET_CUSTOMER:
       return { ...state, customer: payload.customer }
     case SET_PRICE_TYPE_LIST:

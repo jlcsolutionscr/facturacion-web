@@ -32,7 +32,7 @@ import { setProduct, setProductList } from 'store/product/actions'
 import { roundNumber } from 'utils/utilities'
 import {
   getCompanyEntity,
-  getCustomerList,
+  getCustomerListPerPage,
   getProductList,
   getProductEntity,
   getCustomerPrice,
@@ -171,7 +171,7 @@ export function setWorkingOrderParameters () {
     dispatch(startLoader())
     try {
       if (sessionCompany.Modalidad === 1) {
-        const customerList = await getCustomerList(token, companyId, '')
+        const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
         dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       } else {
         const servicePointList = await getServicePointList(token, companyId, branchId, true, '');
@@ -404,7 +404,7 @@ export const openWorkingOrder = (id) => {
     dispatch(startLoader())
     try {
       const workingOrder = await getWorkingOrderEntity(token, id)
-      const customerList = await getCustomerList(token, companyId, '')
+      const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductList(token, companyId, branchId, true, '', 1)
       if (company === null) {
         const companyEntity = await getCompanyEntity(token, companyId)
