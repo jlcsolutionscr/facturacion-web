@@ -218,7 +218,7 @@ const mapStateToProps = (state) => {
     quantity: state.workingOrder.quantity,
     product: state.product.product,
     price: state.workingOrder.price,
-    productList: state.product.productList,
+    productList: state.product.list,
     detailsList: state.workingOrder.detailsList,
     status: state.workingOrder.status
   }

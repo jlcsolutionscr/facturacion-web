@@ -217,7 +217,7 @@ const mapStateToProps = (state) => {
     quantity: state.invoice.quantity,
     product: state.product.product,
     price: state.invoice.price,
-    productList: state.product.productList,
+    productList: state.product.list,
     detailsList: state.invoice.detailsList,
     successful: state.invoice.successful
   }

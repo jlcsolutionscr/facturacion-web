@@ -122,7 +122,7 @@ function StepOneScreen({
 const mapStateToProps = (state) => {
   return {
     customer: state.customer.customer,
-    customerList: state.customer.customerList,
+    customerList: state.customer.list,
     successful: state.invoice.successful
   }
 }
