@@ -84,13 +84,15 @@ function DocumentListPage({
   setActiveSection
 }) {
   const classes = useStyles()
+  const [dialogStatus, setDialogStatus] = React.useState({ open: false, type: 1})
   const [documentId, setDocumentId] = React.useState(null)
   const [email, setEmail] = React.useState('')
   const handleConfirmEmailClick = () => {
+    setDialogStatus({ open: false, type: 1})
     sendNotification(documentId, email)
     setEmail('')
   }
-  const dialogContent = email !== ''
+  const dialogContent = dialogStatus.type === 1
   ? (
     <div>
       <DialogTitle>Enviar documento electrónico</DialogTitle>
@@ -107,7 +109,7 @@ function DocumentListPage({
       </DialogActions>
     </div>
   )
-  : details !== ''
+  : dialogStatus.type === 2
     ? (
       <div>
         <DialogTitle>Mesaje de respuesta</DialogTitle>
@@ -117,7 +119,7 @@ function DocumentListPage({
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button negative label='Cerrar' onClick={() => setDocumentDetails('')} />
+          <Button negative label='Cerrar' onClick={() => handleDialogClose()} />
         </DialogActions>
       </div>
     )
@@ -125,11 +127,14 @@ function DocumentListPage({
   const handleEmailClick = (id, newEmail) => {
     setDocumentId(id)
     setEmail(newEmail)
+    setDialogStatus({ open: true, type: 1})
   }
   const handleDetailsClick = (id) => {
     getDocumentDetails(id)
+    setDialogStatus({ open: true, type: 2})
   }
   const handleDialogClose = () => {
+    setDialogStatus({ open: false, type: 1})
     if (email !== '' ) setEmail('')
     if (details !== '' ) setDocumentDetails('')
   }
@@ -185,7 +190,7 @@ function DocumentListPage({
       <div className={classes.buttonContainer}>
         <Button label='Regresar' onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog onClose={handleDialogClose} open={dialogContent !== null}>
+      <Dialog onClose={handleDialogClose} open={dialogStatus.open && (dialogStatus.type === 1 || (dialogStatus.type === 2 && details !== ''))}>
         {dialogContent}
       </Dialog>
     </div>
