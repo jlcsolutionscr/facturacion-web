@@ -51,7 +51,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function CustomerPage({
-  customerList,
   idTypeList,
   priceTypeList,
   rentTypeList,
@@ -88,6 +87,9 @@ function CustomerPage({
       || customer.IdImpuesto === null
       || customer.IdTipoExoneracion === null
   }
+  const handlePaste = (e) => {
+    e.preventDefault()
+  };
   const handleChange = event => {
     setCustomerAttribute(event.target.id, event.target.value)
     if (
@@ -152,12 +154,14 @@ function CustomerPage({
         <Grid item xs={12}>
           <TextField
             required
+            numericFormat={customer.IdTipoIdentificacion > 1 ? false : true}
             id='Identificacion'
             value={customer.Identificacion}
             label='Identificación'
             placeholder={idPlaceholder}
             inputProps={{maxLength: idMaxLength}}
             onChange={handleChange}
+            onPaste={handlePaste}
           />
         </Grid>
         <Grid item xs={12}>
