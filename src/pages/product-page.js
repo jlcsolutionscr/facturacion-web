@@ -469,7 +469,7 @@ function ProductPage({
 const mapStateToProps = (state) => {
   return {
     product: state.product.product,
-    productList: state.product.productList,
+    productList: state.product.list,
     productTypeList: state.product.productTypeList,
     categoryList: state.product.categoryList,
     providerList: state.product.providerList,

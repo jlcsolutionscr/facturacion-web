@@ -77,7 +77,7 @@ export const createStyle = makeStyles(theme => createStyles({
   item: {
     color: theme.palette.text.primary,
     lineHeight: '1.1876em',
-    width: '100%',
+    width: '90%',
     border: '0',
     height: '1.1876em',
     margin: '0',

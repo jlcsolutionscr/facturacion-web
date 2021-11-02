@@ -184,7 +184,6 @@ export function setWorkingOrderParameters () {
       }
       dispatch(resetWorkingOrder())
       dispatch(setCustomer(defaultCustomer))
-      
       dispatch(setProductList(productList))
       dispatch(setActiveSection(21))
       dispatch(stopLoader())
