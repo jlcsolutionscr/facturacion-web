@@ -27,7 +27,7 @@ export const createStyle = makeStyles(theme => createStyles({
     left: '0',
     position: 'absolute',
     display: 'block',
-    color: theme.palette.text.primary,
+    color: 'rgba(0, 0, 0, 0.57)',
     lineHeight: '1',
     paddingInlineStart: '5px',
     paddingInlineEnd: '7px'
@@ -39,7 +39,8 @@ export const createStyle = makeStyles(theme => createStyles({
     position: 'relative',
     boxSizing: 'border-box',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    marginTop: '5px'
   },
   input: {
     color: theme.palette.text.primary,
