@@ -71,7 +71,7 @@ export default function DataGrid({page, minWidth, showHeader, dense, columns, ro
   const height = rowsPerPage !== undefined ? rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0) : 0
   let tableStyle = {
     color: 'white',
-    minWidth: minWidth
+    minWidth: minWidth || 'auto'
   }
   if (height > 0) tableStyle = { ...tableStyle, display: 'list-table', height: height }
   return (

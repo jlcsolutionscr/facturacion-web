@@ -33,9 +33,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function RestaurantOrderPage({setActiveSection}) {
+function RestaurantOrderPage({ permissions, setActiveSection }) {
   const classes = useStyles()
   const [value, setValue] = useState(0)
+  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -49,7 +50,7 @@ function RestaurantOrderPage({setActiveSection}) {
       <Tabs centered value={value} indicatorColor='secondary' onChange={handleChange}
       >
         <Tab label='Detalle'/>
-        <Tab label='Generar'/>
+        <Tab label='Generar' disabled={!generateInvoice}/>
       </Tabs>
       <StepOneScreen value={value} index={0} />
       <StepTwoScreen value={value} index={1} />
@@ -57,8 +58,14 @@ function RestaurantOrderPage({setActiveSection}) {
   )
 }
 
+const mapStateToProps = (state) => {
+  return {
+    permissions: state.session.permissions
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({setActiveSection}, dispatch)
 }
 
-export default connect(null, mapDispatchToProps)(RestaurantOrderPage)
+export default connect(mapStateToProps, mapDispatchToProps)(RestaurantOrderPage)

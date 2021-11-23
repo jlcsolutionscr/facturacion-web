@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -47,6 +49,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+  },
+  switch: {
+    color: theme.palette.text.primary
   },
   bottom: {
     margin: '0',
@@ -105,6 +110,7 @@ function StepOneScreen({
     myRef.current.scrollTo(0, 0)
   }, [value])
   const [filter, setFilter] = React.useState('')
+  const [serviceIncluded, setServiceIncluded] = React.useState(false)
   const handleCustomerNameChange = (event) => {
     setCustomerAttribute('Nombre', event.target.value)
     setStatus('on-progress')
@@ -179,7 +185,7 @@ function StepOneScreen({
                 onChange={(event) => setQuantity(event.target.value)}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <TextField
                 label='Precio'
                 value={price}
@@ -187,10 +193,17 @@ function StepOneScreen({
                 onChange={handlePriceChange}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
               <IconButton className={classes.outerButton} color="primary" disabled={!buttonEnabled} component="span" onClick={() => addDetails()}>
                 <AddCircleIcon />
               </IconButton>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControlLabel
+                classes={{root: classes.switch}}
+                control={<Switch checked={serviceIncluded} onChange={() => setServiceIncluded(!serviceIncluded)} name="servIncluded" />}
+                label="Incluir Imp Serv"
+              />
             </Grid>
           </Grid>
         </div>

@@ -72,7 +72,6 @@ function StepFourScreen({
   workingOrderId,
   status,
   setPaymentId,
-  saveWorkingOrder,
   generateWorkingOrderTicket,
   generateInvoice,
   generateInvoiceTicket
@@ -138,9 +137,6 @@ function StepFourScreen({
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button disabled={status !== 'converted'} label='Imprimir Factura' onClick={handleOnPrintClick} />
-        </Grid>
-        <Grid item xs={12} className={classes.centered}>
           <FormControl style={{width: '215px', textAlign: 'left'}}>
             <InputLabel id='demo-simple-select-label'>Seleccione la forma de pago:</InputLabel>
             <Select
@@ -155,6 +151,9 @@ function StepFourScreen({
         </Grid>
         <Grid item xs={12} className={classes.centered}>
           <Button disabled={buttonDisabled} label='Facturar' onClick={() => generateInvoice()} />
+        </Grid>
+        <Grid item xs={12} className={classes.centered}>
+          <Button disabled={status !== 'converted'} label='Imprimir Factura' onClick={handleOnPrintClick} />
         </Grid>
       </Grid>
     </div>
