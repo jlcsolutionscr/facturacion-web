@@ -120,7 +120,7 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
         <Grid item xs={12} sm={12}>
           <LabelField
             id='FechaVence'
-            value={company ? company.FechaVence.DateTime.substring(0,10) : ''}
+            value={company & company.FechaVence ? company.FechaVence.DateTime.substring(0,10) : ''}
             label='Fecha vencimiento plan'
           />
         </Grid>
