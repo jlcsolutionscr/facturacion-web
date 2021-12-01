@@ -24,6 +24,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 
 import TextField from 'components/text-field'
+import LabelField from 'components/label-field'
 import Button from 'components/button'
 
 const useStyles = makeStyles(theme => ({
@@ -102,10 +103,25 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
           <TextField
+            id='NombreEmpresa'
+            value={company ? company.NombreEmpresa : ''}
+            label='Nombre empresa'
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
             id='NombreComercial'
             value={company ? company.NombreComercial : ''}
             label='Nombre comercial'
             onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <LabelField
+            id='FechaVence'
+            value={company ? company.FechaVence.DateTime.substring(0,10) : ''}
+            label='Fecha vencimiento plan'
           />
         </Grid>
         <Grid item xs={12} sm={12}>
