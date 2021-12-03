@@ -197,9 +197,9 @@ export async function saveCustomerEntity(token, customer) {
   }
 }
 
-export async function getProductTypeList(token) {
+export async function getProductTypeList(token, userCode) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoTipoProducto'}"
+    const data = "{NombreMetodo: 'ObtenerListadoTipoProducto', Parametros: {CodigoUsuario: '" + userCode + "'}}"
     const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response

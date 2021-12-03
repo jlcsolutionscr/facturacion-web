@@ -135,14 +135,14 @@ export const getProductListByPageNumber = (pageNumber, filterText, type) => {
 
 export function openProduct (idProduct) {
   return async (dispatch, getState) => {
-    const { companyId, branchId, token } = getState().session
+    const { companyId, branchId, token, userCode } = getState().session
     const { rentTypeList } = getState().ui
     const { productTypeList, categoryList, providerList } = getState().product
     dispatch(startLoader())
     try {
       let list = []
       if (productTypeList.length === 0) {
-        list = await getProductTypeList(token)
+        list = await getProductTypeList(token, userCode)
         dispatch(setProductTypeList(list))
       }
       if (categoryList.length === 0) {
