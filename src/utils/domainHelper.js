@@ -187,7 +187,7 @@ export async function getCustomerByIdentifier(token, companyId, identifier) {
 export async function saveCustomerEntity(token, customer) {
   try {
 
-    const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-06:00'}})
+    const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 23:59:59 GMT-06:00'}})
     const data = "{NombreMetodo: '" + (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") + "', Entidad: " + entidad + "}"
     const response = await post(APP_URL + "/ejecutar", token, data)
     if (response === null) return null
@@ -471,7 +471,7 @@ export async function saveInvoiceEntity(
       IdTipoExoneracion: customer.IdTipoExoneracion,
       NumDocExoneracion: customer.NumDocExoneracion,
       NombreInstExoneracion: customer.NombreInstExoneracion,
-      FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 22:59:59 GMT-06:00'},
+      FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 23:59:59 GMT-06:00'},
       PorcentajeExoneracion: customer.PorcentajeExoneracion,
       IdCxC: 0,
       IdAsiento: 0,
@@ -783,7 +783,7 @@ export async function saveReceiptEntity(
     const HH = (receiptDate.getHours() < 10 ? '0' : '') + receiptDate.getHours()
     const mm = (receiptDate.getMinutes() < 10 ? '0' : '') + receiptDate.getMinutes()
     const ss = (receiptDate.getSeconds() < 10 ? '0' : '') + receiptDate.getSeconds()
-    const timeString = dd + '/' + MM + '/' + receiptDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+    const timeString = dd + '/' + MM + '/' + receiptDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' 06:00'
     const receipt = {
       IdEmpresa: company.IdEmpresa,
       IdSucursal: branchId,
@@ -807,7 +807,7 @@ export async function saveReceiptEntity(
       IdTipoExoneracion: exoneration.type,
       NumDocExoneracion: exoneration.ref,
       NombreInstExoneracion: exoneration.issuerName,
-      FechaEmisionDoc: {DateTime: exoneration.date + ' 22:59:59 GMT-06:00'},
+      FechaEmisionDoc: {DateTime: exoneration.date + ' 23:59:59 GMT-06:00'},
       PorcentajeExoneracion: exoneration.percentage,
       TextoAdicional: '',
       Excento: summary.excento,
