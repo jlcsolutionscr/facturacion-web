@@ -13,6 +13,7 @@ import {
 } from 'store/ui/actions'
 
 import { userLogin } from 'utils/domainHelper'
+import { writeToLocalStorage, cleanLocalStorage } from 'utils/utilities'
 
 export const logIn = (username, company) => {
   return {
@@ -53,6 +54,34 @@ export function login (username, password, id) {
     dispatch(startLoader())
     try {
       const company = await userLogin(username, password, id)
+      writeToLocalStorage(username, company)
+      dispatch(logIn(username, company))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(logOut())
+      dispatch(setMessage(error.message))
+      dispatch(stopLoader())
+      console.error('Exeption authenticating session', error)
+    }
+  }
+}
+
+export function logout () {
+  return async (dispatch) => {
+    try {
+      cleanLocalStorage()
+      dispatch(logOut())
+    } catch (error) {
+      dispatch(setMessage(error.message))
+      console.error('Exeption on logout session', error)
+    }
+  }
+}
+
+export function restoreSession (username, company) {
+  return (dispatch) => {
+    dispatch(startLoader())
+    try {
       dispatch(logIn(username, company))
       dispatch(stopLoader())
     } catch (error) {

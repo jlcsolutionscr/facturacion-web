@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { logOut } from 'store/session/actions'
+import { logout } from 'store/session/actions'
 
 import Header from 'components/header'
 import MenuPage from './menu-page'
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function HomePage({ activeSection, mode, companyName, companyIdentifier, width, isDarkMode, toggleDarkMode, logOut }) {
+function HomePage({ activeSection, mode, companyName, companyIdentifier, width, isDarkMode, toggleDarkMode, logout }) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
@@ -65,7 +65,7 @@ function HomePage({ activeSection, mode, companyName, companyIdentifier, width, 
   }, [activeSection])
   return (
     <div id='id_home_page' className={classes.root} style={{minWidth: `${width}px`}}>
-      <Header companyName={companyName} companyIdentifier={companyIdentifier} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} logOut={logOut} />
+      <Header companyName={companyName} companyIdentifier={companyIdentifier} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} logOut={logout} />
       <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
@@ -100,7 +100,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ logOut }, dispatch)
+  return bindActionCreators({ logout }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

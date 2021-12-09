@@ -129,7 +129,7 @@ export async function getWithResponse(endpointURL, token) {
   }
 }
 
-export async function post(endpointURL, token, datos) {
+export async function post(endpointURL, token, data) {
   try {
     const headers = {
       Accept: 'application/json',
@@ -141,7 +141,7 @@ export async function post(endpointURL, token, datos) {
     const response = await fetch(endpointURL, {
       method: 'POST',
       headers,
-      body: JSON.stringify(datos),
+      body: JSON.stringify(data),
     })
     if (!response.ok) {
       let error = ''
@@ -158,7 +158,7 @@ export async function post(endpointURL, token, datos) {
   }
 }
 
-export async function postWithResponse(endpointURL, token, datos) {
+export async function postWithResponse(endpointURL, token, data) {
   try {
     const headers = {
       Accept: 'application/json',
@@ -170,7 +170,7 @@ export async function postWithResponse(endpointURL, token, datos) {
     const response = await fetch(endpointURL, {
       method: 'POST',
       headers,
-      body: JSON.stringify(datos),
+      body: JSON.stringify(data),
     })
     if (!response.ok) {
       let error = ''
@@ -192,4 +192,18 @@ export async function postWithResponse(endpointURL, token, datos) {
   } catch (error) {
     throw error
   }
+}
+
+export function writeToLocalStorage(user, data) {
+  const dateTime = Date.now()
+  window.sessionStorage.setItem("session", JSON.stringify({ userName: user, dateTime, company: data }))
+}
+
+export function readFromLocalStorage() {
+  const data = window.sessionStorage.getItem("session")
+  return JSON.parse(data)
+}
+
+export async function cleanLocalStorage() {
+  window.sessionStorage.removeItem("session");
 }

@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { login } from 'store/session/actions'
+import { login, restoreSession } from 'store/session/actions'
+import { readFromLocalStorage } from 'utils/utilities'
 
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
@@ -75,7 +76,16 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LoginPage({ login, isDarkMode, toggleDarkMode }) {
+function LoginPage({ login, restoreSession, isDarkMode, toggleDarkMode }) {
+  React.useEffect(() => {
+    const session = readFromLocalStorage()
+    if (session) {
+      const expiredTime = Date.now()
+      if (session.dateTime > expiredTime - (12*60*60*1000)) {
+        restoreSession(session.userName, session.company)
+      }
+    }
+  }, [restoreSession])
   const classes = useStyles()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -171,7 +181,7 @@ function LoginPage({ login, isDarkMode, toggleDarkMode }) {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ login }, dispatch)
+  return bindActionCreators({ login, restoreSession }, dispatch)
 }
 
 export default connect(null, mapDispatchToProps)(LoginPage)
