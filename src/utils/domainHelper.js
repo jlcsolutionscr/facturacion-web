@@ -783,7 +783,7 @@ export async function saveReceiptEntity(
     const HH = (receiptDate.getHours() < 10 ? '0' : '') + receiptDate.getHours()
     const mm = (receiptDate.getMinutes() < 10 ? '0' : '') + receiptDate.getMinutes()
     const ss = (receiptDate.getSeconds() < 10 ? '0' : '') + receiptDate.getSeconds()
-    const timeString = dd + '/' + MM + '/' + receiptDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' 06:00'
+    const timeString = dd + '/' + MM + '/' + receiptDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
     const receipt = {
       IdEmpresa: company.IdEmpresa,
       IdSucursal: branchId,
