@@ -92,7 +92,7 @@ const mapStateToProps = (state) => {
     loaderText: state.ui.loaderText,
     activeSection: state.ui.activeSection,
     mode: state.session.company.Modalidad,
-    companyName: state.session.company.NombreComercial || state.session.company.NombreEmpresa,
+    companyName: state.session.company.NombreEmpresa,
     companyIdentifier: state.session.company.Identificacion,
     branchList: state.session.branchList,
     branchId: state.session.branchId

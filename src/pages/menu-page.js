@@ -113,13 +113,13 @@ function MenuPage({
   const manageDocuments = permissions.filter(role => [1, 402].includes(role.IdRole)).length > 0
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0
   const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0
-  const pickBranchOption = permissions.filter(role => role.IdRole === 48).length > 0
+  const switchBrand = permissions.filter(role => [1, 2, 48].includes(role.IdRole)).length > 0
   const branchItems = branchList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <Grid className={classes.root} container align='center'>
-      {branchList.length > 1 && <Grid item xs={12}>
+      <Grid item xs={12}>
         <div className={classes.branches}>
-          {pickBranchOption 
+          {branchList.length > 1 && switchBrand 
             ? <FormControl className={classes.formControl}>
               <InputLabel>Seleccione la sucursal:</InputLabel>
               <Select
@@ -134,7 +134,7 @@ function MenuPage({
               {`Sucursal: ${branchList.find(branch => branch.Id === branchId).Descripcion}`}
             </Typography>}
         </div>
-      </Grid>}
+      </Grid>
       <Grid item xs={12} sm={6}>
         <Button disabled={!updateCompanyInfo} classes={{root: classes.button}} onClick={() => getCompany()}>Actualizar empresa</Button>
       </Grid>
