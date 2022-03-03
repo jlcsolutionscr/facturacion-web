@@ -44,9 +44,47 @@ export async function saveCompanyLogo(token, companyId, strLogo) {
   }
 }
 
-export async function saveCompanyCertificate(token, companyId, strCertificate) {
+export async function validateCredentials(token, userCode, userPass) {
   try {
-    const data = "{NombreMetodo: 'ActualizarCertificadoEmpresa', Parametros: {IdEmpresa: " + companyId + ", Certificado: '" + strCertificate + "'}}";
+    const data = "{NombreMetodo: 'ValidarCredencialesHacienda', Parametros: {CodigoUsuario: '" + userCode + "', Clave: '" + userPass + "'}}"
+    await post(APP_URL + "/ejecutar", token, data)
+  } catch {
+    throw new Error('Error al comunicarse con el servicio web. Intente más tarde. . .')
+  }
+}
+
+export async function validateCertificate(token, strPin, strCertificate) {
+  try {
+    const data = "{NombreMetodo: 'ValidarCertificadoHacienda', Parametros: {PinCertificado: '" + strPin + "', Certificado: '" + strCertificate + "'}}";
+    await post(APP_URL + "/ejecutar", token, data)
+  } catch {
+    throw new Error('Error al comunicarse con el servicio web. Intente más tarde. . .')
+  }
+}
+
+export async function getCredentialsEntity(token, strIdentification) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {Identificacion: " + strIdentification + "}}";
+    const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+    if (response === null) return null
+    return response
+  } catch {
+    throw new Error('Error al comunicarse con el servicio web. Intente más tarde. . .')
+  }
+}
+
+export async function saveCredentialsEntity(token, strIdentification, userCode, userPass, strCertificateName, strPin, strCertificate) {
+  try {
+    const data = "{NombreMetodo: 'AgregarCredencialesHacienda', Parametros: {Identificacion: '" + strIdentification + "', Usuario: '" + userCode + "', Clave: '" + userPass + "', NombreCertificado: '" + strCertificateName + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificate + "'}}";
+    await post(APP_URL + "/ejecutar", token, data)
+  } catch (e) {
+    throw e
+  }
+}
+
+export async function updateCredentialsEntity(token, strIdentification, userCode, userPass, strCertificateName, strPin, strCertificate) {
+  try {
+    const data = "{NombreMetodo: 'ActualizarCredencialesHacienda', Parametros: {Identificacion: '" + strIdentification + "', Usuario: '" + userCode + "', Clave: '" + userPass + "', NombreCertificado: '" + strCertificateName + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificate + "'}}";
     await post(APP_URL + "/ejecutar", token, data)
   } catch (e) {
     throw e

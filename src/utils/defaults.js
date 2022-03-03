@@ -1,6 +1,8 @@
 export const defaultCustomer = {
   IdCliente: 1,
   Nombre: 'CLIENTE DE CONTADO',
+  IdImpuesto: 8,
+  AplicaTasaDiferenciada: false,
   IdTipoExoneracion: 1,
   ParametroExoneracion: {
     Descripcion: 'Compras autorizadas'

@@ -1,6 +1,8 @@
 import {
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
+  SET_CREDENTIALS,
+  SET_CREDENTIALS_ATTRIBUTE,
   SET_REPORT_RESULTS
 } from './types'
 
@@ -22,7 +24,11 @@ import {
   getDistritoList,
   getBarrioList,
   saveCompanyEntity,
-  saveCompanyCertificate,
+  getCredentialsEntity,
+  validateCredentials,
+  validateCertificate,
+  saveCredentialsEntity,
+  updateCredentialsEntity,
   saveCompanyLogo,
   getReportData,
   sendReportEmail
@@ -37,9 +43,23 @@ export const setCompany = (company) => {
   }
 }
 
+export const setCredentials = (credentials) => {
+  return {
+    type: SET_CREDENTIALS,
+    payload: { credentials }
+  }
+}
+
 export const setCompanyAttribute = (attribute, value) => {
   return {
     type: SET_COMPANY_ATTRIBUTE,
+    payload: { attribute, value }
+  }
+}
+
+export const setCredentialsAttribute = (attribute, value) => {
+  return {
+    type: SET_CREDENTIALS_ATTRIBUTE,
     payload: { attribute, value }
   }
 }
@@ -58,10 +78,12 @@ export function getCompany () {
     try {
       dispatch(setActiveSection(1))
       const company = await getCompanyEntity(token, companyId)
+      const credentials = await getCredentialsEntity(token, company.Identificacion)
       const cantonList = await getCantonList(token, company.IdProvincia)
       const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton)
       const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito)
       dispatch(setCompany(company))
+      dispatch(setCredentials(credentials))
       dispatch(setCantonList(cantonList))
       dispatch(setDistritoList(distritoList))
       dispatch(setBarrioList(barrioList))
@@ -76,12 +98,25 @@ export function getCompany () {
 export function saveCompany (certificate) {
   return async (dispatch, getState) => {
     const { token } = getState().session
-    const { company } = getState().company
+    const { company, credentials, credentialsNew, credentialsChanged } = getState().company
     dispatch(startLoader())
     try {
+      if (!company.RegimenSimplificado) {
+        if (credentials == null) throw new Error('Los credenciales de Hacienda deben ingresarse')
+        if (credentials.UsuarioHacienda === undefined ||
+          credentials.ClaveHacienda === undefined ||
+          credentials.NombreCertificado === undefined ||
+          credentials.PinCertificado === undefined
+        ) throw new Error('Los credenciales de Hacienda no pueden contener valores nulos')
+        await validateCredentials(token, credentials.UsuarioHacienda, credentials.ClaveHacienda)
+        if (certificate !== '') await validateCertificate(token, credentials.PinCertificado, certificate)
+      }
       await saveCompanyEntity(token, company)
-      if (certificate !== '') {
-        await saveCompanyCertificate(token, company.IdEmpresa, certificate)
+      if (!company.RegimenSimplificado && credentialsChanged) {
+        if (credentialsNew)
+          await saveCredentialsEntity(token, company.Identificacion, credentials.UsuarioHacienda, credentials.ClaveHacienda, credentials.NombreCertificado, credentials.PinCertificado, certificate)
+        else
+          await updateCredentialsEntity(token, company.Identificacion, credentials.UsuarioHacienda, credentials.ClaveHacienda, credentials.NombreCertificado, credentials.PinCertificado, certificate)
       }
       dispatch(setSessionCompany(company))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))

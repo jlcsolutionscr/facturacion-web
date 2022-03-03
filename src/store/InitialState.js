@@ -17,6 +17,9 @@ export const INITIAL_STATE = {
   session: defaultSession,
   company: {
     company: null,
+    credentials: null,
+    credentialsNew: true,
+    credentialsChanged: false,
     reportResults: [],
     reportSummary: {
       startDate: '01/01/2000',

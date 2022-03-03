@@ -12,6 +12,7 @@ import {
 
 import {
   setCompanyAttribute,
+  setCredentialsAttribute,
   saveCompany
 } from 'store/company/actions'
 
@@ -48,7 +49,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyAttribute, updateCantonList, updateDistritoList, updateBarrioList, saveCompany, setActiveSection}) {
+function CompanyPage({company, credentials, cantonList, distritoList, barrioList, setCompanyAttribute, setCredentialsAttribute, updateCantonList, updateDistritoList, updateBarrioList, saveCompany, setActiveSection}) {
   const classes = useStyles()
   const [certificate, setCertificate] = React.useState('')
   const inputFile = React.useRef(null)
@@ -88,7 +89,7 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
     event.preventDefault()
     let reader = new FileReader()
     let file = event.target.files[0]
-    setCompanyAttribute('NombreCertificado', file.name)
+    setCredentialsAttribute('NombreCertificado', file.name)
     reader.onloadend = () => {
       const certificateBase64 = reader.result.substring(reader.result.indexOf(',') + 1)
       setCertificate(certificateBase64)
@@ -229,27 +230,27 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
             id='UsuarioHacienda'
-            value={company ? company.UsuarioHacienda : ''}
+            value={credentials ? credentials.UsuarioHacienda : ''}
             label='Usuario ATV'
-            onChange={handleChange}
+            onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
             id='ClaveHacienda'
-            value={company ? company.ClaveHacienda : ''}
+            value={credentials ? credentials.ClaveHacienda : ''}
             label='Clave ATV'
-            onChange={handleChange}
+            onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
         </Grid>
         <Grid item xs={8} sm={9} md={10}>
           <TextField
             disabled
             id='NombreCertificado'
-            value={company ? company.NombreCertificado : ''}
+            value={credentials ? credentials.NombreCertificado : ''}
             label='Llave criptográfica'
-            onChange={handleChange}
+            onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
         </Grid>
         <Grid item xs={1}>
@@ -268,9 +269,9 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
             id='PinCertificado'
-            value={company ? company.PinCertificado : ''}
+            value={credentials ? credentials.PinCertificado : ''}
             label='Pin de llave criptográfica'
-            onChange={handleChange}
+            onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
         </Grid>
         <Grid item xs={12}>
@@ -304,6 +305,7 @@ function CompanyPage({company, cantonList, distritoList, barrioList, setCompanyA
 const mapStateToProps = (state) => {
   return {
     company: state.company.company,
+    credentials: state.company.credentials,
     cantonList: state.ui.cantonList,
     distritoList: state.ui.distritoList,
     barrioList: state.ui.barrioList
@@ -317,6 +319,7 @@ const mapDispatchToProps = (dispatch) => {
     updateDistritoList,
     updateBarrioList,
     setCompanyAttribute,
+    setCredentialsAttribute,
     saveCompany
   }, dispatch)
 }
