@@ -111,7 +111,7 @@ export const getProductListFirstPage = (id, filterText, type) => {
       if (id) dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -127,7 +127,7 @@ export const getProductListByPageNumber = (pageNumber, filterText, type) => {
       dispatch(setProductList(newList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -188,7 +188,7 @@ export function openProduct (idProduct) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -203,7 +203,7 @@ export function filterProductList (text, type) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -218,7 +218,7 @@ export function filterClasificationList (text) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -234,7 +234,7 @@ export function getProduct (idProduct) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setProduct(null))
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -259,7 +259,7 @@ export function validateProductCode (code) {
       }
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -275,7 +275,7 @@ export function saveProduct () {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }

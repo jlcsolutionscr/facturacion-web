@@ -78,7 +78,7 @@ export function getCompany () {
     try {
       dispatch(setActiveSection(1))
       const company = await getCompanyEntity(token, companyId)
-      const credentials = await getCredentialsEntity(token, company.Identificacion)
+      const credentials = await getCredentialsEntity(token, company.IdEmpresa)
       const cantonList = await getCantonList(token, company.IdProvincia)
       const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton)
       const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito)
@@ -114,9 +114,9 @@ export function saveCompany (certificate) {
       await saveCompanyEntity(token, company)
       if (!company.RegimenSimplificado && credentialsChanged) {
         if (credentialsNew)
-          await saveCredentialsEntity(token, company.Identificacion, credentials.UsuarioHacienda, credentials.ClaveHacienda, credentials.NombreCertificado, credentials.PinCertificado, certificate)
+          await saveCredentialsEntity(token, company.IdEmpresa, credentials.UsuarioHacienda, credentials.ClaveHacienda, credentials.NombreCertificado, credentials.PinCertificado, certificate)
         else
-          await updateCredentialsEntity(token, company.Identificacion, credentials.UsuarioHacienda, credentials.ClaveHacienda, credentials.NombreCertificado, credentials.PinCertificado, certificate)
+          await updateCredentialsEntity(token, company.IdEmpresa, credentials.UsuarioHacienda, credentials.ClaveHacienda, credentials.NombreCertificado, credentials.PinCertificado, certificate)
       }
       dispatch(setSessionCompany(company))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
@@ -198,7 +198,7 @@ export function sendReportToEmail (reportName, startDate, endDate) {
       dispatch(setMessage('Reporte enviado al correo satisfactoriamente', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
       
     }

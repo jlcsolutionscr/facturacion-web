@@ -152,7 +152,7 @@ export function setInvoiceParameters (id) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -176,7 +176,7 @@ export function getProduct (idProduct) {
       dispatch(setDescription(''))
       dispatch(setQuantity(1))
       dispatch(setPrice(0))
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -191,7 +191,7 @@ export function filterProductList (text, type) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -280,7 +280,7 @@ export const saveInvoice = () => {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -302,7 +302,7 @@ export const getInvoiceListFirstPage = (id) => {
       if (id) dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -318,7 +318,7 @@ export const getInvoiceListByPageNumber = (pageNumber) => {
       dispatch(setInvoiceList(newList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -333,7 +333,7 @@ export const revokeInvoice = (idInvoice) => {
       dispatch(getInvoiceListFirstPage(null))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -347,7 +347,7 @@ export const generatePDF = (idInvoice, ref) => {
       await generateInvoicePDF(token, idInvoice, ref)
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -362,7 +362,7 @@ export const sendInvoiceNotification = (idInvoice) => {
       dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -389,7 +389,7 @@ export const generateInvoiceTicket = (idInvoice) => {
       }
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }

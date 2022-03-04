@@ -189,7 +189,7 @@ export function setWorkingOrderParameters () {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -213,7 +213,7 @@ export function getProduct (idProduct) {
       dispatch(setDescription(''))
       dispatch(setQuantity(1))
       dispatch(setPrice(0))
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -228,7 +228,7 @@ export function filterProductList (text, type) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -336,7 +336,7 @@ export const saveWorkingOrder = () => {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -358,7 +358,7 @@ export const getWorkingOrderListFirstPage = (id) => {
       if (id) dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -374,7 +374,7 @@ export const getWorkingOrderListByPageNumber = (pageNumber) => {
       dispatch(setWorkingOrderList(newList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -389,7 +389,7 @@ export const revokeWorkingOrder = (id) => {
       dispatch(getWorkingOrderListFirstPage(null))
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -451,7 +451,7 @@ export const openWorkingOrder = (id) => {
       dispatch(setStatus('ready'))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -484,7 +484,7 @@ export const generateInvoice = () => {
       dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -511,7 +511,7 @@ export const generateInvoiceTicket = () => {
       }
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -525,7 +525,7 @@ export const generatePDF = (id, ref) => {
       await generateWorkingOrderPDF(token, id, ref)
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -540,7 +540,7 @@ export const sendWorkingOrderNotification = (id) => {
       dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -567,7 +567,7 @@ export const generateWorkingOrderTicket = (id) => {
       }
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }

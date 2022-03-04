@@ -95,7 +95,7 @@ export const sendNotification = (idDocument, emailTo) => {
       dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }

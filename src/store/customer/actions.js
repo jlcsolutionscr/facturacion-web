@@ -88,7 +88,7 @@ export const getCustomerListFirstPage = (id, filter) => {
       if (id) dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -104,7 +104,7 @@ export const getCustomerListByPageNumber = (pageNumber, filter) => {
       dispatch(setCustomerList(newList))
       dispatch(stopLoader())
     } catch (error) {
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
   }
@@ -163,7 +163,7 @@ export function openCustomer (idCustomer) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -187,7 +187,7 @@ export function validateCustomerIdentifier (identifier) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setCustomerAttribute('Nombre', ''))
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -203,7 +203,7 @@ export function saveCustomer () {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -219,7 +219,7 @@ export function getCustomer (idCustomer) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setCustomer(null))
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -234,7 +234,7 @@ export function filterCustomerList (filter) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }

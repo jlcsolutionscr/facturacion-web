@@ -108,7 +108,7 @@ export function setReceiptParameters (id) {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -132,7 +132,7 @@ export function validateCustomerIdentifier (identifier) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setIssuerDetails('name',''))
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -157,7 +157,7 @@ export function validateProductCode (code) {
       }
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
@@ -230,7 +230,7 @@ export const saveReceipt = () => {
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setMessage(error))
+      dispatch(setMessage(error.message))
     }
   }
 }
