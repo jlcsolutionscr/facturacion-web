@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 import xmlParser from 'react-xml-parser'
 import CryptoJS from 'crypto-js'
+import { fetch } from 'whatwg-fetch'
 
 export function encryptString(plainText) {
   const phrase = 'Po78]Rba[%J=[14[*'
