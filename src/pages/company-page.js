@@ -311,7 +311,7 @@ function CompanyPage({
                 color="primary"
               />
             }
-            label="Incluir IVA en precio de venta"
+            label="IVA incluido en precio de venta"
           />
         </Grid>
         <Grid item xs={8} md={6}>
