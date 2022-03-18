@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import {
+  setActivityCode,
   setPaymentId,
   setComment,
   saveInvoice,
@@ -34,11 +35,11 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center'
   },
   details: {
-    marginTop: '10px',
+    marginTop: '5px',
     textAlign: 'left'
   },
   summaryTitle: {
-    marginTop: '20px',
+    marginTop: '0',
     fontWeight: '700',
     color: theme.palette.text.primary
   },
@@ -58,7 +59,9 @@ const useStyles = makeStyles(theme => ({
 function StepThreeScreen({
   value,
   index,
+  company,
   summary,
+  activityCode,
   paymentId,
   comment,
   successful,
@@ -68,6 +71,7 @@ function StepThreeScreen({
   saveInvoice,
   resetInvoice,
   generateInvoiceTicket,
+  setActivityCode,
   setValue
 }) {
   const { gravado, exonerado, excento, subTotal, impuesto, total } = summary
@@ -90,6 +94,7 @@ function StepThreeScreen({
   const handleOnPrintButton = () => {
     generateInvoiceTicket(invoiceId)
   }
+  const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
@@ -101,6 +106,20 @@ function StepThreeScreen({
             value={comment}
             onChange={(event) => setComment(event.target.value)}
           />
+        </Grid>
+        <Grid item xs={12} className={classes.centered}>
+          <Grid item xs={12} sm={7} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
+              <Select
+                id='CodigoActividad'
+                value={activityCode}
+                onChange={(event) => setActivityCode(event.target.value)}
+              >
+                {activityItems}
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
@@ -169,7 +188,9 @@ function StepThreeScreen({
 
 const mapStateToProps = (state) => {
   return {
+    company: state.company.company,
     invoiceId: state.invoice.invoiceId,
+    activityCode: state.invoice.activityCode,
     paymentId: state.invoice.paymentId,
     summary: state.invoice.summary,
     comment: state.invoice.comment,
@@ -181,6 +202,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
+    setActivityCode,
     setPaymentId,
     setComment,
     saveInvoice,

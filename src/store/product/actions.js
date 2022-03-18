@@ -21,11 +21,9 @@ import {
 import {
   getProductListCount,
   getProductListPerPage,
-  getProductTypeList,
   getProductCategoryList,
   getProductProviderList,
   getProductClasificationList,
-  getRentTypeList,
   getProductEntity,
   getProductClasification,
   saveProductEntity
@@ -135,15 +133,14 @@ export const getProductListByPageNumber = (pageNumber, filterText, type) => {
 
 export function openProduct (idProduct) {
   return async (dispatch, getState) => {
-    const { companyId, branchId, token, userCode } = getState().session
+    const { company, companyId, branchId, token } = getState().session
     const { rentTypeList } = getState().ui
     const { productTypeList, categoryList, providerList } = getState().product
     dispatch(startLoader())
     try {
       let list = []
       if (productTypeList.length === 0) {
-        list = await getProductTypeList(token, userCode)
-        dispatch(setProductTypeList(list))
+        dispatch(setProductTypeList(company.ListadoTipoProducto))
       }
       if (categoryList.length === 0) {
         list = await getProductCategoryList(token, companyId)
@@ -154,8 +151,7 @@ export function openProduct (idProduct) {
         dispatch(setProviderList(list))
       }
       if (rentTypeList.length === 0) {
-        list = await getRentTypeList(token)
-        dispatch(setRentTypeList(list))
+        dispatch(setRentTypeList(company.ListadoTipoImpuesto))
       }
       let product
       if (idProduct) {
@@ -231,6 +227,7 @@ export function getProduct (idProduct) {
       const product = await getProductEntity(token, idProduct, branchId)
       dispatch(setProduct(product))
       dispatch(stopLoader())
+      
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setProduct(null))

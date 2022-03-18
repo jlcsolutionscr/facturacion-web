@@ -4,6 +4,7 @@ import {
   SET_PRICE,
   SET_DETAILS_LIST,
   SET_SUMMARY,
+  SET_ACTIVITY_CODE,
   SET_PAYMENT_ID,
   SET_COMMENT,
   SET_SUCCESSFUL,
@@ -21,8 +22,6 @@ import {
 } from 'store/ui/actions'
 
 import { setPrinter } from 'store/session/actions'
-
-import { setCompany } from 'store/company/actions'
 
 import { setCustomer, setCustomerList } from 'store/customer/actions'
 
@@ -46,6 +45,7 @@ import {
 
 import { defaultCustomer } from 'utils/defaults'
 import { printInvoice, getDeviceFromUsb } from 'utils/printing'
+import { getTaxeRateFromId } from 'utils/utilities'
 
 export const setDescription = (description) => {
   return {
@@ -79,6 +79,13 @@ export const setSummary = (summary) => {
   return {
     type: SET_SUMMARY,
     payload: { summary }
+  }
+}
+
+export const setActivityCode = (code) => {
+  return {
+    type: SET_ACTIVITY_CODE,
+    payload: { code }
   }
 }
 
@@ -135,19 +142,16 @@ export const resetInvoice = () => {
 export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
-    const { company } = getState().company
     dispatch(startLoader())
     try {
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
-      if (company === null) {
-        const companyEntity = await getCompanyEntity(token, companyId)
-        dispatch(setCompany(companyEntity))
-      }
+      const companyEntity = await getCompanyEntity(token, companyId)
       dispatch(resetInvoice())
       dispatch(setCustomer(defaultCustomer))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       dispatch(setProductList(productList))
+      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
       dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
@@ -157,7 +161,7 @@ export function setInvoiceParameters (id) {
   }
 }
 
-export function getProduct (idProduct) {
+export function getProduct (idProduct, type) {
   return async (dispatch, getState) => {
     const { token, company } = getState().session
     const { customer } = getState().customer
@@ -166,6 +170,7 @@ export function getProduct (idProduct) {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
       if (customer != null) price = getCustomerPrice(customer, product, company)
+      dispatch(filterProductList('', type))
       dispatch(setDescription(product.Descripcion))
       dispatch(setQuantity(1))
       dispatch(setPrice(price))
@@ -203,11 +208,10 @@ export function addDetails () {
     const { product } = getState().product
     const { detailsList, description, quantity, price } = getState().invoice
     try {
-      
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
         let newProducts = null
-        let tasaIva = product.ParametroImpuesto.TasaImpuesto
-        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = customer.ParametroImpuesto.TasaImpuesto
+        let tasaIva = getTaxeRateFromId(company, product.IdImpuesto)
+        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = getTaxeRateFromId(company, customer.IdImpuesto)
         let finalPrice = price
         if (!company.PrecioVentaIncluyeIVA && tasaIva > 0) finalPrice = price * (1 + (tasaIva / 100))
         const item = {
@@ -259,13 +263,14 @@ export const saveInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { paymentId, detailsList, summary, comment } = getState().invoice
+    const { activityCode, paymentId, detailsList, summary, comment } = getState().invoice
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
         token,
         userId,
         detailsList,
+        activityCode,
         paymentId,
         0,
         0,

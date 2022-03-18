@@ -125,9 +125,8 @@ function StepOneScreen({
     }, 500)
   }
   const handleItemSelected = (item) => {
-    getProduct(item.Id)
+    getProduct(item.Id, 2)
     setFilter('')
-    filterProductList('', 2)
   }
   const handlePriceChange = (event) => {
     const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0

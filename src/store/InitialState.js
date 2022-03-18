@@ -18,6 +18,7 @@ export const INITIAL_STATE = {
   company: {
     company: null,
     credentials: null,
+    economicActivities: [],
     credentialsNew: true,
     credentialsChanged: false,
     reportResults: [],

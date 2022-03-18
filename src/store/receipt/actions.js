@@ -4,6 +4,7 @@ import {
   SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_EXONERATION_DETAILS,
+  SET_ACTIVITY_CODE,
   SET_SUCCESSFUL,
   RESET_RECEIPT
 } from './types'
@@ -18,13 +19,8 @@ import {
   setMessage
 } from 'store/ui/actions'
 
-import { setCompany } from 'store/company/actions'
-
 import {
   getCompanyEntity,
-  getIdTypeList,
-  getRentTypeList,
-  getExonerationTypeList,
   getProductSummary,
   getCustomerByIdentifier,
   getProductClasification,
@@ -68,6 +64,13 @@ export const setExonerationDetails = (attribute, value) => {
   }
 }
 
+export const setActivityCode = (code) => {
+  return {
+    type: SET_ACTIVITY_CODE,
+    payload: { code }
+  }
+}
+
 export const setSuccessful = () => {
   return {
     type: SET_SUCCESSFUL
@@ -82,28 +85,22 @@ export const resetReceipt = () => {
 
 export function setReceiptParameters (id) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
+    const { company, companyId, token } = getState().session
     const { idTypeList, rentTypeList, exonerationTypeList } = getState().ui
-    const { company } = getState().company
     dispatch(startLoader())
     try {
-      if (company === null) {
-        const companyEntity = await getCompanyEntity(token, companyId)
-        dispatch(setCompany(companyEntity))
-      }
+      const companyEntity = await getCompanyEntity(token, companyId)
       if (idTypeList.length === 0) {
-        const newList = await getIdTypeList(token)
-        dispatch(setIdTypeList(newList))
+        dispatch(setIdTypeList(company.ListadoTipoIdentificacion))
       }
       if (rentTypeList.length === 0) {
-        const newList = await getRentTypeList(token)
-        dispatch(setRentTypeList(newList))
+        dispatch(setRentTypeList(company.ListadoTipoImpuesto))
       }
       if (exonerationTypeList.length === 0) {
-        const newList = await getExonerationTypeList(token)
-        dispatch(setExonerationTypeList(newList))
+        dispatch(setExonerationTypeList(company.ListadoTipoExoneracion))
       }
       dispatch(resetReceipt())
+      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
       dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {

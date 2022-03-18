@@ -4,9 +4,6 @@ export const defaultCustomer = {
   IdImpuesto: 8,
   AplicaTasaDiferenciada: false,
   IdTipoExoneracion: 1,
-  ParametroExoneracion: {
-    Descripcion: 'Compras autorizadas'
-  },
   NumDocExoneracion: '',
   NombreInstExoneracion: '',
   FechaEmisionDoc: '01/01/2000',
@@ -30,6 +27,7 @@ export const defaultSession = {
 
 export const defaultInvoice = {
   invoiceId: 0,
+  activityCode: 0,
   description: '',
   quantity: 1,
   price: 0,
@@ -49,6 +47,7 @@ export const defaultInvoice = {
 
 export const defaultWorkingOrder = {
   workingOrderId: 0,
+  activityCode: 0,
   invoiceId: 0,
   status: 'on-progress',
   description: '',
@@ -77,6 +76,7 @@ export const defaultWorkingOrder = {
 
 export const defaultReceipt = {
   receiptId: 0,
+  activityCode: 0,
   issuer: {
     idType: 0,
     id: '',

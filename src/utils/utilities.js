@@ -28,29 +28,25 @@ export function roundNumber(number, places) {
   return +(Math.round(number + 'e+' + places) + 'e-' + places)
 }
 
-export function arrayToString (byteArray) {
-  return String.fromCharCode.apply(null, byteArray)
-}
-
-export function convertStringToDate(value) {
-  let formattedDate = new Date(2000, 0, 1)
-  if (value !== '') {
-    const splitDate = value.split("/")
-    formattedDate = new Date(parseInt(splitDate[2]), parseInt(splitDate[1]) - 1, parseInt(splitDate[0]))
-  }
-  return formattedDate
-}
-
-export function convertDateToString(date) {
+export function convertToDateString(date) {
   const dayFormatted = (date.getDate() < 10 ? '0' : '') + date.getDate()
   const monthFormatted = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
   return `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`
 }
 
+export function convertToDateTimeString(date) {
+  const dayFormatted = (date.getDate() < 10 ? '0' : '') + date.getDate()
+  const monthFormatted = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
+  return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T23:59:59`
+}
+
+export function getTaxeRateFromId(company, id) {
+  return company.ListadoTipoImpuesto.find(x => x.Id === id).Valor
+}
+
 export function xmlToObject (value) {
   const parser = new xmlParser()
-  const text = String.fromCharCode.apply(null, value)
-  const xml = parser.parseFromString(text)
+  const xml = parser.parseFromString(value)
   let result = {}
   for (let node of xml.children) parseNode(node, result)
   return result

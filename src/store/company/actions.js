@@ -2,6 +2,7 @@ import {
   SET_COMPANY,
   SET_COMPANY_ATTRIBUTE,
   SET_CREDENTIALS,
+  SET_ECONOMIC_ACTIVITY_LIST,
   SET_CREDENTIALS_ATTRIBUTE,
   SET_REPORT_RESULTS
 } from './types'
@@ -23,6 +24,7 @@ import {
   getCantonList,
   getDistritoList,
   getBarrioList,
+  getEconomicActivities,
   saveCompanyEntity,
   getCredentialsEntity,
   validateCredentials,
@@ -47,6 +49,13 @@ export const setCredentials = (credentials) => {
   return {
     type: SET_CREDENTIALS,
     payload: { credentials }
+  }
+}
+
+export const setEconomicActivityList = (list) => {
+  return {
+    type: SET_ECONOMIC_ACTIVITY_LIST,
+    payload: { list }
   }
 }
 
@@ -82,11 +91,13 @@ export function getCompany () {
       const cantonList = await getCantonList(token, company.IdProvincia)
       const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton)
       const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito)
+      const activityList = await getEconomicActivities(token, company.Identificacion)
       dispatch(setCompany(company))
       dispatch(setCredentials(credentials))
       dispatch(setCantonList(cantonList))
       dispatch(setDistritoList(distritoList))
       dispatch(setBarrioList(barrioList))
+      dispatch(setEconomicActivityList(activityList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))
@@ -142,6 +153,27 @@ export function saveLogo (logo) {
       dispatch(setMessage(error.message))
       dispatch(stopLoader())
     }
+  }
+}
+
+export function addActivity (code) {
+  return async (dispatch, getState) => {
+    const { company, economicActivities } = getState().company
+    if (company.ActividadEconomicaEmpresa.find(x => x.CodigoActividad === code)) {
+      dispatch(setMessage('No existen registros para el rango de fecha seleccionado.', 'INFO'))
+    } else {
+      const description = economicActivities.find(x => x.Id === code).Descripcion
+      const list = [ ...company.ActividadEconomicaEmpresa, { IdEmpresa: company.IdEmpresa, CodigoActividad: code, Descripcion: description }]
+      dispatch(setCompanyAttribute('ActividadEconomicaEmpresa', list))
+    }
+  }
+}
+
+export function removeActivity (code) {
+  return async (dispatch, getState) => {
+    const { company } = getState().company
+    const list = company.ActividadEconomicaEmpresa.filter(item => item.CodigoActividad !== code)
+    dispatch(setCompanyAttribute('ActividadEconomicaEmpresa', list))
   }
 }
 

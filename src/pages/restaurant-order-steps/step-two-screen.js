@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import {
+  setActivityCode,
   setPaymentId,
   saveWorkingOrder,
   generateWorkingOrderTicket,
@@ -64,13 +65,16 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function StepFourScreen({
+function StepTwoScreen({
   value,
   index,
+  company,
   summary,
+  activityCode,
   paymentId,
   workingOrderId,
   status,
+  setActivityCode,
   setPaymentId,
   generateWorkingOrderTicket,
   generateInvoice,
@@ -92,9 +96,24 @@ function StepFourScreen({
       generateWorkingOrderTicket(workingOrderId)
     }
   }
+  const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
+        <Grid item xs={12} className={classes.centered}>
+          <Grid item xs={12} sm={7} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
+              <Select
+                id='CodigoActividad'
+                value={activityCode}
+                onChange={(event) => setActivityCode(event.target.value)}
+              >
+                {activityItems}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN SERVICIO</InputLabel>
           <Grid container spacing={2} className={classes.details}>
@@ -164,7 +183,9 @@ const mapStateToProps = (state) => {
   return {
     workingOrderId: state.workingOrder.workingOrderId,
     status: state.workingOrder.status,
+    company: state.company.company,
     summary: state.workingOrder.summary,
+    activityCode: state.workingOrder.activityCode,
     paymentId: state.workingOrder.paymentId,
     branchList: state.ui.branchList
   }
@@ -172,6 +193,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
+    setActivityCode,
     setPaymentId,
     saveWorkingOrder,
     generateWorkingOrderTicket,
@@ -180,4 +202,4 @@ const mapDispatchToProps = (dispatch) => {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StepFourScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen)

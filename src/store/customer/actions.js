@@ -20,10 +20,6 @@ import {
 import {
   getCustomerListCount,
   getCustomerListPerPage,
-  getIdTypeList,
-  getRentTypeList,
-  getPriceTypeList,
-  getExonerationTypeList,
   getCustomerEntity,
   getCustomerByIdentifier,
   saveCustomerEntity
@@ -112,7 +108,7 @@ export const getCustomerListByPageNumber = (pageNumber, filter) => {
 
 export function openCustomer (idCustomer) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
+    const { company, companyId, token } = getState().session
     const { idTypeList, rentTypeList, exonerationTypeList } = getState().ui
     const { priceTypeList } = getState().customer
     dispatch(startLoader())
@@ -144,20 +140,16 @@ export function openCustomer (idCustomer) {
       }
       dispatch(setCustomer(customer))
       if (idTypeList.length === 0) {
-        const newList = await getIdTypeList(token)
-        dispatch(setIdTypeList(newList))
+        dispatch(setIdTypeList(company.ListadoTipoIdentificacion))
       }
       if (rentTypeList.length === 0) {
-        const newList = await getRentTypeList(token)
-        dispatch(setRentTypeList(newList))
+        dispatch(setRentTypeList(company.ListadoTipoImpuesto))
       }
       if (priceTypeList.length === 0) {
-        const newList = await getPriceTypeList(token)
-        dispatch(setPriceTypeList(newList))
+        dispatch(setPriceTypeList(company.ListadoTipoPrecio))
       }
       if (exonerationTypeList.length === 0) {
-        const newList = await getExonerationTypeList(token)
-        dispatch(setExonerationTypeList(newList))
+        dispatch(setExonerationTypeList(company.ListadoTipoExoneracion))
       }
       dispatch(setActiveSection(22))
       dispatch(stopLoader())
@@ -214,11 +206,11 @@ export function getCustomer (idCustomer) {
     dispatch(startLoader())
     try {
       const customer = await getCustomerEntity(token, idCustomer)
+      dispatch(filterCustomerList(''))
       dispatch(setCustomer(customer))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setCustomer(null))
       dispatch(setMessage(error.message))
     }
   }

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { convertToDateString } from 'utils/utilities'
+
 import Grid from '@material-ui/core/Grid'
 
 import LabelField from 'components/label-field'
@@ -49,7 +51,6 @@ function StepOneScreen({
   const handleItemSelected = (item) => {
     getCustomer(item.Id)
     setFilter('')
-    filterCustomerList('')
   }
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
@@ -87,7 +88,7 @@ function StepOneScreen({
         <Grid item xs={12} md={6}>
           <LabelField
             label='Tipo de exoneración'
-            value={customer ? customer.ParametroExoneracion.Descripcion : ''}
+            value={customer ? customer.IdTipoExoneracion : ''}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -105,7 +106,7 @@ function StepOneScreen({
         <Grid item xs={12} md={6}>
           <LabelField
             label='Fecha de emisión'
-            value={customer ? customer.FechaEmisionDoc : ''}
+            value={customer ? convertToDateString(new Date(customer.FechaEmisionDoc)) : ''}
           />
         </Grid>
         <Grid item xs={12} md={6}>
