@@ -412,6 +412,7 @@ export const revokeWorkingOrder = (id) => {
 export const openWorkingOrder = (id) => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
       const workingOrder = await getWorkingOrderEntity(token, id)
