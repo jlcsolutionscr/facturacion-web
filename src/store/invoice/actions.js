@@ -144,6 +144,7 @@ export const resetInvoice = () => {
 export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
