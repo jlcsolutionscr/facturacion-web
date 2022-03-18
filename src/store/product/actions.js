@@ -13,7 +13,6 @@ import {
 import {
   startLoader,
   stopLoader,
-  setRentTypeList,
   setActiveSection,
   setMessage
 } from 'store/ui/actions'
@@ -133,15 +132,11 @@ export const getProductListByPageNumber = (pageNumber, filterText, type) => {
 
 export function openProduct (idProduct) {
   return async (dispatch, getState) => {
-    const { company, companyId, branchId, token } = getState().session
-    const { rentTypeList } = getState().ui
-    const { productTypeList, categoryList, providerList } = getState().product
+    const { companyId, branchId, token } = getState().session
+    const { categoryList, providerList } = getState().product
     dispatch(startLoader())
     try {
       let list = []
-      if (productTypeList.length === 0) {
-        dispatch(setProductTypeList(company.ListadoTipoProducto))
-      }
       if (categoryList.length === 0) {
         list = await getProductCategoryList(token, companyId)
         dispatch(setCategoryList(list))
@@ -149,9 +144,6 @@ export function openProduct (idProduct) {
       if (providerList.length === 0) {
         list = await getProductProviderList(token, companyId)
         dispatch(setProviderList(list))
-      }
-      if (rentTypeList.length === 0) {
-        dispatch(setRentTypeList(company.ListadoTipoImpuesto))
       }
       let product
       if (idProduct) {

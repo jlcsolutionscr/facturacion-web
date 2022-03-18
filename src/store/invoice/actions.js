@@ -21,6 +21,8 @@ import {
   setActiveSection
 } from 'store/ui/actions'
 
+import { setCompany } from 'store/company/actions'
+
 import { setPrinter } from 'store/session/actions'
 
 import { setCustomer, setCustomerList } from 'store/customer/actions'
@@ -142,11 +144,16 @@ export const resetInvoice = () => {
 export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
-      const companyEntity = await getCompanyEntity(token, companyId)
+      let companyEntity = company
+      if (companyEntity === null) {
+        companyEntity = await getCompanyEntity(token, companyId)
+        dispatch(setCompany(companyEntity))
+      }
       dispatch(resetInvoice())
       dispatch(setCustomer(defaultCustomer))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
@@ -163,13 +170,15 @@ export function setInvoiceParameters (id) {
 
 export function getProduct (idProduct, type) {
   return async (dispatch, getState) => {
-    const { token, company } = getState().session
+    const { token } = getState().session
+    const { company } = getState().company
     const { customer } = getState().customer
+    const { rentTypeList } = getState().ui
     dispatch(startLoader())
     try {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
-      if (customer != null) price = getCustomerPrice(customer, product, company)
+      if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList)
       dispatch(filterProductList('', type))
       dispatch(setDescription(product.Descripcion))
       dispatch(setQuantity(1))
@@ -203,15 +212,16 @@ export function filterProductList (text, type) {
 
 export function addDetails () {
   return async (dispatch, getState) => {
-    const { company } = getState().session
+    const { rentTypeList } = getState().ui
+    const { company } = getState().company
     const { customer } = getState().customer
     const { product } = getState().product
     const { detailsList, description, quantity, price } = getState().invoice
     try {
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
         let newProducts = null
-        let tasaIva = getTaxeRateFromId(company, product.IdImpuesto)
-        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = getTaxeRateFromId(company, customer.IdImpuesto)
+        let tasaIva = getTaxeRateFromId(rentTypeList, product.IdImpuesto)
+        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = getTaxeRateFromId(rentTypeList, customer.IdImpuesto)
         let finalPrice = price
         if (!company.PrecioVentaIncluyeIVA && tasaIva > 0) finalPrice = price * (1 + (tasaIva / 100))
         const item = {
@@ -375,7 +385,8 @@ export const sendInvoiceNotification = (idInvoice) => {
 
 export const generateInvoiceTicket = (idInvoice) => {
   return async (dispatch, getState) => {
-    const { token, printer, userCode, company, device, branchList, branchId } = getState().session
+    const { token, printer, userCode, device, branchList, branchId } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
       const invoice = await getInvoiceEntity(token, idInvoice)

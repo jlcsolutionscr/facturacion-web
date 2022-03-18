@@ -13,9 +13,6 @@ import {
   startLoader,
   stopLoader,
   setActiveSection,
-  setIdTypeList,
-  setRentTypeList,
-  setExonerationTypeList,
   setMessage
 } from 'store/ui/actions'
 
@@ -26,6 +23,8 @@ import {
   getProductClasification,
   saveReceiptEntity
 } from 'utils/domainHelper'
+
+import { setCompany } from 'store/company/actions'
 
 import { roundNumber } from 'utils/utilities'
 
@@ -85,19 +84,14 @@ export const resetReceipt = () => {
 
 export function setReceiptParameters (id) {
   return async (dispatch, getState) => {
-    const { company, companyId, token } = getState().session
-    const { idTypeList, rentTypeList, exonerationTypeList } = getState().ui
+    const { companyId, token } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
-      const companyEntity = await getCompanyEntity(token, companyId)
-      if (idTypeList.length === 0) {
-        dispatch(setIdTypeList(company.ListadoTipoIdentificacion))
-      }
-      if (rentTypeList.length === 0) {
-        dispatch(setRentTypeList(company.ListadoTipoImpuesto))
-      }
-      if (exonerationTypeList.length === 0) {
-        dispatch(setExonerationTypeList(company.ListadoTipoExoneracion))
+      let companyEntity = company
+      if (companyEntity === null) {
+        companyEntity = await getCompanyEntity(token, companyId)
+        dispatch(setCompany(companyEntity))
       }
       dispatch(resetReceipt())
       dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
@@ -209,13 +203,14 @@ export const saveReceipt = () => {
   return async (dispatch, getState) => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
-    const { issuer, exoneration, detailsList, summary } = getState().receipt
+    const { activityCode, issuer, exoneration, detailsList, summary } = getState().receipt
     dispatch(startLoader())
     try {
       await saveReceiptEntity(
         token,
         userId,
         branchId,
+        activityCode,
         company,
         issuer,
         exoneration,

@@ -31,7 +31,7 @@ const receiptReducer = (state = {}, { type, payload }) => {
       return { ...state, successful: true }
     case RESET_RECEIPT:
     case LOGOUT:
-      return defaultReceipt
+      return { ...state, defaultReceipt, activityCode: state.activityCode }
     default:
       return state
   }

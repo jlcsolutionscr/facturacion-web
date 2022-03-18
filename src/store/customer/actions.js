@@ -11,9 +11,6 @@ import {
   startLoader,
   stopLoader,
   setActiveSection,
-  setRentTypeList,
-  setExonerationTypeList,
-  setIdTypeList,
   setMessage
 } from 'store/ui/actions'
 
@@ -108,9 +105,7 @@ export const getCustomerListByPageNumber = (pageNumber, filter) => {
 
 export function openCustomer (idCustomer) {
   return async (dispatch, getState) => {
-    const { company, companyId, token } = getState().session
-    const { idTypeList, rentTypeList, exonerationTypeList } = getState().ui
-    const { priceTypeList } = getState().customer
+    const { companyId, token } = getState().session
     dispatch(startLoader())
     try {
       let customer
@@ -139,18 +134,6 @@ export function openCustomer (idCustomer) {
         }
       }
       dispatch(setCustomer(customer))
-      if (idTypeList.length === 0) {
-        dispatch(setIdTypeList(company.ListadoTipoIdentificacion))
-      }
-      if (rentTypeList.length === 0) {
-        dispatch(setRentTypeList(company.ListadoTipoImpuesto))
-      }
-      if (priceTypeList.length === 0) {
-        dispatch(setPriceTypeList(company.ListadoTipoPrecio))
-      }
-      if (exonerationTypeList.length === 0) {
-        dispatch(setExonerationTypeList(company.ListadoTipoExoneracion))
-      }
       dispatch(setActiveSection(22))
       dispatch(stopLoader())
     } catch (error) {

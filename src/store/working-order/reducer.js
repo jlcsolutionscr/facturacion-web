@@ -60,7 +60,8 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
     case RESET_ORDER:
       return {
         ...state,
-        ...defaultWorkingOrder
+        ...defaultWorkingOrder,
+        activityCode: state.activityCode
       }
     default:
       return state

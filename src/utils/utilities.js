@@ -40,13 +40,14 @@ export function convertToDateTimeString(date) {
   return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T23:59:59`
 }
 
-export function getTaxeRateFromId(company, id) {
-  return company.ListadoTipoImpuesto.find(x => x.Id === id).Valor
+export function getTaxeRateFromId(rentTypeList, id) {
+  return rentTypeList.find(x => x.Id === id).Valor
 }
 
 export function xmlToObject (value) {
+  var decodedString = atob(value)
   const parser = new xmlParser()
-  const xml = parser.parseFromString(value)
+  const xml = parser.parseFromString(decodedString)
   let result = {}
   for (let node of xml.children) parseNode(node, result)
   return result

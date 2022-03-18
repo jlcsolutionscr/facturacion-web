@@ -49,6 +49,7 @@ const invoiceReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         ...defaultInvoice,
+        activityCode: state.activityCode
       }
     default:
       return state

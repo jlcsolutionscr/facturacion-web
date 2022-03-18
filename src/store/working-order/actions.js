@@ -25,6 +25,7 @@ import {
   setActiveSection
 } from 'store/ui/actions'
 
+import { setCompany } from 'store/company/actions'
 import { setPrinter } from 'store/session/actions'
 import { setCustomer, setCustomerList } from 'store/customer/actions'
 import { setProduct, setProductList } from 'store/product/actions'
@@ -174,10 +175,16 @@ export const setServicePointList = (list) => {
 
 export function setWorkingOrderParameters () {
   return async (dispatch, getState) => {
-    const { companyId, branchId, company, token } = getState().session
+    const { companyId, branchId, token } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
-      if (company.Modalidad === 1) {
+      let companyEntity = company
+      if (companyEntity === null) {
+        companyEntity = await getCompanyEntity(token, companyId)
+        dispatch(setCompany(companyEntity))
+      }
+      if (companyEntity.Modalidad === 1) {
         const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
         dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       } else {
@@ -185,7 +192,6 @@ export function setWorkingOrderParameters () {
         dispatch(setServicePointList(servicePointList))
       }
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
-      const companyEntity = await getCompanyEntity(token, companyId)
       dispatch(resetWorkingOrder())
       dispatch(setCustomer(defaultCustomer))
       dispatch(setProductList(productList))
@@ -201,13 +207,15 @@ export function setWorkingOrderParameters () {
 
 export function getProduct (idProduct) {
   return async (dispatch, getState) => {
-    const { token, company } = getState().session
+    const { token } = getState().session
+    const { company } = getState().company
     const { customer } = getState().customer
+    const { rentTypeList } = getState().ui
     dispatch(startLoader())
     try {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
-      if (customer != null) price = getCustomerPrice(customer, product, company)
+      if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList)
       dispatch(filterProductList('', 2))
       dispatch(setDescription(product.Descripcion))
       dispatch(setQuantity(1))
@@ -241,15 +249,16 @@ export function filterProductList (text, type) {
 
 export function addDetails () {
   return async (dispatch, getState) => {
-    const { company } = getState().session
+    const { rentTypeList } = getState().ui
     const { customer } = getState().customer
     const { product } = getState().product
+    const { company } = getState().company
     const { detailsList, description, quantity, price } = getState().workingOrder
     try {
       if (product != null && description !== '' && quantity > 0 &&  price > 0) {
         let newProducts = null
-        let tasaIva = getTaxeRateFromId(company, product.IdImpuesto)
-        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = getTaxeRateFromId(company, customer.IdImpuesto)
+        let tasaIva = getTaxeRateFromId(rentTypeList, product.IdImpuesto)
+        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = getTaxeRateFromId(rentTypeList, customer.IdImpuesto)
         let finalPrice = price
         if (!company.PrecioVentaIncluyeIVA && tasaIva > 0) finalPrice = price * (1 + (tasaIva / 100))
         const item = {
@@ -403,11 +412,18 @@ export const revokeWorkingOrder = (id) => {
 export const openWorkingOrder = (id) => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
       const workingOrder = await getWorkingOrderEntity(token, id)
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
+      let companyEntity = company
+      if (companyEntity === null) {
+        companyEntity = await getCompanyEntity(token, companyId)
+        dispatch(setCompany(companyEntity))
+      }
+      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
       dispatch(setWorkingOrderId(workingOrder.IdOrden))
       dispatch(setCashAdvance(workingOrder.MontoAdelanto))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
@@ -488,7 +504,8 @@ export const generateInvoice = () => {
 
 export const generateInvoiceTicket = () => {
   return async (dispatch, getState) => {
-    const { token, printer, userCode, company, device, branchList, branchId } = getState().session
+    const { token, printer, userCode, device, branchList, branchId } = getState().session
+    const { company } = getState().company
     const { invoiceId } = getState().workingOrder
     dispatch(startLoader())
     try {
@@ -545,7 +562,8 @@ export const sendWorkingOrderNotification = (id) => {
 
 export const generateWorkingOrderTicket = (id) => {
   return async (dispatch, getState) => {
-    const { token, printer, userCode, company, device, branchList, branchId } = getState().session
+    const { token, printer, userCode, device, branchList, branchId } = getState().session
+    const { company } = getState().company
     dispatch(startLoader())
     try {
       const invoice = await getWorkingOrderEntity(token, id)

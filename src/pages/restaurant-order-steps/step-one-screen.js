@@ -242,7 +242,6 @@ function StepOneScreen({
             label={workingOrderId > 0 ? 'Actualizar' : 'Agregar'}
             onClick={() => saveWorkingOrder()}
           />
-          <Button style={{marginLeft: '10px'}} label='Regresar' onClick={() => setActiveSection(9)} />
         </div>
       </div>
     </div>

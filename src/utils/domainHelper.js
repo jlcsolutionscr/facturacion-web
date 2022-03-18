@@ -214,9 +214,9 @@ export async function getServicePointList(token, companyId, branchId, bolActive,
   return response
 }
 
-export function getCustomerPrice(customer, product, company) {
+export function getCustomerPrice(company, customer, product, rentTypeList) {
   let customerPrice = 0
-  let taxRate = getTaxeRateFromId(company, product.IdImpuesto)
+  let taxRate = getTaxeRateFromId(rentTypeList, product.IdImpuesto)
   switch (customer.IdTipoPrecio) {
     case 1:
       customerPrice = product.PrecioVenta1
@@ -238,7 +238,7 @@ export function getCustomerPrice(customer, product, company) {
   }
   customerPrice = roundNumber(customerPrice / (1 + (taxRate / 100)), 3)
   if (customer.AplicaTasaDiferenciada) {
-    taxRate = getTaxeRateFromId(company, customer.IdImpuesto)
+    taxRate = getTaxeRateFromId(rentTypeList, customer.IdImpuesto)
   }
   if (company.PrecioVentaIncluyeIVA && taxRate > 0) customerPrice = customerPrice * (1 + (taxRate / 100))
   return roundNumber(customerPrice, 2)
@@ -553,6 +553,7 @@ export async function saveReceiptEntity(
   token,
   userId,
   branchId,
+  activityCode,
   company,
   issuer,
   exoneration,
@@ -576,6 +577,7 @@ export async function saveReceiptEntity(
   const receiptDate = convertToDateTimeString(new Date())
   const receipt = {
     IdEmpresa: company.IdEmpresa,
+    CodigoActividad: activityCode,
     IdSucursal: branchId,
     IdTerminal: 1,
     IdUsuario: userId,
