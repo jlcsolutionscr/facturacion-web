@@ -137,7 +137,7 @@ export function openProduct (idProduct) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token, userCode } = getState().session
     const { rentTypeList } = getState().ui
-    const { productTypeList, categoryList, providerList } = getState().product
+    const { productTypeList } = getState().product
     dispatch(startLoader())
     try {
       let list = []
@@ -145,14 +145,10 @@ export function openProduct (idProduct) {
         list = await getProductTypeList(token, userCode)
         dispatch(setProductTypeList(list))
       }
-      if (categoryList.length === 0) {
-        list = await getProductCategoryList(token, companyId)
-        dispatch(setCategoryList(list))
-      }
-      if (providerList.length === 0) {
-        list = await getProductProviderList(token, companyId)
-        dispatch(setProviderList(list))
-      }
+      list = await getProductCategoryList(token, companyId)
+      dispatch(setCategoryList(list))
+      list = await getProductProviderList(token, companyId)
+      dispatch(setProviderList(list))
       if (rentTypeList.length === 0) {
         list = await getRentTypeList(token)
         dispatch(setRentTypeList(list))
