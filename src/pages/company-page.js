@@ -158,7 +158,7 @@ function CompanyPage({
         <Grid item xs={12}>
           <LabelField
             id='FechaVence'
-            value={company ? convertToDateString(new Date(company.FechaVence)) : ''}
+            value={company ? convertToDateString(company.FechaVence) : ''}
             label='Fecha vencimiento plan'
           />
         </Grid>

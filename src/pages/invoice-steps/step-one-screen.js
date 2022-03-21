@@ -106,7 +106,7 @@ function StepOneScreen({
         <Grid item xs={12} md={6}>
           <LabelField
             label='Fecha de emisión'
-            value={customer ? convertToDateString(new Date(customer.FechaEmisionDoc)) : ''}
+            value={customer ? convertToDateString(customer.FechaEmisionDoc) : ''}
           />
         </Grid>
         <Grid item xs={12} md={6}>
