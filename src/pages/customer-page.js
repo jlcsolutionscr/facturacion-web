@@ -24,8 +24,6 @@ import DateFnsUtils from '@date-io/date-fns'
 import TextField from 'components/text-field'
 import Button from 'components/button'
 
-import { convertStringToDate, convertDateToString } from 'utils/utilities'
-
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.pages,
@@ -288,8 +286,8 @@ function CustomerPage({
             <DatePicker
               label='Fecha exoneración'
               format='dd/MM/yyyy'
-              value={convertStringToDate(customer.FechaEmisionDoc)}
-              onChange={(event) => setCustomerAttribute('FechaEmisionDoc', convertDateToString(event.target.value))}
+              value={customer.FechaEmisionDoc}
+              onChange={(value) => setCustomerAttribute('FechaEmisionDoc', value)}
               animateYearScrolling
             />
           </Grid>

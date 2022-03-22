@@ -107,7 +107,8 @@ function ProductPage({
   const providers = providerList.map(item => {
     return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem>
   })
-  const disabled = product.Codigo === '' ||
+  const disabled = product.IdLinea === '' ||
+    product.Codigo === '' ||
     product.Descripcion === '' ||
     product.PrecioCosto === '' ||
     product.PrecioVenta1 === '' ||

@@ -52,7 +52,6 @@ function StepOneScreen({
     getCustomer(item.Id)
     setStatus('on-progress')
     setFilter('')
-    filterCustomerList('')
   }
   const handleCustomerNameChange = (event) => {
     setCustomerAttribute('Nombre', event.target.value)
@@ -95,7 +94,7 @@ function StepOneScreen({
         <Grid item xs={12} md={6}>
           <LabelField
             label='Tipo de exoneración'
-            value={customer ? customer.ParametroExoneracion.Descripcion : ''}
+            value={customer ? customer.IdTipoExoneracion : ''}
           />
         </Grid>
         <Grid item xs={12} md={6}>

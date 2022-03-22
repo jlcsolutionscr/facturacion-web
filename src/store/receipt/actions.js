@@ -4,6 +4,7 @@ import {
   SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_EXONERATION_DETAILS,
+  SET_ACTIVITY_CODE,
   SET_SUCCESSFUL,
   RESET_RECEIPT
 } from './types'
@@ -12,24 +13,18 @@ import {
   startLoader,
   stopLoader,
   setActiveSection,
-  setIdTypeList,
-  setRentTypeList,
-  setExonerationTypeList,
   setMessage
 } from 'store/ui/actions'
 
-import { setCompany } from 'store/company/actions'
-
 import {
   getCompanyEntity,
-  getIdTypeList,
-  getRentTypeList,
-  getExonerationTypeList,
   getProductSummary,
   getCustomerByIdentifier,
   getProductClasification,
   saveReceiptEntity
 } from 'utils/domainHelper'
+
+import { setCompany } from 'store/company/actions'
 
 import { roundNumber } from 'utils/utilities'
 
@@ -68,6 +63,13 @@ export const setExonerationDetails = (attribute, value) => {
   }
 }
 
+export const setActivityCode = (code) => {
+  return {
+    type: SET_ACTIVITY_CODE,
+    payload: { code }
+  }
+}
+
 export const setSuccessful = () => {
   return {
     type: SET_SUCCESSFUL
@@ -83,27 +85,16 @@ export const resetReceipt = () => {
 export function setReceiptParameters (id) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
-    const { idTypeList, rentTypeList, exonerationTypeList } = getState().ui
     const { company } = getState().company
     dispatch(startLoader())
     try {
-      if (company === null) {
-        const companyEntity = await getCompanyEntity(token, companyId)
+      let companyEntity = company
+      if (companyEntity === null) {
+        companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
       }
-      if (idTypeList.length === 0) {
-        const newList = await getIdTypeList(token)
-        dispatch(setIdTypeList(newList))
-      }
-      if (rentTypeList.length === 0) {
-        const newList = await getRentTypeList(token)
-        dispatch(setRentTypeList(newList))
-      }
-      if (exonerationTypeList.length === 0) {
-        const newList = await getExonerationTypeList(token)
-        dispatch(setExonerationTypeList(newList))
-      }
       dispatch(resetReceipt())
+      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
       dispatch(setActiveSection(id))
       dispatch(stopLoader())
     } catch (error) {
@@ -212,13 +203,14 @@ export const saveReceipt = () => {
   return async (dispatch, getState) => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
-    const { issuer, exoneration, detailsList, summary } = getState().receipt
+    const { activityCode, issuer, exoneration, detailsList, summary } = getState().receipt
     dispatch(startLoader())
     try {
       await saveReceiptEntity(
         token,
         userId,
         branchId,
+        activityCode,
         company,
         issuer,
         exoneration,

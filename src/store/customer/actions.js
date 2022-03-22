@@ -11,19 +11,12 @@ import {
   startLoader,
   stopLoader,
   setActiveSection,
-  setRentTypeList,
-  setExonerationTypeList,
-  setIdTypeList,
   setMessage
 } from 'store/ui/actions'
 
 import {
   getCustomerListCount,
   getCustomerListPerPage,
-  getIdTypeList,
-  getRentTypeList,
-  getPriceTypeList,
-  getExonerationTypeList,
   getCustomerEntity,
   getCustomerByIdentifier,
   saveCustomerEntity
@@ -113,8 +106,6 @@ export const getCustomerListByPageNumber = (pageNumber, filter) => {
 export function openCustomer (idCustomer) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
-    const { idTypeList, rentTypeList, exonerationTypeList } = getState().ui
-    const { priceTypeList } = getState().customer
     dispatch(startLoader())
     try {
       let customer
@@ -143,22 +134,6 @@ export function openCustomer (idCustomer) {
         }
       }
       dispatch(setCustomer(customer))
-      if (idTypeList.length === 0) {
-        const newList = await getIdTypeList(token)
-        dispatch(setIdTypeList(newList))
-      }
-      if (rentTypeList.length === 0) {
-        const newList = await getRentTypeList(token)
-        dispatch(setRentTypeList(newList))
-      }
-      if (priceTypeList.length === 0) {
-        const newList = await getPriceTypeList(token)
-        dispatch(setPriceTypeList(newList))
-      }
-      if (exonerationTypeList.length === 0) {
-        const newList = await getExonerationTypeList(token)
-        dispatch(setExonerationTypeList(newList))
-      }
       dispatch(setActiveSection(22))
       dispatch(stopLoader())
     } catch (error) {
@@ -214,11 +189,11 @@ export function getCustomer (idCustomer) {
     dispatch(startLoader())
     try {
       const customer = await getCustomerEntity(token, idCustomer)
+      dispatch(filterCustomerList(''))
       dispatch(setCustomer(customer))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
-      dispatch(setCustomer(null))
       dispatch(setMessage(error.message))
     }
   }

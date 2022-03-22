@@ -4,6 +4,7 @@ import {
   SET_DETAILS_LIST,
   SET_SUMMARY,
   SET_EXONERATION_DETAILS,
+  SET_ACTIVITY_CODE,
   SET_SUCCESSFUL,
   RESET_RECEIPT
 } from './types'
@@ -24,11 +25,13 @@ const receiptReducer = (state = {}, { type, payload }) => {
       return { ...state, summary: payload.summary }
     case SET_EXONERATION_DETAILS:
       return { ...state, exoneration: {...state.exoneration, [payload.attribute]: payload.value }}
+    case SET_ACTIVITY_CODE:
+      return { ...state, activityCode: payload.code }
     case SET_SUCCESSFUL:
       return { ...state, successful: true }
     case RESET_RECEIPT:
     case LOGOUT:
-      return defaultReceipt
+      return { ...state, defaultReceipt, activityCode: state.activityCode }
     default:
       return state
   }

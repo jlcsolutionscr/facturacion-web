@@ -3,6 +3,7 @@ import {
   SET_QUANTITY,
   SET_PRICE,
   SET_DETAILS_LIST,
+  SET_ACTIVITY_CODE,
   SET_PAYMENT_ID,
   SET_CASH_ADVANCE,
   SET_SUMMARY,
@@ -33,6 +34,8 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
       return { ...state, status: 'on-progress', detailsList: payload.details }
     case SET_SUMMARY:
       return { ...state, summary: payload.summary }
+    case SET_ACTIVITY_CODE:
+      return { ...state, activityCode: payload.code }
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
     case SET_CASH_ADVANCE:
@@ -57,7 +60,8 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
     case RESET_ORDER:
       return {
         ...state,
-        ...defaultWorkingOrder
+        ...defaultWorkingOrder,
+        activityCode: state.activityCode
       }
     default:
       return state

@@ -9,8 +9,14 @@ import {
 import {
   startLoader,
   stopLoader,
-  setMessage
+  setMessage,
+  setRentTypeList,
+  setExonerationTypeList,
+  setIdTypeList
 } from 'store/ui/actions'
+
+import { setPriceTypeList } from 'store/customer/actions'
+import { setProductTypeList } from 'store/product/actions'
 
 import { userLogin } from 'utils/domainHelper'
 import { writeToLocalStorage, cleanLocalStorage } from 'utils/utilities'
@@ -54,6 +60,11 @@ export function login (username, password, id) {
     dispatch(startLoader())
     try {
       const company = await userLogin(username, password, id)
+      dispatch(setIdTypeList(company.ListadoTipoIdentificacion))
+      dispatch(setRentTypeList(company.ListadoTipoImpuesto))
+      dispatch(setExonerationTypeList(company.ListadoTipoExoneracion))
+      dispatch(setPriceTypeList(company.ListadoTipoPrecio))
+      dispatch(setProductTypeList(company.ListadoTipoProducto))
       writeToLocalStorage(username, company)
       dispatch(logIn(username, company))
       dispatch(stopLoader())

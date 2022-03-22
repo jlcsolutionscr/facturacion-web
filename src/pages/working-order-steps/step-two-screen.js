@@ -97,9 +97,8 @@ function StepTwoScreen({
     }, 500)
   }
   const handleItemSelected = (item) => {
-    getProduct(item.Id)
+    getProduct(item.Id, filterType)
     setFilter('')
-    filterProductList('', filterType)
   }
   const handleFilterTypeChange = () => {
     setFilterType(filterType === 1 ? 2 : 1)

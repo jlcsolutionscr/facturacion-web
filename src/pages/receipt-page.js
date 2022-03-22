@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
@@ -35,10 +36,11 @@ import {
   setProductDetails,
   addDetails,
   removeDetails,
+  setActivityCode,
   saveReceipt
 } from 'store/receipt/actions'
 
-import { formatCurrency, roundNumber, convertStringToDate, convertDateToString } from 'utils/utilities'
+import { formatCurrency, roundNumber } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -96,9 +98,11 @@ function ReceiptPage({
   clasificationList,
   exoneration,
   rentTypeList,
+  company,
   product,
   detailsList,
   summary,
+  activityCode,
   successful,
   setExonerationDetails,
   setIssuerDetails,
@@ -108,6 +112,7 @@ function ReceiptPage({
   filterClasificationList,
   addDetails,
   removeDetails,
+  setActivityCode,
   saveReceipt,
   setActiveSection
 }) {
@@ -185,12 +190,25 @@ function ReceiptPage({
     
   ]
   const addDisabled = product.code.length < 13 || product.description === '' || product.unit === '' || product.quantity === '' || product.price === '' || product.price === 0
-  
+  const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
+            <Select
+              id='CodigoActividad'
+              value={activityCode}
+              onChange={(event) => setActivityCode(event.target.value)}
+            >
+              {activityItems}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Seleccione el tipo de Identificación</InputLabel>
             <Select
               disabled={successful}
               id='IdTipoIdentificacion'
@@ -259,6 +277,7 @@ function ReceiptPage({
         </Grid>
         <Grid item xs={12} sm={7}>
           <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Seleccione el tipo de exoneración</InputLabel>
             <Select
               disabled={successful}
               id='IdTipoExoneracion'
@@ -293,8 +312,8 @@ function ReceiptPage({
               disabled={successful}
               label='Fecha exoneración'
               format='dd/MM/yyyy'
-              value={convertStringToDate(exoneration.date)}
-              onChange={(date) => setExonerationDetails('date', convertDateToString(date))}
+              value={exoneration.date}
+              onChange={(date) => setExonerationDetails('date', date)}
               animateYearScrolling
             />
           </Grid>
@@ -310,7 +329,7 @@ function ReceiptPage({
           />
         </Grid>
         <Grid style={{textAlign: 'center'}} item xs={12}>
-          <span>Detalle de la factura</span>
+          <InputLabel className={classes.summaryTitle}>DETALLE DE FACTURA</InputLabel>
         </Grid>
         <Grid item xs={10} sm={4}>
           <TextField
@@ -455,10 +474,12 @@ const mapStateToProps = (state) => {
     clasificationList: state.product.clasificationList,
     issuer: state.receipt.issuer,
     exonerationTypeList: state.ui.exonerationTypeList,
+    company: state.company.company,
     exoneration: state.receipt.exoneration,
     product: state.receipt.product,
     rentTypeList: state.ui.rentTypeList,
     detailsList: state.receipt.detailsList,
+    activityCode: state.receipt.activityCode,
     summary: state.receipt.summary,
     successful: state.receipt.successful
   }
@@ -474,6 +495,7 @@ const mapDispatchToProps = (dispatch) => {
     filterClasificationList,
     addDetails,
     removeDetails,
+    setActivityCode,
     saveReceipt,
     setActiveSection
   }, dispatch)

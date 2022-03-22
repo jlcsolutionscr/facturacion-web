@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { convertToDateString } from 'utils/utilities'
+
 import {
   setActiveSection,
   updateCantonList,
@@ -13,17 +15,26 @@ import {
 import {
   setCompanyAttribute,
   setCredentialsAttribute,
-  saveCompany
+  saveCompany,
+  addActivity,
+  removeActivity
 } from 'store/company/actions'
 
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import IconButton from '@material-ui/core/IconButton'
 
+import { AddCircleIcon, RemoveCircleIcon } from 'utils/iconsHelper'
 import TextField from 'components/text-field'
 import LabelField from 'components/label-field'
 import Button from 'components/button'
@@ -49,9 +60,26 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function CompanyPage({company, credentials, cantonList, distritoList, barrioList, setCompanyAttribute, setCredentialsAttribute, updateCantonList, updateDistritoList, updateBarrioList, saveCompany, setActiveSection}) {
+function CompanyPage({
+  company,
+  credentials,
+  cantonList,
+  distritoList,
+  barrioList,
+  economicActivities,
+  setCompanyAttribute,
+  setCredentialsAttribute,
+  updateCantonList,
+  updateDistritoList,
+  updateBarrioList,
+  saveCompany,
+  addActivity,
+  removeActivity,
+  setActiveSection
+}) {
   const classes = useStyles()
   const [certificate, setCertificate] = React.useState('')
+  const [activityCode, setActivityCode ] = React.useState(economicActivities.length > 0 ? economicActivities[0].Id : null)
   const inputFile = React.useRef(null)
   let disabled = true
   if (company != null) {
@@ -61,6 +89,14 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
       || company.Direccion === ''
       || company.Telefono1 === ''
       || company.CorreoNotificacion === ''
+      || (!company.RegimenSimplificado && (
+        credentials === null
+        || company.ActividadEconomicaEmpresa.length === 0
+        || credentials.UsuarioHacienda === ''
+        || credentials.ClaveHacienda === ''
+        || credentials.NombreCertificado === ''
+        || credentials.PinCertificado === ''
+      ))
   }
   const handleChange = event => {
     setCompanyAttribute(event.target.id, event.target.value)
@@ -99,10 +135,11 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
   const cantonItems = cantonList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   const distritoItems = distritoList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   const barrioItems = barrioList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const activityItems = economicActivities.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             id='NombreEmpresa'
             value={company ? company.NombreEmpresa : ''}
@@ -110,7 +147,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             id='NombreComercial'
             value={company ? company.NombreComercial : ''}
@@ -118,21 +155,11 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <LabelField
             id='FechaVence'
-            value={company ? company?.FechaVence?.DateTime.substring(0,10) : ''}
+            value={company && company.FechaVence ? convertToDateString(company.FechaVence) : ''}
             label='Fecha vencimiento plan'
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            id='CodigoActividad'
-            value={company ? company.CodigoActividad : ''}
-            label='Codigo actividad'
-            inputProps={{maxLength: 6}}
-            numericFormat
-            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -189,7 +216,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             required
             id='Direccion'
@@ -198,7 +225,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             required
             id='Telefono1'
@@ -208,7 +235,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             id='Telefono2'
             value={company ? company.Telefono2 : ''}
@@ -217,7 +244,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             required
             id='CorreoNotificacion'
@@ -226,7 +253,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
             id='UsuarioHacienda'
@@ -235,7 +262,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
             onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
             id='ClaveHacienda'
@@ -265,7 +292,7 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
           />
           <Button disabled={company ? company.RegimenSimplificado : true} label='Cargar' onClick={() => inputFile.current.click()} />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
             id='PinCertificado'
@@ -284,8 +311,51 @@ function CompanyPage({company, credentials, cantonList, distritoList, barrioList
                 color="primary"
               />
             }
-            label="Incluir IVA en precio de venta"
+            label="IVA incluido en precio de venta"
           />
+        </Grid>
+        <Grid item xs={8} md={6}>
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
+            <Select
+              id='CodigoActividad'
+              value={activityCode ? activityCode : 0}
+              onChange={(event) => setActivityCode(event.target.value)}
+            >
+              {activityItems}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={2}>
+          <IconButton className={classes.outerButton} color="primary" disabled={activityCode === null} component="span" onClick={() => addActivity(activityCode)}>
+            <AddCircleIcon />
+          </IconButton>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={2} style={{overflowY: 'auto'}}>
+            <Grid item xs={12} md={10}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Actividades Económicas Asignadas</TableCell>
+                    <TableCell> - </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {company && company.ActividadEconomicaEmpresa.map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{`${row.CodigoActividad} - ${row.Descripcion}`}</TableCell>
+                      <TableCell>
+                        <IconButton className={classes.innerButton} color="secondary" component="span" onClick={() => removeActivity(row.CodigoActividad)}>
+                          <RemoveCircleIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
           <Button
@@ -308,7 +378,8 @@ const mapStateToProps = (state) => {
     credentials: state.company.credentials,
     cantonList: state.ui.cantonList,
     distritoList: state.ui.distritoList,
-    barrioList: state.ui.barrioList
+    barrioList: state.ui.barrioList,
+    economicActivities: state.company.economicActivities
   }
 }
 
@@ -320,7 +391,9 @@ const mapDispatchToProps = (dispatch) => {
     updateBarrioList,
     setCompanyAttribute,
     setCredentialsAttribute,
-    saveCompany
+    saveCompany,
+    addActivity,
+    removeActivity
   }, dispatch)
 }
 

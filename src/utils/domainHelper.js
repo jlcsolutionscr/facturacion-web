@@ -1,8 +1,16 @@
-import { encryptString, roundNumber, getWithResponse, post, postWithResponse } from './utilities'
+import {
+  encryptString,
+  roundNumber,
+  getWithResponse,
+  post,
+  postWithResponse,
+  convertToDateTimeString,
+  getTaxeRateFromId
+} from './utilities'
 import { saveAs } from 'file-saver'
 
 const SERVICE_URL = process.env.REACT_APP_SERVER_URL
-const APP_URL = `${SERVICE_URL}/PuntoventaWCF.svc`
+const APP_URL = `${SERVICE_URL}/puntoventa`
 
 export async function userLogin(user, password, id) {
   const ecryptedPass = encryptString(password)
@@ -14,7 +22,6 @@ export async function userLogin(user, password, id) {
 export async function getCompanyEntity(token, companyId) {
   const data = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + companyId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return null
   return response
 }
 
@@ -76,6 +83,13 @@ export async function getBarrioList(token, idProvincia, idCanton, idDistrito) {
   return response
 }
 
+export async function getEconomicActivities(token, id) {
+  const data = "{NombreMetodo: 'ObtenerListadoActividadEconomica', Parametros: {Identificacion: '" + id + "'}}"
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+  if (response === null) return []
+  return response
+}
+
 export async function getBranchList(token, companyId) {
   const data = "{NombreMetodo: 'ObtenerListadoSucursales', Parametros: {IdEmpresa: " + companyId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -85,27 +99,6 @@ export async function getBranchList(token, companyId) {
 
 export async function getReportData(token, reportName, companyId, branchId, startDate, endDate) {
   const data = "{NombreMetodo: 'ObtenerDatosReporte', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NombreReporte: '" + reportName + "', FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "'}}"
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return []
-  return response
-}
-
-export async function getIdTypeList(token) {
-  const data = "{NombreMetodo: 'ObtenerListadoTipoIdentificacion'}"
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return []
-  return response
-}
-
-export async function getRentTypeList(token) {
-  const data = "{NombreMetodo: 'ObtenerListadoTipoImpuesto'}"
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return []
-  return response
-}
-
-export async function getPriceTypeList(token) {
-  const data = "{NombreMetodo: 'ObtenerListadoTipodePrecio'}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
   if (response === null) return []
   return response
@@ -128,8 +121,7 @@ export async function getCustomerListPerPage(token, companyId, pageNumber, rowsP
 export async function getCustomerEntity(token, customerId) {
   const data = "{NombreMetodo: 'ObtenerCliente', Parametros: {IdCliente: " + customerId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return null
-  return { ...response, FechaEmisionDoc: response.FechaEmisionDoc.DateTime.substr(0,10) }
+  return response
 }
 
 export async function getCustomerByIdentifier(token, companyId, identifier) {
@@ -139,17 +131,10 @@ export async function getCustomerByIdentifier(token, companyId, identifier) {
 }
 
 export async function saveCustomerEntity(token, customer) {
-  const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 23:59:59 GMT-06:00'}})
+  const entidad = JSON.stringify({ ...customer, FechaEmisionDoc: convertToDateTimeString(customer.FechaEmisionDoc)})
   const data = "{NombreMetodo: '" + (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") + "', Entidad: " + entidad + "}"
   const response = await post(APP_URL + "/ejecutar", token, data)
   if (response === null) return null
-  return response
-}
-
-export async function getProductTypeList(token, userCode) {
-  const data = "{NombreMetodo: 'ObtenerListadoTipoProducto', Parametros: {CodigoUsuario: '" + userCode + "'}}"
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return []
   return response
 }
 
@@ -229,9 +214,9 @@ export async function getServicePointList(token, companyId, branchId, bolActive,
   return response
 }
 
-export function getCustomerPrice(customer, product, company) {
+export function getCustomerPrice(company, customer, product, rentTypeList) {
   let customerPrice = 0
-  let taxRate = product.ParametroImpuesto.TasaImpuesto
+  let taxRate = getTaxeRateFromId(rentTypeList, product.IdImpuesto)
   switch (customer.IdTipoPrecio) {
     case 1:
       customerPrice = product.PrecioVenta1
@@ -253,8 +238,7 @@ export function getCustomerPrice(customer, product, company) {
   }
   customerPrice = roundNumber(customerPrice / (1 + (taxRate / 100)), 3)
   if (customer.AplicaTasaDiferenciada) {
-    taxRate = customer.ParametroImpuesto.TasaImpuesto
-    if (taxRate > 0) customerPrice = roundNumber(customerPrice * (1 + (taxRate / 100)), 2)
+    taxRate = getTaxeRateFromId(rentTypeList, customer.IdImpuesto)
   }
   if (company.PrecioVentaIncluyeIVA && taxRate > 0) customerPrice = customerPrice * (1 + (taxRate / 100))
   return roundNumber(customerPrice, 2)
@@ -302,6 +286,7 @@ export async function saveInvoiceEntity(
   token,
   userId,
   detailsList,
+  activityCode,
   paymentId,
   cashAdvance,
   orderId,
@@ -338,16 +323,11 @@ export async function saveInvoiceEntity(
     MontoLocal: summary.total - cashAdvance,
     TipoDeCambio: 1
   }]
-  const invoiceDate = new Date()
-  const dd = (invoiceDate.getDate() < 10 ? '0' : '') + invoiceDate.getDate()
-  const MM = ((invoiceDate.getMonth() + 1) < 10 ? '0' : '') + (invoiceDate.getMonth() + 1)
-  const HH = (invoiceDate.getHours() < 10 ? '0' : '') + invoiceDate.getHours()
-  const mm = (invoiceDate.getMinutes() < 10 ? '0' : '') + invoiceDate.getMinutes()
-  const ss = (invoiceDate.getSeconds() < 10 ? '0' : '') + invoiceDate.getSeconds()
-  const timeString = dd + '/' + MM + '/' + invoiceDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+  const invoiceDate = convertToDateTimeString(new Date())
   const invoice = {
     IdEmpresa: company.IdEmpresa,
     IdSucursal: branchId,
+    CodigoActividad: activityCode,
     IdTerminal: 1,
     IdFactura: 0,
     IdUsuario: userId,
@@ -357,7 +337,7 @@ export async function saveInvoiceEntity(
     NombreCliente: customer.Nombre,
     IdCondicionVenta: 1,
     PlazoCredito: 0,
-    Fecha: {DateTime: timeString},
+    Fecha: invoiceDate,
     TextoAdicional: comment,
     IdVendedor: 1,
     Excento: summary.excento,
@@ -371,7 +351,7 @@ export async function saveInvoiceEntity(
     IdTipoExoneracion: customer.IdTipoExoneracion,
     NumDocExoneracion: customer.NumDocExoneracion,
     NombreInstExoneracion: customer.NombreInstExoneracion,
-    FechaEmisionDoc: {DateTime: customer.FechaEmisionDoc + ' 23:59:59 GMT-06:00'},
+    FechaEmisionDoc: convertToDateTimeString(customer.FechaEmisionDoc),
     PorcentajeExoneracion: customer.PorcentajeExoneracion,
     IdCxC: 0,
     IdAsiento: 0,
@@ -395,8 +375,7 @@ export async function revokeInvoiceEntity(token, invoiceId, idUser) {
 export async function getInvoiceEntity(token, invoiceId) {
   const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + invoiceId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return null
-  return { ...response, Fecha: response.Fecha.DateTime.substr(0,10) }
+  return response
 }
 
 export async function getProcessedInvoiceListCount(token, companyId, branchId) {
@@ -444,13 +423,7 @@ export async function saveWorkingOrderEntity(
     }
     workingOrderDetails.push(detail)
   })
-  const workingOrderDate = new Date()
-  const dd = (workingOrderDate.getDate() < 10 ? '0' : '') + workingOrderDate.getDate()
-  const MM = ((workingOrderDate.getMonth() + 1) < 10 ? '0' : '') + (workingOrderDate.getMonth() + 1)
-  const HH = (workingOrderDate.getHours() < 10 ? '0' : '') + workingOrderDate.getHours()
-  const mm = (workingOrderDate.getMinutes() < 10 ? '0' : '') + workingOrderDate.getMinutes()
-  const ss = (workingOrderDate.getSeconds() < 10 ? '0' : '') + workingOrderDate.getSeconds()
-  const timeString = dd + '/' + MM + '/' + workingOrderDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+  const workingOrderDate = convertToDateTimeString(new Date())
   const workingOrder = {
     IdEmpresa: company.IdEmpresa,
     IdSucursal: branchId,
@@ -460,7 +433,7 @@ export async function saveWorkingOrderEntity(
     IdTipoMoneda: 1,
     IdCliente: customer.IdCliente,
     NombreCliente: customer.Nombre,
-    Fecha: {DateTime: timeString},
+    Fecha: workingOrderDate,
     IdVendedor: 1,
     Telefono: deliveryPhone,
     Direccion: deliveryAddress,
@@ -496,8 +469,7 @@ export async function revokeWorkingOrderEntity(token, workingOrderId, idUser) {
 export async function getWorkingOrderEntity(token, workingOrderId) {
   const data = "{NombreMetodo: 'ObtenerOrdenServicio', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-  if (response === null) return null
-  return { ...response, Fecha: response.Fecha.DateTime.substr(0,10), Cliente: { ...response.Cliente, FechaEmisionDoc: response.Cliente.FechaEmisionDoc.DateTime.substr(0,10) } }
+  return response
 }
 
 export async function getWorkingOrderListCount(token, companyId, branchId, bolApplied) {
@@ -581,6 +553,7 @@ export async function saveReceiptEntity(
   token,
   userId,
   branchId,
+  activityCode,
   company,
   issuer,
   exoneration,
@@ -601,20 +574,15 @@ export async function saveReceiptEntity(
     }
     receiptDetails.push(detail)
   })
-  const receiptDate = new Date()
-  const dd = (receiptDate.getDate() < 10 ? '0' : '') + receiptDate.getDate()
-  const MM = ((receiptDate.getMonth() + 1) < 10 ? '0' : '') + (receiptDate.getMonth() + 1)
-  const HH = (receiptDate.getHours() < 10 ? '0' : '') + receiptDate.getHours()
-  const mm = (receiptDate.getMinutes() < 10 ? '0' : '') + receiptDate.getMinutes()
-  const ss = (receiptDate.getSeconds() < 10 ? '0' : '') + receiptDate.getSeconds()
-  const timeString = dd + '/' + MM + '/' + receiptDate.getFullYear() + ' ' + HH + ':' + mm + ':' + ss + ' GMT-06:00'
+  const receiptDate = convertToDateTimeString(new Date())
   const receipt = {
     IdEmpresa: company.IdEmpresa,
+    CodigoActividad: activityCode,
     IdSucursal: branchId,
     IdTerminal: 1,
     IdUsuario: userId,
     IdTipoMoneda: 1,
-    Fecha: {DateTime: timeString},
+    Fecha: receiptDate,
     IdCondicionVenta: 1,
     PlazoCredito: 0,
     NombreEmisor: issuer.name,
@@ -631,7 +599,7 @@ export async function saveReceiptEntity(
     IdTipoExoneracion: exoneration.type,
     NumDocExoneracion: exoneration.ref,
     NombreInstExoneracion: exoneration.issuerName,
-    FechaEmisionDoc: {DateTime: exoneration.date + ' 23:59:59 GMT-06:00'},
+    FechaEmisionDoc: convertToDateTimeString(exoneration.date),
     PorcentajeExoneracion: exoneration.percentage,
     TextoAdicional: '',
     Excento: summary.excento,
