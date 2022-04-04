@@ -523,7 +523,7 @@ export async function generateInvoicePDF(token, invoiceId, ref) {
   const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + invoiceId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
   if (response.length > 0) {
-    const byteArray = new Uint8Array(response);
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0))
     const file = new Blob([byteArray], { type: "application/octet-stream" })
     saveAs(file, `Factura-${ref}.pdf`)
   }
