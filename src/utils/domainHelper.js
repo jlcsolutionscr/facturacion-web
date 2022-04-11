@@ -544,11 +544,6 @@ export async function generateInvoicePDF(token, invoiceId, ref) {
   }
 }
 
-export async function sendInvoicePDF(token, invoiceId) {
-  const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdFactura: " + invoiceId + "}}"
-  await post(APP_URL + "/ejecutar", token, data)
-}
-
 export async function generateWorkingOrderPDF(token, workingOrderId, ref) {
   const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)

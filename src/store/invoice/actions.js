@@ -43,7 +43,6 @@ import {
   getProcessedInvoiceListPerPage,
   revokeInvoiceEntity,
   generateInvoicePDF,
-  sendInvoicePDF,
   getInvoiceEntity
 } from 'utils/domainHelper'
 
@@ -373,21 +372,6 @@ export const generatePDF = (idInvoice, ref) => {
     dispatch(startLoader())
     try {
       await generateInvoicePDF(token, idInvoice, ref)
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
-    }
-  }
-}
-
-export const sendInvoiceNotification = (idInvoice) => {
-  return async (dispatch, getState) => {
-    const { token } = getState().session
-    dispatch(startLoader())
-    try {
-      await sendInvoicePDF(token, idInvoice)
-      dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))
