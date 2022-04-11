@@ -97,6 +97,13 @@ export async function getBranchList(token, companyId) {
   return response
 }
 
+export async function getVendorList(token, companyId) {
+  const data = "{NombreMetodo: 'ObtenerListadoVendedores', Parametros: {IdEmpresa: " + companyId + "}}"
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
+  if (response === null) return []
+  return response
+}
+
 export async function getReportData(token, reportName, companyId, branchId, startDate, endDate) {
   const data = "{NombreMetodo: 'ObtenerDatosReporte', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NombreReporte: '" + reportName + "', FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "'}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
@@ -288,6 +295,7 @@ export async function saveInvoiceEntity(
   detailsList,
   activityCode,
   paymentId,
+  vendorId,
   cashAdvance,
   orderId,
   branchId,
@@ -339,7 +347,7 @@ export async function saveInvoiceEntity(
     PlazoCredito: 0,
     Fecha: invoiceDate,
     TextoAdicional: comment,
-    IdVendedor: 1,
+    IdVendedor: vendorId,
     Excento: summary.excento,
     Gravado: summary.gravado,
     Exonerado: summary.exonerado,
@@ -394,10 +402,11 @@ export async function getProcessedInvoiceListPerPage(token, companyId, branchId,
 
 export async function saveWorkingOrderEntity(
   token,
-  orderId,
+  order,
   userId,
   detailsList,
   branchId,
+  vendorId,
   company,
   customer,
   summary,
@@ -411,7 +420,7 @@ export async function saveWorkingOrderEntity(
   const workingOrderDetails = []
   detailsList.forEach(item => {
     const detail = {
-      IdOrden: orderId,
+      IdOrden: order?.IdOrden,
       IdProducto: item.IdProducto,
       Codigo: item.Codigo,
       Descripcion: item.Descripcion,
@@ -428,13 +437,14 @@ export async function saveWorkingOrderEntity(
     IdEmpresa: company.IdEmpresa,
     IdSucursal: branchId,
     IdTerminal: 1,
-    IdOrden: orderId,
+    IdOrden: order?.IdOrden,
+    ConsecOrdenServicio: order?.ConsecOrdenServicio,
     IdUsuario: userId,
     IdTipoMoneda: 1,
     IdCliente: customer.IdCliente,
     NombreCliente: customer.Nombre,
     Fecha: workingOrderDate,
-    IdVendedor: 1,
+    IdVendedor: vendorId,
     Telefono: deliveryPhone,
     Direccion: deliveryAddress,
     Descripcion: deliveryDescription,
@@ -451,10 +461,15 @@ export async function saveWorkingOrderEntity(
     Nulo: false,
     DetalleOrdenServicio: workingOrderDetails
   }
-  const data = "{NombreMetodo: '" + (orderId === 0 ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") + "', Entidad: " + JSON.stringify(workingOrder) + "}"
-  if (orderId === 0) {
+  const data = "{NombreMetodo: '" + (order === null ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") + "', Entidad: " + JSON.stringify(workingOrder) + "}"
+  if (order === null) {
     let invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
-    return invoiceId.split("-")[0]
+    const ids = invoiceId.split("-")
+    return {
+      IdOrden: ids[0],
+      ConsecOrdenServicio: ids[1],
+      MontoAdelanto: 0
+    }
   } else {
     await post(APP_URL + "/ejecutar", token, data)
   }
@@ -527,11 +542,6 @@ export async function generateInvoicePDF(token, invoiceId, ref) {
     const file = new Blob([byteArray], { type: "application/octet-stream" })
     saveAs(file, `Factura-${ref}.pdf`)
   }
-}
-
-export async function sendInvoicePDF(token, invoiceId) {
-  const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdFactura: " + invoiceId + "}}"
-  await post(APP_URL + "/ejecutar", token, data)
 }
 
 export async function generateWorkingOrderPDF(token, workingOrderId, ref) {

@@ -9,7 +9,6 @@ import {
   getInvoiceListByPageNumber,
   revokeInvoice,
   generatePDF,
-  sendInvoiceNotification,
   generateInvoiceTicket
 } from 'store/invoice/actions'
 
@@ -75,7 +74,6 @@ function InvoiceListPage({
   revokeInvoice,
   setActiveSection,
   generatePDF,
-  sendInvoiceNotification,
   generateInvoiceTicket
 }) {
   const result = new UAParser().getResult()
@@ -87,10 +85,7 @@ function InvoiceListPage({
     generateInvoiceTicket(id)
   }
   const handlePdfButtonClick = (id, ref) => {
-    if (isMobile)
-      sendInvoiceNotification(id)
-    else
-      generatePDF(id, ref)
+    generatePDF(id, ref)
   }
   const handleRevokeButtonClick = (id, ref) => {
     setInvoiceId(id)
@@ -187,7 +182,6 @@ const mapDispatchToProps = (dispatch) => {
     getInvoiceListByPageNumber,
     revokeInvoice,
     generatePDF,
-    sendInvoiceNotification,
     setActiveSection,
     generateInvoiceTicket
   }, dispatch)

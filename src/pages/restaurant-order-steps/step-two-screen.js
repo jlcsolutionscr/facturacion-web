@@ -100,7 +100,7 @@ function StepTwoScreen({
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
-        <Grid item xs={12} className={classes.centered}>
+        {activityItems.length > 1 && <Grid item xs={12} className={classes.centered}>
           <Grid item xs={12} sm={7} md={6}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
@@ -113,7 +113,7 @@ function StepTwoScreen({
               </Select>
             </FormControl>
           </Grid>
-        </Grid>
+        </Grid>}
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN SERVICIO</InputLabel>
           <Grid container spacing={2} className={classes.details}>

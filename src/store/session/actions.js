@@ -3,7 +3,8 @@ import {
   LOGOUT,
   SET_COMPANY,
   SET_BRANCH_ID,
-  SET_PRINTER
+  SET_PRINTER,
+  SET_VENDOR_LIST
 } from './types'
 
 import {
@@ -52,6 +53,13 @@ export const setPrinter = (device) => {
   return {
     type: SET_PRINTER,
     payload: { device }
+  }
+}
+
+export const setVendorList = (list) => {
+  return {
+    type: SET_VENDOR_LIST,
+    payload: { list }
   }
 }
 

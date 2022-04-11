@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import {
   setActivityCode,
   setPaymentId,
+  setDeliveryAttribute,
   saveWorkingOrder,
   generateWorkingOrderTicket,
   generateInvoice,
@@ -72,10 +73,13 @@ function StepFourScreen({
   summary,
   activityCode,
   paymentId,
-  workingOrderId,
+  vendorId,
+  order,
+  vendorList,
   status,
   setActivityCode,
   setPaymentId,
+  setDeliveryAttribute,
   saveWorkingOrder,
   generateWorkingOrderTicket,
   generateInvoice,
@@ -94,14 +98,15 @@ function StepFourScreen({
     if (status === 'converted') {
       generateInvoiceTicket()
     } else {
-      generateWorkingOrderTicket(workingOrderId)
+      generateWorkingOrderTicket(order.IdOrden)
     }
   }
   const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
+  const vendorItems = vendorList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
-        <Grid item xs={12} className={classes.centered}>
+        {activityItems.length > 1 && <Grid item xs={12} className={classes.centered}>
           <Grid item xs={12} sm={7} md={6}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
@@ -114,7 +119,21 @@ function StepFourScreen({
               </Select>
             </FormControl>
           </Grid>
-        </Grid> 
+        </Grid>}
+        {order === null && vendorItems.length > 1 && <Grid item xs={12} className={classes.centered}>
+          <Grid item xs={12} sm={7} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Seleccione el Vendedor</InputLabel>
+              <Select
+                id='VendorId'
+                value={vendorId}
+                onChange={(event) => setDeliveryAttribute('vendorId', event.target.value)}
+              >
+                {vendorItems}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>}
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN SERVICIO</InputLabel>
           <Grid container spacing={2} className={classes.details}>
@@ -159,12 +178,22 @@ function StepFourScreen({
         {status === 'on-progress' && <Grid item xs={12} className={classes.centered}>
           <Button 
             disabled={buttonDisabled}
-            label={workingOrderId > 0 ? 'Actualizar' : 'Agregar'}
+            label={order !== null ? 'Actualizar' : 'Agregar'}
             onClick={() => saveWorkingOrder()}
           />
         </Grid>}
         {(status === 'ready' || status === 'converted') && <Grid item xs={12} className={classes.centered}>
           <Button label={status === 'ready' ? 'Imprimir Orden' : 'Imprimir Factura'} onClick={handleOnPrintClick} />
+        </Grid>}
+        {status === 'ready' && <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
+          <Grid container spacing={2} className={classes.details}>
+            <Grid item xs={6}>
+              <InputLabel className={classes.summaryRow}>Saldo</InputLabel>
+            </Grid>
+            <Grid item xs={6} className={classes.columnRight}>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(total - order.MontoAdelanto)}</InputLabel>
+            </Grid>
+          </Grid>
         </Grid>}
         {status === 'ready' && <Grid item xs={12} className={classes.centered}>
           <FormControl style={{width: '215px', textAlign: 'left'}}>
@@ -188,13 +217,15 @@ function StepFourScreen({
 
 const mapStateToProps = (state) => {
   return {
-    workingOrderId: state.workingOrder.workingOrderId,
+    order: state.workingOrder.order,
     status: state.workingOrder.status,
     company: state.company.company,
     summary: state.workingOrder.summary,
     activityCode: state.workingOrder.activityCode,
     paymentId: state.workingOrder.paymentId,
-    branchList: state.ui.branchList
+    vendorId: state.workingOrder.vendorId,
+    branchList: state.ui.branchList,
+    vendorList: state.session.vendorList
   }
 }
 
@@ -202,6 +233,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActivityCode,
     setPaymentId,
+    setDeliveryAttribute,
     saveWorkingOrder,
     generateWorkingOrderTicket,
     generateInvoice,

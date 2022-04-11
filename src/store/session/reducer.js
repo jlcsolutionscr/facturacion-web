@@ -3,7 +3,8 @@ import {
   LOGOUT,
   SET_COMPANY,
   SET_BRANCH_ID,
-  SET_PRINTER
+  SET_PRINTER,
+  SET_VENDOR_LIST
 } from './types'
 
 import { defaultSession } from 'utils/defaults'
@@ -34,6 +35,8 @@ const sessionReducer = (state = {}, { type, payload }) => {
       return { ...state, branchId: payload.id }
     case SET_PRINTER:
       return { ...state, printer: payload.device }
+    case SET_VENDOR_LIST:
+      return { ...state, vendorList: payload.list }
     default:
       return state
   }
