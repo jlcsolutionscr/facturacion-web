@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import {
   setActivityCode,
   setPaymentId,
+  setVendorId,
   setComment,
   saveInvoice,
   resetInvoice,
@@ -63,10 +64,13 @@ function StepThreeScreen({
   summary,
   activityCode,
   paymentId,
+  vendorId,
   comment,
   successful,
   invoiceId,
+  vendorList,
   setPaymentId,
+  setVendorId,
   setComment,
   saveInvoice,
   resetInvoice,
@@ -95,6 +99,7 @@ function StepThreeScreen({
     generateInvoiceTicket(invoiceId)
   }
   const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
+  const vendorItems = vendorList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
@@ -107,7 +112,7 @@ function StepThreeScreen({
             onChange={(event) => setComment(event.target.value)}
           />
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
+        {activityItems.length > 1 && <Grid item xs={12} className={classes.centered}>
           <Grid item xs={12} sm={7} md={6}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Seleccione la Actividad Económica</InputLabel>
@@ -120,7 +125,21 @@ function StepThreeScreen({
               </Select>
             </FormControl>
           </Grid>
-        </Grid>
+        </Grid>}
+        {vendorItems.length > 1 && <Grid item xs={12} className={classes.centered}>
+          <Grid item xs={12} sm={7} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Seleccione el Vendedor</InputLabel>
+              <Select
+                id='VendorId'
+                value={vendorId}
+                onChange={(event) => setVendorId(event.target.value)}
+              >
+                {vendorItems}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>}
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
           <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
           <Grid container spacing={2} className={classes.details}>
@@ -196,6 +215,8 @@ const mapStateToProps = (state) => {
     comment: state.invoice.comment,
     successful: state.invoice.successful,
     branchList: state.ui.branchList,
+    vendorList: state.session.vendorList,
+    vendorId: state.invoice.vendorId,
     error: state.invoice.error
   }
 }
@@ -204,6 +225,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActivityCode,
     setPaymentId,
+    setVendorId,
     setComment,
     saveInvoice,
     resetInvoice,

@@ -87,10 +87,7 @@ function InvoiceListPage({
     generateInvoiceTicket(id)
   }
   const handlePdfButtonClick = (id, ref) => {
-    if (isMobile)
-      sendInvoiceNotification(id)
-    else
-      generatePDF(id, ref)
+    generatePDF(id, ref)
   }
   const handleRevokeButtonClick = (id, ref) => {
     setInvoiceId(id)

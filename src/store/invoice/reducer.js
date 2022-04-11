@@ -6,6 +6,7 @@ import {
   SET_SUMMARY,
   SET_ACTIVITY_CODE,
   SET_PAYMENT_ID,
+  SET_VENDOR_ID,
   SET_COMMENT,
   SET_SUCCESSFUL,
   SET_LIST_PAGE,
@@ -34,6 +35,8 @@ const invoiceReducer = (state = {}, { type, payload }) => {
       return { ...state, activityCode: payload.code }
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
+    case SET_VENDOR_ID:
+      return { ...state, vendorId: payload.id }
     case SET_COMMENT:
       return { ...state, comment: payload.comment }
     case SET_SUCCESSFUL:
