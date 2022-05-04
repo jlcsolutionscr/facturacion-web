@@ -102,6 +102,11 @@ export function restoreSession (username, company) {
     dispatch(startLoader())
     try {
       dispatch(logIn(username, company))
+      dispatch(setIdTypeList(company.ListadoTipoIdentificacion))
+      dispatch(setRentTypeList(company.ListadoTipoImpuesto))
+      dispatch(setExonerationTypeList(company.ListadoTipoExoneracion))
+      dispatch(setPriceTypeList(company.ListadoTipoPrecio))
+      dispatch(setProductTypeList(company.ListadoTipoProducto))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(logOut())
