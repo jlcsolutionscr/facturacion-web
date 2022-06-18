@@ -36,7 +36,7 @@ const invoiceReducer = (state = {}, { type, payload }) => {
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
     case SET_VENDOR_ID:
-      return { ...state, vendorId: payload.id }
+      return { ...state, sellerId: payload.id }
     case SET_COMMENT:
       return { ...state, comment: payload.comment }
     case SET_SUCCESSFUL:
@@ -52,7 +52,8 @@ const invoiceReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         ...defaultInvoice,
-        activityCode: state.activityCode
+        activityCode: state.activityCode,
+        sellerId: payload?.sellerId || 0
       }
     default:
       return state

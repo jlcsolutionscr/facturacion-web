@@ -36,7 +36,7 @@ const sessionReducer = (state = {}, { type, payload }) => {
     case SET_PRINTER:
       return { ...state, printer: payload.device }
     case SET_VENDOR_LIST:
-      return { ...state, vendorList: payload.list }
+      return { ...state, sellerList: payload.list }
     default:
       return state
   }

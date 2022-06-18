@@ -24,7 +24,7 @@ import {
 
 import { setCompany } from 'store/company/actions'
 
-import { setPrinter, setVendorList } from 'store/session/actions'
+import { setPrinter, setSellerList } from 'store/session/actions'
 
 import { setCustomer, setCustomerList } from 'store/customer/actions'
 
@@ -99,7 +99,7 @@ export const setPaymentId = (id) => {
   }
 }
 
-export const setVendorId = (id) => {
+export const setSellerId = (id) => {
   return {
     type: SET_VENDOR_ID,
     payload: { id }
@@ -141,13 +141,12 @@ export const setInvoiceList = (list) => {
   }
 }
 
-export const resetInvoice = () => {
+export const resetInvoice = (sellerId) => {
   return {
-    type: RESET_INVOICE
+    type: RESET_INVOICE,
+    payload: { sellerId }
   }
 }
-
-
 
 export function setInvoiceParameters (id) {
   return async (dispatch, getState) => {
@@ -157,16 +156,15 @@ export function setInvoiceParameters (id) {
     try {
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
-      const vendorList = await getVendorList(token, companyId)
-      dispatch(setVendorList(vendorList))
+      const sellerList = await getVendorList(token, companyId)
+      dispatch(setSellerList(sellerList))
       let companyEntity = company
       if (companyEntity === null) {
         companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
       }
-      dispatch(resetInvoice())
+      dispatch(resetInvoice(sellerList[0].Id))
       dispatch(setCustomer(defaultCustomer))
-      dispatch(setVendorId(vendorList[0].Id))
       dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
       dispatch(setProductList(productList))
       dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
@@ -284,7 +282,7 @@ export const saveInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { activityCode, paymentId, vendorId, detailsList, summary, comment } = getState().invoice
+    const { activityCode, paymentId, sellerId, detailsList, summary, comment } = getState().invoice
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
@@ -293,7 +291,7 @@ export const saveInvoice = () => {
         detailsList,
         activityCode,
         paymentId,
-        vendorId,
+        sellerId,
         0,
         0,
         branchId,

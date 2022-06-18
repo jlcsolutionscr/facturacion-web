@@ -56,7 +56,7 @@ export const setPrinter = (device) => {
   }
 }
 
-export const setVendorList = (list) => {
+export const setSellerList = (list) => {
   return {
     type: SET_VENDOR_LIST,
     payload: { list }

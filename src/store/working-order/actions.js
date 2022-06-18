@@ -26,7 +26,7 @@ import {
 } from 'store/ui/actions'
 
 import { setCompany } from 'store/company/actions'
-import { setPrinter, setVendorList } from 'store/session/actions'
+import { setPrinter, setSellerList } from 'store/session/actions'
 import { setCustomer, setCustomerList } from 'store/customer/actions'
 import { setProduct, setProductList } from 'store/product/actions'
 
@@ -98,7 +98,7 @@ export const setPaymentId = (id) => {
   }
 }
 
-export const setVendorId = (id) => {
+export const setSellerId = (id) => {
   return {
     type: SET_VENDOR_ID,
     payload: { id }
@@ -185,8 +185,8 @@ export function setWorkingOrderParameters () {
         companyEntity = await getCompanyEntity(token, companyId)
         dispatch(setCompany(companyEntity))
       }
-      const vendorList = await getVendorList(token, companyId)
-      dispatch(setVendorList(vendorList))
+      const sellerList = await getVendorList(token, companyId)
+      dispatch(setSellerList(sellerList))
       if (companyEntity.Modalidad === 1) {
         const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
         dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
@@ -196,7 +196,7 @@ export function setWorkingOrderParameters () {
       }
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
       dispatch(resetWorkingOrder())
-      dispatch(setVendorId(vendorList[0].Id))
+      dispatch(setSellerId(sellerList[0].Id))
       dispatch(setCustomer(defaultCustomer))
       dispatch(setProductList(productList))
       dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
@@ -324,7 +324,7 @@ export const saveWorkingOrder = () => {
       summary,
       delivery,
       listPage,
-      vendorId
+      sellerId
     } = getState().workingOrder
     dispatch(startLoader())
     try {
@@ -334,7 +334,7 @@ export const saveWorkingOrder = () => {
         userId,
         detailsList,
         branchId,
-        vendorId,
+        sellerId,
         company,
         customer,
         summary,
@@ -424,8 +424,8 @@ export const openWorkingOrder = (id) => {
       const workingOrder = await getWorkingOrderEntity(token, id)
       const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
-      const vendorList = await getVendorList(token, companyId)
-      dispatch(setVendorList(vendorList))
+      const sellerList = await getVendorList(token, companyId)
+      dispatch(setSellerList(sellerList))
       let companyEntity = company
       if (companyEntity === null) {
         companyEntity = await getCompanyEntity(token, companyId)
@@ -470,7 +470,7 @@ export const openWorkingOrder = (id) => {
       dispatch(setDeliveryAttribute('time', workingOrder.HoraEntrega))
       dispatch(setDeliveryAttribute('details', workingOrder.OtrosDetalles))
       dispatch(setPaymentId(1))
-      dispatch(setVendorId(workingOrder.IdVendedor))
+      dispatch(setSellerId(workingOrder.IdVendedor))
       dispatch(setActiveSection(21))
       dispatch(setStatus('ready'))
       dispatch(stopLoader())
@@ -486,7 +486,7 @@ export const generateInvoice = () => {
     const { token, userId, branchId } = getState().session
     const { company } = getState().company
     const { customer } = getState().customer
-    const { activityCode, paymentId, vendorId, order, detailsList, summary } = getState().workingOrder
+    const { activityCode, paymentId, sellerId, order, detailsList, summary } = getState().workingOrder
     dispatch(startLoader())
     try {
       const invoiceId = await saveInvoiceEntity(
@@ -495,7 +495,7 @@ export const generateInvoice = () => {
         detailsList,
         activityCode,
         paymentId,
-        vendorId,
+        sellerId,
         order.MontoAdelanto,
         order.IdOrden,
         branchId,

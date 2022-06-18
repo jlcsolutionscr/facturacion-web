@@ -39,7 +39,7 @@ const workingOrderReducer = (state = {}, { type, payload }) => {
     case SET_PAYMENT_ID:
       return { ...state, paymentId: payload.id }
     case SET_VENDOR_ID:
-      return { ...state, vendorId: payload.id }
+      return { ...state, sellerId: payload.id }
     case SET_DELIVERY_ATTRIBUTE:
       return { ...state, status: 'on-progress', delivery: {...state.delivery, [payload.attribute]: payload.value }}
     case SET_ORDER:

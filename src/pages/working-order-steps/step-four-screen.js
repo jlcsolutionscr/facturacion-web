@@ -73,9 +73,9 @@ function StepFourScreen({
   summary,
   activityCode,
   paymentId,
-  vendorId,
+  sellerId,
   order,
-  vendorList,
+  sellerList,
   status,
   setActivityCode,
   setPaymentId,
@@ -102,7 +102,7 @@ function StepFourScreen({
     }
   }
   const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
-  const vendorItems = vendorList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const vendorItems = sellerList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
@@ -126,8 +126,8 @@ function StepFourScreen({
               <InputLabel id='demo-simple-select-label'>Seleccione el Vendedor</InputLabel>
               <Select
                 id='VendorId'
-                value={vendorId}
-                onChange={(event) => setDeliveryAttribute('vendorId', event.target.value)}
+                value={sellerId}
+                onChange={(event) => setDeliveryAttribute('sellerId', event.target.value)}
               >
                 {vendorItems}
               </Select>
@@ -223,9 +223,9 @@ const mapStateToProps = (state) => {
     summary: state.workingOrder.summary,
     activityCode: state.workingOrder.activityCode,
     paymentId: state.workingOrder.paymentId,
-    vendorId: state.workingOrder.vendorId,
+    sellerId: state.workingOrder.sellerId,
     branchList: state.ui.branchList,
-    vendorList: state.session.vendorList
+    sellerList: state.session.sellerList
   }
 }
 

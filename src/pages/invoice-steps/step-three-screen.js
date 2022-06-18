@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import {
   setActivityCode,
   setPaymentId,
-  setVendorId,
+  setSellerId,
   setComment,
   saveInvoice,
   resetInvoice,
@@ -64,13 +64,13 @@ function StepThreeScreen({
   summary,
   activityCode,
   paymentId,
-  vendorId,
+  sellerId,
   comment,
   successful,
   invoiceId,
-  vendorList,
+  sellerList,
   setPaymentId,
-  setVendorId,
+  setSellerId,
   setComment,
   saveInvoice,
   resetInvoice,
@@ -91,7 +91,7 @@ function StepThreeScreen({
     if (!successful) {
       saveInvoice()
     } else {
-      resetInvoice()
+      resetInvoice(sellerList[0].Id)
       setValue(0)
     }
   }
@@ -99,7 +99,7 @@ function StepThreeScreen({
     generateInvoiceTicket(invoiceId)
   }
   const activityItems = company.ActividadEconomicaEmpresa.map(item => { return <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>{item.Descripcion}</MenuItem> })
-  const vendorItems = vendorList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
+  const vendorItems = sellerList.map(item => { return <MenuItem key={item.Id} value={item.Id}>{item.Descripcion}</MenuItem> })
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2} className={classes.gridContainer}>
@@ -132,8 +132,8 @@ function StepThreeScreen({
               <InputLabel id='demo-simple-select-label'>Seleccione el Vendedor</InputLabel>
               <Select
                 id='VendorId'
-                value={vendorId}
-                onChange={(event) => setVendorId(event.target.value)}
+                value={sellerId}
+                onChange={(event) => setSellerId(event.target.value)}
               >
                 {vendorItems}
               </Select>
@@ -215,8 +215,8 @@ const mapStateToProps = (state) => {
     comment: state.invoice.comment,
     successful: state.invoice.successful,
     branchList: state.ui.branchList,
-    vendorList: state.session.vendorList,
-    vendorId: state.invoice.vendorId,
+    sellerList: state.session.sellerList,
+    sellerId: state.invoice.sellerId,
     error: state.invoice.error
   }
 }
@@ -225,7 +225,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setActivityCode,
     setPaymentId,
-    setVendorId,
+    setSellerId,
     setComment,
     saveInvoice,
     resetInvoice,

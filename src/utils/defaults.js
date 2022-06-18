@@ -20,7 +20,7 @@ export const defaultSession = {
   branchList: [],
   branchId: 1,
   reportList: [],
-  vendorList: [],
+  sellerList: [],
   permissions: [],
   printer: null,
   token: null
@@ -34,7 +34,7 @@ export const defaultInvoice = {
   price: 0,
   detailsList: [],
   paymentId: 1,
-  vendorId: 0,
+  sellerId: 0,
   summary: {
     gravado: 0,
     exonerado: 0,
@@ -57,7 +57,7 @@ export const defaultWorkingOrder = {
   price: 0,
   detailsList: [],
   paymentId: 1,
-  vendorId: 0,
+  sellerId: 0,
   summary: {
     gravado: 0,
     exonerado: 0,
