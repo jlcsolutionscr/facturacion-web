@@ -50,7 +50,6 @@ const invoiceReducer = (state = {}, { type, payload }) => {
     case LOGOUT:
     case RESET_INVOICE:
       return {
-        ...state,
         ...defaultInvoice,
         activityCode: state.activityCode
       }

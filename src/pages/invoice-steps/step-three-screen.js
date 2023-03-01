@@ -9,7 +9,7 @@ import {
   setVendorId,
   setComment,
   saveInvoice,
-  resetInvoice,
+  setInvoiceParameters,
   generateInvoiceTicket
 } from 'store/invoice/actions'
 
@@ -73,7 +73,7 @@ function StepThreeScreen({
   setVendorId,
   setComment,
   saveInvoice,
-  resetInvoice,
+  setInvoiceParameters,
   generateInvoiceTicket,
   setActivityCode,
   setValue
@@ -91,7 +91,7 @@ function StepThreeScreen({
     if (!successful) {
       saveInvoice()
     } else {
-      resetInvoice()
+      setInvoiceParameters(5)
       setValue(0)
     }
   }
@@ -228,7 +228,7 @@ const mapDispatchToProps = (dispatch) => {
     setVendorId,
     setComment,
     saveInvoice,
-    resetInvoice,
+    setInvoiceParameters,
     generateInvoiceTicket
   }, dispatch)
 }
