@@ -87,6 +87,7 @@ function StepTwoScreen({
   }, [value])
   const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
+  const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0
   const handleOnFilterChange = (event) => {
     setFilter(event.target.value)
     if (delayTimer) {  
@@ -106,7 +107,6 @@ function StepTwoScreen({
     filterProductList('', filterType)
   }
   const handlePriceChange = (event) => {
-    const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0
     isPriceChangeEnabled && setPrice(event.target.value)
   }
   const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
