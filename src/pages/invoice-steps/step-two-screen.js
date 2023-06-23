@@ -4,10 +4,9 @@ import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Grid from '@material-ui/core/Grid'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 import Table from '@material-ui/core/Table'
 import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
@@ -18,16 +17,18 @@ import IconButton from '@material-ui/core/IconButton'
 import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
 import { AddCircleIcon, RemoveCircleIcon } from 'utils/iconsHelper'
+import { ROWS_PER_PRODUCT } from 'utils/constants'
 
 import {
   getProduct,
   setDescription,
   setQuantity,
   setPrice,
-  filterProductList,
   addDetails,
   removeDetails
 } from 'store/invoice/actions'
+
+import { filterProductList, getProductListByPageNumber } from 'store/product/actions'
 
 import { formatCurrency, roundNumber } from 'utils/utilities'
 
@@ -44,7 +45,8 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden'
   },
   formControl: {
-    minWidth: '150px'
+    minWidth: '150px',
+    width: 'fit-content'
   },
   bottom: {
     margin: '10px 0 10px 0',
@@ -65,6 +67,8 @@ function StepTwoScreen({
   index,
   value,
   permissions,
+  productListPage,
+  productListCount,
   productList,
   product,
   description,
@@ -77,13 +81,14 @@ function StepTwoScreen({
   setQuantity,
   setPrice,
   filterProductList,
+  getProductListByPageNumber,
   addDetails,
   removeDetails
 }) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0)
+    if (value === 1) myRef.current.scrollTo(0, 0)
   }, [value])
   const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
@@ -94,17 +99,20 @@ function StepTwoScreen({
       clearTimeout(delayTimer)
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value, filterType)
-    }, 500)
+      filterProductList(filter, filterType)
+    }, 1000)
   }
+
   const handleItemSelected = (item) => {
     getProduct(item.Id, filterType)
     setFilter('')
   }
+
   const handleFilterTypeChange = () => {
-    setFilterType(filterType === 1 ? 2 : 1)
+    const newFilterType = filterType === 1 ? 2 : 1
+    setFilterType(newFilterType)
     setFilter('')
-    filterProductList('', filterType)
+    filterProductList('', newFilterType)
   }
   const handlePriceChange = (event) => {
     isPriceChangeEnabled && setPrice(event.target.value)
@@ -112,32 +120,29 @@ function StepTwoScreen({
   const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
   let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && successful === false
   const display = value !== index ? 'none' : 'flex'
+
   return (<div ref={myRef} className={classes.root} style={{display: display}}>
     <div className={classes.container}>
       <div>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="filter-type-select-label">Filtrar producto por:</InputLabel>
-              <Select
-                labelId="filter-type-select-label"
-                id="filter-type-select"
-                value={filterType}
-                onChange={handleFilterTypeChange}
-              >
-                <MenuItem value={1}>Código</MenuItem>
-                <MenuItem value={2}>Descripción</MenuItem>
-              </Select>
-            </FormControl>
+          <Grid item xs={12}>
+            <FormGroup>
+              <FormControlLabel className={classes.formControl} control={<Switch value={filterType === 1} onChange={handleFilterTypeChange} />} label="Filtrar producto por código" />
+            </FormGroup>
           </Grid>
           <Grid item xs={12}>
             <ListDropdown
               disabled={successful}
               label='Seleccione un producto'
-              items={products}
+              page={productListPage - 1}
+              rowsCount={productListCount}
+              rows={products}
               value={filter}
+              rowId='Id'
+              rowsPerPage={ROWS_PER_PRODUCT}
               onItemSelected={handleItemSelected}
               onChange={handleOnFilterChange}
+              onPageChange={(pageNumber) => getProductListByPageNumber(pageNumber + 1, filter, filterType)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -216,6 +221,8 @@ const mapStateToProps = (state) => {
     quantity: state.invoice.quantity,
     product: state.product.product,
     price: state.invoice.price,
+    productListPage: state.product.listPage,
+    productListCount: state.product.listCount,
     productList: state.product.list,
     detailsList: state.invoice.detailsList,
     successful: state.invoice.successful
@@ -229,6 +236,7 @@ const mapDispatchToProps = (dispatch) => {
     setQuantity,
     setPrice,
     filterProductList,
+    getProductListByPageNumber,
     addDetails,
     removeDetails
   }, dispatch)

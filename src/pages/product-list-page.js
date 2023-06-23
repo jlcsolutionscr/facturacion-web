@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
 import {
-  getProductListFirstPage,
+  filterProductList,
   getProductListByPageNumber,
   openProduct,
 } from 'store/product/actions'
@@ -86,19 +86,20 @@ function ProductListPage({
   listPage,
   listCount,
   list,
-  getProductListFirstPage,
+  filterProductList,
   getProductListByPageNumber,
   openProduct,
   setActiveSection
 }) {
+  const rowsPerPage = 7
   const classes = useStyles()
   const [filter, setFilter] = React.useState('')
   const [filterType, setFilterType] = React.useState(2)
-  const handleFilterTypeChange = () => {
+  const handleOnFilterTypeChange = () => {
     const newFilterType = filterType === 1 ? 2 : 1
     setFilterType(newFilterType)
     setFilter('')
-    getProductListFirstPage(null, filter, newFilterType)
+    filterProductList('', newFilterType, rowsPerPage)
   }
   const handleOnFilterChange = event => {
     setFilter(event.target.value)
@@ -106,8 +107,8 @@ function ProductListPage({
       clearTimeout(delayTimer)
     }
     delayTimer = setTimeout(() => {
-      getProductListFirstPage(null, event.target.value, filterType)
-    }, 500)
+      filterProductList(event.target.value, filterType, rowsPerPage)
+    }, 1000)
   }
   const rows = list.map((row) => (
     {
@@ -131,7 +132,7 @@ function ProductListPage({
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
           <FormGroup>
-            <FormControlLabel control={<Switch value={filterType === 1} onChange={handleFilterTypeChange} />} label="Filtrar producto por código" />
+            <FormControlLabel control={<Switch value={filterType === 1} onChange={handleOnFilterTypeChange} />} label="Filtrar producto por código" />
           </FormGroup>
         </Grid>
         <Grid item xs={12}>
@@ -151,9 +152,9 @@ function ProductListPage({
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={7}
+          rowsPerPage={rowsPerPage}
           onPageChange={(page) => {
-            getProductListByPageNumber(page + 1, filter)
+            getProductListByPageNumber(page + 1, filter, filterType, rowsPerPage)
           }}
         />
       </div>
@@ -175,7 +176,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getProductListFirstPage,
+    filterProductList,
     getProductListByPageNumber,
     openProduct,
     setActiveSection

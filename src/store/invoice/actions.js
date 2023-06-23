@@ -1,3 +1,4 @@
+import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from 'utils/constants'
 import {
   SET_DESCRIPTION,
   SET_QUANTITY,
@@ -23,16 +24,15 @@ import {
 } from 'store/ui/actions'
 
 import { setCompany } from 'store/company/actions'
-
 import { setPrinter, setVendorList } from 'store/session/actions'
-
-import { setCustomer, setCustomerList } from 'store/customer/actions'
-
-import { setProduct, setProductList } from 'store/product/actions'
+import { setCustomer, setCustomerListPage, setCustomerListCount, setCustomerList } from 'store/customer/actions'
+import { setProduct, filterProductList, setProductListPage, setProductListCount, setProductList } from 'store/product/actions'
 
 import {
   getCompanyEntity,
+  getCustomerListCount,
   getCustomerListPerPage,
+  getProductListCount,
   getProductListPerPage,
   getProductEntity,
   getVendorList,
@@ -155,8 +155,10 @@ export function setInvoiceParameters (id) {
     const { company } = getState().company
     dispatch(startLoader())
     try {
-      const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
+      const customerCount = await getCustomerListCount(token, companyId, '')
+      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, '')
+      const productCount = await getProductListCount(token, companyId, branchId, true, '', 1)
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, '', 1)
       const vendorList = await getVendorList(token, companyId)
       dispatch(setVendorList(vendorList))
       let companyEntity = company
@@ -167,7 +169,11 @@ export function setInvoiceParameters (id) {
       dispatch(resetInvoice())
       dispatch(setCustomer(defaultCustomer))
       dispatch(setVendorId(vendorList[0].Id))
-      dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
+      dispatch(setCustomerListPage(1))
+      dispatch(setCustomerListCount(customerCount))
+      dispatch(setCustomerList(customerList))
+      dispatch(setProductListPage(1))
+      dispatch(setProductListCount(productCount))
       dispatch(setProductList(productList))
       dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
       dispatch(setActiveSection(id))
@@ -179,7 +185,7 @@ export function setInvoiceParameters (id) {
   }
 }
 
-export function getProduct (idProduct, type) {
+export function getProduct (idProduct, filterType) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { company } = getState().company
@@ -190,7 +196,7 @@ export function getProduct (idProduct, type) {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
       if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList)
-      dispatch(filterProductList('', type))
+      dispatch(filterProductList('', filterType))
       dispatch(setDescription(product.Descripcion))
       dispatch(setQuantity(1))
       dispatch(setPrice(price))
@@ -201,21 +207,6 @@ export function getProduct (idProduct, type) {
       dispatch(setDescription(''))
       dispatch(setQuantity(1))
       dispatch(setPrice(0))
-      dispatch(setMessage(error.message))
-    }
-  }
-}
-
-export function filterProductList (text, type) {
-  return async (dispatch, getState) => {
-    const { companyId, branchId, token } = getState().session
-    dispatch(startLoader())
-    try {
-      let newList = await getProductListPerPage(token, companyId, branchId, true, 1, text, type)
-      dispatch(setProductList(newList))
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(stopLoader())
       dispatch(setMessage(error.message))
     }
   }

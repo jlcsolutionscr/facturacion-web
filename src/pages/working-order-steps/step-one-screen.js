@@ -2,14 +2,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStyles } from '@material-ui/core/styles'
-
 import Grid from '@material-ui/core/Grid'
 
 import LabelField from 'components/label-field'
 import TextField from 'components/text-field'
 import ListDropdown from 'components/list-dropdown'
-import { getCustomer, setCustomerAttribute, filterCustomerList } from 'store/customer/actions'
+import { getCustomer, setCustomerAttribute, filterCustomerList, getCustomerListByPageNumber } from 'store/customer/actions'
 import { setStatus } from 'store/working-order/actions'
+import { ROWS_PER_CUSTOMER } from 'utils/constants'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -26,9 +26,12 @@ function StepOneScreen({
   index,
   value,
   customer,
+  customerListCount,
+  customerListPage,
   customerList,
   status,
   filterCustomerList,
+  getCustomerListByPageNumber,
   getCustomer,
   setStatus,
   setCustomerAttribute
@@ -36,9 +39,11 @@ function StepOneScreen({
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0)
+    if (value === 0) myRef.current.scrollTo(0, 0)
   }, [value])
+
   const [filter, setFilter] = React.useState('')
+
   const handleOnFilterChange = (event) => {
     setFilter(event.target.value)
     if (delayTimer) {  
@@ -46,33 +51,44 @@ function StepOneScreen({
     }
     delayTimer = setTimeout(() => {
       filterCustomerList(event.target.value)
-    }, 500)
+    }, 1000)
   }
+
+  const handleOnPageChange = (pageNumber) => {
+    getCustomerListByPageNumber(pageNumber + 1, filter, )
+  }
+
   const handleItemSelected = (item) => {
     getCustomer(item.Id)
     setStatus('on-progress')
     setFilter('')
   }
+
   const handleCustomerNameChange = (event) => {
     setCustomerAttribute('Nombre', event.target.value)
     setStatus('on-progress')
   }
+
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={9} md={7}>
+        <Grid item xs={12}>
           <ListDropdown
             disabled={status === 'converted'}
             label='Seleccione un cliente'
-            items={customerList}
+            page={customerListPage - 1}
+            rowsCount={customerListCount}
+            rows={customerList}
             value={filter}
+            rowsPerPage={ROWS_PER_CUSTOMER}
             onItemSelected={handleItemSelected}
             onChange={handleOnFilterChange}
+            onPageChange={handleOnPageChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            disabled={status === 'converted'}
+            disabled={status === 'converted' || customer.IdCliente !== 1}
             required
             value={customer.Nombre}
             label='Nombre del cliente'
@@ -129,13 +145,15 @@ function StepOneScreen({
 const mapStateToProps = (state) => {
   return {
     customer: state.customer.customer,
+    customerListCount: state.customer.listCount,
+    customerListPage: state.customer.listPage,
     customerList: state.customer.list,
     status: state.workingOrder.status
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCustomer, filterCustomerList, setCustomerAttribute, setStatus }, dispatch)
+  return bindActionCreators({ getCustomer, filterCustomerList, getCustomerListByPageNumber, setCustomerAttribute, setStatus }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen)

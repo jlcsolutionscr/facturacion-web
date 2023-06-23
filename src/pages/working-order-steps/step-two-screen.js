@@ -18,13 +18,14 @@ import IconButton from '@material-ui/core/IconButton'
 import ListDropdown from 'components/list-dropdown'
 import TextField from 'components/text-field'
 import { AddCircleIcon, RemoveCircleIcon } from 'utils/iconsHelper'
+import { ROWS_PER_PRODUCT } from 'utils/constants'
 
+import { filterProductList, getProductListByPageNumber } from 'store/product/actions'
 import {
   getProduct,
   setDescription,
   setQuantity,
   setPrice,
-  filterProductList,
   addDetails,
   removeDetails
 } from 'store/working-order/actions'
@@ -65,6 +66,8 @@ function StepTwoScreen({
   index,
   value,
   permissions,
+  productListPage,
+  productListCount,
   productList,
   product,
   description,
@@ -77,16 +80,20 @@ function StepTwoScreen({
   setQuantity,
   setPrice,
   filterProductList,
+  getProductListByPageNumber,
   addDetails,
   removeDetails
 }) {
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0)
+    if (value === 1) myRef.current.scrollTo(0, 0)
   }, [value])
+
   const [filterType, setFilterType] = React.useState(2)
   const [filter, setFilter] = React.useState('')
+  const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0
+
   const handleOnFilterChange = (event) => {
     setFilter(event.target.value)
     if (delayTimer) {  
@@ -94,21 +101,25 @@ function StepTwoScreen({
     }
     delayTimer = setTimeout(() => {
       filterProductList(event.target.value, filterType)
-    }, 500)
+    }, 1000)
   }
+
   const handleItemSelected = (item) => {
     getProduct(item.Id, filterType)
     setFilter('')
   }
+
   const handleFilterTypeChange = () => {
-    setFilterType(filterType === 1 ? 2 : 1)
+    const newFilterType = filterType === 1 ? 2 : 1
+    setFilterType(newFilterType)
     setFilter('')
-    filterProductList('', filterType)
+    filterProductList('', newFilterType)
   }
+
   const handlePriceChange = (event) => {
-    const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0
     isPriceChangeEnabled && setPrice(event.target.value)
   }
+
   const products = productList.map(item => ({ ...item, Descripcion: (filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion)}))
   const fieldDisabled = status === 'converted'
   let buttonEnabled = product !== null && description !== '' && quantity !== null && price !== null && fieldDisabled === false
@@ -135,10 +146,15 @@ function StepTwoScreen({
             <ListDropdown
               disabled={fieldDisabled}
               label='Seleccione un producto'
-              items={products}
+              page={productListPage - 1}
+              rowsCount={productListCount}
+              rows={products}
               value={filter}
+              rowId='Id'
+              rowsPerPage={ROWS_PER_PRODUCT}
               onItemSelected={handleItemSelected}
               onChange={handleOnFilterChange}
+              onPageChange={(pageNumber) => getProductListByPageNumber(pageNumber + 1, filter, filterType)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -217,6 +233,8 @@ const mapStateToProps = (state) => {
     quantity: state.workingOrder.quantity,
     product: state.product.product,
     price: state.workingOrder.price,
+    productListPage: state.product.listPage,
+    productListCount: state.product.listCount,
     productList: state.product.list,
     detailsList: state.workingOrder.detailsList,
     status: state.workingOrder.status
@@ -230,6 +248,7 @@ const mapDispatchToProps = (dispatch) => {
     setQuantity,
     setPrice,
     filterProductList,
+    getProductListByPageNumber,
     addDetails,
     removeDetails
   }, dispatch)

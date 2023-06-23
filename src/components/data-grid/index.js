@@ -14,7 +14,7 @@ import Paper from '@material-ui/core/Paper'
 import { FirstPageIcon, KeyboardArrowLeftIcon, KeyboardArrowRightIcon, LastPageIcon } from 'utils/iconsHelper'
 import { createStyle } from './styles'
 
-function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
+export function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
   const classes = createStyle()
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0)
@@ -67,7 +67,7 @@ TablePaginationActions.propTypes = {
 
 export default function DataGrid({page, minWidth, showHeader, dense, columns, rows, rowsCount, rowsPerPage, rowActionValue, onPageChange, rowAction }) {
   const classes = createStyle()
-  const emptyRows = rowsPerPage !== undefined ? rowsPerPage - (Math.min(rowsPerPage, rowsCount - (page !== undefined ? page : 1) * rowsPerPage)) : 0
+  const emptyRows = rowsPerPage !== undefined ? rowsPerPage - rows.length : 0
   const height = rowsPerPage !== undefined ? rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0) : 0
   let tableStyle = {
     color: 'white',

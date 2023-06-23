@@ -7,7 +7,6 @@ import { setActiveSection } from 'store/ui/actions'
 import {
   getProduct,
   setProduct,
-  filterProductList,
   filterClasificationList,
   setProductAttribute,
   validateProductCode,
@@ -184,7 +183,7 @@ function ProductPage({
     }
     delayTimer = setTimeout(() => {
       filterClasificationList(event.target.value)
-    }, 500)
+    }, 1000)
   }
   const handleClasificationRowClick = (code) => {
     if (code !== '') {
@@ -484,7 +483,6 @@ const mapDispatchToProps = (dispatch) => {
     setActiveSection,
     getProduct,
     setProduct,
-    filterProductList,
     filterClasificationList,
     setProductAttribute,
     validateProductCode,

@@ -1,3 +1,4 @@
+import { ROWS_PER_CUSTOMER } from 'utils/constants'
 import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
@@ -64,7 +65,7 @@ export const setCustomerAttribute = (attribute, value) => {
   }
 }
 
-export const getCustomerListFirstPage = (id, filter) => {
+export const getCustomerListFirstPage = (id, filter, rowsPerPage) => {
   return async (dispatch, getState) => {
     const { token, companyId } = getState().session
     dispatch(startLoader())
@@ -73,7 +74,7 @@ export const getCustomerListFirstPage = (id, filter) => {
       const recordCount = await getCustomerListCount(token, companyId, filter)
       dispatch(setCustomerListCount(recordCount))
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(token, companyId, 1, 8, filter)
+        const newList = await getCustomerListPerPage(token, companyId, 1, rowsPerPage ?? ROWS_PER_CUSTOMER, filter)
         dispatch(setCustomerList(newList))
       } else {
         dispatch(setCustomerList([]))
@@ -87,12 +88,12 @@ export const getCustomerListFirstPage = (id, filter) => {
   }
 }
 
-export const getCustomerListByPageNumber = (pageNumber, filter) => {
+export const getCustomerListByPageNumber = (pageNumber, filter, rowsPerPage) => {
   return async (dispatch, getState) => {
     const { token, companyId } = getState().session
     dispatch(startLoader())
     try {
-      const newList = await getCustomerListPerPage(token, companyId, pageNumber, 8, filter)
+      const newList = await getCustomerListPerPage(token, companyId, pageNumber, rowsPerPage ?? ROWS_PER_CUSTOMER, filter)
       dispatch(setCustomerListPage(pageNumber))
       dispatch(setCustomerList(newList))
       dispatch(stopLoader())
@@ -199,13 +200,20 @@ export function getCustomer (idCustomer) {
   }
 }
 
-export function filterCustomerList (filter) {
+export function filterCustomerList (filter, rowsPerPage) {
   return async (dispatch, getState) => {
     const { companyId, token } = getState().session
     dispatch(startLoader())
     try {
-      let newList = await getCustomerListPerPage(token, companyId, 1, 20, filter)
-      dispatch(setCustomerList(newList))
+      dispatch(setCustomerListPage(1))
+      const recordCount = await getCustomerListCount(token, companyId, filter)
+      dispatch(setCustomerListCount(recordCount))
+      if (recordCount > 0) {
+        const newList = await getCustomerListPerPage(token, companyId, 1, rowsPerPage ?? ROWS_PER_CUSTOMER, filter)
+        dispatch(setCustomerList(newList))
+      } else {
+        dispatch(setCustomerList([]))
+      }
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())

@@ -1,3 +1,4 @@
+import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from 'utils/constants'
 import {
   SET_DESCRIPTION,
   SET_QUANTITY,
@@ -27,13 +28,15 @@ import {
 
 import { setCompany } from 'store/company/actions'
 import { setPrinter, setVendorList } from 'store/session/actions'
-import { setCustomer, setCustomerList } from 'store/customer/actions'
-import { setProduct, setProductList } from 'store/product/actions'
+import { setCustomer, setCustomerListPage, setCustomerListCount, setCustomerList } from 'store/customer/actions'
+import { setProduct, filterProductList, setProductListPage, setProductListCount, setProductList } from 'store/product/actions'
 
 import { roundNumber } from 'utils/utilities'
 import {
   getCompanyEntity,
+  getCustomerListCount,
   getCustomerListPerPage,
+  getProductListCount,
   getProductListPerPage,
   getProductEntity,
   getVendorList,
@@ -44,7 +47,6 @@ import {
   getWorkingOrderListPerPage,
   revokeWorkingOrderEntity,
   generateWorkingOrderPDF,
-  sendWorkingOrderPDF,
   getWorkingOrderEntity,
   getInvoiceEntity,
   saveInvoiceEntity,
@@ -188,16 +190,22 @@ export function setWorkingOrderParameters () {
       const vendorList = await getVendorList(token, companyId)
       dispatch(setVendorList(vendorList))
       if (companyEntity.Modalidad === 1) {
-        const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
-        dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
+        const customerCount = await getCustomerListCount(token, companyId, '')
+        const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, '')
+        dispatch(setCustomerListPage(1))
+        dispatch(setCustomerListCount(customerCount))
+        dispatch(setCustomerList(customerList))
       } else {
         const servicePointList = await getServicePointList(token, companyId, branchId, true, '');
         dispatch(setServicePointList(servicePointList))
       }
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
+      const productCount = await getProductListCount(token, companyId, branchId, true, '', 1)
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, '', 1)
       dispatch(resetWorkingOrder())
       dispatch(setVendorId(vendorList[0].Id))
       dispatch(setCustomer(defaultCustomer))
+      dispatch(setProductListPage(1))
+      dispatch(setProductListCount(productCount))
       dispatch(setProductList(productList))
       dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
       dispatch(setActiveSection(21))
@@ -209,7 +217,7 @@ export function setWorkingOrderParameters () {
   }
 }
 
-export function getProduct (idProduct) {
+export function getProduct (idProduct, filterType) {
   return async (dispatch, getState) => {
     const { token } = getState().session
     const { company } = getState().company
@@ -220,7 +228,7 @@ export function getProduct (idProduct) {
       const product = await getProductEntity(token, idProduct, 1)
       let price = product.PrecioVenta1
       if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList)
-      dispatch(filterProductList('', 2))
+      dispatch(filterProductList('', filterType))
       dispatch(setDescription(product.Descripcion))
       dispatch(setQuantity(1))
       dispatch(setPrice(price))
@@ -231,21 +239,6 @@ export function getProduct (idProduct) {
       dispatch(setDescription(''))
       dispatch(setQuantity(1))
       dispatch(setPrice(0))
-      dispatch(setMessage(error.message))
-    }
-  }
-}
-
-export function filterProductList (text, type) {
-  return async (dispatch, getState) => {
-    const { companyId, branchId, token } = getState().session
-    dispatch(startLoader())
-    try {
-      let newList = await getProductListPerPage(token, companyId, branchId, true, 1, text, type)
-      dispatch(setProductList(newList))
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(stopLoader())
       dispatch(setMessage(error.message))
     }
   }
@@ -422,8 +415,10 @@ export const openWorkingOrder = (id) => {
     dispatch(startLoader())
     try {
       const workingOrder = await getWorkingOrderEntity(token, id)
-      const customerList = await getCustomerListPerPage(token, companyId, 1, 20, '')
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, '', 1)
+      const customerCount = await getCustomerListCount(token, companyId, '')
+      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, '')
+      const productCount = await getProductListCount(token, companyId, branchId, true, '', 1)
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, '', 1)
       const vendorList = await getVendorList(token, companyId)
       dispatch(setVendorList(vendorList))
       let companyEntity = company
@@ -437,7 +432,9 @@ export const openWorkingOrder = (id) => {
         ConsecOrdenServicio: workingOrder.ConsecOrdenServicio,
         MontoAdelanto: workingOrder.MontoAdelanto
       }))
-      dispatch(setCustomerList([{Id: 1, Descripcion: 'CLIENTE CONTADO'}, ...customerList]))
+      dispatch(setCustomerListCount(customerCount))
+      dispatch(setCustomerList(customerList))
+      dispatch(setProductListCount(productCount))
       dispatch(setProductList(productList))
       const customer = {
         IdCliente: workingOrder.IdCliente,
@@ -550,21 +547,6 @@ export const generatePDF = (id, ref) => {
     dispatch(startLoader())
     try {
       await generateWorkingOrderPDF(token, id, ref)
-      dispatch(stopLoader())
-    } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
-    }
-  }
-}
-
-export const sendWorkingOrderNotification = (id) => {
-  return async (dispatch, getState) => {
-    const { token } = getState().session
-    dispatch(startLoader())
-    try {
-      await sendWorkingOrderPDF(token, id)
-      dispatch(setMessage('Correo enviado satisfactoriamente.', 'INFO'))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))

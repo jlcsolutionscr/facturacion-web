@@ -43,9 +43,9 @@ export const createStyle = makeStyles(theme => createStyles({
   },
   input: {
     color: theme.palette.text.primary,
-    lineHeight: '1.1876em',
+    lineHeight: '1em',
     width: '100%',
-    height: '1.1876em',
+    height: '1em',
     margin: '0',
     display: 'block',
     padding: '10.5px 14px',
@@ -55,34 +55,35 @@ export const createStyle = makeStyles(theme => createStyles({
     textRendering: 'auto',
     cursor: 'text',
     borderRadius: theme.shape.borderRadius,
-    border: `1px solid ${theme.palette.primary.border}`,
-    '&:focus': {
-      outline: '0',
-      border: `2px solid ${theme.palette.primary.main}`,
-      borderBottom: 'none',
-      borderBottomLeftRadius: '0',
-      borderBottomRightRadius: '0'
-    },
-    '&:focus + label': {
-      color: theme.palette.primary.main
-    }
+    border: `1px solid ${theme.palette.primary.border}`
+  },
+  inputOutline: {
+    outline: '0',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderBottom: 'none',
+    borderBottomLeftRadius: '0',
+    borderBottomRightRadius: '0'
+  },
+  labelOutline: {
+    color: theme.palette.primary.main
   },
   listContainer: {
+    paddingTop: '10px',
     overflow: 'auto',
     border: `2px solid ${theme.palette.primary.main}`,
-    borderTop: 'none',
+    borderTop: `1px solid ${theme.palette.primary.main}`,
     borderTopLeftRadius: '0',
     borderTopRightRadius: '0'
   },
   item: {
+    display: 'flex',
+    alignItems: 'center',
     color: theme.palette.text.primary,
-    lineHeight: '1.1876em',
-    width: '90%',
+    lineHeight: '1em',
     border: '0',
-    height: '1.1876em',
+    height: '1em',
     margin: '0',
-    display: 'block',
-    padding: '10px 14px',
+    padding: '8px 14px',
     minWidth: '0',
     background: 'none',
     boxSizing: 'content-box',

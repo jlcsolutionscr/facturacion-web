@@ -159,15 +159,15 @@ export async function getProductProviderList(token, companyId) {
   return response
 }
 
-export async function getProductListCount(token, companyId, branchId, activeOnly, page, filterText, type) {
+export async function getProductListCount(token, companyId, branchId, activeOnly, filterText, type) {
   const data = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", IncluyeServicios: 'true', FiltraActivos: '" + activeOnly + "', IdLinea: 0, Codigo: '" + (type === 1 ? filterText : '') + "', Descripcion: '" + (type === 2 ? filterText : '') + "'}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
   if (response === null) return null
   return response
 }
 
-export async function getProductListPerPage(token, companyId, branchId, activeOnly, page, filterText, type) {
-  const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NumeroPagina: " + page + ", FilasPorPagina: 7, IncluyeServicios: 'true', FiltraActivos: '" + activeOnly + "', IdLinea: 0, Codigo: '" + (type === 1 ? filterText : '') + "', Descripcion: '" + (type === 2 ? filterText : '') + "'}}"
+export async function getProductListPerPage(token, companyId, branchId, activeOnly, page, rowsPerPage, filterText, type) {
+  const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", NumeroPagina: " + page + ", FilasPorPagina: " + rowsPerPage + ", IncluyeServicios: 'true', FiltraActivos: '" + activeOnly + "', IdLinea: 0, Codigo: '" + (type === 1 ? filterText : '') + "', Descripcion: '" + (type === 2 ? filterText : '') + "'}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
   if (response === null) return []
   return response
@@ -545,18 +545,13 @@ export async function generateInvoicePDF(token, invoiceId, ref) {
 }
 
 export async function generateWorkingOrderPDF(token, workingOrderId, ref) {
-  const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
+  const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrden: " + workingOrderId + "}}"
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data)
   if (response.length > 0) {
     const byteArray = new Uint8Array(response);
     const file = new Blob([byteArray], { type: "application/octet-stream" })
-    saveAs(file, `Factura-${ref}.pdf`)
+    saveAs(file, `OrdenServicio-${ref}.pdf`)
   }
-}
-
-export async function sendWorkingOrderPDF(token, workingOrderId) {
-  const data = "{NombreMetodo: 'GenerarNotificacionFactura', Parametros: {IdOrdenServicio: " + workingOrderId + "}}"
-  await post(APP_URL + "/ejecutar", token, data)
 }
 
 export async function saveReceiptEntity(

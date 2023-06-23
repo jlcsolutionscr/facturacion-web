@@ -142,7 +142,7 @@ function ReceiptPage({
     }
     delayTimer = setTimeout(() => {
       filterClasificationList(event.target.value)
-    }, 500)
+    }, 1000)
   }
   const handleClasificationRowClick = (code) => {
     if (code !== '') {

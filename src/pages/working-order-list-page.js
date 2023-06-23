@@ -8,6 +8,7 @@ import {
   getWorkingOrderListByPageNumber,
   setWorkingOrderParameters,
   revokeWorkingOrder,
+  generatePDF,
   openWorkingOrder,
   generateWorkingOrderTicket
 } from 'store/working-order/actions'
@@ -21,7 +22,7 @@ import IconButton from '@material-ui/core/IconButton'
 
 import DataGrid from 'components/data-grid'
 import Button from 'components/button'
-import { EditIcon, PrinterIcon, DeleteIcon } from 'utils/iconsHelper'
+import { EditIcon, PrinterIcon, DownloadPdfIcon, DeleteIcon } from 'utils/iconsHelper'
 import { formatCurrency } from 'utils/utilities'
 
 const useStyles = makeStyles(theme => ({
@@ -75,6 +76,7 @@ function WorkingOrderListPage({
   getWorkingOrderListByPageNumber,
   setWorkingOrderParameters,
   revokeWorkingOrder,
+  generatePDF,
   setActiveSection,
   openWorkingOrder,
   generateWorkingOrderTicket
@@ -91,6 +93,9 @@ function WorkingOrderListPage({
   const handleRevokeButtonClick = (id, ref) => {
     setWorkingOrderId(id)
     setDialogOpen({open: true, id: ref})
+  }
+  const handlePdfButtonClick = (id, ref) => {
+    generatePDF(id, ref)
   }
   const handleConfirmButtonClick = () => {
     setDialogOpen({open: false, id: 0})
@@ -114,6 +119,11 @@ function WorkingOrderListPage({
         </IconButton>
       ),
       action3: (
+        <IconButton disabled={row.Anulando} className={classes.icon} color="primary" component="span" onClick={() => handlePdfButtonClick(row.IdFactura, row.Consecutivo)}>
+          <DownloadPdfIcon className={classes.icon} />
+        </IconButton>
+      ),
+      action4: (
         <IconButton disabled={row.Anulando} className={classes.icon} color="secondary" component="span" onClick={() => handleRevokeButtonClick(row.IdFactura, row.Consecutivo)}>
           <DeleteIcon className={classes.icon} />
         </IconButton>
@@ -129,7 +139,8 @@ function WorkingOrderListPage({
     { field: 'amount', headerName: 'Total', type: 'number' },
     { field: 'action1', headerName: '' },
     { field: 'action2', headerName: '' },
-    { field: 'action3', headerName: '' }
+    { field: 'action3', headerName: '' },
+    { field: 'action4', headerName: '' }
   ]
   return (
     <div className={classes.root}>
@@ -181,6 +192,7 @@ const mapDispatchToProps = (dispatch) => {
     getWorkingOrderListByPageNumber,
     setWorkingOrderParameters,
     revokeWorkingOrder,
+    generatePDF,
     openWorkingOrder,
     setActiveSection,
     generateWorkingOrderTicket

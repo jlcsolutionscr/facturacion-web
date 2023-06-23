@@ -21,9 +21,11 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflow: 'hidden',
     backgroundColor: theme.palette.background.navbar,
-    color: theme.palette.primary.navbar,
     maxWidth: '900px',
     margin: '10px auto 0 auto'
+  },
+  tabs: {
+    color: theme.palette.primary.navbar
   },
   backButton: {
     position: 'absolute',
@@ -49,7 +51,7 @@ function InvoicePage({setActiveSection}) {
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs centered value={value} indicatorColor='secondary' onChange={handleChange}
+      <Tabs className={classes.tabs} centered value={value} indicatorColor='secondary' onChange={handleChange}
       >
         <Tab label='Cliente'/>
         <Tab label='Detalle'/>

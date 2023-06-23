@@ -142,10 +142,10 @@ function MenuPage({
         <Button disabled={!updateCompanyInfo} classes={{root: classes.button}} onClick={() => setActiveSection(2)}>Agregar logotipo</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!manageCustomers} classes={{root: classes.button}} onClick={() => getCustomerListFirstPage(3, '')}>Catálogo de clientes</Button>
+        <Button disabled={!manageCustomers} classes={{root: classes.button}} onClick={() => getCustomerListFirstPage(3, '', 8)}>Catálogo de clientes</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => getProductListFirstPage(4, '')}>Catálogo de productos</Button>
+        <Button disabled={!manageProducts} classes={{root: classes.button}} onClick={() => getProductListFirstPage(4, '', 2, 7)}>Catálogo de productos</Button>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Button disabled={!generateInvoice} classes={{root: classes.button}} onClick={() => setInvoiceParameters(5)}>Facturar</Button>

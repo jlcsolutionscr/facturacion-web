@@ -26,12 +26,12 @@ import { formatCurrency, roundNumber } from 'utils/utilities'
 
 import { setActiveSection } from 'store/ui/actions'
 import { setCustomerAttribute } from 'store/customer/actions'
+import { filterProductList } from 'store/product/actions'
 import {
   getProduct,
   setDescription,
   setQuantity,
   setPrice,
-  filterProductList,
   addDetails,
   removeDetails,
   setStatus,
@@ -101,8 +101,7 @@ function StepOneScreen({
   filterProductList,
   addDetails,
   removeDetails,
-  saveWorkingOrder,
-  setActiveSection
+  saveWorkingOrder
 }) {
   const classes = useStyles()
   const myRef = React.useRef(null)
@@ -122,7 +121,7 @@ function StepOneScreen({
     }
     delayTimer = setTimeout(() => {
       filterProductList(event.target.value, 2)
-    }, 500)
+    }, 1000)
   }
   const handleItemSelected = (item) => {
     getProduct(item.Id, 2)

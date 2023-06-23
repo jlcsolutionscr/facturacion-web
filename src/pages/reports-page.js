@@ -155,7 +155,7 @@ function ReportsPage({
           <Grid item xs={isMobile ? 6 : 4} sm={3}>
             <Button
               disabled={reportId === 0}
-              label={isMobile ? 'Enviar al correo' : 'Generar'}
+              label={isMobile ? 'Enviar correo' : 'Generar'}
               onClick={() => isMobile ? processReport(3) : processReport(1)}
             />
           </Grid>

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { setActiveSection } from 'store/ui/actions'
 import {
-  getCustomerListFirstPage,
+  filterCustomerList,
   getCustomerListByPageNumber,
   openCustomer,
 } from 'store/customer/actions'
@@ -80,11 +80,12 @@ function CustomerListPage({
   listPage,
   listCount,
   list,
-  getCustomerListFirstPage,
+  filterCustomerList,
   getCustomerListByPageNumber,
   openCustomer,
   setActiveSection
 }) {
+  const rowsPerPage = 8
   const classes = useStyles()
   const [filter, setFilter] = React.useState('')
   const handleOnFilterChange = event => {
@@ -93,8 +94,8 @@ function CustomerListPage({
       clearTimeout(delayTimer)
     }
     delayTimer = setTimeout(() => {
-      getCustomerListFirstPage(null, event.target.value)
-    }, 500)
+      filterCustomerList(event.target.value, rowsPerPage)
+    }, 1000)
   }
   const rows = list.map((row) => (
     {
@@ -133,9 +134,9 @@ function CustomerListPage({
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={8}
+          rowsPerPage={rowsPerPage}
           onPageChange={(page) => {
-            getCustomerListByPageNumber(page + 1, filter)
+            getCustomerListByPageNumber(page + 1, filter, rowsPerPage)
           }}
         />
       </div>
@@ -157,7 +158,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getCustomerListFirstPage,
+    filterCustomerList,
     getCustomerListByPageNumber,
     openCustomer,
     setActiveSection

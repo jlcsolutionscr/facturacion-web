@@ -82,7 +82,7 @@ function StepThreeScreen({
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0)
+    if (value === 2) myRef.current.scrollTo(0, 0)
   }, [value])
   const buttonDisabled = total === 0
   let paymentMethods = [{Id: 1, Descripcion: 'EFECTIVO'}, {Id: 2, Descripcion: 'TARJETA'}, {Id: 3, Descripcion: 'CHEQUE'}, {Id: 4, Descripcion: 'TRANSFERENCIA'}]

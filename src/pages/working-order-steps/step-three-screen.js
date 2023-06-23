@@ -28,7 +28,7 @@ function StepThreeScreen({
   const classes = useStyles()
   const myRef = React.useRef(null)
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0)
+    if (value === 2) myRef.current.scrollTo(0, 0)
   }, [value])
   const fieldDisabled = status === 'converted'
   return (

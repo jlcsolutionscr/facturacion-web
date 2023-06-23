@@ -1,3 +1,4 @@
+import { ROWS_PER_PRODUCT } from 'utils/constants'
 import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
@@ -91,7 +92,7 @@ export const setProductAttribute = (attribute, value) => {
   }
 }
 
-export const getProductListFirstPage = (id, filterText, type) => {
+export const getProductListFirstPage = (id, filterText, type, rowsPerPage) => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session
     dispatch(startLoader())
@@ -100,7 +101,7 @@ export const getProductListFirstPage = (id, filterText, type) => {
       const recordCount = await getProductListCount(token, companyId, branchId, false, 1, filterText, type)
       dispatch(setProductListCount(recordCount))
       if (recordCount > 0) {
-        const newList = await getProductListPerPage(token, companyId, branchId, false, 1, filterText, type)
+        const newList = await getProductListPerPage(token, companyId, branchId, false, 1, rowsPerPage ?? ROWS_PER_PRODUCT, filterText, type)
         dispatch(setProductList(newList))
       } else {
         dispatch(setProductList([]))
@@ -114,14 +115,14 @@ export const getProductListFirstPage = (id, filterText, type) => {
   }
 }
 
-export const getProductListByPageNumber = (pageNumber, filterText, type) => {
+export const getProductListByPageNumber = (pageNumber, filterText, type, rowsPerPage) => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session
     dispatch(startLoader())
     try {
-      const newList = await getProductListPerPage(token, companyId, branchId, false, pageNumber, filterText, type)
+      const productList = await getProductListPerPage(token, companyId, branchId, false, pageNumber, rowsPerPage ?? ROWS_PER_PRODUCT, filterText, type)
       dispatch(setProductListPage(pageNumber))
-      dispatch(setProductList(newList))
+      dispatch(setProductList(productList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(setMessage(error.message))
@@ -175,13 +176,16 @@ export function openProduct (idProduct) {
   }
 }
 
-export function filterProductList (text, type) {
+export function filterProductList (text, type, rowsPerPage) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session
     dispatch(startLoader())
     try {
-      const list = await getProductListPerPage(token, companyId, branchId, false, 1, text, type)
-      dispatch(setProductList(list))
+      dispatch(setProductListPage(1))
+      const productCount = await getProductListCount(token, companyId, branchId, true, text, type)
+      const newList = await getProductListPerPage(token, companyId, branchId, true, 1, rowsPerPage ?? ROWS_PER_PRODUCT, text, type)
+      dispatch(setProductListCount(productCount))
+      dispatch(setProductList(newList))
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())
