@@ -1,16 +1,16 @@
-import React from 'react'
+import React from "react";
 
-import IconButton from '@material-ui/core/IconButton'
+import IconButton from "@material-ui/core/IconButton";
 
-import { DeleteIcon } from 'utils/iconsHelper'
-import { createStyle } from './styles'
+import { DeleteIcon } from "utils/iconsHelper";
+import { createStyle } from "./styles";
 
 function Tab({ title, edit, close }) {
-  const classes = createStyle()
-  const onButtonClick = (e) => {
-    e.stopPropagation()
-    close()
-  }
+  const classes = createStyle();
+  const onButtonClick = e => {
+    e.stopPropagation();
+    close();
+  };
   return (
     <div className={classes.container} onClick={edit}>
       <div className={classes.title}>
@@ -22,7 +22,7 @@ function Tab({ title, edit, close }) {
         </IconButton>
       </div>
     </div>
-  )
+  );
 }
 
-export default Tab
+export default Tab;

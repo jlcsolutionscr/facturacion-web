@@ -1,76 +1,76 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { makeStyles } from '@material-ui/core/styles'
+import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { makeStyles } from "@material-ui/core/styles";
 
-import { setActiveSection } from 'store/ui/actions'
+import { setActiveSection } from "store/ui/actions";
 import {
   getDocumentListFirstPage,
   getDocumentListByPageNumber,
   sendNotification,
   getDocumentDetails,
-  setDocumentDetails
-} from 'store/document/actions'
+  setDocumentDetails,
+} from "store/document/actions";
 
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import IconButton from '@material-ui/core/IconButton'
-import TextField from '@material-ui/core/TextField'
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
 
-import DataGrid from 'components/data-grid'
-import Button from 'components/button'
-import { EmailIcon, InfoIcon } from 'utils/iconsHelper'
-import { formatCurrency } from 'utils/utilities'
+import DataGrid from "components/data-grid";
+import Button from "components/button";
+import { EmailIcon, InfoIcon } from "utils/iconsHelper";
+import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.pages,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    margin: '10px auto auto auto'
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    margin: "10px auto auto auto",
   },
   dataContainer: {
-    display: 'flex',
-    overflow: 'hidden',
-    padding: '20px',
-    '@media (max-width:960px)': {
-      padding: '16px'
+    display: "flex",
+    overflow: "hidden",
+    padding: "20px",
+    "@media (max-width:960px)": {
+      padding: "16px",
     },
-    '@media (max-width:600px)': {
-      padding: '13px'
+    "@media (max-width:600px)": {
+      padding: "13px",
     },
-    '@media (max-width:414px)': {
-      padding: '10px'
-    }
+    "@media (max-width:414px)": {
+      padding: "10px",
+    },
   },
   emailIcon: {
     padding: 0,
-    color: '#239BB5'
+    color: "#239BB5",
   },
   infoIcon: {
     padding: 0,
-    color: 'gray'
+    color: "gray",
   },
   buttonContainer: {
-    margin: '0 0 20px 20px',
-    '@media (max-width:960px)': {
-      margin: '0 0 10px 15px'
+    margin: "0 0 20px 20px",
+    "@media (max-width:960px)": {
+      margin: "0 0 10px 15px",
     },
-    '@media (max-width:600px)': {
-      margin: '0 0 10px 10px'
+    "@media (max-width:600px)": {
+      margin: "0 0 10px 10px",
     },
-    '@media (max-width:414px)': {
-      margin: '0 0 5px 5px'
-    }
+    "@media (max-width:414px)": {
+      margin: "0 0 5px 5px",
+    },
   },
   dialogActions: {
-    margin: '0 20px 10px 20px'
-  }
-}))
+    margin: "0 20px 10px 20px",
+  },
+}));
 
 function DocumentListPage({
   listPage,
@@ -81,66 +81,57 @@ function DocumentListPage({
   sendNotification,
   getDocumentDetails,
   setDocumentDetails,
-  setActiveSection
+  setActiveSection,
 }) {
-  const classes = useStyles()
-  const [dialogStatus, setDialogStatus] = React.useState({ open: false, type: 1})
-  const [documentId, setDocumentId] = React.useState(null)
-  const [email, setEmail] = React.useState('')
+  const classes = useStyles();
+  const [dialogStatus, setDialogStatus] = React.useState({ open: false, type: 1 });
+  const [documentId, setDocumentId] = React.useState(null);
+  const [email, setEmail] = React.useState("");
   const handleConfirmEmailClick = () => {
-    setDialogStatus({ open: false, type: 1})
-    sendNotification(documentId, email)
-    setEmail('')
-  }
-  const dialogContent = dialogStatus.type === 1
-  ? (
-    <div>
-      <DialogTitle>Enviar documento electrónico</DialogTitle>
-      <DialogContent>
-        <TextField
-          value={email}
-          label='Dirección electrónica'
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </DialogContent>
-      <DialogActions className={classes.dialogActions}>
-        <Button negative label='Cancelar' onClick={() => setEmail('')} />
-        <Button label='Enviar' autoFocus onClick={handleConfirmEmailClick} />
-      </DialogActions>
-    </div>
-  )
-  : dialogStatus.type === 2
-    ? (
+    setDialogStatus({ open: false, type: 1 });
+    sendNotification(documentId, email);
+    setEmail("");
+  };
+  const dialogContent =
+    dialogStatus.type === 1 ? (
+      <div>
+        <DialogTitle>Enviar documento electrónico</DialogTitle>
+        <DialogContent>
+          <TextField value={email} label="Dirección electrónica" onChange={e => setEmail(e.target.value)} />
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button negative label="Cancelar" onClick={() => setEmail("")} />
+          <Button label="Enviar" autoFocus onClick={handleConfirmEmailClick} />
+        </DialogActions>
+      </div>
+    ) : dialogStatus.type === 2 ? (
       <div>
         <DialogTitle>Mesaje de respuesta</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {decodeURIComponent(escape(details))}
-          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">{decodeURIComponent(escape(details))}</DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button negative label='Cerrar' onClick={() => handleDialogClose()} />
+          <Button negative label="Cerrar" onClick={() => handleDialogClose()} />
         </DialogActions>
       </div>
-    )
-    : null
+    ) : null;
   const handleEmailClick = (id, newEmail) => {
-    setDocumentId(id)
-    setEmail(newEmail)
-    setDialogStatus({ open: true, type: 1})
-  }
-  const handleDetailsClick = (id) => {
-    getDocumentDetails(id)
-    setDialogStatus({ open: true, type: 2})
-  }
+    setDocumentId(id);
+    setEmail(newEmail);
+    setDialogStatus({ open: true, type: 1 });
+  };
+  const handleDetailsClick = id => {
+    getDocumentDetails(id);
+    setDialogStatus({ open: true, type: 2 });
+  };
   const handleDialogClose = () => {
-    setDialogStatus({ open: false, type: 1})
-    if (email !== '' ) setEmail('')
-    if (details !== '' ) setDocumentDetails('')
-  }
+    setDialogStatus({ open: false, type: 1 });
+    if (email !== "") setEmail("");
+    if (details !== "") setDocumentDetails("");
+  };
   const rows = list.map(row => {
-    const buttonDisabled = row.IdTipoDocumento > 3 || row.EstadoEnvio !== 'aceptado'
-    return ({
+    const buttonDisabled = row.IdTipoDocumento > 3 || row.EstadoEnvio !== "aceptado";
+    return {
       id: row.IdDocumento,
       ref: row.Consecutivo,
       date: row.Fecha,
@@ -148,28 +139,39 @@ function DocumentListPage({
       name: row.NombreReceptor,
       amount: formatCurrency(row.MontoTotal),
       email: (
-        <IconButton disabled={buttonDisabled} className={classes.emailIcon} color="secondary" component="span" onClick={() => handleEmailClick(row.IdDocumento, row.CorreoNotificacion)}>
+        <IconButton
+          disabled={buttonDisabled}
+          className={classes.emailIcon}
+          color="secondary"
+          component="span"
+          onClick={() => handleEmailClick(row.IdDocumento, row.CorreoNotificacion)}
+        >
           <EmailIcon />
         </IconButton>
       ),
       details: (
-        <IconButton className={classes.infoIcon} color="secondary" component="span" onClick={() => handleDetailsClick(row.IdDocumento)}>
+        <IconButton
+          className={classes.infoIcon}
+          color="secondary"
+          component="span"
+          onClick={() => handleDetailsClick(row.IdDocumento)}
+        >
           <InfoIcon />
         </IconButton>
-      )
-    })
-  })
-  
+      ),
+    };
+  });
+
   const columns = [
-    { field: 'id', headerName: 'Id' },
-    { field: 'ref', headerName: 'Consecutivo' },
-    { field: 'date', headerName: 'Fecha' },
-    { field: 'status', headerName: 'Estado' },
-    { field: 'name', headerName: 'Receptor' },
-    { field: 'amount', headerName: 'Total', type: 'number' },
-    { field: 'email', headerName: '' },
-    { field: 'details', headerName: '' }
-  ]
+    { field: "id", headerName: "Id" },
+    { field: "ref", headerName: "Consecutivo" },
+    { field: "date", headerName: "Fecha" },
+    { field: "status", headerName: "Estado" },
+    { field: "name", headerName: "Receptor" },
+    { field: "amount", headerName: "Total", type: "number" },
+    { field: "email", headerName: "" },
+    { field: "details", headerName: "" },
+  ];
   return (
     <div className={classes.root}>
       <div className={classes.dataContainer}>
@@ -182,39 +184,45 @@ function DocumentListPage({
           rows={rows}
           rowsCount={listCount}
           rowsPerPage={10}
-          onPageChange={(page) => {
-            getDocumentListByPageNumber(page + 1)
+          onPageChange={page => {
+            getDocumentListByPageNumber(page + 1);
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label='Regresar' onClick={() => setActiveSection(0)} />
+        <Button label="Regresar" onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog onClose={handleDialogClose} open={dialogStatus.open && (dialogStatus.type === 1 || (dialogStatus.type === 2 && details !== ''))}>
+      <Dialog
+        onClose={handleDialogClose}
+        open={dialogStatus.open && (dialogStatus.type === 1 || (dialogStatus.type === 2 && details !== ""))}
+      >
         {dialogContent}
       </Dialog>
     </div>
-  )
+  );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     listPage: state.document.listPage,
     listCount: state.document.listCount,
     list: state.document.list,
-    details: state.document.details
-  }
-}
+    details: state.document.details,
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    getDocumentListFirstPage,
-    getDocumentListByPageNumber,
-    sendNotification,
-    getDocumentDetails,
-    setDocumentDetails,
-    setActiveSection
-  }, dispatch)
-}
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      getDocumentListFirstPage,
+      getDocumentListByPageNumber,
+      sendNotification,
+      getDocumentDetails,
+      setDocumentDetails,
+      setActiveSection,
+    },
+    dispatch
+  );
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentListPage)
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentListPage);

@@ -1,19 +1,19 @@
 export const defaultCustomer = {
   IdCliente: 1,
-  Nombre: 'CLIENTE DE CONTADO',
+  Nombre: "CLIENTE DE CONTADO",
   IdImpuesto: 8,
   AplicaTasaDiferenciada: false,
   IdTipoExoneracion: 1,
-  NumDocExoneracion: '',
-  NombreInstExoneracion: '',
-  FechaEmisionDoc: '01/01/2000',
-  PorcentajeExoneracion: 0
-}
+  NumDocExoneracion: "",
+  NombreInstExoneracion: "",
+  FechaEmisionDoc: "01/01/2000",
+  PorcentajeExoneracion: 0,
+};
 
 export const defaultSession = {
   authenticated: false,
   userId: null,
-  userCode: '',
+  userCode: "",
   companyId: null,
   company: null,
   device: null,
@@ -23,13 +23,13 @@ export const defaultSession = {
   vendorList: [],
   permissions: [],
   printer: null,
-  token: null
-}
+  token: null,
+};
 
 export const defaultInvoice = {
   invoiceId: 0,
   activityCode: 0,
-  description: '',
+  description: "",
   quantity: 1,
   price: 0,
   detailsList: [],
@@ -43,16 +43,16 @@ export const defaultInvoice = {
     impuesto: 0,
     total: 0,
   },
-  comment: '',
-  successful: false
-}
+  comment: "",
+  successful: false,
+};
 
 export const defaultWorkingOrder = {
   order: null,
   activityCode: 0,
   invoiceId: 0,
-  status: 'on-progress',
-  description: '',
+  status: "on-progress",
+  description: "",
   quantity: 1,
   price: 0,
   detailsList: [],
@@ -67,34 +67,34 @@ export const defaultWorkingOrder = {
     total: 0,
   },
   delivery: {
-    phone: '',
-    address: '',
-    description: '',
-    date: '',
-    time: '',
-    details: ''
-  }
-}
+    phone: "",
+    address: "",
+    description: "",
+    date: "",
+    time: "",
+    details: "",
+  },
+};
 
 export const defaultReceipt = {
   receiptId: 0,
   activityCode: 0,
   issuer: {
     idType: 0,
-    id: '',
-    name: '',
-    comercialName: '',
-    address: '',
-    phone: '',
-    email: ''
+    id: "",
+    name: "",
+    comercialName: "",
+    address: "",
+    phone: "",
+    email: "",
   },
   product: {
-    code: '',
-    description: '',
+    code: "",
+    description: "",
     quantity: 1,
     taxType: 8,
-    unit: 'UND',
-    price: 0
+    unit: "UND",
+    price: 0,
   },
   detailsList: [],
   summary: {
@@ -107,10 +107,10 @@ export const defaultReceipt = {
   },
   exoneration: {
     type: 1,
-    ref: '',
-    issuerName: '',
-    date: '01/01/2000',
-    percentage: 0
+    ref: "",
+    issuerName: "",
+    date: "01/01/2000",
+    percentage: 0,
   },
-  successful: false
-}
+  successful: false,
+};

@@ -1,9 +1,9 @@
-import { defaultSession, defaultInvoice, defaultWorkingOrder, defaultReceipt } from 'utils/defaults'
+import { defaultSession, defaultInvoice, defaultWorkingOrder, defaultReceipt } from "utils/defaults";
 
 export const INITIAL_STATE = {
   ui: {
     isLoaderOpen: false,
-    loaderText: '',
+    loaderText: "",
     activeSection: 0,
     cantonList: [],
     distritoList: [],
@@ -11,8 +11,8 @@ export const INITIAL_STATE = {
     rentTypeList: [],
     idTypeList: [],
     exonerationTypeList: [],
-    message: '',
-    messageType: 'ERROR'
+    message: "",
+    messageType: "ERROR",
   },
   session: defaultSession,
   company: {
@@ -23,16 +23,16 @@ export const INITIAL_STATE = {
     credentialsChanged: false,
     reportResults: [],
     reportSummary: {
-      startDate: '01/01/2000',
-      endDate: '01/01/2000'
-    }
+      startDate: "01/01/2000",
+      endDate: "01/01/2000",
+    },
   },
   customer: {
     customer: null,
     listPage: 1,
     listCount: 0,
     list: [],
-    priceTypeList: []
+    priceTypeList: [],
   },
   product: {
     product: null,
@@ -40,10 +40,10 @@ export const INITIAL_STATE = {
     productTypeList: [],
     categoryList: [],
     providerList: [],
-    clasificationList: []
+    clasificationList: [],
   },
   invoice: { ...defaultInvoice, listPage: 1, listCount: 0, list: [] },
   workingOrder: { ...defaultWorkingOrder, listPage: 1, listCount: 0, list: [], servicePointList: [] },
   receipt: defaultReceipt,
-  document: { listPage: 1, listCount: 0, list: [], details: '' }
-}
+  document: { listPage: 1, listCount: 0, list: [], details: "" },
+};

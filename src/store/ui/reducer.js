@@ -9,37 +9,37 @@ import {
   SET_RENT_TYPE_LIST,
   SET_EXONERATION_TYPE_LIST,
   SET_ID_TYPE_LIST,
-} from './types'
+} from "./types";
 
-import { LOGOUT } from 'store/session/types'
+import { LOGOUT } from "store/session/types";
 
 const uiReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case START_LOADER:
-      return { ...state, isLoaderOpen: true, loaderText: payload.text !== undefined ? payload.text : 'Procesando' }
+      return { ...state, isLoaderOpen: true, loaderText: payload.text !== undefined ? payload.text : "Procesando" };
     case STOP_LOADER:
-      return { ...state, isLoaderOpen: false, loaderText: '' }
+      return { ...state, isLoaderOpen: false, loaderText: "" };
     case SET_ACTIVE_SECTION:
-      return { ...state, activeSection: payload.pageId }
+      return { ...state, activeSection: payload.pageId };
     case SET_ERROR_MESSAGE:
-      return { ...state, message: payload.error, messageType: payload.type }
+      return { ...state, message: payload.error, messageType: payload.type };
     case SET_CANTON_LIST:
-      return { ...state, cantonList: payload.list }
+      return { ...state, cantonList: payload.list };
     case SET_DISTRITO_LIST:
-      return { ...state, distritoList: payload.list }
+      return { ...state, distritoList: payload.list };
     case SET_BARRIO_LIST:
-      return { ...state, barrioList: payload.list }
+      return { ...state, barrioList: payload.list };
     case SET_RENT_TYPE_LIST:
-      return { ...state, rentTypeList: payload.list }
+      return { ...state, rentTypeList: payload.list };
     case SET_EXONERATION_TYPE_LIST:
-      return { ...state, exonerationTypeList: payload.list }
+      return { ...state, exonerationTypeList: payload.list };
     case SET_ID_TYPE_LIST:
-      return { ...state, idTypeList: payload.list }
+      return { ...state, idTypeList: payload.list };
     case LOGOUT:
-      return { ...state, activeSection: 0 }
+      return { ...state, activeSection: 0 };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default uiReducer
+export default uiReducer;

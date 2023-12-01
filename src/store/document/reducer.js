@@ -1,23 +1,18 @@
-import {
-  SET_LIST,
-  SET_LIST_COUNT,
-  SET_LIST_PAGE,
-  SET_DETAILS
-} from './types'
+import { SET_LIST, SET_LIST_COUNT, SET_LIST_PAGE, SET_DETAILS } from "./types";
 
 export const documentReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_LIST:
-      return { ...state, list: payload.list }
+      return { ...state, list: payload.list };
     case SET_LIST_COUNT:
-      return { ...state, listCount: payload.count }
+      return { ...state, listCount: payload.count };
     case SET_LIST_PAGE:
-      return { ...state, listPage: payload.page }
+      return { ...state, listPage: payload.page };
     case SET_DETAILS:
-      return { ...state, details: payload.details }
+      return { ...state, details: payload.details };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default documentReducer
+export default documentReducer;

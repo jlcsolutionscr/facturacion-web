@@ -19,23 +19,13 @@ import TextField from "components/text-field";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { ROWS_PER_PRODUCT } from "utils/constants";
 
-import {
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
-  addDetails,
-  removeDetails,
-} from "store/invoice/actions";
+import { getProduct, setDescription, setQuantity, setPrice, addDetails, removeDetails } from "store/invoice/actions";
 
-import {
-  filterProductList,
-  getProductListByPageNumber,
-} from "store/product/actions";
+import { filterProductList, getProductListByPageNumber } from "store/product/actions";
 
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flex: 1,
     overflowY: "auto",
@@ -95,9 +85,8 @@ function StepTwoScreen({
   }, [value]);
   const [filterType, setFilterType] = React.useState(2);
   const [filter, setFilter] = React.useState("");
-  const isPriceChangeEnabled =
-    permissions.filter((role) => [1, 52].includes(role.IdRole)).length > 0;
-  const handleOnFilterChange = (event) => {
+  const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
+  const handleOnFilterChange = event => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -107,7 +96,7 @@ function StepTwoScreen({
     }, 1000);
   };
 
-  const handleItemSelected = (item) => {
+  const handleItemSelected = item => {
     getProduct(item.Id, filterType);
     setFilter("");
   };
@@ -118,22 +107,15 @@ function StepTwoScreen({
     setFilter("");
     filterProductList("", newFilterType);
   };
-  const handlePriceChange = (event) => {
+  const handlePriceChange = event => {
     isPriceChangeEnabled && setPrice(event.target.value);
   };
-  const products = productList.map((item) => ({
+  const products = productList.map(item => ({
     ...item,
-    Descripcion:
-      filterType === 1
-        ? `${item.Codigo} - ${item.Descripcion}`
-        : item.Descripcion,
+    Descripcion: filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion,
   }));
   let buttonEnabled =
-    product !== null &&
-    description !== "" &&
-    quantity !== null &&
-    price !== null &&
-    successful === false;
+    product !== null && description !== "" && quantity !== null && price !== null && successful === false;
   const display = value !== index ? "none" : "flex";
 
   return (
@@ -145,12 +127,7 @@ function StepTwoScreen({
               <FormGroup>
                 <FormControlLabel
                   className={classes.formControl}
-                  control={
-                    <Switch
-                      value={filterType === 1}
-                      onChange={handleFilterTypeChange}
-                    />
-                  }
+                  control={<Switch value={filterType === 1} onChange={handleFilterTypeChange} />}
                   label="Filtrar producto por código"
                 />
               </FormGroup>
@@ -167,9 +144,7 @@ function StepTwoScreen({
                 rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
-                onPageChange={(pageNumber) =>
-                  getProductListByPageNumber(pageNumber + 1, filter, filterType)
-                }
+                onPageChange={pageNumber => getProductListByPageNumber(pageNumber + 1, filter, filterType)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -178,7 +153,7 @@ function StepTwoScreen({
                 label="Descripción"
                 id="Descripcion"
                 value={description}
-                onChange={(event) => setDescription(event.target.value)}
+                onChange={event => setDescription(event.target.value)}
               />
             </Grid>
             <Grid item xs={3}>
@@ -188,7 +163,7 @@ function StepTwoScreen({
                 id="Cantidad"
                 value={quantity}
                 numericFormat
-                onChange={(event) => setQuantity(event.target.value)}
+                onChange={event => setQuantity(event.target.value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -231,10 +206,7 @@ function StepTwoScreen({
                       <TableCell>{row.Cantidad}</TableCell>
                       <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                       <TableCell align="right">
-                        {formatCurrency(
-                          roundNumber(row.Cantidad * row.PrecioVenta, 2),
-                          2
-                        )}
+                        {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
                       </TableCell>
                       <TableCell align="right">
                         <IconButton
@@ -258,7 +230,7 @@ function StepTwoScreen({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     permissions: state.session.permissions,
     description: state.invoice.description,
@@ -273,7 +245,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getProduct,

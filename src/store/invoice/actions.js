@@ -1,4 +1,4 @@
-import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from 'utils/constants'
+import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import {
   SET_DESCRIPTION,
   SET_QUANTITY,
@@ -13,20 +13,21 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET_INVOICE
-} from './types'
+  RESET_INVOICE,
+} from "./types";
 
+import { startLoader, stopLoader, setMessage, setActiveSection } from "store/ui/actions";
+
+import { setCompany } from "store/company/actions";
+import { setPrinter, setVendorList } from "store/session/actions";
+import { setCustomer, setCustomerListPage, setCustomerListCount, setCustomerList } from "store/customer/actions";
 import {
-  startLoader,
-  stopLoader,
-  setMessage,
-  setActiveSection
-} from 'store/ui/actions'
-
-import { setCompany } from 'store/company/actions'
-import { setPrinter, setVendorList } from 'store/session/actions'
-import { setCustomer, setCustomerListPage, setCustomerListCount, setCustomerList } from 'store/customer/actions'
-import { setProduct, filterProductList, setProductListPage, setProductListCount, setProductList } from 'store/product/actions'
+  setProduct,
+  filterProductList,
+  setProductListPage,
+  setProductListCount,
+  setProductList,
+} from "store/product/actions";
 
 import {
   getCompanyEntity,
@@ -43,189 +44,188 @@ import {
   getProcessedInvoiceListPerPage,
   revokeInvoiceEntity,
   generateInvoicePDF,
-  getInvoiceEntity
-} from 'utils/domainHelper'
+  getInvoiceEntity,
+} from "utils/domainHelper";
 
-import { defaultCustomer } from 'utils/defaults'
-import { printInvoice, getDeviceFromUsb } from 'utils/printing'
-import { getTaxeRateFromId } from 'utils/utilities'
+import { defaultCustomer } from "utils/defaults";
+import { printInvoice, getDeviceFromUsb } from "utils/printing";
+import { getTaxeRateFromId } from "utils/utilities";
 
-export const setDescription = (description) => {
+export const setDescription = description => {
   return {
     type: SET_DESCRIPTION,
-    payload: { description }
-  }
-}
+    payload: { description },
+  };
+};
 
-export const setQuantity = (quantity) => {
+export const setQuantity = quantity => {
   return {
     type: SET_QUANTITY,
-    payload: { quantity }
-  }
-}
+    payload: { quantity },
+  };
+};
 
-export const setPrice = (price) => {
+export const setPrice = price => {
   return {
     type: SET_PRICE,
-    payload: { price }
-  }
-}
+    payload: { price },
+  };
+};
 
-export const setDetailsList = (details) => {
+export const setDetailsList = details => {
   return {
     type: SET_DETAILS_LIST,
-    payload: { details }
-  }
-}
+    payload: { details },
+  };
+};
 
-export const setSummary = (summary) => {
+export const setSummary = summary => {
   return {
     type: SET_SUMMARY,
-    payload: { summary }
-  }
-}
+    payload: { summary },
+  };
+};
 
-export const setActivityCode = (code) => {
+export const setActivityCode = code => {
   return {
     type: SET_ACTIVITY_CODE,
-    payload: { code }
-  }
-}
+    payload: { code },
+  };
+};
 
-export const setPaymentId = (id) => {
+export const setPaymentId = id => {
   return {
     type: SET_PAYMENT_ID,
-    payload: { id }
-  }
-}
+    payload: { id },
+  };
+};
 
-export const setVendorId = (id) => {
+export const setVendorId = id => {
   return {
     type: SET_VENDOR_ID,
-    payload: { id }
-  }
-}
+    payload: { id },
+  };
+};
 
-export const setComment = (comment) => {
+export const setComment = comment => {
   return {
     type: SET_COMMENT,
-    payload: { comment }
-  }
-}
+    payload: { comment },
+  };
+};
 
 export const setSuccessful = (id, success) => {
   return {
     type: SET_SUCCESSFUL,
-    payload: { id, success }
-  }
-}
+    payload: { id, success },
+  };
+};
 
-export const setInvoiceListPage = (page) => {
+export const setInvoiceListPage = page => {
   return {
     type: SET_LIST_PAGE,
-    payload: { page }
-  }
-}
+    payload: { page },
+  };
+};
 
-export const setInvoiceListCount = (count) => {
+export const setInvoiceListCount = count => {
   return {
     type: SET_LIST_COUNT,
-    payload: { count }
-  }
-}
+    payload: { count },
+  };
+};
 
-export const setInvoiceList = (list) => {
+export const setInvoiceList = list => {
   return {
     type: SET_LIST,
-    payload: { list }
-  }
-}
+    payload: { list },
+  };
+};
 
 export const resetInvoice = () => {
   return {
-    type: RESET_INVOICE
-  }
-}
+    type: RESET_INVOICE,
+  };
+};
 
-
-
-export function setInvoiceParameters (id) {
+export function setInvoiceParameters(id) {
   return async (dispatch, getState) => {
-    const { companyId, branchId, token } = getState().session
-    const { company } = getState().company
-    dispatch(startLoader())
+    const { companyId, branchId, token } = getState().session;
+    const { company } = getState().company;
+    dispatch(startLoader());
     try {
-      const customerCount = await getCustomerListCount(token, companyId, '')
-      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, '')
-      const productCount = await getProductListCount(token, companyId, branchId, true, '', 1)
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, '', 1)
-      const vendorList = await getVendorList(token, companyId)
-      dispatch(setVendorList(vendorList))
-      let companyEntity = company
+      const customerCount = await getCustomerListCount(token, companyId, "");
+      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
+      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
+      const vendorList = await getVendorList(token, companyId);
+      dispatch(setVendorList(vendorList));
+      let companyEntity = company;
       if (companyEntity === null) {
-        companyEntity = await getCompanyEntity(token, companyId)
-        dispatch(setCompany(companyEntity))
+        companyEntity = await getCompanyEntity(token, companyId);
+        dispatch(setCompany(companyEntity));
       }
-      dispatch(resetInvoice())
-      dispatch(setCustomer(defaultCustomer))
-      dispatch(setVendorId(vendorList[0].Id))
-      dispatch(setCustomerListPage(1))
-      dispatch(setCustomerListCount(customerCount))
-      dispatch(setCustomerList(customerList))
-      dispatch(setProductListPage(1))
-      dispatch(setProductListCount(productCount))
-      dispatch(setProductList(productList))
-      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad))
-      dispatch(setActiveSection(id))
-      dispatch(stopLoader())
+      dispatch(resetInvoice());
+      dispatch(setCustomer(defaultCustomer));
+      dispatch(setVendorId(vendorList[0].Id));
+      dispatch(setCustomerListPage(1));
+      dispatch(setCustomerListCount(customerCount));
+      dispatch(setCustomerList(customerList));
+      dispatch(setProductListPage(1));
+      dispatch(setProductListCount(productCount));
+      dispatch(setProductList(productList));
+      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad));
+      dispatch(setActiveSection(id));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }
 
-export function getProduct (idProduct, filterType) {
+export function getProduct(idProduct, filterType) {
   return async (dispatch, getState) => {
-    const { token } = getState().session
-    const { company } = getState().company
-    const { customer } = getState().customer
-    const { rentTypeList } = getState().ui
-    dispatch(startLoader())
+    const { token } = getState().session;
+    const { company } = getState().company;
+    const { customer } = getState().customer;
+    const { rentTypeList } = getState().ui;
+    dispatch(startLoader());
     try {
-      const product = await getProductEntity(token, idProduct, 1)
-      let price = product.PrecioVenta1
-      if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList)
-      dispatch(filterProductList('', filterType))
-      dispatch(setDescription(product.Descripcion))
-      dispatch(setQuantity(1))
-      dispatch(setPrice(price))
-      dispatch(setProduct(product))
-      dispatch(stopLoader())
+      const product = await getProductEntity(token, idProduct, 1);
+      let price = product.PrecioVenta1;
+      if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList);
+      dispatch(filterProductList("", filterType));
+      dispatch(setDescription(product.Descripcion));
+      dispatch(setQuantity(1));
+      dispatch(setPrice(price));
+      dispatch(setProduct(product));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setDescription(''))
-      dispatch(setQuantity(1))
-      dispatch(setPrice(0))
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setDescription(""));
+      dispatch(setQuantity(1));
+      dispatch(setPrice(0));
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }
 
-export function addDetails () {
+export function addDetails() {
   return async (dispatch, getState) => {
-    const { rentTypeList } = getState().ui
-    const { company } = getState().company
-    const { customer } = getState().customer
-    const { product } = getState().product
-    const { detailsList, description, quantity, price } = getState().invoice
+    const { rentTypeList } = getState().ui;
+    const { company } = getState().company;
+    const { customer } = getState().customer;
+    const { product } = getState().product;
+    const { detailsList, description, quantity, price } = getState().invoice;
     try {
-      if (product != null && description !== '' && quantity > 0 &&  price > 0) {
-        let newProducts = null
-        let tasaIva = getTaxeRateFromId(rentTypeList, product.IdImpuesto)
-        if (tasaIva > 0 && customer.AplicaTasaDiferenciada) tasaIva = getTaxeRateFromId(rentTypeList, customer.IdImpuesto)
-        let finalPrice = price
-        if (!company.PrecioVentaIncluyeIVA && tasaIva > 0) finalPrice = price * (1 + (tasaIva / 100))
+      if (product != null && description !== "" && quantity > 0 && price > 0) {
+        let newProducts = null;
+        let tasaIva = getTaxeRateFromId(rentTypeList, product.IdImpuesto);
+        if (tasaIva > 0 && customer.AplicaTasaDiferenciada)
+          tasaIva = getTaxeRateFromId(rentTypeList, customer.IdImpuesto);
+        let finalPrice = price;
+        if (!company.PrecioVentaIncluyeIVA && tasaIva > 0) finalPrice = price * (1 + tasaIva / 100);
         const item = {
           IdProducto: product.IdProducto,
           Codigo: product.Codigo,
@@ -235,48 +235,52 @@ export function addDetails () {
           Excento: tasaIva === 0,
           PrecioCosto: product.PrecioCosto,
           CostoInstalacion: 0,
-          PorcentajeIVA: tasaIva
-        }
-        const index = detailsList.findIndex(item => item.IdProducto === product.IdProducto)
+          PorcentajeIVA: tasaIva,
+        };
+        const index = detailsList.findIndex(item => item.IdProducto === product.IdProducto);
         if (index >= 0) {
-          newProducts = [...detailsList.slice(0, index), { ...item, Cantidad: item.Cantidad + detailsList[index].Cantidad }, ...detailsList.slice(index + 1)]
+          newProducts = [
+            ...detailsList.slice(0, index),
+            { ...item, Cantidad: item.Cantidad + detailsList[index].Cantidad },
+            ...detailsList.slice(index + 1),
+          ];
         } else {
-          newProducts = [...detailsList, item]
+          newProducts = [...detailsList, item];
         }
-        dispatch(setDetailsList(newProducts))
-        const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
-        dispatch(setSummary(summary))
-        dispatch(setProduct(null))
-        dispatch(setDescription(''))
-        dispatch(setQuantity(1))
-        dispatch(setPrice(0))
+        dispatch(setDetailsList(newProducts));
+        const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion);
+        dispatch(setSummary(summary));
+        dispatch(setProduct(null));
+        dispatch(setDescription(""));
+        dispatch(setQuantity(1));
+        dispatch(setPrice(0));
       }
     } catch (error) {
-      const message = error.message ? error.message : error
-      dispatch(setMessage(message))
+      const message = error.message ? error.message : error;
+      dispatch(setMessage(message));
     }
-  }
+  };
 }
 
-export const removeDetails = (id) => {
+export const removeDetails = id => {
   return (dispatch, getState) => {
-    const { customer } = getState().customer
-    const { detailsList } = getState().invoice
-    const index = detailsList.findIndex(item => item.IdProducto === id)
-    const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)]
-    dispatch(setDetailsList(newProducts))
-    const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion)
-    dispatch(setSummary(summary))
-  }
-}
+    const { customer } = getState().customer;
+    const { detailsList } = getState().invoice;
+    const index = detailsList.findIndex(item => item.IdProducto === id);
+    const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)];
+    dispatch(setDetailsList(newProducts));
+    const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion);
+    dispatch(setSummary(summary));
+  };
+};
 
 export const saveInvoice = () => {
   return async (dispatch, getState) => {
-    const { token, userId, branchId } = getState().session
-    const { company } = getState().company
-    const { customer } = getState().customer
-    const { activityCode, paymentId, vendorId, detailsList, summary, comment } = getState().invoice
-    dispatch(startLoader())
+    const { token, userId, branchId } = getState().session;
+    const { company } = getState().company;
+    const { customer } = getState().customer;
+    const { activityCode, paymentId, vendorId, detailsList, summary, comment } = getState().invoice;
+    dispatch(startLoader());
     try {
       const invoiceId = await saveInvoiceEntity(
         token,
@@ -292,109 +296,102 @@ export const saveInvoice = () => {
         customer,
         summary,
         comment
-      )
-      dispatch(setSuccessful(invoiceId, true))
-      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
-      dispatch(stopLoader())
+      );
+      dispatch(setSuccessful(invoiceId, true));
+      dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setMessage(error.message));
     }
-  }
-}
+  };
+};
 
-export const getInvoiceListFirstPage = (id) => {
+export const getInvoiceListFirstPage = id => {
   return async (dispatch, getState) => {
-    const { token, companyId, branchId } = getState().session
-    dispatch(startLoader())
+    const { token, companyId, branchId } = getState().session;
+    dispatch(startLoader());
     try {
-      dispatch(setInvoiceListPage(1))
-      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId)
-      dispatch(setInvoiceListCount(recordCount))
+      dispatch(setInvoiceListPage(1));
+      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
+      dispatch(setInvoiceListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10)
-        dispatch(setInvoiceList(newList))
+        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10);
+        dispatch(setInvoiceList(newList));
       } else {
-        dispatch(setInvoiceList([]))
+        dispatch(setInvoiceList([]));
       }
-      if (id) dispatch(setActiveSection(id))
-      dispatch(stopLoader())
+      if (id) dispatch(setActiveSection(id));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};
 
-export const getInvoiceListByPageNumber = (pageNumber) => {
+export const getInvoiceListByPageNumber = pageNumber => {
   return async (dispatch, getState) => {
-    const { token, companyId, branchId } = getState().session
-    dispatch(startLoader())
+    const { token, companyId, branchId } = getState().session;
+    dispatch(startLoader());
     try {
-      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, pageNumber, 10)
-      dispatch(setInvoiceListPage(pageNumber))
-      dispatch(setInvoiceList(newList))
-      dispatch(stopLoader())
+      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, pageNumber, 10);
+      dispatch(setInvoiceListPage(pageNumber));
+      dispatch(setInvoiceList(newList));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};
 
-export const revokeInvoice = (idInvoice) => {
+export const revokeInvoice = idInvoice => {
   return async (dispatch, getState) => {
-    const { token, userId } = getState().session
-    dispatch(startLoader())
+    const { token, userId } = getState().session;
+    dispatch(startLoader());
     try {
-      await revokeInvoiceEntity(token, idInvoice, userId)
-      dispatch(getInvoiceListFirstPage(null))
-      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
+      await revokeInvoiceEntity(token, idInvoice, userId);
+      dispatch(getInvoiceListFirstPage(null));
+      dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};
 
 export const generatePDF = (idInvoice, ref) => {
   return async (dispatch, getState) => {
-    const { token } = getState().session
-    dispatch(startLoader())
+    const { token } = getState().session;
+    dispatch(startLoader());
     try {
-      await generateInvoicePDF(token, idInvoice, ref)
-      dispatch(stopLoader())
+      await generateInvoicePDF(token, idInvoice, ref);
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};
 
-export const generateInvoiceTicket = (idInvoice) => {
+export const generateInvoiceTicket = idInvoice => {
   return async (dispatch, getState) => {
-    const { token, printer, userCode, device, branchList, branchId } = getState().session
-    const { company } = getState().company
-    dispatch(startLoader())
+    const { token, printer, userCode, device, branchList, branchId } = getState().session;
+    const { company } = getState().company;
+    dispatch(startLoader());
     try {
-      const invoice = await getInvoiceEntity(token, idInvoice)
-      const branchName = branchList.find(x => x.Id === branchId).Descripcion
-      let localPrinter = await getDeviceFromUsb(printer)
-      if (localPrinter !== printer) dispatch(setPrinter(localPrinter))
+      const invoice = await getInvoiceEntity(token, idInvoice);
+      const branchName = branchList.find(x => x.Id === branchId).Descripcion;
+      let localPrinter = await getDeviceFromUsb(printer);
+      if (localPrinter !== printer) dispatch(setPrinter(localPrinter));
       if (localPrinter) {
-        printInvoice(
-          localPrinter,
-          userCode,
-          company,
-          invoice,
-          branchName,
-          device.AnchoLinea
-        )
+        printInvoice(localPrinter, userCode, company, invoice, branchName, device.AnchoLinea);
       }
-      dispatch(stopLoader())
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};

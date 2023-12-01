@@ -1,21 +1,28 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Button as MuiButton } from '@material-ui/core'
+import { Button as MuiButton } from "@material-ui/core";
 
-import { createStyle } from './styles'
+import { createStyle } from "./styles";
 
-export default function Button({disabled, style, negative, autoFocus, label, onClick}) {
-  const classes = createStyle()
-  let styles = {}
-  if (negative) styles = {backgroundColor: '#505050'}
+export default function Button({ disabled, style, negative, autoFocus, label, onClick }) {
+  const classes = createStyle();
+  let styles = {};
+  if (negative) styles = { backgroundColor: "#505050" };
   return (
     <div style={style}>
-      <MuiButton variant='contained' disabled={disabled} style={styles} className={classes.button} autoFocus={autoFocus} onClick={onClick}>
+      <MuiButton
+        variant="contained"
+        disabled={disabled}
+        style={styles}
+        className={classes.button}
+        autoFocus={autoFocus}
+        onClick={onClick}
+      >
         {label}
       </MuiButton>
     </div>
-  )
+  );
 }
 
 Button.propTypes = {
@@ -24,5 +31,5 @@ Button.propTypes = {
   autoFocus: PropTypes.bool,
   onClick: PropTypes.func,
   style: PropTypes.object,
-  disabled: PropTypes.bool
-}
+  disabled: PropTypes.bool,
+};

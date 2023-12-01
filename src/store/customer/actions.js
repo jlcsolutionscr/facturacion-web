@@ -1,223 +1,224 @@
-import { ROWS_PER_CUSTOMER } from 'utils/constants'
+import { ROWS_PER_CUSTOMER } from "utils/constants";
 import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
   SET_CUSTOMER,
   SET_PRICE_TYPE_LIST,
-  SET_CUSTOMER_ATTRIBUTE
-} from './types'
+  SET_CUSTOMER_ATTRIBUTE,
+} from "./types";
 
-import {
-  startLoader,
-  stopLoader,
-  setActiveSection,
-  setMessage
-} from 'store/ui/actions'
+import { startLoader, stopLoader, setActiveSection, setMessage } from "store/ui/actions";
 
 import {
   getCustomerListCount,
   getCustomerListPerPage,
   getCustomerEntity,
   getCustomerByIdentifier,
-  saveCustomerEntity
-} from 'utils/domainHelper'
+  saveCustomerEntity,
+} from "utils/domainHelper";
 
-export const setCustomerListPage = (page) => {
+export const setCustomerListPage = page => {
   return {
     type: SET_LIST_PAGE,
-    payload: { page }
-  }
-}
+    payload: { page },
+  };
+};
 
-export const setCustomerListCount = (count) => {
+export const setCustomerListCount = count => {
   return {
     type: SET_LIST_COUNT,
-    payload: { count }
-  }
-}
+    payload: { count },
+  };
+};
 
-export const setCustomerList = (list) => {
+export const setCustomerList = list => {
   return {
     type: SET_LIST,
-    payload: { list }
-  }
-}
+    payload: { list },
+  };
+};
 
-export const setCustomer = (customer) => {
+export const setCustomer = customer => {
   return {
     type: SET_CUSTOMER,
-    payload: { customer }
-  }
-}
+    payload: { customer },
+  };
+};
 
-export const setPriceTypeList = (list) => {
+export const setPriceTypeList = list => {
   return {
     type: SET_PRICE_TYPE_LIST,
-    payload: { list }
-  }
-}
+    payload: { list },
+  };
+};
 
 export const setCustomerAttribute = (attribute, value) => {
   return {
     type: SET_CUSTOMER_ATTRIBUTE,
-    payload: { attribute, value }
-  }
-}
+    payload: { attribute, value },
+  };
+};
 
 export const getCustomerListFirstPage = (id, filter, rowsPerPage) => {
   return async (dispatch, getState) => {
-    const { token, companyId } = getState().session
-    dispatch(startLoader())
+    const { token, companyId } = getState().session;
+    dispatch(startLoader());
     try {
-      dispatch(setCustomerListPage(1))
-      const recordCount = await getCustomerListCount(token, companyId, filter)
-      dispatch(setCustomerListCount(recordCount))
+      dispatch(setCustomerListPage(1));
+      const recordCount = await getCustomerListCount(token, companyId, filter);
+      dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(token, companyId, 1, rowsPerPage ?? ROWS_PER_CUSTOMER, filter)
-        dispatch(setCustomerList(newList))
+        const newList = await getCustomerListPerPage(token, companyId, 1, rowsPerPage ?? ROWS_PER_CUSTOMER, filter);
+        dispatch(setCustomerList(newList));
       } else {
-        dispatch(setCustomerList([]))
+        dispatch(setCustomerList([]));
       }
-      if (id) dispatch(setActiveSection(id))
-      dispatch(stopLoader())
+      if (id) dispatch(setActiveSection(id));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};
 
 export const getCustomerListByPageNumber = (pageNumber, filter, rowsPerPage) => {
   return async (dispatch, getState) => {
-    const { token, companyId } = getState().session
-    dispatch(startLoader())
+    const { token, companyId } = getState().session;
+    dispatch(startLoader());
     try {
-      const newList = await getCustomerListPerPage(token, companyId, pageNumber, rowsPerPage ?? ROWS_PER_CUSTOMER, filter)
-      dispatch(setCustomerListPage(pageNumber))
-      dispatch(setCustomerList(newList))
-      dispatch(stopLoader())
+      const newList = await getCustomerListPerPage(
+        token,
+        companyId,
+        pageNumber,
+        rowsPerPage ?? ROWS_PER_CUSTOMER,
+        filter
+      );
+      dispatch(setCustomerListPage(pageNumber));
+      dispatch(setCustomerList(newList));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage(error.message))
-      dispatch(stopLoader())
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
     }
-  }
-}
+  };
+};
 
-export function openCustomer (idCustomer) {
+export function openCustomer(idCustomer) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
-    dispatch(startLoader())
+    const { companyId, token } = getState().session;
+    dispatch(startLoader());
     try {
-      let customer
+      let customer;
       if (idCustomer) {
-        customer = await getCustomerEntity(token, idCustomer)
+        customer = await getCustomerEntity(token, idCustomer);
       } else {
         customer = {
           IdCliente: 0,
           IdEmpresa: companyId,
           IdTipoIdentificacion: 0,
-          Identificacion: '',
-          Nombre: '',
-          NombreComercial: '',
-          Direccion: '',
-          Telefono: '',
-          Fax: '',
-          CorreoElectronico: '',
+          Identificacion: "",
+          Nombre: "",
+          NombreComercial: "",
+          Direccion: "",
+          Telefono: "",
+          Fax: "",
+          CorreoElectronico: "",
           IdTipoPrecio: 1,
           AplicaTasaDiferenciada: false,
           IdImpuesto: 8,
           IdTipoExoneracion: 1,
-          NumDocExoneracion: '',
-          NombreInstExoneracion: '',
-          FechaEmisionDoc: '01/01/2000',
-          PorcentajeExoneracion: 0
-        }
+          NumDocExoneracion: "",
+          NombreInstExoneracion: "",
+          FechaEmisionDoc: "01/01/2000",
+          PorcentajeExoneracion: 0,
+        };
       }
-      dispatch(setCustomer(customer))
-      dispatch(setActiveSection(22))
-      dispatch(stopLoader())
+      dispatch(setCustomer(customer));
+      dispatch(setActiveSection(22));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }
 
-export function validateCustomerIdentifier (identifier) {
+export function validateCustomerIdentifier(identifier) {
   return async (dispatch, getState) => {
-    const { token, companyId } = getState().session
-    dispatch(startLoader())
+    const { token, companyId } = getState().session;
+    dispatch(startLoader());
     try {
-      const customer = await getCustomerByIdentifier(token, companyId, identifier)
+      const customer = await getCustomerByIdentifier(token, companyId, identifier);
       if (customer) {
         if (customer.IdCliente > 0) {
-          dispatch(setMessage('Ya existe un cliente con la identificación ingresada'))
+          dispatch(setMessage("Ya existe un cliente con la identificación ingresada"));
         } else {
-          dispatch(setCustomerAttribute('Nombre', customer.Nombre))
+          dispatch(setCustomerAttribute("Nombre", customer.Nombre));
         }
       } else {
-        dispatch(setCustomerAttribute('Nombre', ''))
+        dispatch(setCustomerAttribute("Nombre", ""));
       }
-      dispatch(stopLoader())
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setCustomerAttribute('Nombre', ''))
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setCustomerAttribute("Nombre", ""));
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }
 
-export function saveCustomer () {
+export function saveCustomer() {
   return async (dispatch, getState) => {
-    const { token } = getState().session
-    const { customer } = getState().customer
-    dispatch(startLoader())
+    const { token } = getState().session;
+    const { customer } = getState().customer;
+    dispatch(startLoader());
     try {
-      await saveCustomerEntity(token, customer)
-      dispatch(setMessage('Transacción completada satisfactoriamente', 'INFO'))
-      dispatch(stopLoader())
+      await saveCustomerEntity(token, customer);
+      dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }
 
-export function getCustomer (idCustomer) {
+export function getCustomer(idCustomer) {
   return async (dispatch, getState) => {
-    const { token } = getState().session
-    dispatch(startLoader())
+    const { token } = getState().session;
+    dispatch(startLoader());
     try {
-      const customer = await getCustomerEntity(token, idCustomer)
-      dispatch(filterCustomerList(''))
-      dispatch(setCustomer(customer))
-      dispatch(stopLoader())
+      const customer = await getCustomerEntity(token, idCustomer);
+      dispatch(filterCustomerList(""));
+      dispatch(setCustomer(customer));
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }
 
-export function filterCustomerList (filter, rowsPerPage) {
+export function filterCustomerList(filter, rowsPerPage) {
   return async (dispatch, getState) => {
-    const { companyId, token } = getState().session
-    dispatch(startLoader())
+    const { companyId, token } = getState().session;
+    dispatch(startLoader());
     try {
-      dispatch(setCustomerListPage(1))
-      const recordCount = await getCustomerListCount(token, companyId, filter)
-      dispatch(setCustomerListCount(recordCount))
+      dispatch(setCustomerListPage(1));
+      const recordCount = await getCustomerListCount(token, companyId, filter);
+      dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(token, companyId, 1, rowsPerPage ?? ROWS_PER_CUSTOMER, filter)
-        dispatch(setCustomerList(newList))
+        const newList = await getCustomerListPerPage(token, companyId, 1, rowsPerPage ?? ROWS_PER_CUSTOMER, filter);
+        dispatch(setCustomerList(newList));
       } else {
-        dispatch(setCustomerList([]))
+        dispatch(setCustomerList([]));
       }
-      dispatch(stopLoader())
+      dispatch(stopLoader());
     } catch (error) {
-      dispatch(stopLoader())
-      dispatch(setMessage(error.message))
+      dispatch(stopLoader());
+      dispatch(setMessage(error.message));
     }
-  }
+  };
 }

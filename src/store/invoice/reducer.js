@@ -12,50 +12,50 @@ import {
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
-  RESET_INVOICE
-} from './types'
+  RESET_INVOICE,
+} from "./types";
 
-import { defaultInvoice } from 'utils/defaults'
+import { defaultInvoice } from "utils/defaults";
 
-import { LOGOUT } from 'store/session/types'
+import { LOGOUT } from "store/session/types";
 
 const invoiceReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_DESCRIPTION:
-      return { ...state, description: payload.description }
+      return { ...state, description: payload.description };
     case SET_QUANTITY:
-      return { ...state, quantity: payload.quantity }
+      return { ...state, quantity: payload.quantity };
     case SET_PRICE:
-      return { ...state, price: payload.price }
+      return { ...state, price: payload.price };
     case SET_DETAILS_LIST:
-      return { ...state, detailsList: payload.details }
+      return { ...state, detailsList: payload.details };
     case SET_SUMMARY:
-      return { ...state, summary: payload.summary }
+      return { ...state, summary: payload.summary };
     case SET_ACTIVITY_CODE:
-      return { ...state, activityCode: payload.code }
+      return { ...state, activityCode: payload.code };
     case SET_PAYMENT_ID:
-      return { ...state, paymentId: payload.id }
+      return { ...state, paymentId: payload.id };
     case SET_VENDOR_ID:
-      return { ...state, vendorId: payload.id }
+      return { ...state, vendorId: payload.id };
     case SET_COMMENT:
-      return { ...state, comment: payload.comment }
+      return { ...state, comment: payload.comment };
     case SET_SUCCESSFUL:
-      return { ...state, invoiceId: payload.id, successful: payload.success }
+      return { ...state, invoiceId: payload.id, successful: payload.success };
     case SET_LIST_PAGE:
-      return { ...state, listPage: payload.page }
+      return { ...state, listPage: payload.page };
     case SET_LIST_COUNT:
-      return { ...state, listCount: payload.count }
+      return { ...state, listCount: payload.count };
     case SET_LIST:
-      return { ...state, list: payload.list }
+      return { ...state, list: payload.list };
     case LOGOUT:
     case RESET_INVOICE:
       return {
         ...defaultInvoice,
-        activityCode: state.activityCode
-      }
+        activityCode: state.activityCode,
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default invoiceReducer
+export default invoiceReducer;
