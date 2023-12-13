@@ -1,5 +1,6 @@
 import {
   SET_COMPANY,
+  SET_COMPANY_LOGO,
   SET_COMPANY_ATTRIBUTE,
   SET_CREDENTIALS,
   SET_ECONOMIC_ACTIVITY_LIST,
@@ -31,6 +32,7 @@ import {
   validateCertificate,
   saveCredentialsEntity,
   updateCredentialsEntity,
+  getCompanyLogo,
   saveCompanyLogo,
   getReportData,
   sendReportEmail,
@@ -42,6 +44,13 @@ export const setCompany = company => {
   return {
     type: SET_COMPANY,
     payload: { company },
+  };
+};
+
+export const setCompanyLogo = image => {
+  return {
+    type: SET_COMPANY_LOGO,
+    payload: { image },
   };
 };
 
@@ -166,6 +175,21 @@ export function saveLogo(logo) {
         await saveCompanyLogo(token, companyId, logo);
       }
       dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage(error.message));
+      dispatch(stopLoader());
+    }
+  };
+}
+
+export function getLogo() {
+  return async (dispatch, getState) => {
+    const { companyId, token } = getState().session;
+    dispatch(startLoader());
+    try {
+      const logo = await getCompanyLogo(token, companyId);
+      dispatch(setCompanyLogo(logo));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage(error.message));

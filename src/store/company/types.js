@@ -1,4 +1,5 @@
 export const SET_COMPANY = "company/SET_COMPANY";
+export const SET_COMPANY_LOGO = "company/SET_COMPANY_LOGO";
 export const SET_ECONOMIC_ACTIVITY_LIST = "company/SET_ECONOMIC_ACTIVITY_LIST";
 export const SET_CREDENTIALS = "company/SET_CREDENTIALS";
 export const SET_COMPANY_ATTRIBUTE = "company/SET_COMPANY_ATTRIBUTE";

@@ -31,6 +31,12 @@ export async function saveCompanyEntity(token, entity) {
   await post(APP_URL + "/ejecutar", token, data);
 }
 
+export async function getCompanyLogo(token, companyId) {
+  const data = "{NombreMetodo: 'ObtenerLogotipoEmpresa', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return response;
+}
+
 export async function saveCompanyLogo(token, companyId, strLogo) {
   const data =
     "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + companyId + ", Logotipo: '" + strLogo + "'}}";

@@ -1,5 +1,6 @@
 import {
   SET_COMPANY,
+  SET_COMPANY_LOGO,
   SET_CREDENTIALS,
   SET_ECONOMIC_ACTIVITY_LIST,
   SET_COMPANY_ATTRIBUTE,
@@ -13,6 +14,8 @@ const companyReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_COMPANY:
       return { ...state, company: payload.company };
+    case SET_COMPANY_LOGO:
+      return { ...state, logo: payload.image };
     case SET_CREDENTIALS:
       return {
         ...state,
