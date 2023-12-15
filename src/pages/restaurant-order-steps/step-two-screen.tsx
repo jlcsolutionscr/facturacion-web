@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 
 import {
   setActivityCode,
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     overflowY: "auto",
     padding: "2%",
-    backgroundColor: theme.palette.background.pages,
+    backgroundColor: theme.palette.custom.pagesBackground,
   },
   summary: {
     flexDirection: "column",

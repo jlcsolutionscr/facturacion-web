@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 import UAParser from "ua-parser-js";
 
 import { setActiveSection, setMessage } from "store/ui/actions";
@@ -25,7 +25,7 @@ import ReportLayout from "components/report-layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.pages,
+    backgroundColor: theme.palette.custom.pagesBackground,
     overflow: "hidden",
     margin: "20px auto auto auto",
     "@media screen and (max-width:960px)": {

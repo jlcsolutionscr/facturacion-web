@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
@@ -44,7 +44,7 @@ import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.pages,
+    backgroundColor: theme.palette.custom.pagesBackground,
     overflow: "auto",
     margin: "20px auto auto auto",
     padding: "20px",

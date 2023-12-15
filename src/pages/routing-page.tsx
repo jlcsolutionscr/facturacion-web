@@ -18,33 +18,31 @@ import HomePage from "pages/home-page";
 import { darkTheme, lightTheme } from "utils/muiThemeProvider";
 import { ErrorIcon, InfoIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles<{ isDarkMode: boolean }>()(
-  (_theme, { isDarkMode }) => ({
-    container: {
-      display: "flex",
-    },
-    snackbarMessage: {
-      width: "100%",
-    },
-    snackbarError: {
-      backgroundColor: isDarkMode ? "#b23c17" : "#ab003c",
-    },
-    snackbarInfo: {
-      backgroundColor: isDarkMode ? "#2196f3" : "#1c54b2",
-    },
-    message: {
-      color: "#FFF",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    icon: {
-      width: "32px",
-      height: "32px",
-      opacity: 0.9,
-    },
-  })
-);
+const useStyles = makeStyles()((theme) => ({
+  container: {
+    display: "flex",
+  },
+  snackbarMessage: {
+    width: "100%",
+  },
+  snackbarError: {
+    backgroundColor: theme.palette.mode === "dark" ? "#b23c17" : "#ab003c",
+  },
+  snackbarInfo: {
+    backgroundColor: theme.palette.mode === "dark" ? "#2196f3" : "#1c54b2",
+  },
+  message: {
+    color: "#FFF",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  icon: {
+    width: "32px",
+    height: "32px",
+    opacity: 0.9,
+  },
+}));
 
 function RoutingPage() {
   const dispatch = useDispatch();
@@ -55,7 +53,7 @@ function RoutingPage() {
   const { message, messageType } = useSelector(getMessage);
 
   const [isDarkMode, setDarkMode] = React.useState(false);
-  const { classes } = useStyles({ isDarkMode });
+  const { classes } = useStyles();
   const width = size.width > 320 ? size.width : 320;
   const component = !authenticated ? (
     <LoginPage

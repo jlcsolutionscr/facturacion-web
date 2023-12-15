@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 
 import { setActiveSection } from "store/ui/actions";
 
@@ -14,18 +14,18 @@ import StepOneScreen from "./invoice-steps/step-one-screen";
 import StepTwoScreen from "./invoice-steps/step-two-screen";
 import StepThreeScreen from "./invoice-steps/step-three-screen";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     display: "flex",
     flexDirection: "column",
     flex: 1,
     overflow: "hidden",
-    backgroundColor: theme.palette.background.navbar,
+    backgroundColor: theme.palette.custom.navbarBackground,
     maxWidth: "900px",
     margin: "10px auto 0 auto",
   },
   tabs: {
-    color: theme.palette.primary.navbar,
+    color: "#FFF",
   },
   backButton: {
     position: "absolute",

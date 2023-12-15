@@ -1,7 +1,6 @@
-import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 
 import { setActiveSection } from "store/ui/actions";
 import { getCompany } from "state/company/asyncActions";
@@ -24,13 +23,14 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     maxWidth: "640px",
     margin: "20px auto auto auto",
   },
   branches: {
-    backgroundColor: theme.palette.background.branchPicker,
+    backgroundColor:
+      theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "transparent",
     borderRadius: theme.shape.borderRadius,
     padding: "5px 0 5px 0",
     "@media screen and (max-width:600px)": {
@@ -61,14 +61,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "25px",
     width: "270px",
     padding: "13px",
-    backgroundColor: theme.palette.background.button,
+    backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     color: "rgba(255,255,255,0.85)",
     borderRadius: "25px",
     border: "1px solid #FFFFFF",
     boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
     "&:hover": {
       color: "#FFF",
-      backgroundColor: theme.palette.background.hoveredButton,
+      backgroundColor: theme.palette.mode === "dark" ? "#4d4949" : "#27546c",
       boxShadow: "4px 4px 6px rgba(0,0,0,0.55)",
     },
     "&:disabled": {

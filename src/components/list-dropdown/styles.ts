@@ -19,7 +19,7 @@ export const useStyles = makeStyles()((theme) => ({
     fontSize: "1rem",
   },
   label: {
-    backgroundColor: theme.palette.background.pages,
+    backgroundColor: theme.palette.custom.pagesBackground,
     transform: "translate(14px, -6px) scale(0.75)",
     transformOrigin: "top left",
     zIndex: "1",
@@ -55,7 +55,7 @@ export const useStyles = makeStyles()((theme) => ({
     textRendering: "auto",
     cursor: "text",
     borderRadius: theme.shape.borderRadius,
-    border: `1px solid ${theme.palette.primary.border}`,
+    border: `1px solid ${theme.palette.custom.borderColor}`,
   },
   inputOutline: {
     outline: "0",

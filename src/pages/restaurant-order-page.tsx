@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 
 import { setActiveSection } from "store/ui/actions";
 
@@ -19,8 +19,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     flex: 1,
     overflow: "hidden",
-    backgroundColor: theme.palette.background.navbar,
-    color: theme.palette.primary.navbar,
+    backgroundColor: theme.palette.custom.navbarBackground,
+    color: "#FFF",
     maxWidth: "900px",
     margin: "10px auto 0 auto",
   },

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
 
 import { setActiveSection } from "store/ui/actions";
 import {
@@ -26,7 +26,7 @@ import Button from "components/button";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.pages,
+    backgroundColor: theme.palette.custom.pagesBackground,
     overflowY: "auto",
     margin: "20px auto auto auto",
     padding: "20px",

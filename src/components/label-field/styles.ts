@@ -55,7 +55,7 @@ export const useStyles = makeStyles()((theme) => ({
     boxSizing: "content-box",
     textRendering: "auto",
     borderRadius: theme.shape.borderRadius,
-    border: `1px solid ${theme.palette.primary.border}`,
+    border: `1px solid ${theme.palette.custom.borderColor}`,
     "&:focus": {
       outline: "0",
       borderColor: "#90CAF9",
