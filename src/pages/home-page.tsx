@@ -1,6 +1,6 @@
 import React from "react";
+import { makeStyles } from "tss-react/mui";
 import { useSelector } from "react-redux";
-import { Box } from "@mui/material";
 
 import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
@@ -24,6 +24,39 @@ import { userLogout } from "state/session/asyncActions";
 import { getCompany } from "state/session/reducer";
 import { getActiveSection } from "state/ui/reducer";
 
+const useStyles = makeStyles()(() => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    "@media (max-width:414px)": {
+      backgroundImage: "none",
+      backgroundColor: "#FFF",
+    },
+  },
+  body: {
+    backgroundImage: `url(${BannerImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: `100% 100%`,
+    display: "flex",
+    flex: "1 1 auto",
+    overflowY: "auto",
+    overflowX: "hidden",
+    backgroundColor: "#FFF",
+    padding: "0px 10% 20px 10%",
+    "@media (max-width:960px)": {
+      padding: "0 16px 16px 16px",
+    },
+    "@media (max-width:600px)": {
+      padding: "0 13px 13px 13px",
+    },
+    "@media (max-width:414px)": {
+      backgroundImage: `none`,
+      padding: "0 10px 10px 10px",
+    },
+  },
+}));
+
 interface HomePageProps {
   width: number;
   isDarkMode: boolean;
@@ -35,6 +68,7 @@ export default function HomePage({
   isDarkMode,
   toggleDarkMode,
 }: HomePageProps) {
+  const { classes } = useStyles();
   const myRef = React.useRef<HTMLDivElement>(null);
 
   const activeSection = useSelector(getActiveSection);
@@ -45,44 +79,13 @@ export default function HomePage({
   }, [activeSection]);
 
   return (
-    <Box
+    <div
       id="id_home_page"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        minWidth: `${width}px`,
-        "@media screen and (max-width: 414px)": {
-          backgroundImage: "none",
-          backgroundColor: "#FFF",
-        },
-      }}
+      className={classes.root}
+      style={{ minWidth: `${width}px` }}
     >
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <Box
-        ref={myRef}
-        sx={{
-          backgroundImage: `url(${BannerImage})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: `100% 100%`,
-          display: "flex",
-          flex: "1 1 auto",
-          overflowY: "auto",
-          overflowX: "hidden",
-          backgroundColor: "#FFF",
-          padding: "0px 10% 20px 10%",
-          "@media screen and (max-width: 960px)": {
-            padding: "0 16px 16px 16px",
-          },
-          "@media screen and (max-width: 600px)": {
-            padding: "0 13px 13px 13px",
-          },
-          "@media screen and (max-width: 414px)": {
-            backgroundImage: `none`,
-            padding: "0 10px 10px 10px",
-          },
-        }}
-      >
+      <div ref={myRef} className={classes.body}>
         Home Page
         {/*activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
@@ -110,7 +113,7 @@ export default function HomePage({
         ) : null}
         {activeSection === 22 && <CustomerPage />}
         {activeSection === 23 && <ProductPage />*/}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
