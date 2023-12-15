@@ -3,9 +3,22 @@ import TablePagination from "@mui/material/TablePagination";
 
 import { TablePaginationActions } from "components/data-grid";
 
-import { createStyle } from "./styles";
+import { useStyles } from "./styles";
 
-function ListDropdown({
+interface ListDropdownProps {
+  page: number;
+  rowsCount: number;
+  rowsPerPage: number;
+  rows: any[];
+  label: string;
+  value: string;
+  disabled: boolean;
+  onChange: () => void;
+  onPageChange: (page: number) => void;
+  onItemSelected: (row: any) => void;
+}
+
+export default function ListDropdown({
   page,
   rowsCount,
   rowsPerPage,
@@ -16,8 +29,8 @@ function ListDropdown({
   onChange,
   onPageChange,
   onItemSelected,
-}) {
-  const classes = createStyle();
+}: ListDropdownProps) {
+  const { classes } = useStyles();
   const [open, setOpen] = React.useState(false);
 
   const outsideClickHandler = () => {
@@ -29,17 +42,17 @@ function ListDropdown({
     document.removeEventListener("click", outsideClickHandler);
   };
 
-  const handleOnClick = (item) => {
+  const handleOnClick = (item: any) => {
     outsideClickHandler();
     onItemSelected(item);
   };
 
-  const onFocus = (e) => {
+  const onFocus = () => {
     document.addEventListener("click", outsideClickHandler);
     !open && setOpen(true);
   };
   const listItems = rows.map((item, index) => (
-    <div key={index} id={index} onClick={() => handleOnClick(item)}>
+    <div key={index} id={`${index}_id`} onClick={() => handleOnClick(item)}>
       <span key={index} className={`${classes.item} ${classes.font}`}>
         {item.Descripcion}
       </span>
@@ -48,7 +61,7 @@ function ListDropdown({
   return (
     <div
       id="main-container"
-      tabIndex="1"
+      tabIndex={1}
       className={classes.container}
       onClick={(e) => e.stopPropagation()}
     >
@@ -83,13 +96,12 @@ function ListDropdown({
         {rowsCount > rowsPerPage && (
           <div style={{ width: "100%" }}>
             <TablePagination
-              className={classes.pagination}
               rowsPerPageOptions={[]}
               component="div"
               count={rowsCount}
               rowsPerPage={rowsPerPage}
               page={page}
-              onPageChange={(event, newPage) => onPageChange(newPage)}
+              onPageChange={(_event, newPage) => onPageChange(newPage)}
               ActionsComponent={TablePaginationActions}
             />
           </div>
@@ -98,5 +110,3 @@ function ListDropdown({
     </div>
   );
 }
-
-export default ListDropdown;

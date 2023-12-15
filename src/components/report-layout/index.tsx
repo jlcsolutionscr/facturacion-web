@@ -1,28 +1,37 @@
-import React from "react";
-
 import Typography from "@mui/material/Typography";
 
 import DataGrid from "components/data-grid";
 import Button from "components/button";
 import { formatCurrency } from "utils/utilities";
-import { createStyle } from "./styles";
+import { useStyles } from "./styles";
 
-function DetailLayout({ reportName, summary, data, returnOnClick }) {
-  const classes = createStyle();
+type DataType = { [key: string]: any };
+
+interface DetailLayoutProps {
+  reportName: string;
+  summary: any;
+  data: DataType[];
+  returnOnClick: () => void;
+}
+
+function DetailLayout({
+  reportName,
+  summary,
+  data,
+  returnOnClick,
+}: DetailLayoutProps) {
+  const { classes } = useStyles();
   const columns = Object.entries(data[0]).map((key) => ({
     field: key[0],
     headerName: key[0],
     type: typeof key[1] === "number" ? "number" : "",
   }));
   const rows = data.map((row) => {
-    let data = {};
-    columns.forEach(
-      (key) =>
-        (data[key.field] =
-          key.type === "number"
-            ? formatCurrency(row[key.field])
-            : row[key.field])
-    );
+    const data = row;
+    columns.forEach((col) => {
+      data[col.field] =
+        col.type === "number" ? formatCurrency(row[col.field]) : row[col.field];
+    });
     return data;
   });
 

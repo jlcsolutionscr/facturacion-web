@@ -1,6 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,25 +14,44 @@ import {
   KeyboardArrowRightIcon,
   LastPageIcon,
 } from "utils/iconsHelper";
-import { createStyle } from "./styles";
+import { useStyles } from "./styles";
+
+type EventType = React.MouseEvent<HTMLButtonElement>;
+
+type TableStyleType = {
+  color: string;
+  minWidth: number | string;
+  display?: string;
+  height?: number;
+};
+
+interface TablePaginationActionsProps {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onPageChange: (
+    event: React.MouseEvent<HTMLButtonElement>,
+    newPage: number
+  ) => void;
+}
 
 export function TablePaginationActions({
   count,
   page,
   rowsPerPage,
   onPageChange,
-}) {
-  const classes = createStyle();
-  const handleFirstPageButtonClick = (event) => {
+}: TablePaginationActionsProps) {
+  const { classes } = useStyles();
+  const handleFirstPageButtonClick = (event: EventType) => {
     onPageChange(event, 0);
   };
-  const handleBackButtonClick = (event) => {
+  const handleBackButtonClick = (event: EventType) => {
     onPageChange(event, page - 1);
   };
-  const handleNextButtonClick = (event) => {
+  const handleNextButtonClick = (event: EventType) => {
     onPageChange(event, page + 1);
   };
-  const handleLastPageButtonClick = (event) => {
+  const handleLastPageButtonClick = (event: EventType) => {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
   return (
@@ -72,12 +88,27 @@ export function TablePaginationActions({
   );
 }
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
+type ColumnType = {
+  field: string;
+  headerName: string;
+  hidden?: boolean;
+  type?: string;
+  width?: string;
 };
+
+interface DataGridProps {
+  showHeader: boolean;
+  dense: boolean;
+  columns: ColumnType[];
+  rows: any[];
+  rowsPerPage: number;
+  rowsCount?: number;
+  page?: number;
+  minWidth?: number;
+  rowActionValue?: string;
+  onPageChange?: (newPage: number) => void;
+  rowAction?: any;
+}
 
 export default function DataGrid({
   page,
@@ -91,14 +122,11 @@ export default function DataGrid({
   rowActionValue,
   onPageChange,
   rowAction,
-}) {
-  const classes = createStyle();
-  const emptyRows = rowsPerPage !== undefined ? rowsPerPage - rows.length : 0;
-  const height =
-    rowsPerPage !== undefined
-      ? rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0)
-      : 0;
-  let tableStyle = {
+}: DataGridProps) {
+  const { classes } = useStyles();
+  const emptyRows = rowsPerPage - rows.length;
+  const height = rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0);
+  let tableStyle: TableStyleType = {
     color: "white",
     minWidth: minWidth || "auto",
   };
@@ -137,7 +165,9 @@ export default function DataGrid({
                     tabIndex={-1}
                     key={rowIndex}
                     onDoubleClick={() =>
-                      rowAction ? rowAction(row[rowActionValue]) : null
+                      rowAction && rowActionValue
+                        ? rowAction(row[rowActionValue])
+                        : null
                     }
                   >
                     {columns
@@ -174,10 +204,12 @@ export default function DataGrid({
             className={classes.pagination}
             rowsPerPageOptions={[]}
             component="div"
-            count={rowsCount}
+            count={rowsCount ?? rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
-            onPageChange={(event, newPage) => onPageChange(newPage)}
+            onPageChange={(_event, newPage) =>
+              onPageChange && onPageChange(newPage)
+            }
             ActionsComponent={TablePaginationActions}
           />
         )}

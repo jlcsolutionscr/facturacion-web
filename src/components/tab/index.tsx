@@ -1,12 +1,16 @@
-import React from "react";
-
 import IconButton from "@mui/material/IconButton";
 
 import { DeleteIcon } from "utils/iconsHelper";
-import { createStyle } from "./styles";
+import { useStyles } from "./styles";
 
-function Tab({ title, edit, close }) {
-  const classes = createStyle();
+interface TabProps {
+  title: string;
+  edit: () => void;
+  close: () => void;
+}
+
+export default function Tab({ title, edit, close }: TabProps) {
+  const { classes } = useStyles();
   const onButtonClick = (e) => {
     e.stopPropagation();
     close();
@@ -28,5 +32,3 @@ function Tab({ title, edit, close }) {
     </div>
   );
 }
-
-export default Tab;

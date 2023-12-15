@@ -1,9 +1,14 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
+import TextField, { TextFieldVariants } from "@mui/material/TextField";
 
-function CustomTextField(props) {
+interface CustomTextFieldProps {
+  numericFormat: string;
+  variant?: TextFieldVariants;
+  onChange: (event: { target: { value: string } }) => void;
+}
+
+export default function CustomTextField(props: CustomTextFieldProps) {
   const { onChange, numericFormat, variant, ...restProps } = props;
-  const handleChange = (event) => {
+  const handleChange = (event: { target: { value: string } }) => {
     let value = event.target.value;
     if (numericFormat) value = event.target.value.replace(/[^0-9.]/g, "");
     event.target.value = value;
@@ -20,5 +25,3 @@ function CustomTextField(props) {
     />
   );
 }
-
-export default CustomTextField;

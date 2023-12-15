@@ -1,9 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-
 import { Button as MuiButton } from "@mui/material";
 
-import { createStyle } from "./styles";
+import { useStyles } from "./styles";
+
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  style?: { [key: string]: string | number | boolean };
+  negative?: boolean;
+  autoFocus?: boolean;
+}
 
 export default function Button({
   disabled,
@@ -12,8 +18,8 @@ export default function Button({
   autoFocus,
   label,
   onClick,
-}) {
-  const classes = createStyle();
+}: ButtonProps) {
+  const { classes } = useStyles();
   let styles = {};
   if (negative) styles = { backgroundColor: "#505050" };
   return (
@@ -31,12 +37,3 @@ export default function Button({
     </div>
   );
 }
-
-Button.propTypes = {
-  label: PropTypes.string.isRequired,
-  negative: PropTypes.bool,
-  autoFocus: PropTypes.bool,
-  onClick: PropTypes.func,
-  style: PropTypes.object,
-  disabled: PropTypes.bool,
-};
