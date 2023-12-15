@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 import UAParser from "ua-parser-js";
 
-import { setActiveSection, setMessage } from "store/ui/actions";
+import { setActiveSection, setMessage } from "state/ui/actions";
 import {
   setReportResults,
   generateReport,
@@ -23,7 +23,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import Button from "components/button";
 import ReportLayout from "components/report-layout";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflow: "hidden",
@@ -79,7 +79,7 @@ function ReportsPage({
   setMessage,
   setActiveSection,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const result = new UAParser().getResult();
   React.useEffect(() => {
     if (reportResults.length > 0) {

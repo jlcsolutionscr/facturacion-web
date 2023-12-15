@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -15,7 +15,7 @@ import StepTwoScreen from "./working-order-steps/step-two-screen";
 import StepThreeScreen from "./working-order-steps/step-three-screen";
 import StepFourScreen from "./working-order-steps/step-four-screen";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     display: "flex",
     flexDirection: "column",
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function WorkingOrderPage({ setActiveSection }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);

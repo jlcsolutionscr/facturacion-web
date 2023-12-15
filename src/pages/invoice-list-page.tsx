@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 import UAParser from "ua-parser-js";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   getInvoiceListByPageNumber,
   revokeInvoice,
@@ -24,7 +24,7 @@ import Button from "components/button";
 import { PrinterIcon, DownloadPdfIcon, DeleteIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     width: "100%",
@@ -77,7 +77,7 @@ function InvoiceListPage({
   generateInvoiceTicket,
 }) {
   const result = new UAParser().getResult();
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [invoiceId, setInvoiceId] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
   const isMobile = !!result.device.type;

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   getWorkingOrderListByPageNumber,
   setWorkingOrderParameters,
@@ -30,7 +30,7 @@ import {
 } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     width: "100%",
@@ -86,7 +86,7 @@ function WorkingOrderListPage({
   openWorkingOrder,
   generateWorkingOrderTicket,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [workingOrderId, setWorkingOrderId] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
   const printReceipt = (id) => {

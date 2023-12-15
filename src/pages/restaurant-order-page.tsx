@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -13,7 +13,7 @@ import { BackArrowIcon } from "utils/iconsHelper";
 import StepOneScreen from "./restaurant-order-steps/step-one-screen";
 import StepTwoScreen from "./restaurant-order-steps/step-two-screen";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     display: "flex",
     flexDirection: "column",
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function RestaurantOrderPage({ permissions, setActiveSection }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [value, setValue] = useState(0);
   const generateInvoice =
     permissions.filter((role) => [1, 203].includes(role.IdRole)).length > 0;

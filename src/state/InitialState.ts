@@ -24,12 +24,12 @@ type UIStateType = {
   isLoaderOpen: boolean;
   loaderText: string;
   activeSection: number;
-  cantonList: IdValueType[];
-  distritoList: IdValueType[];
-  barrioList: IdValueType[];
+  cantonList: IdDescriptionType[];
+  distritoList: IdDescriptionType[];
+  barrioList: IdDescriptionType[];
   taxTypeList: IdValueType[];
   idTypeList: IdValueType[];
-  exonerationTypeList: IdValueType[];
+  exonerationTypeList: IdDescriptionType[];
   message: string;
   messageType: string;
 };

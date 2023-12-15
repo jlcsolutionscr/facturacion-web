@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   setProduct,
   filterClasificationList,
@@ -33,7 +33,7 @@ import { getPriceFromTaxRate } from "utils/domainHelper";
 import { roundNumber } from "utils/utilities";
 import { SearchIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflowY: "auto",
@@ -80,7 +80,7 @@ function ProductPage({
   saveProduct,
   setActiveSection,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [clasificationFilter, setClasificationFilter] = React.useState("");
   const [untaxPrice1, setUntaxPrice1] = React.useState(0);

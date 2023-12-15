@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   setWorkingOrderParameters,
   revokeWorkingOrder,
@@ -19,7 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import Button from "components/button";
 import Tab from "components/tab";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     width: "100%",
@@ -68,7 +68,7 @@ function RestaurantOrderListPage({
   setActiveSection,
   openWorkingOrder,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [workingOrderId, setWorkingOrderId] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
   const handleOpenOrderClick = (id) => {

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 
 import { saveLogo } from "state/company/asyncActions";
 
@@ -12,7 +12,7 @@ import TextField from "@mui/material/TextField";
 
 import Button from "components/button";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflowY: "hidden",
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogoPage({ setActiveSection, saveLogo }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [logo, setLogo] = React.useState("");
   const [filename, setFilename] = React.useState("");
   const inputFile = React.useRef(null);

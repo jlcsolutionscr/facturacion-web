@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   validateCustomerIdentifier,
   setCustomer,
@@ -24,7 +24,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import TextField from "components/text-field";
 import Button from "components/button";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflowY: "auto",
@@ -60,7 +60,7 @@ function CustomerPage({
   saveCustomer,
   setActiveSection,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const idTypeItems = idTypeList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>

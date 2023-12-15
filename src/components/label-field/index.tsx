@@ -1,6 +1,7 @@
 import { useStyles } from "./styles";
 
 interface LabelFieldProps {
+  id: string;
   label: string;
   value: string;
 }

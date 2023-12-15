@@ -21,7 +21,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "components/button";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -81,7 +81,7 @@ function StepTwoScreen({
   generateInvoiceTicket,
 }) {
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
-  const classes = useStyles();
+  const { classes } = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
     myRef.current.scrollTo(0, 0);

@@ -24,7 +24,7 @@ import Button from "components/button";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import { setCustomerAttribute } from "state/customer/asyncActions";
 import { filterProductList } from "state/product/asyncActions";
 import {
@@ -38,7 +38,7 @@ import {
   saveWorkingOrder,
 } from "state/working-order/asyncActions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     flex: 1,
     overflowY: "auto",
@@ -103,7 +103,7 @@ function StepOneScreen({
   removeDetails,
   saveWorkingOrder,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
     myRef.current.scrollTo(0, 0);

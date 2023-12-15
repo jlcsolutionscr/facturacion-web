@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid";
 
 import TextField from "components/text-field";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -25,7 +25,7 @@ function StepThreeScreen({
   status,
   setDeliveryAttribute,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
     if (value === 2) myRef.current.scrollTo(0, 0);

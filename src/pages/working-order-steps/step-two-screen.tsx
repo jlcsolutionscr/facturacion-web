@@ -35,7 +35,7 @@ import {
 
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     flex: 1,
     overflowY: "auto",
@@ -87,7 +87,7 @@ function StepTwoScreen({
   addDetails,
   removeDetails,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
     if (value === 1) myRef.current.scrollTo(0, 0);

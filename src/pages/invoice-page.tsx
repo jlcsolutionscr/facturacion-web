@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -37,7 +37,7 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 function InvoicePage({ setActiveSection }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {

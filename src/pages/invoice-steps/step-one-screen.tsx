@@ -16,7 +16,7 @@ import {
 import { convertToDateString } from "utils/utilities";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -40,7 +40,7 @@ function StepOneScreen({
   getCustomer,
   setCustomerAttribute,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
     if (value === 0) myRef.current.scrollTo(0, 0);

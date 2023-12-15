@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   getDocumentListFirstPage,
   getDocumentListByPageNumber,
@@ -25,7 +25,7 @@ import Button from "components/button";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     width: "100%",
@@ -83,7 +83,7 @@ function DocumentListPage({
   setDocumentDetails,
   setActiveSection,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [dialogStatus, setDialogStatus] = React.useState({
     open: false,
     type: 1,

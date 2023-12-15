@@ -26,7 +26,7 @@ import LabelField from "components/label-field";
 import Button from "components/button";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import { filterClasificationList } from "state/product/asyncActions";
 import {
   setIssuerDetails,
@@ -42,7 +42,7 @@ import {
 
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflow: "auto",
@@ -116,7 +116,7 @@ function ReceiptPage({
   saveReceipt,
   setActiveSection,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [clasificationFilter, setClasificationFilter] = React.useState("");
   const idTypeItems = idTypeList.map((item) => {

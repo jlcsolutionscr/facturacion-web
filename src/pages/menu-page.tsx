@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import { getCompany } from "state/company/asyncActions";
 import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getProductListFirstPage } from "state/product/asyncActions";
@@ -13,7 +13,7 @@ import {
 import { setReceiptParameters } from "state/receipt/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";
 import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
-import { setBranchId } from "store/session/actions";
+import { setBranchId } from "state/session/actions";
 
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -108,7 +108,7 @@ function MenuPage({
   getDocumentListFirstPage,
   getWorkingOrderListFirstPage,
 }) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const updateCompanyInfo =
     permissions.filter((role) => [1, 61].includes(role.IdRole)).length > 0;
   const manageCustomers =

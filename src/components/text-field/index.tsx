@@ -1,9 +1,12 @@
 import TextField, { TextFieldVariants } from "@mui/material/TextField";
 
 interface CustomTextFieldProps {
-  numericFormat: string;
+  id: string;
+  value: string;
+  label: string;
+  numericFormat?: string;
   variant?: TextFieldVariants;
-  onChange: (event: { target: { value: string } }) => void;
+  onChange: (event: { target: { id: string; value: string } }) => void;
 }
 
 export default function CustomTextField(props: CustomTextFieldProps) {
@@ -12,7 +15,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
     let value = event.target.value;
     if (numericFormat) value = event.target.value.replace(/[^0-9.]/g, "");
     event.target.value = value;
-    onChange(event);
+    onChange({ target: { id: props.id, value } });
   };
 
   return (

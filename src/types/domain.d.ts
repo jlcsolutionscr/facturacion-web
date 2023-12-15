@@ -24,10 +24,16 @@ export type CompanyType = {
   identifier: string;
   name: string;
   comercialName: string;
+  expirationDate: string;
+  provinceId: number;
+  cantonId: number;
+  districtId: number;
+  neighborhoodId: number;
   address: string;
   phoneNumber: string;
   notificationEmail: string;
   currencyType: number;
+  activityCode: string;
   simplifyRegimen: boolean;
   economicActivityList: EconomicActivityType[];
   ivaTaxIncluded: boolean;

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "store/ui/actions";
+import { setActiveSection } from "state/ui/actions";
 import {
   filterCustomerList,
   getCustomerListByPageNumber,
@@ -18,7 +18,7 @@ import TextField from "components/text-field";
 import Button from "components/button";
 import { EditIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     width: "100%",
@@ -86,7 +86,7 @@ function CustomerListPage({
   setActiveSection,
 }) {
   const rowsPerPage = 8;
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [filter, setFilter] = React.useState("");
   const handleOnFilterChange = (event) => {
     setFilter(event.target.value);
