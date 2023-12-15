@@ -1,6 +1,6 @@
 import SvgIcon from "@mui/material/SvgIcon";
 
-type IconProps = { sx?: { [key: string]: string | number } };
+type IconProps = { className?: string };
 
 export const ErrorIcon = (props: IconProps) => (
   <SvgIcon {...props}>

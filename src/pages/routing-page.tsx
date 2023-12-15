@@ -1,8 +1,8 @@
 import React from "react";
+import { makeStyles } from "tss-react/mui";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Box } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Slide from "@mui/material/Slide";
 import SnackbarContent from "@mui/material/SnackbarContent";
@@ -18,6 +18,34 @@ import HomePage from "pages/home-page";
 import { darkTheme, lightTheme } from "utils/muiThemeProvider";
 import { ErrorIcon, InfoIcon } from "utils/iconsHelper";
 
+const useStyles = makeStyles<{ isDarkMode: boolean }>()(
+  (_theme, { isDarkMode }) => ({
+    container: {
+      display: "flex",
+    },
+    snackbarMessage: {
+      width: "100%",
+    },
+    snackbarError: {
+      backgroundColor: isDarkMode ? "#b23c17" : "#ab003c",
+    },
+    snackbarInfo: {
+      backgroundColor: isDarkMode ? "#2196f3" : "#1c54b2",
+    },
+    message: {
+      color: "#FFF",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    icon: {
+      width: "32px",
+      height: "32px",
+      opacity: 0.9,
+    },
+  })
+);
+
 function RoutingPage() {
   const dispatch = useDispatch();
   const size = useWindowSize();
@@ -27,6 +55,7 @@ function RoutingPage() {
   const { message, messageType } = useSelector(getMessage);
 
   const [isDarkMode, setDarkMode] = React.useState(false);
+  const { classes } = useStyles({ isDarkMode });
   const width = size.width > 320 ? size.width : 320;
   const component = !authenticated ? (
     <LoginPage
@@ -43,9 +72,9 @@ function RoutingPage() {
   );
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <Box
+      <div
         id="main_container"
-        sx={{ display: "flex" }}
+        className={classes.container}
         style={{ height: `${size.height}px`, width: `${size.width}px` }}
       >
         <Loader />
@@ -63,35 +92,26 @@ function RoutingPage() {
           }
         >
           <SnackbarContent
-            sx={{
-              bgColor: isDarkMode ? "#b23c17" : "#ab003c",
-              width: "100%",
+            classes={{
+              root:
+                messageType === "ERROR"
+                  ? classes.snackbarError
+                  : classes.snackbarInfo,
+              message: classes.snackbarMessage,
             }}
             message={
-              <Box
-                sx={{
-                  color: "#FFF",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-                id="client-snackbar"
-              >
+              <div className={classes.message} id="client-snackbar">
                 <span>{message}</span>
                 {messageType === "ERROR" ? (
-                  <ErrorIcon
-                    sx={{ width: "32px", height: "32px", opacity: 0.9 }}
-                  />
+                  <ErrorIcon className={classes.icon} />
                 ) : (
-                  <InfoIcon
-                    sx={{ width: "32px", height: "32px", opacity: 0.9 }}
-                  />
+                  <InfoIcon className={classes.icon} />
                 )}
-              </Box>
+              </div>
             }
           />
         </Snackbar>
-      </Box>
+      </div>
     </ThemeProvider>
   );
 }
