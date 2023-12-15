@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
+import { makeStyles } from "tss-react/mui";
 
 import { restoreSession, userLogin } from "state/session/asyncActions";
 import { readFromLocalStorage } from "utils/utilities";
@@ -18,6 +19,62 @@ import LoginImage from "assets/img/login-background.webp";
 import LoginImageJpg from "assets/img/login-background.webp";
 import { useDispatch } from "react-redux";
 
+const useStyles = makeStyles()((theme) => ({
+  root: {
+    "& .MuiTextField-root": {
+      marginTop: theme.spacing(1),
+    },
+  },
+  image: {
+    backgroundImage: `url(${LoginImageJpg})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "top",
+    "& .webp": {
+      backgroundImage: `url(${LoginImage})`,
+    },
+  },
+  paper: {
+    height: `${window.innerHeight}px`,
+    padding: theme.spacing(0, 5),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    marginTop: theme.spacing(6),
+    width: "180px",
+    height: "180px",
+    backgroundColor: "#00729f",
+    "@media (max-height:568px)": {
+      marginTop: theme.spacing(2),
+    },
+  },
+  logoImage: {
+    width: "80%",
+  },
+  form: {
+    marginTop: theme.spacing(4),
+  },
+  footer: {
+    marginTop: "auto",
+    marginBottom: theme.spacing(6),
+    "@media (min-height:737px)": {
+      marginTop: theme.spacing(6),
+    },
+    "@media (max-height:568px)": {
+      marginBottom: theme.spacing(3),
+    },
+  },
+  logo: {
+    position: "relative",
+  },
+  message: {
+    display: "flex",
+    alignItems: "center",
+  },
+}));
+
 interface LoginPageProps {
   width: number;
   isDarkMode: boolean;
@@ -28,6 +85,7 @@ export default function LoginPage({
   isDarkMode,
   toggleDarkMode,
 }: LoginPageProps) {
+  const { classes } = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -59,106 +117,69 @@ export default function LoginPage({
     username === "" || password === "" || id === "";
 
   return (
-    <Grid
-      container
-      component="main"
-      sx={{
-        backgroundColor: "#FFF",
-      }}
-    >
+    <Grid container component="main">
       <Grid
         item
         xs={12}
         sm={6}
         md={4}
-        sx={{
-          "& .MuiTextField-root": {
-            mt: 1,
-          },
-        }}
+        classes={{ root: classes.root }}
         component={Paper}
         elevation={6}
         square
       >
-        <Box
-          sx={{
-            height: `${window.innerHeight}px`,
-            paddingX: 5,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar
-            sx={{
-              marginTop: 6,
-              width: "180px",
-              height: "180px",
-              backgroundColor: "#00729f",
-              "@media screen and (max-height:568px)": {
-                marginTop: 2,
-              },
-            }}
-          >
-            <img style={{ width: "80%" }} src={LogoImage} alt="not available" />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <img
+              className={classes.logoImage}
+              src={LogoImage}
+              alt="not available"
+            />
           </Avatar>
-          <Box sx={{ marginTop: 4 }}>
-            <form noValidate>
-              <TextField
-                variant="standard"
-                required
-                fullWidth
-                id="username"
-                label="Código usuario"
-                name="username"
-                value={username}
-                onChange={handleOnChange("username")}
-                autoFocus
-              />
-              <TextField
-                variant="standard"
-                required
-                fullWidth
-                name="password"
-                label="Contraseña"
-                type="password"
-                id="password"
-                value={password}
-                onChange={handleOnChange("password")}
-              />
-              <TextField
-                variant="standard"
-                required
-                fullWidth
-                name="id"
-                label="Identificación"
-                id="id"
-                value={id}
-                onChange={handleOnChange("id")}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    handleLoginClick();
-                    event.preventDefault();
-                  }
-                }}
-              />
-            </form>
-          </Box>
-          <Box
-            sx={{
-              marginTop: "auto",
-              marginBottom: 6,
-              "@media screen and (min-height:737px)": {
-                marginTop: 6,
-              },
-              "@media screen and (max-height:568px)": {
-                marginBottom: 3,
-              },
-            }}
-          >
+          <form className={classes.form} noValidate>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="username"
+              label="Código usuario"
+              name="username"
+              value={username}
+              onChange={handleOnChange("username")}
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="password"
+              label="Contraseña"
+              type="password"
+              id="password"
+              value={password}
+              onChange={handleOnChange("password")}
+            />
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="id"
+              label="Identificación"
+              id="id"
+              value={id}
+              onChange={handleOnChange("id")}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  handleLoginClick();
+                  ev.preventDefault();
+                }
+              }}
+            />
+          </form>
+          <div className={classes.footer}>
             <Box mt={5}>
               <Button
-                sx={{ marginBottom: "20px" }}
+                style={{ marginBottom: "20px" }}
                 disabled={isSubmitButtonDisabled}
                 variant="contained"
                 color="secondary"
@@ -169,7 +190,7 @@ export default function LoginPage({
               </Button>
             </Box>
             <Grid container>
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Grid item xs={12} style={{ textAlign: "center" }}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -181,33 +202,20 @@ export default function LoginPage({
                   label="Tema oscuro"
                 />
               </Grid>
-              <Grid item xs={12} sx={{ marginTop: "5%", textAlign: "center" }}>
-                <Link
-                  onClick={(event) => event.preventDefault()}
-                  variant="body2"
-                >
+              <Grid
+                item
+                xs={12}
+                style={{ marginTop: "5%", textAlign: "center" }}
+              >
+                <Link onClick={(e) => e.preventDefault()} variant="body2">
                   Olvido su contraseña?
                 </Link>
               </Grid>
             </Grid>
-          </Box>
-        </Box>
+          </div>
+        </div>
       </Grid>
-      <Grid
-        item
-        xs={false}
-        sm={6}
-        md={8}
-        sx={{
-          backgroundImage: `url(${LoginImageJpg})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "top",
-          "& .webp": {
-            backgroundImage: `url(${LoginImage})`,
-          },
-        }}
-      />
+      <Grid item xs={false} sm={6} md={8} className={classes.image} />
     </Grid>
   );
 }
