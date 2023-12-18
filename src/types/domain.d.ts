@@ -9,9 +9,9 @@ export type IdDescriptionType = {
 };
 
 export type EconomicActivityType = {
-  companyId: number;
-  code: string;
-  description: string;
+  IdEmpresa: number;
+  CodigoActividad: string;
+  Descripcion: string;
 };
 
 export type DeviceType = {
@@ -19,29 +19,30 @@ export type DeviceType = {
 };
 
 export type CompanyType = {
-  id: number;
-  mode: number;
-  identifier: string;
-  name: string;
-  comercialName: string;
-  expirationDate: string;
-  provinceId: number;
-  cantonId: number;
-  districtId: number;
-  neighborhoodId: number;
-  address: string;
-  phoneNumber: string;
-  notificationEmail: string;
-  currencyType: number;
-  activityCode: string;
-  simplifyRegimen: boolean;
-  economicActivityList: EconomicActivityType[];
-  ivaTaxIncluded: boolean;
-  idTypeList: IdDescriptionType[];
-  taxTypeList: IdDescriptionType[];
-  exonerationTypeList: IdDescriptionType[];
-  priceTypeList: IdDescriptionType[];
-  productTypeList: IdDescriptionType[];
+  IdEmpresa: number;
+  NombreEmpresa: string;
+  NombreComercial: string;
+  IdTipoIdentificacion: number;
+  Identificacion: string;
+  IdProvincia: number;
+  IdCanton: number;
+  IdDistrito: number;
+  IdBarrio: number;
+  IdTipoMoneda: number;
+  Direccion: string;
+  Telefono1: string;
+  Telefono2: string;
+  FechaVence: string;
+  RegimenSimplificado: boolean;
+  PrecioVentaIncluyeIVA: boolean;
+  CorreoNotificacion: string;
+  Modalidad: number;
+  ActividadEconomicaEmpresa: EconomicActivityType[];
+  ListadoTipoIdentificacion: IdDescriptionType[];
+  ListadoTipoImpuesto: IdDescriptionType[];
+  ListadoTipoExoneracion: IdDescriptionType[];
+  ListadoTipoPrecio: IdDescriptionType[];
+  ListadoTipoProducto: IdDescriptionType[];
 };
 
 export type CredentialType = {
@@ -52,57 +53,52 @@ export type CredentialType = {
 };
 
 export type ProductType = {
-  id: number | null;
-  companyId: number;
-  type: number;
-  category: number;
-  code: string;
-  providerCode: string;
-  cabysCode: string;
-  image: string;
-  taxTypeId: number;
-  taxRate: number;
-  providerId: number;
-  description: string;
-  costPrice: number;
-  untaxPrice1: number;
-  taxPrice1: number;
-  untaxPrice2: number;
-  taxPrice2: number;
-  untaxPrice3: number;
-  taxPrice3: number;
-  untaxPrice4: number;
-  taxPrice4: number;
-  untaxPrice5: number;
-  taxPrice5: number;
-  observation: string;
-  brand: string;
-  active: boolean;
-  discountPercentage: number;
-  priceChangeAllowed: boolean;
-  minInventory: number;
+  IdEmpresa: number;
+  IdProducto: number | null;
+  Tipo: number;
+  IdLinea: number;
+  Codigo: string;
+  CodigoProveedor: string;
+  CodigoClasificacion: string;
+  IdProveedor: number;
+  Descripcion: string;
+  PrecioCosto: number;
+  PrecioVenta1: number;
+  PrecioVenta2: number;
+  PrecioVenta3: number;
+  PrecioVenta4: number;
+  PrecioVenta5: number;
+  PorcDescuento: number;
+  IdImpuesto: number;
+  IndExistencia: number;
+  Imagen: string;
+  Marca: string;
+  Observacion: string;
+  ModificaPrecio: boolean;
+  Activo: boolean;
 };
 
 export type CustomerType = {
-  id?: number;
-  typeId: number;
-  identifier: string;
-  name: string;
-  companyName: string;
-  address: string;
-  phoneNumber: string;
-  faxNumber: string;
-  email: string;
-  vendorId: number;
-  priceTypeId: number;
-  differentiatedTaxRateApply: false;
-  taxTypeId: number;
-  exonerationType: number;
-  exonerationRef: string;
-  exoneratedBy: string;
-  exonerationDate: string;
-  exonerationPercentage: number;
-  creditAllowed: boolean;
+  IdEmpresa: number;
+  IdCliente: number;
+  IdTipoIdentificacion: number;
+  Identificacion: string;
+  Direccion: string;
+  Nombre: string;
+  NombreComercial: string;
+  Telefono: string;
+  Fax: string;
+  CorreoElectronico: string;
+  IdVendedor: number;
+  IdTipoPrecio: number;
+  AplicaTasaDiferenciada: boolean;
+  IdImpuesto: number;
+  IdTipoExoneracion: number;
+  NumDocExoneracion: string;
+  NombreInstExoneracion: string;
+  FechaEmisionDoc: string;
+  PorcentajeExoneracion: number;
+  PermiteCredito: boolean;
 };
 
 export type CustomerDetailsType = {

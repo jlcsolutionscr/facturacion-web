@@ -17,8 +17,8 @@ const companySlice = createSlice({
       state.credentialsNew = !action.payload.credentials;
       state.credentials = action.payload.credentials;
     },
-    setEconomicActivityList: (state, action) => {
-      state.economicActivityList = action.payload.list;
+    setAvailableEconomicActivityList: (state, action) => {
+      state.entity.ActividadEconomicaEmpresa = action.payload.list;
     },
     setCompanyAttribute: (state, action) => {
       state.entity = {
@@ -44,7 +44,7 @@ export const {
   setCompany,
   setCompanyLogo,
   setCredentials,
-  setEconomicActivityList,
+  setAvailableEconomicActivityList,
   setCompanyAttribute,
   setCredentialsAttribute,
   setReportResults,

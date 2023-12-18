@@ -1,6 +1,5 @@
 import React from "react";
-import { connect, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
@@ -66,7 +65,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function CompanyPage() {
+export default function CompanyPage() {
   const { classes } = useStyles();
   const company = useSelector(getCompany);
   const credentials = useSelector(getCredentials);
@@ -79,19 +78,19 @@ function CompanyPage() {
   const [activityCode, setActivityCode] = React.useState(
     economicActivityList.length > 0 ? economicActivityList[0].companyId : null
   );
-  const inputFile = React.useRef(null);
+  const inputFile = React.useRef<HTMLInputElement>(null);
   let disabled = true;
   if (company === null) return null;
   disabled =
-    company.name === "" ||
-    company.identifier === "" ||
-    company.activityCode === "" ||
-    company.address === "" ||
-    company.phoneNumber === "" ||
-    company.notificationEmail === "" ||
-    (!company.simplifyRegimen &&
+    company.NombreEmpresa === "" ||
+    company.Identificacion === "" ||
+    activityCode === null ||
+    company.Direccion === "" ||
+    company.Telefono1 === "" ||
+    company.CorreoNotificacion === "" ||
+    (!company.RegimenSimplificado &&
       (credentials === null ||
-        company.economicActivityList.length === 0 ||
+        company.ActividadEconomicaEmpresa.length === 0 ||
         credentials.user === "" ||
         credentials.password === "" ||
         credentials.certificate === "" ||
@@ -103,48 +102,50 @@ function CompanyPage() {
     });
   };
   const handleSelectChange = (id: string, value: number) => {
-    if (id === "provinceId") {
+    if (id === "IdProvincia") {
       updateCantonList({ id: value });
-      setCompanyAttribute({ attribute: "provinceId", value: value });
-      setCompanyAttribute({ attribute: "cantonId", value: 1 });
-      setCompanyAttribute({ attribute: "districtId", value: 1 });
-      setCompanyAttribute({ attribute: "neighborhoodId", value: 1 });
-    } else if (id === "cantonId") {
-      updateDistritoList({ id: company.provinceId, subId: value });
-      setCompanyAttribute({ attribute: "cantonId", value: value });
-      setCompanyAttribute({ attribute: "districtId", value: 1 });
-      setCompanyAttribute({ attribute: "neighborhoodId", value: 1 });
-    } else if (id === "districtId") {
+      setCompanyAttribute({ attribute: "IdProvincia", value: value });
+      setCompanyAttribute({ attribute: "IdCanton", value: 1 });
+      setCompanyAttribute({ attribute: "IdDistrito", value: 1 });
+      setCompanyAttribute({ attribute: "IdBarrio", value: 1 });
+    } else if (id === "IdCanton") {
+      updateDistritoList({ id: company.IdProvincia, subId: value });
+      setCompanyAttribute({ attribute: "IdCanton", value: value });
+      setCompanyAttribute({ attribute: "IdDistrito", value: 1 });
+      setCompanyAttribute({ attribute: "IdBarrio", value: 1 });
+    } else if (id === "IdDistrito") {
       updateBarrioList({
-        id: company.provinceId,
-        subId: company.cantonId,
+        id: company.IdProvincia,
+        subId: company.IdCanton,
         subSubId: value,
       });
-      setCompanyAttribute({ attribute: "districtId", value: value });
-      setCompanyAttribute({ attribute: "neighborhoodId", value: 1 });
+      setCompanyAttribute({ attribute: "IdDistrito", value: value });
+      setCompanyAttribute({ attribute: "IdBarrio", value: 1 });
     } else {
-      setCompanyAttribute({ attribute: "neighborhoodId", value: value });
+      setCompanyAttribute({ attribute: "IdBarrio", value: value });
     }
   };
   const handleCertificateChange = (event: {
     preventDefault: () => void;
-    target: { files: any[] };
+    target: { files: FileList | null };
   }) => {
     event.preventDefault();
-    const reader: FileReader = new FileReader();
-    const file = event.target.files[0];
-    setCredentialsAttribute({ attribute: "certificate", value: file.name });
-    reader.onloadend = () => {
-      const certificateBase64 = (reader.result as string).substring(
-        (reader.result as string).indexOf(",") + 1
-      );
-      setCertificate(certificateBase64);
-    };
-    reader.readAsDataURL(file);
+    if (event.target.files !== null) {
+      const reader: FileReader = new FileReader();
+      const file = event.target.files[0];
+      setCredentialsAttribute({ attribute: "certificate", value: file.name });
+      reader.onloadend = () => {
+        const certificateBase64 = (reader.result as string).substring(
+          (reader.result as string).indexOf(",") + 1
+        );
+        setCertificate(certificateBase64);
+      };
+      reader.readAsDataURL(file);
+    }
   };
   const cantonItems = cantonList.map((item) => {
     return (
-      <MenuItem key={item.id} value={item.Id}>
+      <MenuItem key={item.id} value={item.id}>
         {item.description}
       </MenuItem>
     );
@@ -165,8 +166,8 @@ function CompanyPage() {
   });
   const activityItems = economicActivityList.map((item) => {
     return (
-      <MenuItem key={item.code} value={item.code}>
-        {item.description}
+      <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+        {item.Descripcion}
       </MenuItem>
     );
   });
@@ -175,24 +176,24 @@ function CompanyPage() {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
-            id="name"
-            value={company.name}
+            id="NombreEmpresa"
+            value={company.NombreEmpresa}
             label="Nombre empresa"
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            id="comercialName"
-            value={company.comercialName}
+            id="NombreComercial"
+            value={company.NombreComercial}
             label="Nombre comercial"
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <LabelField
-            id="expirationDate"
-            value={convertToDateString(company.expirationDate)}
+            id="FechaVence"
+            value={convertToDateString(company.FechaVence)}
             label="Fecha vencimiento plan"
           />
         </Grid>
@@ -200,10 +201,13 @@ function CompanyPage() {
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Provincia</InputLabel>
             <Select
-              id="provinceId"
-              value={company.provinceId}
+              id="IdProvincia"
+              value={company.IdProvincia}
               onChange={(event) =>
-                handleSelectChange("IdProvincia", event.target.value)
+                handleSelectChange(
+                  "IdProvincia",
+                  parseInt(event.target.value.toString())
+                )
               }
             >
               <MenuItem value={1}>SAN JOSE</MenuItem>
@@ -223,7 +227,10 @@ function CompanyPage() {
               id="IdCanton"
               value={company && cantonItems.length > 0 ? company.IdCanton : ""}
               onChange={(event) =>
-                handleSelectChange("IdCanton", event.target.value)
+                handleSelectChange(
+                  "IdCanton",
+                  parseInt(event.target.value.toString())
+                )
               }
             >
               {cantonItems}
@@ -239,7 +246,10 @@ function CompanyPage() {
                 company && distritoItems.length > 0 ? company.IdDistrito : ""
               }
               onChange={(event) =>
-                handleSelectChange("IdDistrito", event.target.value)
+                handleSelectChange(
+                  "IdDistrito",
+                  parseInt(event.target.value.toString())
+                )
               }
             >
               {distritoItems}
@@ -253,7 +263,10 @@ function CompanyPage() {
               id="IdBarrio"
               value={company && barrioItems.length > 0 ? company.IdBarrio : ""}
               onChange={(event) =>
-                handleSelectChange("IdBarrio", event.target.value)
+                handleSelectChange(
+                  "IdBarrio",
+                  parseInt(event.target.value.toString())
+                )
               }
             >
               {barrioItems}
@@ -300,33 +313,42 @@ function CompanyPage() {
         <Grid item xs={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
-            id="UsuarioHacienda"
-            value={credentials ? credentials.UsuarioHacienda : ""}
+            id="user"
+            value={credentials ? credentials.user : ""}
             label="Usuario ATV"
             onChange={(event) =>
-              setCredentialsAttribute(event.target.id, event.target.value)
+              setCredentialsAttribute({
+                attribute: "user",
+                value: event.target.value,
+              })
             }
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
-            id="ClaveHacienda"
-            value={credentials ? credentials.ClaveHacienda : ""}
+            id="password"
+            value={credentials ? credentials.password : ""}
             label="Clave ATV"
             onChange={(event) =>
-              setCredentialsAttribute(event.target.id, event.target.value)
+              setCredentialsAttribute({
+                attribute: "password",
+                value: event.target.value,
+              })
             }
           />
         </Grid>
         <Grid item xs={8} sm={9} md={10}>
           <TextField
             disabled
-            id="NombreCertificado"
-            value={credentials ? credentials.NombreCertificado : ""}
+            id="certificate"
+            value={credentials ? credentials.certificate : ""}
             label="Llave criptográfica"
             onChange={(event) =>
-              setCredentialsAttribute(event.target.id, event.target.value)
+              setCredentialsAttribute({
+                attribute: "certificate",
+                value: event.target.value,
+              })
             }
           />
         </Grid>
@@ -343,17 +365,20 @@ function CompanyPage() {
           <Button
             disabled={company ? company.RegimenSimplificado : true}
             label="Cargar"
-            onClick={() => inputFile.current.click()}
+            onClick={() => inputFile.current?.click()}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             disabled={company ? company.RegimenSimplificado : true}
-            id="PinCertificado"
-            value={credentials ? credentials.PinCertificado : ""}
+            id="certificatePin"
+            value={credentials ? credentials.certificatePin : ""}
             label="Pin de llave criptográfica"
             onChange={(event) =>
-              setCredentialsAttribute(event.target.id, event.target.value)
+              setCredentialsAttribute({
+                attribute: "certificatePin",
+                value: event.target.value,
+              })
             }
           />
         </Grid>
@@ -362,13 +387,13 @@ function CompanyPage() {
             control={
               <Checkbox
                 checked={company ? company.PrecioVentaIncluyeIVA : true}
-                onChange={(event) =>
-                  setCompanyAttribute(
-                    "PrecioVentaIncluyeIVA",
-                    !company.PrecioVentaIncluyeIVA
-                  )
+                onChange={() =>
+                  setCompanyAttribute({
+                    attribute: "PrecioVentaIncluyeIVA",
+                    value: !company.PrecioVentaIncluyeIVA,
+                  })
                 }
-                name="AplicaTasaDiferenciada"
+                name="PrecioVentaIncluyeIVA"
                 color="primary"
               />
             }
@@ -383,7 +408,9 @@ function CompanyPage() {
             <Select
               id="CodigoActividad"
               value={activityCode ? activityCode : 0}
-              onChange={(event) => setActivityCode(event.target.value)}
+              onChange={(event) =>
+                setActivityCode(parseInt(event.target.value.toString()))
+              }
             >
               {activityItems}
             </Select>
@@ -391,11 +418,12 @@ function CompanyPage() {
         </Grid>
         <Grid item xs={2}>
           <IconButton
-            className={classes.outerButton}
             color="primary"
             disabled={activityCode === null}
             component="span"
-            onClick={() => addActivity(activityCode)}
+            onClick={() =>
+              addActivity({ code: activityCode?.toString() ?? "" })
+            }
           >
             <AddCircleIcon />
           </IconButton>
@@ -417,10 +445,11 @@ function CompanyPage() {
                         <TableCell>{`${row.CodigoActividad} - ${row.Descripcion}`}</TableCell>
                         <TableCell>
                           <IconButton
-                            className={classes.innerButton}
                             color="secondary"
                             component="span"
-                            onClick={() => removeActivity(row.CodigoActividad)}
+                            onClick={() =>
+                              removeActivity({ code: row.CodigoActividad })
+                            }
                           >
                             <RemoveCircleIcon />
                           </IconButton>
@@ -436,7 +465,7 @@ function CompanyPage() {
           <Button
             disabled={disabled}
             label="Guardar"
-            onClick={() => saveCompany(certificate)}
+            onClick={() => saveCompany({ certificate })}
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
@@ -446,33 +475,3 @@ function CompanyPage() {
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    company: state.company.company,
-    credentials: state.company.credentials,
-    cantonList: state.ui.cantonList,
-    distritoList: state.ui.distritoList,
-    barrioList: state.ui.barrioList,
-    economicActivities: state.company.economicActivities,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      setActiveSection,
-      updateCantonList,
-      updateDistritoList,
-      updateBarrioList,
-      setCompanyAttribute,
-      setCredentialsAttribute,
-      saveCompany,
-      addActivity,
-      removeActivity,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CompanyPage);

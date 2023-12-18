@@ -4,8 +4,10 @@ interface CustomTextFieldProps {
   id: string;
   value: string;
   label: string;
-  numericFormat?: string;
+  numericFormat?: boolean;
   variant?: TextFieldVariants;
+  disabled?: boolean;
+  required?: boolean;
   onChange: (event: { target: { id: string; value: string } }) => void;
 }
 

@@ -33,11 +33,11 @@ export const userLogin = createAsyncThunk(
         payload.id
       );
       dispatch(login(company));
-      dispatch(setIdTypeList(company.idTypeList));
-      dispatch(setTaxTypeList(company.taxTypeList));
-      dispatch(setExonerationTypeList(company.exonerationTypeList));
-      dispatch(setPriceTypeList(company.priceTypeList));
-      dispatch(setProductTypeList(company.productTypeList));
+      dispatch(setIdTypeList(company.ListadoTipoIdentificacion));
+      dispatch(setTaxTypeList(company.ListadoTipoImpuesto));
+      dispatch(setExonerationTypeList(company.ListadoTipoExoneracion));
+      dispatch(setPriceTypeList(company.ListadoTipoPrecio));
+      dispatch(setProductTypeList(company.ListadoTipoProducto));
       writeToLocalStorage(payload.username, company);
       dispatch(stopLoader());
     } catch (error) {
@@ -68,11 +68,11 @@ export const restoreSession = createAsyncThunk(
     dispatch(startLoader());
     try {
       dispatch(login(payload));
-      dispatch(setIdTypeList(payload.idTypeList));
-      dispatch(setTaxTypeList(payload.taxTypeList));
-      dispatch(setExonerationTypeList(payload.exonerationTypeList));
-      dispatch(setPriceTypeList(payload.priceTypeList));
-      dispatch(setProductTypeList(payload.productTypeList));
+      dispatch(setIdTypeList(payload.ListadoTipoIdentificacion));
+      dispatch(setTaxTypeList(payload.ListadoTipoImpuesto));
+      dispatch(setExonerationTypeList(payload.ListadoTipoExoneracion));
+      dispatch(setPriceTypeList(payload.ListadoTipoPrecio));
+      dispatch(setProductTypeList(payload.ListadoTipoProducto));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error) }));

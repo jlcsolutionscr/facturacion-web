@@ -99,7 +99,9 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setCustomerDetails(defaultCustomerDetails));
       dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.economicActivityList[0].code));
+      dispatch(
+        setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad)
+      );
       dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
@@ -116,23 +118,18 @@ export const getProduct = createAsyncThunk(
     { getState, dispatch }
   ) => {
     const { session, invoice, ui } = getState() as RootState;
-    const { token, companyId, company } = session;
+    const { token, company } = session;
     const { taxTypeList } = ui;
     if (company) {
       dispatch(startLoader());
       try {
-        const product = await getProductEntity(
-          token,
-          payload.id,
-          1,
-          companyId,
-          taxTypeList
-        );
+        const product = await getProductEntity(token, payload.id, 1);
         if (product) {
           const { finalPrice, taxRate } = getCustomerPrice(
             company,
             invoice.entity.customerDetails,
-            product
+            product,
+            taxTypeList
           );
           dispatch(
             setProductDetails({

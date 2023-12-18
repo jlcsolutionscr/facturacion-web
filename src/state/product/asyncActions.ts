@@ -120,9 +120,8 @@ export const getProductListByPageNumber = createAsyncThunk(
 export const getProduct = createAsyncThunk(
   "product/getProduct",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { ui, session } = getState() as RootState;
+    const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
-    const { taxTypeList } = ui;
     dispatch(startLoader());
     try {
       let list = await getProductCategoryList(token, companyId);
@@ -131,13 +130,7 @@ export const getProduct = createAsyncThunk(
       dispatch(setProviderList(list));
       let product;
       if (payload.id) {
-        product = await getProductEntity(
-          token,
-          payload.id,
-          branchId,
-          companyId,
-          taxTypeList
-        );
+        product = await getProductEntity(token, payload.id, branchId);
       } else {
         product = defaultProduct;
       }

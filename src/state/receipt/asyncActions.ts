@@ -34,7 +34,9 @@ export const setReceiptParameters = createAsyncThunk(
     dispatch(startLoader());
     try {
       dispatch(resetReceipt());
-      dispatch(setActivityCode(company?.economicActivityList[0].code));
+      dispatch(
+        setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad)
+      );
       dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {

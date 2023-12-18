@@ -54,9 +54,9 @@ type SessionStateType = {
 
 type CompanyStateType = {
   entity: CompanyType;
+  availableEconomicActivityList: EconomicActivityType[];
   credentials: CredentialType;
   logo: string;
-  economicActivityList: EconomicActivityType[];
   credentialsNew: boolean;
   credentialsChanged: boolean;
   reportResults: object[];
@@ -145,6 +145,7 @@ export const sessionInitialState: SessionStateType = {
 
 export const companyInitialState: CompanyStateType = {
   entity: defaultCompany,
+  availableEconomicActivityList: [],
   credentials: {
     user: "",
     password: "",
@@ -152,7 +153,6 @@ export const companyInitialState: CompanyStateType = {
     certificatePin: "",
   },
   logo: "",
-  economicActivityList: [],
   credentialsNew: true,
   credentialsChanged: false,
   reportResults: [],

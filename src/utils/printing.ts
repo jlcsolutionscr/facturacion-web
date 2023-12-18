@@ -43,11 +43,11 @@ function createHeader(
   });
   lines.push({ text: "" });
   lines.push({
-    text: company.comercialName,
+    text: company.NombreComercial,
     style: Style.Bold,
     align: Align.Center,
   });
-  const locations = splitLines(company.address, lineWidth);
+  const locations = splitLines(company.Direccion, lineWidth);
   locations.forEach((line) => {
     lines.push({
       text: line,
@@ -55,21 +55,21 @@ function createHeader(
     });
   });
   lines.push({
-    text: company.phoneNumber,
+    text: company.Telefono1,
     align: Align.Center,
   });
   lines.push({
-    text: company.name,
+    text: company.NombreEmpresa,
     style: Style.Bold,
     align: Align.Center,
   });
   lines.push({
-    text: company.identifier,
+    text: company.Identificacion,
     style: Style.Bold,
     align: Align.Center,
   });
   lines.push({
-    text: company.notificationEmail,
+    text: company.CorreoNotificacion,
     align: Align.Center,
   });
   lines.push({ text: "" });

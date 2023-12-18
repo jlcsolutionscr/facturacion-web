@@ -24,6 +24,7 @@ import {
 } from "utils/domainHelper";
 import { RootState } from "state/store";
 import { getErrorMessage } from "utils/utilities";
+import { CustomerType } from "types/domain";
 
 export const getCustomerListFirstPage = createAsyncThunk(
   "customer/getCustomerListFirstPage",
@@ -139,27 +140,30 @@ export const validateCustomerIdentifier = createAsyncThunk(
     const { token, companyId } = session;
     dispatch(startLoader());
     try {
-      const customer = await getCustomerByIdentifier(
+      const customer: CustomerType = await getCustomerByIdentifier(
         token,
         companyId,
         payload.identifier
       );
       if (customer) {
-        if (customer.id > 0) {
+        if (customer.IdCliente > 0) {
           dispatch(
             setMessage("Ya existe un cliente con la identificación ingresada")
           );
         } else {
           dispatch(
-            setCustomerAttribute({ attribute: "name", value: customer.name })
+            setCustomerAttribute({
+              attribute: "Nombre",
+              value: customer.Nombre,
+            })
           );
         }
       } else {
-        dispatch(setCustomerAttribute({ attribute: "name", value: "" }));
+        dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setCustomerAttribute({ attribute: "name", value: "" }));
+      dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
       dispatch(setMessage({ message: getErrorMessage(error) }));
       dispatch(stopLoader());
     }
@@ -214,34 +218,32 @@ export const filterCustomerList = createAsyncThunk(
     { getState, dispatch }
   ) => {
     const { session } = getState() as RootState;
-    const { token, company } = session;
-    if (company) {
-      dispatch(startLoader());
-      try {
-        dispatch(setCustomerListPage(1));
-        const recordCount = await getCustomerListCount(
+    const { token, companyId } = session;
+    dispatch(startLoader());
+    try {
+      dispatch(setCustomerListPage(1));
+      const recordCount = await getCustomerListCount(
+        token,
+        companyId,
+        payload.filter
+      );
+      dispatch(setCustomerListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getCustomerListPerPage(
           token,
-          company?.id,
+          companyId,
+          1,
+          payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
           payload.filter
         );
-        dispatch(setCustomerListCount(recordCount));
-        if (recordCount > 0) {
-          const newList = await getCustomerListPerPage(
-            token,
-            company?.id,
-            1,
-            payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
-            payload.filter
-          );
-          dispatch(setCustomerList(newList));
-        } else {
-          dispatch(setCustomerList([]));
-        }
-        dispatch(stopLoader());
-      } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error) }));
-        dispatch(stopLoader());
+        dispatch(setCustomerList(newList));
+      } else {
+        dispatch(setCustomerList([]));
       }
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(stopLoader());
     }
   }
 );

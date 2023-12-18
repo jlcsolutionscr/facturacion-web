@@ -58,56 +58,6 @@ type DetalleFacturaCompraType = {
   PrecioVenta: number;
 };
 
-type ClienteType = {
-  IdEmpresa: number;
-  IdCliente: number;
-  IdTipoIdentificacion: number;
-  Identificacion: string;
-  Direccion: string;
-  Nombre: string;
-  NombreComercial: string;
-  Telefono: string;
-  Celular: string;
-  Fax: string;
-  CorreoElectronico: string;
-  IdVendedor: number;
-  IdTipoPrecio: number;
-  AplicaTasaDiferenciada: boolean;
-  IdImpuesto: number;
-  IdTipoExoneracion: number;
-  NumDocExoneracion: string;
-  NombreInstExoneracion: string;
-  FechaEmisionDoc: string;
-  PorcentajeExoneracion: number;
-  PermiteCredito: boolean;
-};
-
-type ProductoType = {
-  IdEmpresa: number;
-  IdProducto: number;
-  Tipo: number;
-  IdLinea: number;
-  Codigo: string;
-  CodigoProveedor: string;
-  CodigoClasificacion: string;
-  IdProveedor: number;
-  Descripcion: string;
-  PrecioCosto: number;
-  PrecioVenta1: number;
-  PrecioVenta2: number;
-  PrecioVenta3: number;
-  PrecioVenta4: number;
-  PrecioVenta5: number;
-  PorcDescuento: number;
-  IdImpuesto: number;
-  IndExistencia: number;
-  Imagen: string;
-  Marca: string;
-  Observacion: string;
-  ModificaPrecio: boolean;
-  Activo: boolean;
-};
-
 export async function requestUserLogin(
   user: string,
   password: string,
@@ -325,7 +275,7 @@ export async function getBarrioList(
   return response;
 }
 
-export async function getEconomicActivities(token: string, id: number) {
+export async function getEconomicActivityList(token: string, id: number) {
   const data =
     "{NombreMetodo: 'ObtenerListadoActividadEconomica', Parametros: {Identificacion: '" +
     id +
@@ -471,7 +421,7 @@ export async function getCustomerByIdentifier(
     token,
     JSON.parse(data)
   );
-  return parseCustomerToEntity(response);
+  return response;
 }
 
 export async function saveCustomerEntity(
@@ -479,12 +429,12 @@ export async function saveCustomerEntity(
   customer: CustomerType
 ) {
   const entidad = JSON.stringify({
-    ...parseEntityToCustomer(customer),
-    FechaEmisionDoc: convertToDateTimeString(customer.exonerationDate),
+    ...customer,
+    FechaEmisionDoc: convertToDateTimeString(customer.FechaEmisionDoc),
   });
   const data =
     "{NombreMetodo: '" +
-    (customer.id ? "ActualizarCliente" : "AgregarCliente") +
+    (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") +
     "', Entidad: " +
     entidad +
     "}";
@@ -588,9 +538,7 @@ export async function getProductListPerPage(
 export async function getProductEntity(
   token: string,
   productId: number,
-  branchId: number,
-  companyId: number,
-  taxTypeList: IdValueType[]
+  branchId: number
 ) {
   const data =
     "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " +
@@ -604,7 +552,7 @@ export async function getProductEntity(
     JSON.parse(data)
   );
   if (product === null) return null;
-  return parseProductToEntity(product, companyId, taxTypeList);
+  return product;
 }
 
 export async function getProductClasification(token: string, code: string) {
@@ -622,10 +570,10 @@ export async function getProductClasification(token: string, code: string) {
 }
 
 export async function saveProductEntity(token: string, product: ProductType) {
-  const entidad = JSON.stringify(parseEntityToProduct(product));
+  const entidad = JSON.stringify(product);
   const data =
     "{NombreMetodo: '" +
-    (product.id ? "ActualizarProducto" : "AgregarProducto") +
+    (product.IdProducto ? "ActualizarProducto" : "AgregarProducto") +
     "', Entidad: " +
     entidad +
     "}";
@@ -701,34 +649,35 @@ export async function getServicePointList(
 export function getCustomerPrice(
   company: CompanyType,
   customer: CustomerDetailsType,
-  product: ProductType
+  product: ProductType,
+  taxRateTypeList: IdValueType[]
 ) {
   let customerPrice = 0;
-  let taxRate = product.taxRate;
+  let taxRate = getTaxeRateFromId(taxRateTypeList, product.IdImpuesto);
   switch (customer.priceTypeId) {
     case 1:
-      customerPrice = product.taxPrice1;
+      customerPrice = product.PrecioVenta1;
       break;
     case 2:
-      customerPrice = product.taxPrice2;
+      customerPrice = product.PrecioVenta2;
       break;
     case 3:
-      customerPrice = product.taxPrice3;
+      customerPrice = product.PrecioVenta3;
       break;
     case 4:
-      customerPrice = product.taxPrice4;
+      customerPrice = product.PrecioVenta4;
       break;
     case 5:
-      customerPrice = product.taxPrice5;
+      customerPrice = product.PrecioVenta5;
       break;
     default:
-      customerPrice = product.taxPrice1;
+      customerPrice = product.PrecioVenta1;
   }
   customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
   if (customer.differentiatedTaxRateApply) {
     taxRate = customer.taxRate;
   }
-  if (company.ivaTaxIncluded && taxRate > 0)
+  if (company.PrecioVentaIncluyeIVA && taxRate > 0)
     customerPrice = customerPrice * (1 + taxRate / 100);
   return { taxRate, finalPrice: roundNumber(customerPrice, 2) };
 }
@@ -1268,7 +1217,7 @@ export async function saveReceiptEntity(
   });
   const receiptDate = convertToDateTimeString(new Date());
   const newReceipt = {
-    IdEmpresa: company.id,
+    IdEmpresa: company.IdEmpresa,
     CodigoActividad: receipt.activityCode,
     IdSucursal: branchId,
     IdTerminal: 1,
@@ -1347,140 +1296,4 @@ export function getPriceFromTaxRate(
   const rate = taxRate / 100;
   const finalPrice = taxOperation(price, 1 + rate);
   return finalPrice;
-}
-
-function parseCustomerToEntity(customer: ClienteType) {
-  return {
-    id: customer.IdCliente,
-    typeId: customer.IdTipoIdentificacion,
-    identifier: customer.Identificacion,
-    name: customer.Nombre,
-    companyName: customer.NombreComercial,
-    address: customer.Direccion,
-    phoneNumber: customer.Telefono,
-    faxNumber: customer.Fax,
-    email: customer.CorreoElectronico,
-    vendorId: customer.IdVendedor,
-    priceTypeId: customer.IdTipoPrecio,
-    differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
-    taxTypeId: customer.IdImpuesto,
-    exonerationType: customer.IdTipoExoneracion,
-    exonerationRef: customer.NumDocExoneracion,
-    ExoneratedBy: customer.NombreInstExoneracion,
-    exonerationDate: customer.FechaEmisionDoc,
-    exonerationPercentage: customer.PorcentajeExoneracion,
-    creditAllowed: customer.PermiteCredito,
-  };
-}
-
-function parseEntityToCustomer(entity: CustomerType) {
-  return {
-    IdCliente: entity.id,
-    IdTipoIdentificacion: entity.typeId,
-    Identificacion: entity.identifier,
-    Nombre: entity.name,
-    NombreComercial: entity.companyName,
-    Direccion: entity.address,
-    Telefono: entity.phoneNumber,
-    Fax: entity.faxNumber,
-    CorreoElectronico: entity.email,
-    IdVendedor: entity.vendorId,
-    idTipoPrecio: entity.priceTypeId,
-    AplicaTasaDiferenciada: entity.differentiatedTaxRateApply,
-    IdImpuesto: entity.taxTypeId,
-    IdTipoExoneracion: entity.exonerationType,
-    NumDocExoneracion: entity.exonerationRef,
-    NombreInstExoneracion: entity.exoneratedBy,
-    FechaEmisionDoc: entity.exonerationDate,
-    PorcentajeExoneracion: entity.exonerationPercentage,
-    PermiteCredito: entity.creditAllowed,
-  };
-}
-
-function parseProductToEntity(
-  product: ProductoType,
-  companyId: number,
-  taxTypeList: IdValueType[]
-) {
-  const parseProduct: ProductType = {
-    id: product.IdProducto,
-    companyId: companyId,
-    type: product.Tipo,
-    category: product.IdLinea,
-    code: product.Codigo,
-    providerCode: product.CodigoProveedor,
-    cabysCode: product.CodigoClasificacion,
-    image: "",
-    taxTypeId: product.IdImpuesto,
-    taxRate: getTaxeRateFromId(taxTypeList, product.IdImpuesto),
-    providerId: product.IdProveedor,
-    description: product.Descripcion,
-    costPrice: product.PrecioCosto,
-    untaxPrice1: getPriceFromTaxRate(
-      product.PrecioVenta1,
-      getTaxeRateFromId(taxTypeList, product.IdImpuesto),
-      false
-    ),
-    taxPrice1: product.PrecioVenta1,
-    untaxPrice2: getPriceFromTaxRate(
-      product.PrecioVenta2,
-      getTaxeRateFromId(taxTypeList, product.IdImpuesto),
-      false
-    ),
-    taxPrice2: product.PrecioVenta2,
-    untaxPrice3: getPriceFromTaxRate(
-      product.PrecioVenta3,
-      getTaxeRateFromId(taxTypeList, product.IdImpuesto),
-      false
-    ),
-    taxPrice3: product.PrecioVenta3,
-    untaxPrice4: getPriceFromTaxRate(
-      product.PrecioVenta4,
-      getTaxeRateFromId(taxTypeList, product.IdImpuesto),
-      false
-    ),
-    taxPrice4: product.PrecioVenta4,
-    untaxPrice5: getPriceFromTaxRate(
-      product.PrecioVenta5,
-      getTaxeRateFromId(taxTypeList, product.IdImpuesto),
-      false
-    ),
-    taxPrice5: product.PrecioVenta5,
-    observation: product.Observacion,
-    brand: product.Marca,
-    active: product.Activo,
-    discountPercentage: product.PorcDescuento,
-    priceChangeAllowed: product.ModificaPrecio,
-    minInventory: product.IndExistencia,
-  };
-  return parseProduct;
-}
-
-function parseEntityToProduct(product: ProductType) {
-  const parseProduct: ProductoType = {
-    IdProducto: product.id ?? 0,
-    IdEmpresa: product.companyId,
-    Tipo: product.type,
-    IdLinea: product.category,
-    Codigo: product.code,
-    CodigoProveedor: product.providerCode,
-    CodigoClasificacion: product.cabysCode,
-    Imagen: "",
-    IdImpuesto: product.taxTypeId,
-    IdProveedor: product.providerId,
-    Descripcion: product.description,
-    PrecioCosto: product.costPrice,
-    PrecioVenta1: product.taxPrice1,
-    PrecioVenta2: product.taxPrice2,
-    PrecioVenta3: product.taxPrice3,
-    PrecioVenta4: product.taxPrice4,
-    PrecioVenta5: product.taxPrice5,
-    IndExistencia: product.minInventory,
-    PorcDescuento: product.discountPercentage,
-    ModificaPrecio: product.priceChangeAllowed,
-    Observacion: product.observation,
-    Marca: product.brand,
-    Activo: product.active,
-  };
-  return parseProduct;
 }

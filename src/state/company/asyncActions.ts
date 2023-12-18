@@ -5,8 +5,8 @@ import {
   setCompany,
   setCompanyLogo,
   setCredentials,
-  setEconomicActivityList,
   setCompanyAttribute,
+  setAvailableEconomicActivityList,
   setReportResults,
 } from "state/company/reducer";
 import {
@@ -23,7 +23,7 @@ import {
   getCantonList,
   getDistritoList,
   getBarrioList,
-  getEconomicActivities,
+  getEconomicActivityList,
   saveCompanyEntity,
   getCredentialsEntity,
   validateCredentials,
@@ -62,16 +62,16 @@ export const getCompany = createAsyncThunk(
         company.IdCanton,
         company.IdDistrito
       );
-      const activityList = await getEconomicActivities(
+      const availableEconomicActivityList = await getEconomicActivityList(
         token,
         company.Identificacion
       );
       dispatch(setCompany(company));
       dispatch(setCredentials(credentials));
+      dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
       dispatch(setCantonList(cantonList));
       dispatch(setDistritoList(distritoList));
       dispatch(setBarrioList(barrioList));
-      dispatch(setEconomicActivityList(activityList));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error) }));
@@ -93,7 +93,7 @@ export const saveCompany = createAsyncThunk(
     } = company;
     dispatch(startLoader());
     try {
-      if (!companyEntity?.simplifyRegimen) {
+      if (!companyEntity?.RegimenSimplificado) {
         if (credentials == null)
           throw new Error("Los credenciales de Hacienda deben ingresarse");
         if (
@@ -117,12 +117,12 @@ export const saveCompany = createAsyncThunk(
             payload.certificate
           );
       }
-      await saveCompanyEntity(token, company);
-      if (!companyEntity?.simplifyRegimen && credentialsChanged) {
+      await saveCompanyEntity(token, companyEntity);
+      if (!companyEntity?.RegimenSimplificado && credentialsChanged) {
         if (credentialsNew)
           await saveCredentialsEntity(
             token,
-            companyEntity?.id,
+            companyEntity.IdEmpresa,
             credentials.user,
             credentials.password,
             credentials.certificate,
@@ -132,7 +132,7 @@ export const saveCompany = createAsyncThunk(
         else
           await updateCredentialsEntity(
             token,
-            companyEntity?.id,
+            companyEntity.IdEmpresa,
             credentials.user,
             credentials.password,
             credentials.certificate,
@@ -200,9 +200,9 @@ export const addActivity = createAsyncThunk(
   "company/addActivity",
   async (payload: { code: string }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
-    const { entity: companyEntity, economicActivityList } = company;
-    const activity = economicActivityList.find(
-      (x: EconomicActivityType) => x.code === payload.code
+    const { entity: companyEntity, availableEconomicActivityList } = company;
+    const activity = availableEconomicActivityList.find(
+      (x: EconomicActivityType) => x.CodigoActividad === payload.code
     );
     if (!activity) {
       dispatch(
@@ -214,15 +214,18 @@ export const addActivity = createAsyncThunk(
     } else {
       if (companyEntity) {
         const list = [
-          ...companyEntity.economicActivityList,
+          ...companyEntity.ActividadEconomicaEmpresa,
           {
-            companyId: companyEntity.id,
-            code: activity.code,
-            description: activity.description,
+            companyId: companyEntity.IdEmpresa,
+            code: activity.CodigoActividad,
+            description: activity.Descripcion,
           },
         ];
         dispatch(
-          setCompanyAttribute({ field: "economicActivities", value: list })
+          setCompanyAttribute({
+            attribute: "ActividadEconomicaEmpresa",
+            value: list,
+          })
         );
       }
     }
@@ -232,14 +235,18 @@ export const addActivity = createAsyncThunk(
 export const removeActivity = createAsyncThunk(
   "company/removeActivity",
   async (payload: { code: string }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { company } = session;
-    if (company) {
-      const list = company.economicActivityList.filter(
-        (item: EconomicActivityType) => item.code !== payload.code
+    const { company } = getState() as RootState;
+    const { entity } = company;
+
+    if (entity) {
+      const list = entity.ActividadEconomicaEmpresa.filter(
+        (item: EconomicActivityType) => item.CodigoActividad !== payload.code
       );
       dispatch(
-        setCompanyAttribute({ field: "economicActivities", value: list })
+        setCompanyAttribute({
+          attribute: "ActividadEconomicaEmpresa",
+          value: list,
+        })
       );
     }
   }
