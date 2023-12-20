@@ -3,7 +3,7 @@ import LogoDarkImage from "assets/img/company-logo-dark.webp";
 
 export const useStyles = makeStyles()((theme) => ({
   header: {
-    backgroundImage: `linear-gradient(to bottom, ${"rgba(51, 51, 51, 0.6)"}, ${"rgba(51, 51, 51, 0.9)"}, ${"rgba(51, 51, 51, 1)"})`,
+    backgroundImage: `linear-gradient(to bottom, ${theme.palette.custom.backgroundHeaderMin}, ${theme.palette.custom.backgroundHeaderMiddle}, ${theme.palette.custom.backgroundHeaderMax})`,
     flex: "0 1 auto",
     paddingTop: "0",
     paddingBottom: "10px",

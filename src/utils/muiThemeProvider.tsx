@@ -4,6 +4,9 @@ declare module "@mui/material/styles" {
       pagesBackground: string;
       navbarBackground: string;
       borderColor: string;
+      backgroundHeaderMin: string;
+      backgroundHeaderMiddle: string;
+      backgroundHeaderMax: string;
     };
   }
 
@@ -12,6 +15,9 @@ declare module "@mui/material/styles" {
       pagesBackground: string;
       navbarBackground: string;
       borderColor: string;
+      backgroundHeaderMin: string;
+      backgroundHeaderMiddle: string;
+      backgroundHeaderMax: string;
     };
   }
 }
@@ -48,6 +54,9 @@ const darkTheme = createTheme({
       pagesBackground: "#424242",
       navbarBackground: "#333",
       borderColor: "rgba(255, 255, 255, 0.23)",
+      backgroundHeaderMin: "rgba(51, 51, 51, 0.6)",
+      backgroundHeaderMiddle: "rgba(51, 51, 51, 0.9)",
+      backgroundHeaderMax: "rgba(51, 51, 51, 1)",
     },
   },
 });
@@ -70,6 +79,9 @@ const lightTheme = createTheme({
       pagesBackground: "#F2F2F2",
       navbarBackground: "#08415c",
       borderColor: "rgba(0, 0, 0, 0.23)",
+      backgroundHeaderMin: "rgba(51, 51, 51, 0.6)",
+      backgroundHeaderMiddle: "rgba(51, 51, 51, 0.9)",
+      backgroundHeaderMax: "rgba(51, 51, 51, 1)",
     },
   },
 });
