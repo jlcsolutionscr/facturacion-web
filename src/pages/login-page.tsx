@@ -1,9 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-
-import { restoreSession, userLogin } from "state/session/asyncActions";
-import { readFromLocalStorage } from "utils/utilities";
-
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -14,10 +11,11 @@ import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 
+import { restoreSession, userLogin } from "state/session/asyncActions";
+import { readFromLocalStorage } from "utils/utilities";
 import LogoImage from "assets/img/login-logo.webp";
 import LoginImage from "assets/img/login-background.webp";
 import LoginImageJpg from "assets/img/login-background.webp";
-import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -110,7 +108,7 @@ export default function LoginPage({
     };
 
   const handleLoginClick = () => {
-    userLogin({ username, password, id });
+    dispatch(userLogin({ username, password, id }));
   };
 
   const isSubmitButtonDisabled =
@@ -138,7 +136,7 @@ export default function LoginPage({
           </Avatar>
           <form className={classes.form} noValidate>
             <TextField
-              variant="outlined"
+              variant="standard"
               required
               fullWidth
               id="username"
@@ -149,7 +147,7 @@ export default function LoginPage({
               autoFocus
             />
             <TextField
-              variant="outlined"
+              variant="standard"
               required
               fullWidth
               name="password"
@@ -160,7 +158,7 @@ export default function LoginPage({
               onChange={handleOnChange("password")}
             />
             <TextField
-              variant="outlined"
+              variant="standard"
               required
               fullWidth
               name="id"

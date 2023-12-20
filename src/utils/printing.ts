@@ -1,6 +1,6 @@
-import { Printer, Style, Align, WebUSB } from "escpos-buffer";
 import { CompanyType, InvoiceType, WorkingOrderType } from "types/domain";
 import { formatCurrency } from "utils/utilities";
+import { Model, Printer, Style, WebUSB, Align } from "escpos-buffer-web";
 
 type LineType = {
   text: string;
@@ -371,8 +371,9 @@ async function printLines(lines: LineType[], lineWidth: number) {
   const connection = new WebUSB(device);
   try {
     await connection.open();
-    const printer = await Printer.CONNECT("POS-80", connection);
-    printer.setColumns(lineWidth);
+    const model = new Model("TM-T20");
+    const printer = new Printer(model, connection);
+    printer.columns = lineWidth;
     lines.forEach((line) => {
       printer.writeln(line.text, line.style, line.align);
     });

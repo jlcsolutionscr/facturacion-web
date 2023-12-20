@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 
 import { uiInitialState } from "state/InitialState";
 import { RootState } from "state/store";
@@ -62,9 +62,12 @@ export const {
 export const getIsLoaderOpen = (state: RootState) => state.ui.isLoaderOpen;
 export const getActiveSection = (state: RootState) => state.ui.activeSection;
 export const getLoaderText = (state: RootState) => state.ui.loaderText;
-export const getMessage = (state: RootState) => {
-  return { message: state.ui.message, messageType: state.ui.messageType };
-};
+export const getMessage = createSelector(
+  (state: RootState) => state.ui,
+  (ui) => {
+    return { message: ui.message, messageType: ui.messageType };
+  }
+);
 export const getCantonList = (state: RootState) => state.ui.distritoList;
 export const getDistritoList = (state: RootState) => state.ui.distritoList;
 export const getBarrioList = (state: RootState) => state.ui.barrioList;
