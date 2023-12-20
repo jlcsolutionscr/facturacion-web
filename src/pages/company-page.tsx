@@ -116,14 +116,16 @@ export default function CompanyPage() {
     } else if (id === "IdCanton") {
       dispatch(updateDistritoList({ id: company.IdProvincia, subId: value }));
       dispatch(setCompanyAttribute({ attribute: "IdCanton", value: value }));
-      dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 });
+      dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 }));
       dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else if (id === "IdDistrito") {
-      dispatch(updateBarrioList({
-        id: company.IdProvincia,
-        subId: company.IdCanton,
-        subSubId: value,
-      }));
+      dispatch(
+        updateBarrioList({
+          id: company.IdProvincia,
+          subId: company.IdCanton,
+          subSubId: value,
+        })
+      );
       dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: value }));
       dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else {
@@ -138,7 +140,9 @@ export default function CompanyPage() {
     if (event.target.files !== null) {
       const reader: FileReader = new FileReader();
       const file = event.target.files[0];
-      dispatch(setCredentialsAttribute({ attribute: "certificate", value: file.name }));
+      dispatch(
+        setCredentialsAttribute({ attribute: "certificate", value: file.name })
+      );
       reader.onloadend = () => {
         const certificateBase64 = (reader.result as string).substring(
           (reader.result as string).indexOf(",") + 1
@@ -322,10 +326,12 @@ export default function CompanyPage() {
             value={credentials ? credentials.user : ""}
             label="Usuario ATV"
             onChange={(event) =>
-              dispatch(setCredentialsAttribute({
-                attribute: "user",
-                value: event.target.value,
-              }))
+              dispatch(
+                setCredentialsAttribute({
+                  attribute: "user",
+                  value: event.target.value,
+                })
+              )
             }
           />
         </Grid>
@@ -336,10 +342,12 @@ export default function CompanyPage() {
             value={credentials ? credentials.password : ""}
             label="Clave ATV"
             onChange={(event) =>
-              dispatch(setCredentialsAttribute({
-                attribute: "password",
-                value: event.target.value,
-              }))
+              dispatch(
+                setCredentialsAttribute({
+                  attribute: "password",
+                  value: event.target.value,
+                })
+              )
             }
           />
         </Grid>
@@ -350,10 +358,12 @@ export default function CompanyPage() {
             value={credentials ? credentials.certificate : ""}
             label="Llave criptográfica"
             onChange={(event) =>
-              dispatch(setCredentialsAttribute({
-                attribute: "certificate",
-                value: event.target.value,
-              }))
+              dispatch(
+                setCredentialsAttribute({
+                  attribute: "certificate",
+                  value: event.target.value,
+                })
+              )
             }
           />
         </Grid>
@@ -380,10 +390,12 @@ export default function CompanyPage() {
             value={credentials ? credentials.certificatePin : ""}
             label="Pin de llave criptográfica"
             onChange={(event) =>
-              dispatch(setCredentialsAttribute({
-                attribute: "certificatePin",
-                value: event.target.value,
-              }))
+              dispatch(
+                setCredentialsAttribute({
+                  attribute: "certificatePin",
+                  value: event.target.value,
+                })
+              )
             }
           />
         </Grid>
@@ -393,10 +405,12 @@ export default function CompanyPage() {
               <Checkbox
                 checked={company ? company.PrecioVentaIncluyeIVA : true}
                 onChange={() =>
-                  dispatch(setCompanyAttribute({
-                    attribute: "PrecioVentaIncluyeIVA",
-                    value: !company.PrecioVentaIncluyeIVA,
-                  }))
+                  dispatch(
+                    setCompanyAttribute({
+                      attribute: "PrecioVentaIncluyeIVA",
+                      value: !company.PrecioVentaIncluyeIVA,
+                    })
+                  )
                 }
                 name="PrecioVentaIncluyeIVA"
                 color="primary"
@@ -453,7 +467,9 @@ export default function CompanyPage() {
                             color="secondary"
                             component="span"
                             onClick={() =>
-                              dispatch(removeActivity({ code: row.CodigoActividad }))
+                              dispatch(
+                                removeActivity({ code: row.CodigoActividad })
+                              )
                             }
                           >
                             <RemoveCircleIcon />
@@ -474,7 +490,10 @@ export default function CompanyPage() {
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
+          <Button
+            label="Regresar"
+            onClick={() => dispatch(setActiveSection(0))}
+          />
         </Grid>
       </Grid>
     </div>
