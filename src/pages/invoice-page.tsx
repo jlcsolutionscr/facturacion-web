@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -36,11 +35,12 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function InvoicePage({ setActiveSection }) {
+export default function InvoicePage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -48,9 +48,9 @@ function InvoicePage({ setActiveSection }) {
     <div className={classes.container}>
       <div className={classes.backButton}>
         <IconButton
-          aria-label="upload picture"
+          aria-label="close"
           component="span"
-          onClick={() => setActiveSection(0)}
+          onClick={() => dispatch(setActiveSection(0))}
         >
           <BackArrowIcon className={classes.icon} />
         </IconButton>
@@ -72,9 +72,3 @@ function InvoicePage({ setActiveSection }) {
     </div>
   );
 }
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActiveSection }, dispatch);
-};
-
-export default connect(null, mapDispatchToProps)(InvoicePage);

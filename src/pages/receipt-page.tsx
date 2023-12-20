@@ -89,7 +89,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-let delayTimer = null;
+let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 function ReceiptPage({
   idTypeList,
@@ -100,7 +100,7 @@ function ReceiptPage({
   taxTypeList,
   company,
   product,
-  productDetailList,
+  productDetailsList,
   summary,
   activityCode,
   successful,
@@ -464,7 +464,7 @@ function ReceiptPage({
               </TableRow>
             </TableHead>
             <TableBody>
-              {productDetailList.map((row, index) => (
+              {productDetailsList.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.Codigo}</TableCell>
                   <TableCell>{row.Descripcion}</TableCell>
@@ -554,7 +554,7 @@ const mapStateToProps = (state) => {
     exoneration: state.receipt.exoneration,
     product: state.receipt.product,
     taxTypeList: state.ui.taxTypeList,
-    productDetailList: state.receipt.productDetailList,
+    productDetailsList: state.receipt.productDetailsList,
     activityCode: state.receipt.activityCode,
     summary: state.receipt.summary,
     successful: state.receipt.successful,

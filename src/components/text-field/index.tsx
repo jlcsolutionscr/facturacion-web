@@ -1,14 +1,14 @@
 import TextField, { TextFieldVariants } from "@mui/material/TextField";
 
 interface CustomTextFieldProps {
-  id: string;
   value: string;
   label: string;
+  id?: string;
   numericFormat?: boolean;
   variant?: TextFieldVariants;
   disabled?: boolean;
   required?: boolean;
-  onChange: (event: { target: { id: string; value: string } }) => void;
+  onChange: (event: { target: { id?: string; value: string } }) => void;
 }
 
 export default function CustomTextField(props: CustomTextFieldProps) {

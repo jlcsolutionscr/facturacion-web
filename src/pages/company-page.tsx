@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
@@ -38,7 +38,7 @@ import {
   getCredentials,
   setCompanyAttribute,
   setCredentialsAttribute,
-  getEconomicActivityList,
+  getAvailableEconomicActivityList,
 } from "state/company/reducer";
 import { convertToDateString } from "utils/utilities";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
@@ -67,16 +67,19 @@ const useStyles = makeStyles()((theme) => ({
 
 export default function CompanyPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const company = useSelector(getCompany);
   const credentials = useSelector(getCredentials);
   const cantonList = useSelector(getCantonList);
   const distritoList = useSelector(getDistritoList);
   const barrioList = useSelector(getBarrioList);
-  const economicActivityList = useSelector(getEconomicActivityList);
+  const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   const [certificate, setCertificate] = React.useState("");
   const [activityCode, setActivityCode] = React.useState(
-    economicActivityList.length > 0 ? economicActivityList[0].companyId : null
+    economicActivityList.length > 0
+      ? economicActivityList[0].CodigoActividad
+      : null
   );
   const inputFile = React.useRef<HTMLInputElement>(null);
   let disabled = true;
@@ -95,34 +98,36 @@ export default function CompanyPage() {
         credentials.password === "" ||
         credentials.certificate === "" ||
         credentials.certificatePin === ""));
-  const handleChange = (event: { target: { id: any; value: any } }) => {
-    setCompanyAttribute({
-      attribute: event.target.id,
-      value: event.target.value,
-    });
+  const handleChange = (event: { target: { id?: any; value: any } }) => {
+    dispatch(
+      setCompanyAttribute({
+        attribute: event.target.id,
+        value: event.target.value,
+      })
+    );
   };
   const handleSelectChange = (id: string, value: number) => {
     if (id === "IdProvincia") {
-      updateCantonList({ id: value });
-      setCompanyAttribute({ attribute: "IdProvincia", value: value });
-      setCompanyAttribute({ attribute: "IdCanton", value: 1 });
-      setCompanyAttribute({ attribute: "IdDistrito", value: 1 });
-      setCompanyAttribute({ attribute: "IdBarrio", value: 1 });
+      dispatch(updateCantonList({ id: value }));
+      dispatch(setCompanyAttribute({ attribute: "IdProvincia", value: value }));
+      dispatch(setCompanyAttribute({ attribute: "IdCanton", value: 1 }));
+      dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 }));
+      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else if (id === "IdCanton") {
-      updateDistritoList({ id: company.IdProvincia, subId: value });
-      setCompanyAttribute({ attribute: "IdCanton", value: value });
-      setCompanyAttribute({ attribute: "IdDistrito", value: 1 });
-      setCompanyAttribute({ attribute: "IdBarrio", value: 1 });
+      dispatch(updateDistritoList({ id: company.IdProvincia, subId: value }));
+      dispatch(setCompanyAttribute({ attribute: "IdCanton", value: value }));
+      dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 });
+      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else if (id === "IdDistrito") {
-      updateBarrioList({
+      dispatch(updateBarrioList({
         id: company.IdProvincia,
         subId: company.IdCanton,
         subSubId: value,
-      });
-      setCompanyAttribute({ attribute: "IdDistrito", value: value });
-      setCompanyAttribute({ attribute: "IdBarrio", value: 1 });
+      }));
+      dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: value }));
+      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else {
-      setCompanyAttribute({ attribute: "IdBarrio", value: value });
+      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: value }));
     }
   };
   const handleCertificateChange = (event: {
@@ -133,7 +138,7 @@ export default function CompanyPage() {
     if (event.target.files !== null) {
       const reader: FileReader = new FileReader();
       const file = event.target.files[0];
-      setCredentialsAttribute({ attribute: "certificate", value: file.name });
+      dispatch(setCredentialsAttribute({ attribute: "certificate", value: file.name }));
       reader.onloadend = () => {
         const certificateBase64 = (reader.result as string).substring(
           (reader.result as string).indexOf(",") + 1
@@ -145,22 +150,22 @@ export default function CompanyPage() {
   };
   const cantonItems = cantonList.map((item) => {
     return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
       </MenuItem>
     );
   });
   const distritoItems = distritoList.map((item) => {
     return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
       </MenuItem>
     );
   });
   const barrioItems = barrioList.map((item) => {
     return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
       </MenuItem>
     );
   });
@@ -317,10 +322,10 @@ export default function CompanyPage() {
             value={credentials ? credentials.user : ""}
             label="Usuario ATV"
             onChange={(event) =>
-              setCredentialsAttribute({
+              dispatch(setCredentialsAttribute({
                 attribute: "user",
                 value: event.target.value,
-              })
+              }))
             }
           />
         </Grid>
@@ -331,10 +336,10 @@ export default function CompanyPage() {
             value={credentials ? credentials.password : ""}
             label="Clave ATV"
             onChange={(event) =>
-              setCredentialsAttribute({
+              dispatch(setCredentialsAttribute({
                 attribute: "password",
                 value: event.target.value,
-              })
+              }))
             }
           />
         </Grid>
@@ -345,10 +350,10 @@ export default function CompanyPage() {
             value={credentials ? credentials.certificate : ""}
             label="Llave criptográfica"
             onChange={(event) =>
-              setCredentialsAttribute({
+              dispatch(setCredentialsAttribute({
                 attribute: "certificate",
                 value: event.target.value,
-              })
+              }))
             }
           />
         </Grid>
@@ -375,10 +380,10 @@ export default function CompanyPage() {
             value={credentials ? credentials.certificatePin : ""}
             label="Pin de llave criptográfica"
             onChange={(event) =>
-              setCredentialsAttribute({
+              dispatch(setCredentialsAttribute({
                 attribute: "certificatePin",
                 value: event.target.value,
-              })
+              }))
             }
           />
         </Grid>
@@ -388,10 +393,10 @@ export default function CompanyPage() {
               <Checkbox
                 checked={company ? company.PrecioVentaIncluyeIVA : true}
                 onChange={() =>
-                  setCompanyAttribute({
+                  dispatch(setCompanyAttribute({
                     attribute: "PrecioVentaIncluyeIVA",
                     value: !company.PrecioVentaIncluyeIVA,
-                  })
+                  }))
                 }
                 name="PrecioVentaIncluyeIVA"
                 color="primary"
@@ -407,9 +412,9 @@ export default function CompanyPage() {
             </InputLabel>
             <Select
               id="CodigoActividad"
-              value={activityCode ? activityCode : 0}
+              value={activityCode ? activityCode : ""}
               onChange={(event) =>
-                setActivityCode(parseInt(event.target.value.toString()))
+                dispatch(setActivityCode(event.target.value))
               }
             >
               {activityItems}
@@ -422,7 +427,7 @@ export default function CompanyPage() {
             disabled={activityCode === null}
             component="span"
             onClick={() =>
-              addActivity({ code: activityCode?.toString() ?? "" })
+              dispatch(addActivity({ code: activityCode?.toString() ?? "" }))
             }
           >
             <AddCircleIcon />
@@ -448,7 +453,7 @@ export default function CompanyPage() {
                             color="secondary"
                             component="span"
                             onClick={() =>
-                              removeActivity({ code: row.CodigoActividad })
+                              dispatch(removeActivity({ code: row.CodigoActividad }))
                             }
                           >
                             <RemoveCircleIcon />
@@ -465,11 +470,11 @@ export default function CompanyPage() {
           <Button
             disabled={disabled}
             label="Guardar"
-            onClick={() => saveCompany({ certificate })}
+            onClick={() => dispatch(saveCompany({ certificate }))}
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button label="Regresar" onClick={() => setActiveSection(0)} />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
       </Grid>
     </div>

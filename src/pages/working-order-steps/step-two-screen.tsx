@@ -63,7 +63,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-let delayTimer = null;
+let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 function StepTwoScreen({
   index,
@@ -76,7 +76,7 @@ function StepTwoScreen({
   description,
   quantity,
   price,
-  productDetailList,
+  productDetailsList,
   status,
   getProduct,
   setDescription,
@@ -88,9 +88,9 @@ function StepTwoScreen({
   removeDetails,
 }) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const myRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (value === 1) myRef.current.scrollTo(0, 0);
+    if (value === 1) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
   const [filterType, setFilterType] = React.useState(2);
@@ -108,8 +108,8 @@ function StepTwoScreen({
     }, 1000);
   };
 
-  const handleItemSelected = (item) => {
-    getProduct(item.Id, filterType);
+  const handleItemSelected = (item: IdDescriptionType) => {
+    getProduct({ id: item.Id });
     setFilter("");
   };
 
@@ -231,7 +231,7 @@ function StepTwoScreen({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {productDetailList.map((row, index) => (
+                  {productDetailsList.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell align="right">{row.Cantidad}</TableCell>
                       <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
@@ -274,7 +274,7 @@ const mapStateToProps = (state) => {
     productListPage: state.product.listPage,
     productListCount: state.product.listCount,
     productList: state.product.list,
-    productDetailList: state.workingOrder.productDetailList,
+    productDetailsList: state.workingOrder.productDetailsList,
     status: state.workingOrder.status,
   };
 };

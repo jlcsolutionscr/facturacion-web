@@ -53,8 +53,8 @@ export const {
 export const getCompany = (state: RootState) => state.company.entity;
 export const getCompanyLogo = (state: RootState) => state.company.logo;
 export const getCredentials = (state: RootState) => state.company.credentials;
-export const getEconomicActivityList = (state: RootState) =>
-  state.company.economicActivityList;
+export const getAvailableEconomicActivityList = (state: RootState) =>
+  state.company.availableEconomicActivityList;
 export const getReportResults = (state: RootState) =>
   state.company.reportResults;
 

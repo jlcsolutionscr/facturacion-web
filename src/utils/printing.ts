@@ -238,7 +238,7 @@ export const printInvoice = async (
     style: Style.Bold,
     align: Align.Left,
   });
-  invoice.productDetailList.forEach((row) => {
+  invoice.productDetailsList.forEach((row) => {
     lines.push({
       text: row.description,
       align: Align.Left,
@@ -335,7 +335,7 @@ export const printWorkingOrder = async (
     style: Style.Bold,
     align: Align.Left,
   });
-  workingOrder.productDetailList.forEach((row) => {
+  workingOrder.productDetailsList.forEach((row) => {
     lines.push({
       text: row.description,
       align: Align.Left,

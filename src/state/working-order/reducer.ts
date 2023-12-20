@@ -23,12 +23,12 @@ const workingOrderSlice = createSlice({
     setPrice: (state, action) => {
       state.entity.productDetails.price = action.payload.price;
     },
-    resetProductDetail: (state) => {
+    resetProductDetails: (state) => {
       state.entity.productDetails = defaultInvoiceProduct;
     },
-    setProductList: (state, action) => {
+    setProductDetailsList: (state, action) => {
       state.entity.status = "on-progress";
-      state.entity.productDetailList = action.payload.details;
+      state.entity.productDetailsList = action.payload.details;
     },
     setSummary: (state, action) => {
       state.entity.summary = action.payload.summary;
@@ -82,8 +82,8 @@ export const {
   setDescription,
   setQuantity,
   setPrice,
-  resetProductDetail,
-  setProductList,
+  resetProductDetails,
+  setProductDetailsList,
   setSummary,
   setActivityCode,
   setPaymentDetailsList,
@@ -104,7 +104,7 @@ export const getCustomerDetails = (state: RootState) =>
 export const getProductDetails = (state: RootState) =>
   state.workingOrder.entity.productDetails;
 export const getProductList = (state: RootState) =>
-  state.workingOrder.entity.productDetailList;
+  state.workingOrder.entity.productDetailsList;
 export const getSummary = (state: RootState) =>
   state.workingOrder.entity.summary;
 export const getActivityCode = (state: RootState) =>

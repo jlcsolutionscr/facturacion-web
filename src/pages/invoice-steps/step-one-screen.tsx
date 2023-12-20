@@ -1,6 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 
@@ -8,13 +7,21 @@ import LabelField from "components/label-field";
 import TextField from "components/text-field";
 import ListDropdown from "components/list-dropdown";
 import {
-  getCustomer,
-  setCustomerAttribute,
+  getCustomer as getCustomerAction,
   filterCustomerList,
   getCustomerListByPageNumber,
 } from "state/customer/asyncActions";
+import {
+  getCustomer,
+  getCustomerList,
+  getCustomerListCount,
+  getCustomerListPage,
+  setCustomerAttribute,
+} from "state/customer/reducer";
 import { convertToDateString } from "utils/utilities";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
+import { getSuccessful } from "state/invoice/reducer";
+import { IdDescriptionType } from "types/domain";
 
 const useStyles = makeStyles()((theme) => ({
   container: {
@@ -25,46 +32,49 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-let delayTimer = null;
+let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function StepOneScreen({
-  index,
-  value,
-  customer,
-  customerListCount,
-  customerListPage,
-  customerList,
-  successful,
-  filterCustomerList,
-  getCustomerListByPageNumber,
-  getCustomer,
-  setCustomerAttribute,
-}) {
+interface StepOneScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const myRef = React.useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
+
+  const customer = useSelector(getCustomer);
+  const customerListCount = useSelector(getCustomerListCount);
+  const customerListPage = useSelector(getCustomerListPage);
+  const customerList = useSelector(getCustomerList);
+  const successful = useSelector(getSuccessful);
+
   React.useEffect(() => {
-    if (value === 0) myRef.current.scrollTo(0, 0);
+    if (value === 0) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
-  const [filter, setFilter] = React.useState("");
+  const [filterText, setFilterText] = React.useState("");
 
-  const handleOnFilterChange = (event) => {
-    setFilter(event.target.value);
+  const handleOnFilterChange = (event: { target: { value: string } }) => {
+    setFilterText(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterCustomerList(event.target.value);
+      dispatch(filterCustomerList({ filterText: event.target.value }));
     }, 1000);
   };
 
-  const handleOnPageChange = (pageNumber) => {
-    getCustomerListByPageNumber(pageNumber + 1, filter);
+  const handleOnPageChange = (pageNumber: number) => {
+    dispatch(
+      getCustomerListByPageNumber({ pageNumber: pageNumber + 1, filterText })
+    );
   };
 
-  const handleItemSelected = (item) => {
-    getCustomer(item.Id);
-    setFilter("");
+  const handleItemSelected = (item: IdDescriptionType) => {
+    dispatch(getCustomerAction({ id: item.Id }));
+    setFilterText("");
   };
 
   return (
@@ -77,7 +87,7 @@ function StepOneScreen({
             page={customerListPage - 1}
             rowsCount={customerListCount}
             rows={customerList}
-            value={filter}
+            value={filterText}
             rowsPerPage={ROWS_PER_CUSTOMER}
             onItemSelected={handleItemSelected}
             onChange={handleOnFilterChange}
@@ -91,7 +101,12 @@ function StepOneScreen({
             value={customer.Nombre}
             label="Nombre del cliente"
             onChange={(event) =>
-              setCustomerAttribute("Nombre", event.target.value)
+              dispatch(
+                setCustomerAttribute({
+                  attribute: "Nombre",
+                  value: event.target.value,
+                })
+              )
             }
           />
         </Grid>
@@ -110,7 +125,7 @@ function StepOneScreen({
         <Grid item xs={12} md={6}>
           <LabelField
             label="Tipo de exoneración"
-            value={customer ? customer.IdTipoExoneracion : ""}
+            value={customer ? customer.IdTipoExoneracion.toString() : ""}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -136,34 +151,10 @@ function StepOneScreen({
         <Grid item xs={12} md={6}>
           <LabelField
             label="Porcentaje de exoneración"
-            value={customer ? customer.PorcentajeExoneracion : ""}
+            value={customer ? customer.PorcentajeExoneracion.toString() : ""}
           />
         </Grid>
       </Grid>
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    customer: state.customer.customer,
-    customerListCount: state.customer.listCount,
-    customerListPage: state.customer.listPage,
-    customerList: state.customer.list,
-    successful: state.invoice.successful,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      getCustomer,
-      setCustomerAttribute,
-      filterCustomerList,
-      getCustomerListByPageNumber,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen);

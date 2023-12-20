@@ -78,7 +78,7 @@ export function convertToDateTimeString(date: Date | string) {
 }
 
 export function getTaxeRateFromId(taxTypeList: IdValueType[], id: number) {
-  return taxTypeList.find((x) => x.id === id)?.value ?? 13;
+  return taxTypeList.find((x) => x.Id === id)?.Valor ?? 13;
 }
 
 export function xmlToObject(value: string) {

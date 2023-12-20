@@ -45,6 +45,7 @@ export const defaultCustomerDetails: CustomerDetailsType = {
   exonerationType: 1,
   differentiatedTaxRateApply: false,
   taxRate: 13,
+  taxRateType: 8,
   exonerationRef: "",
   exoneratedBy: "",
   exonerationDate: "01/01/2000",
@@ -81,11 +82,12 @@ export const defaultPaymentDetails: PaymentDetailsType = {
 };
 
 export const defaultInvoiceProduct: ProductDetailsType = {
-  id: 0,
+  id: "",
   code: "",
   description: "",
   quantity: 1,
   taxRate: 13,
+  taxRateType: 8,
   unit: "UND",
   price: 0,
   costPrice: 0,
@@ -93,10 +95,12 @@ export const defaultInvoiceProduct: ProductDetailsType = {
 };
 
 export const defaultReceiptProduct: ProductDetailsType = {
+  id: "",
   code: "",
   description: "",
   quantity: 1,
   taxRate: 13,
+  taxRateType: 8,
   unit: "UND",
   price: 0,
 };
@@ -135,7 +139,7 @@ export const defaultInvoice: InvoiceType = {
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
   productDetails: defaultInvoiceProduct,
-  productDetailList: [],
+  productDetailsList: [],
   paymentDetailsList: [defaultPaymentDetails],
   vendorId: 0,
   summary: {
@@ -162,7 +166,7 @@ export const defaultWorkingOrder: WorkingOrderType = {
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
   productDetails: defaultInvoiceProduct,
-  productDetailList: [],
+  productDetailsList: [],
   paymentDetailsList: [],
   vendorId: 0,
   summary: {
@@ -198,7 +202,7 @@ export const defaultReceipt: ReceiptType = {
     email: "",
   },
   productDetails: defaultReceiptProduct,
-  productDetailList: [],
+  productDetailsList: [],
   summary: {
     taxed: 0,
     exonerated: 0,

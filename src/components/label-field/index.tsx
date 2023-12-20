@@ -1,9 +1,9 @@
 import { useStyles } from "./styles";
 
 interface LabelFieldProps {
-  id: string;
   label: string;
   value: string;
+  id?: string;
 }
 
 export default function LabelField(props: LabelFieldProps) {

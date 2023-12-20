@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
@@ -21,19 +21,25 @@ import { ROWS_PER_PRODUCT } from "utils/constants";
 
 import {
   getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
   addDetails,
   removeDetails,
 } from "state/invoice/asyncActions";
-
+import {
+  setDescription,
+  setQuantity,
+  setPrice,
+  getProductDetails,
+  getSuccessful,
+} from "state/invoice/reducer";
 import {
   filterProductList,
   getProductListByPageNumber,
 } from "state/product/asyncActions";
-
 import { formatCurrency, roundNumber } from "utils/utilities";
+import { getPermissions } from "state/session/reducer";
+import { getProductListPage } from "state/product/reducer";
+import { getProductDetailsList } from "state/receipt/reducer";
+import { IdDescriptionType } from "types/domain";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -64,51 +70,51 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-let delayTimer = null;
+let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function StepTwoScreen({
-  index,
-  value,
-  permissions,
-  productListPage,
-  productListCount,
-  productList,
-  product,
-  description,
-  quantity,
-  price,
-  productDetailList,
-  successful,
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
-  filterProductList,
-  getProductListByPageNumber,
-  addDetails,
-  removeDetails,
-}) {
+interface StepTwoScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
-  React.useEffect(() => {
-    if (value === 1) myRef.current.scrollTo(0, 0);
-  }, [value]);
+  const dispatch = useDispatch();
+
   const [filterType, setFilterType] = React.useState(2);
   const [filter, setFilter] = React.useState("");
+  const myRef = React.useRef<HTMLDivElement>(null);
+
+  const permissions = useSelector(getPermissions);
+  const productListPage = useSelector(getProductListPage);
+  const productListCount = useSelector(getProductListPage);
+  const product = useSelector(getProductDetails);
+  const productDetailsList = useSelector(getProductDetailsList);
+  const successful = useSelector(getSuccessful);
+
+  const { description, quantity, price } = product;
+
+  React.useEffect(() => {
+    if (value === 1) myRef.current?.scrollTo(0, 0);
+  }, [value]);
+
   const isPriceChangeEnabled =
     permissions.filter((role) => [1, 52].includes(role.IdRole)).length > 0;
-  const handleOnFilterChange = (event) => {
+
+  const handleOnFilterChange = (event: { target: { value: string } }) => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value, filterType);
+      dispatch(
+        filterProductList({ text: event.target.value, type: filterType })
+      );
     }, 1000);
   };
 
-  const handleItemSelected = (item) => {
-    getProduct(item.Id, filterType);
+  const handleItemSelected = (item: IdDescriptionType) => {
+    dispatch(getProduct({ id: item.Id }));
     setFilter("");
   };
 
@@ -116,19 +122,19 @@ function StepTwoScreen({
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    filterProductList("", newFilterType);
+    dispatch(filterProductList({ text: "", type: newFilterType }));
   };
-  const handlePriceChange = (event) => {
+  const handlePriceChange = (event: { target: { value: string } }) => {
     isPriceChangeEnabled && setPrice(event.target.value);
   };
-  const products = productList.map((item) => ({
+  const products = productDetailsList.map((item) => ({
     ...item,
-    Descripcion:
+    description:
       filterType === 1
-        ? `${item.Codigo} - ${item.Descripcion}`
-        : item.Descripcion,
+        ? `${item.code} - ${item.description}`
+        : item.description,
   }));
-  let buttonEnabled =
+  const buttonEnabled =
     product !== null &&
     description !== "" &&
     quantity !== null &&
@@ -163,12 +169,17 @@ function StepTwoScreen({
                 rowsCount={productListCount}
                 rows={products}
                 value={filter}
-                rowId="Id"
                 rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
                 onPageChange={(pageNumber) =>
-                  getProductListByPageNumber(pageNumber + 1, filter, filterType)
+                  dispatch(
+                    getProductListByPageNumber({
+                      pageNumber: pageNumber + 1,
+                      filterText: filter,
+                      type: filterType,
+                    })
+                  )
                 }
               />
             </Grid>
@@ -178,7 +189,9 @@ function StepTwoScreen({
                 label="Descripción"
                 id="Descripcion"
                 value={description}
-                onChange={(event) => setDescription(event.target.value)}
+                onChange={(event) =>
+                  dispatch(setDescription(event.target.value))
+                }
               />
             </Grid>
             <Grid item xs={3}>
@@ -186,16 +199,16 @@ function StepTwoScreen({
                 disabled={successful}
                 label="Cantidad"
                 id="Cantidad"
-                value={quantity}
+                value={quantity.toString()}
                 numericFormat
-                onChange={(event) => setQuantity(event.target.value)}
+                onChange={(event) => dispatch(setQuantity(event.target.value))}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
                 disabled={successful}
                 label="Precio"
-                value={price}
+                value={price.toString()}
                 numericFormat
                 onChange={handlePriceChange}
               />
@@ -206,7 +219,7 @@ function StepTwoScreen({
                 color="primary"
                 disabled={!buttonEnabled}
                 component="span"
-                onClick={() => addDetails()}
+                onClick={() => dispatch(addDetails())}
               >
                 <AddCircleIcon />
               </IconButton>
@@ -226,13 +239,13 @@ function StepTwoScreen({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {productDetailList.map((row, index) => (
+                  {productDetailsList.map((row, index) => (
                     <TableRow key={index}>
-                      <TableCell>{row.Cantidad}</TableCell>
-                      <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
+                      <TableCell>{row.quantity}</TableCell>
+                      <TableCell>{`${row.code} - ${row.description}`}</TableCell>
                       <TableCell align="right">
                         {formatCurrency(
-                          roundNumber(row.Cantidad * row.PrecioVenta, 2),
+                          roundNumber(row.quantity * row.price, 2),
                           2
                         )}
                       </TableCell>
@@ -241,7 +254,9 @@ function StepTwoScreen({
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() => removeDetails(row.IdProducto)}
+                          onClick={() =>
+                            dispatch(removeDetails({ id: row.id }))
+                          }
                         >
                           <RemoveCircleIcon />
                         </IconButton>
@@ -257,36 +272,3 @@ function StepTwoScreen({
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    permissions: state.session.permissions,
-    description: state.invoice.description,
-    quantity: state.invoice.quantity,
-    product: state.product.product,
-    price: state.invoice.price,
-    productListPage: state.product.listPage,
-    productListCount: state.product.listCount,
-    productList: state.product.list,
-    productDetailList: state.invoice.productDetailList,
-    successful: state.invoice.successful,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      getProduct,
-      setDescription,
-      setQuantity,
-      setPrice,
-      filterProductList,
-      getProductListByPageNumber,
-      addDetails,
-      removeDetails,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen);

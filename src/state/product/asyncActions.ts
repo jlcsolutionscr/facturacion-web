@@ -85,11 +85,10 @@ export const getProductListByPageNumber = createAsyncThunk(
   "product/getProductListByPageNumber",
   async (
     payload: {
-      id: number;
       filterText: string;
       type: number;
       pageNumber: number;
-      rowsPerPage: number;
+      rowsPerPage?: number;
     },
     { getState, dispatch }
   ) => {
@@ -201,7 +200,7 @@ export const filterClasificationList = createAsyncThunk(
 );
 
 export const validateProductCode = createAsyncThunk(
-  "product/validateCustomerIdentifier",
+  "product/validateProductCode",
   async (payload: { code: string }, { getState, dispatch }) => {
     const { session, ui } = getState() as RootState;
     const { token } = session;
@@ -216,12 +215,12 @@ export const validateProductCode = createAsyncThunk(
         );
         if (clasification != null) {
           const taxTypeId = taxTypeList?.find(
-            (elm) => elm.value === clasification?.value
+            (elm) => elm.Valor === clasification?.value
           );
           dispatch(
             setProductAttribute({
-              attribute: "taxTypeId",
-              value: taxTypeId?.id,
+              attribute: "IdImpuesto",
+              value: taxTypeId?.Id,
             })
           );
         } else {
@@ -230,7 +229,7 @@ export const validateProductCode = createAsyncThunk(
               "El código CABYS ingresado no se encuentra registrado en el sistema. Por favor verifique su información. . ."
             )
           );
-          dispatch(setProductAttribute({ attribute: "taxTypeId", value: 8 }));
+          dispatch(setProductAttribute({ attribute: "IdImpuesto", value: 8 }));
         }
         dispatch(stopLoader());
       }

@@ -25,7 +25,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-let delayTimer = null;
+let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 function StepOneScreen({
   index,
@@ -42,9 +42,9 @@ function StepOneScreen({
   setCustomerAttribute,
 }) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const myRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (value === 0) myRef.current.scrollTo(0, 0);
+    if (value === 0) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
   const [filter, setFilter] = React.useState("");
@@ -63,8 +63,8 @@ function StepOneScreen({
     getCustomerListByPageNumber(pageNumber + 1, filter);
   };
 
-  const handleItemSelected = (item) => {
-    getCustomer(item.Id);
+  const handleItemSelected = (item: IdDescriptionType) => {
+    getProduct({ id: item.Id });
     setStatus("on-progress");
     setFilter("");
   };

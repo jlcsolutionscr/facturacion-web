@@ -82,9 +82,9 @@ function StepTwoScreen({
 }) {
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const myRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0);
+    myRef.current?.scrollTo(0, 0);
   }, [value]);
   const buttonDisabled = total === 0 || status !== "ready";
   const paymentMethods: { id: number; description: string }[] = [

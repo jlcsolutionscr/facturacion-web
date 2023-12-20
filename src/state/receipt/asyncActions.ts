@@ -3,9 +3,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "state/store";
 import {
   setIssuerDetails,
-  resetProductDetail,
+  resetProductDetails,
   setProductDetails,
-  setProductList,
+  setProductDetailsList,
+  setProductTaxDetails,
   setSummary,
   setActivityCode,
   setSuccessful,
@@ -81,7 +82,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
 );
 
 export const validateProductCode = createAsyncThunk(
-  "receipt/validateCustomerIdentifier",
+  "receipt/validateProductCode",
   async (payload: { code: string }, { getState, dispatch }) => {
     const { session, ui } = getState() as RootState;
     const { token } = session;
@@ -96,10 +97,10 @@ export const validateProductCode = createAsyncThunk(
         );
         if (clasification != null) {
           const taxType = taxTypeList?.find(
-            (elm) => elm.value === clasification?.value
+            (elm) => elm.Valor === clasification?.value
           );
           dispatch(
-            setProductDetails({ attribute: "taxTypeId", value: taxType?.id })
+            setProductTaxDetails({ rate: taxType?.Valor, type: taxType?.Id })
           );
         } else {
           dispatch(
@@ -122,15 +123,16 @@ export const addDetails = createAsyncThunk(
   "receipt/addDetails",
   async (_payload, { getState, dispatch }) => {
     const { receipt } = getState() as RootState;
-    const { exoneration, productDetails, productDetailList } = receipt.entity;
+    const { exoneration, productDetails, productDetailsList } = receipt.entity;
     if (
+      productDetails.id !== "" &&
       productDetails.code !== "" &&
       productDetails.description !== "" &&
       productDetails.quantity > 0 &&
       productDetails.price > 0
     ) {
       if (
-        productDetailList.findIndex(
+        productDetailsList.findIndex(
           (item) => item.code === productDetails.code
         ) >= 0
       ) {
@@ -140,23 +142,24 @@ export const addDetails = createAsyncThunk(
           })
         );
       } else {
-        let newProducts = null;
         const item = {
+          id: crypto.randomUUID(),
           quantity: productDetails.quantity,
           code: productDetails.code,
           description: productDetails.description,
           taxRate: productDetails.taxRate,
+          taxRateType: productDetails.taxRateType,
           unit: "UND",
           price: roundNumber(
             (productDetails.price * (1 + productDetails.taxRate)) / 100,
             2
           ),
         };
-        newProducts = [...productDetailList, item];
-        dispatch(setProductList(newProducts));
+        const newProducts = [...productDetailsList, item];
+        dispatch(setProductDetailsList(newProducts));
         const summary = getProductSummary(newProducts, exoneration.percentage);
         dispatch(setSummary(summary));
-        dispatch(resetProductDetail());
+        dispatch(resetProductDetails());
       }
     }
   }
@@ -164,17 +167,17 @@ export const addDetails = createAsyncThunk(
 
 export const removeDetails = createAsyncThunk(
   "receipt/removeDetails",
-  async (payload: { code: string }, { getState, dispatch }) => {
+  async (payload: { id: string }, { getState, dispatch }) => {
     const { receipt } = getState() as RootState;
-    const { exoneration, productDetailList } = receipt.entity;
-    const index = productDetailList.findIndex(
-      (item) => item.code === payload.code
+    const { exoneration, productDetailsList } = receipt.entity;
+    const index = productDetailsList.findIndex(
+      (item) => item.id === payload.id
     );
     const newProducts = [
-      ...productDetailList.slice(0, index),
-      ...productDetailList.slice(index + 1),
+      ...productDetailsList.slice(0, index),
+      ...productDetailsList.slice(index + 1),
     ];
-    dispatch(setProductList(newProducts));
+    dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(newProducts, exoneration.percentage);
     dispatch(setSummary(summary));
   }

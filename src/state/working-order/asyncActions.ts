@@ -14,8 +14,8 @@ import {
   setDescription,
   setQuantity,
   setPrice,
-  resetProductDetail,
-  setProductList,
+  resetProductDetails,
+  setProductDetailsList,
   setSummary,
   setActivityCode,
   setVendorId,
@@ -34,7 +34,11 @@ import {
   setCustomerListCount,
   setCustomerList,
 } from "state/customer/reducer";
-import { setProductListPage, setProductListCount } from "state/product/reducer";
+import {
+  setProductListPage,
+  setProductListCount,
+  setProductList,
+} from "state/product/reducer";
 import { filterProductList } from "state/product/asyncActions";
 import { RootState } from "state/store";
 import { getErrorMessage } from "utils/utilities";
@@ -68,7 +72,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
     const { companyId, branchId, company, token } = session;
     dispatch(startLoader());
     try {
-      if (company?.mode === 1) {
+      if (company?.Modalidad === 1) {
         const customerCount = await getCustomerListCount(token, companyId, "");
         const customerList = await getCustomerListPerPage(
           token,
@@ -116,7 +120,9 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(resetWorkingOrder());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setCustomerDetails(defaultCustomerDetails));
-      dispatch(setActivityCode(company?.economicActivityList[0].code));
+      dispatch(
+        setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad)
+      );
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
     } catch (error) {
@@ -133,23 +139,18 @@ export const getProduct = createAsyncThunk(
     { getState, dispatch }
   ) => {
     const { session, ui, workingOrder } = getState() as RootState;
-    const { token, company } = session;
+    const { token, branchId, company } = session;
     const { taxTypeList } = ui;
     if (company) {
       dispatch(startLoader());
       try {
-        const product = await getProductEntity(
-          token,
-          payload.id,
-          1,
-          company.id,
-          taxTypeList
-        );
+        const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
-          const { taxRate, finalPrice } = getCustomerPrice(
+          const { taxRate, taxRateType, finalPrice } = getCustomerPrice(
             company,
             workingOrder.entity.customerDetails,
-            product
+            product,
+            taxTypeList
           );
           dispatch(filterProductList({ text: "", type: payload.filterType }));
           setProductDetails({
@@ -158,6 +159,7 @@ export const getProduct = createAsyncThunk(
             code: product.code,
             description: product.description,
             taxRate,
+            taxRateType,
             unit: "UND",
             price: finalPrice,
             costPrice: product.costPrice,
@@ -181,18 +183,17 @@ export const addDetails = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { company } = session;
-    const { customerDetails, productDetails, productDetailList } =
+    const { customerDetails, productDetails, productDetailsList } =
       workingOrder.entity;
     if (
       company &&
-      productDetails.id &&
-      productDetails.id > 0 &&
+      productDetails.id !== "" &&
       productDetails.description !== "" &&
       productDetails.quantity > 0 &&
       productDetails.price > 0
     ) {
       try {
-        let newProducts = null;
+        let newProducts = [];
         const item = {
           id: productDetails.id,
           code: productDetails.code,
@@ -201,35 +202,36 @@ export const addDetails = createAsyncThunk(
           unit: productDetails.unit,
           price: productDetails.price,
           taxRate: productDetails.taxRate,
+          taxRateType: productDetails.taxRateType,
           costPrice: productDetails.costPrice,
           instalationPrice: 0,
         };
-        if (company?.mode === 1) {
-          const index = productDetailList.findIndex(
+        if (company?.Modalidad === 1) {
+          const index = productDetailsList.findIndex(
             (item) => item.id === productDetails.id
           );
           if (index >= 0) {
             newProducts = [
-              ...productDetailList.slice(0, index),
+              ...productDetailsList.slice(0, index),
               {
                 ...item,
-                quantity: productDetailList[index].quantity + item.quantity,
+                quantity: productDetailsList[index].quantity + item.quantity,
               },
-              ...productDetailList.slice(index + 1),
+              ...productDetailsList.slice(index + 1),
             ];
           } else {
-            newProducts = [...productDetailList, item];
+            newProducts = [...productDetailsList, item];
           }
         } else {
-          newProducts = [...productDetailList, item];
+          newProducts = [...productDetailsList, item];
         }
-        dispatch(setProductList(newProducts));
+        dispatch(setProductDetailsList(newProducts));
         const summary = getProductSummary(
           newProducts,
           customerDetails.exonerationPercentage
         );
         dispatch(setSummary(summary));
-        dispatch(resetProductDetail());
+        dispatch(resetProductDetails());
       } catch (error) {
         dispatch(setMessage({ message: getErrorMessage(error) }));
       }
@@ -239,17 +241,17 @@ export const addDetails = createAsyncThunk(
 
 export const removeDetails = createAsyncThunk(
   "working-order/removeDetails",
-  async (payload: { id: number; pos: number }, { getState, dispatch }) => {
+  async (payload: { id: string; pos: number }, { getState, dispatch }) => {
     const { workingOrder } = getState() as RootState;
-    const { customerDetails, productDetailList } = workingOrder.entity;
-    const index = productDetailList.findIndex(
-      (item, index) => item.id === payload.id && index === payload.pos
+    const { customerDetails, productDetailsList } = workingOrder.entity;
+    const index = productDetailsList.findIndex(
+      (item) => item.id === payload.id
     );
     const newProducts = [
-      ...productDetailList.slice(0, index),
-      ...productDetailList.slice(index + 1),
+      ...productDetailsList.slice(0, index),
+      ...productDetailsList.slice(index + 1),
     ];
-    dispatch(setProductList(newProducts));
+    dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(
       newProducts,
       customerDetails.exonerationPercentage
@@ -313,7 +315,7 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
           branchId,
           false,
           1,
-          company?.mode === 1 ? 10 : 100
+          company?.Modalidad === 1 ? 10 : 100
         );
         dispatch(setWorkingOrderList(newList));
       } else {
@@ -415,7 +417,9 @@ export const openWorkingOrder = createAsyncThunk(
       );
       const vendorList = await getVendorList(token, companyId);
       dispatch(setVendorList(vendorList));
-      dispatch(setActivityCode(company?.economicActivityList[0].code));
+      dispatch(
+        setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad)
+      );
       dispatch(
         setWorkingOrder({
           ...workingOrder,
@@ -433,7 +437,7 @@ export const openWorkingOrder = createAsyncThunk(
       dispatch(setCustomerListCount(customerCount));
       dispatch(setCustomerList(customerList));
       dispatch(setProductListCount(productCount));
-      dispatch(setProductList(productList));
+      dispatch(setProductDetailsList(productList));
       dispatch(setActiveSection(21));
       dispatch(setStatus("ready"));
       dispatch(stopLoader());
@@ -455,7 +459,7 @@ export const generateInvoice = createAsyncThunk(
       paymentDetailsList,
       vendorId,
       customerDetails,
-      productDetailList,
+      productDetailsList,
       summary,
     } = workingOrder.entity;
     dispatch(startLoader());
@@ -472,7 +476,7 @@ export const generateInvoice = createAsyncThunk(
         vendorId,
         id,
         customerDetails,
-        productDetailList,
+        productDetailsList,
         summary,
         ""
       );
@@ -502,7 +506,7 @@ export const generateInvoiceTicket = createAsyncThunk(
     try {
       const invoice = await getInvoiceEntity(token, invoiceId);
       const branchName =
-        branchList.find((x) => x.id === branchId)?.description ??
+        branchList.find((x) => x.Id === branchId)?.Descripcion ??
         "SUCURSAL PRINCIPAL";
       if (company !== null) {
         printInvoice(
@@ -547,7 +551,7 @@ export const generateWorkingOrderTicket = createAsyncThunk(
     try {
       const invoice = await getWorkingOrderEntity(token, payload.id);
       const branchName =
-        branchList.find((x) => x.id === branchId)?.description ??
+        branchList.find((x) => x.Id === branchId)?.Descripcion ??
         "SUCURSAL PRINCIPAL";
       if (printer !== "" && company !== null) {
         printWorkingOrder(

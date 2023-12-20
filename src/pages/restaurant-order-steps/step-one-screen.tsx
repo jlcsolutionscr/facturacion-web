@@ -75,7 +75,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-let delayTimer = null;
+let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 function StepOneScreen({
   index,
@@ -89,7 +89,7 @@ function StepOneScreen({
   price,
   status,
   productList,
-  productDetailList,
+  productDetailsList,
   summary,
   servicePointList,
   setCustomerAttribute,
@@ -104,9 +104,9 @@ function StepOneScreen({
   saveWorkingOrder,
 }) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const myRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    myRef.current.scrollTo(0, 0);
+    myRef.current?.scrollTo(0, 0);
   }, [value]);
   const [filter, setFilter] = React.useState("");
   const [serviceIncluded, setServiceIncluded] = React.useState(false);
@@ -123,8 +123,8 @@ function StepOneScreen({
       filterProductList(event.target.value, 2);
     }, 1000);
   };
-  const handleItemSelected = (item) => {
-    getProduct(item.Id, 2);
+  const handleItemSelected = (item: IdDescriptionType) => {
+    getProduct({ id: item.Id });
     setFilter("");
   };
   const handlePriceChange = (event) => {
@@ -244,7 +244,7 @@ function StepOneScreen({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {productDetailList.map((row, index) => (
+                  {productDetailsList.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell align="right">{row.Cantidad}</TableCell>
                       <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
@@ -294,7 +294,7 @@ const mapStateToProps = (state) => {
     product: state.product.product,
     price: state.workingOrder.price,
     productList: state.product.list,
-    productDetailList: state.workingOrder.productDetailList,
+    productDetailsList: state.workingOrder.productDetailsList,
     summary: state.workingOrder.summary,
     status: state.workingOrder.status,
   };

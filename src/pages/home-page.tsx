@@ -4,24 +4,23 @@ import { useSelector } from "react-redux";
 
 import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
-/*import MenuPage from "pages/menu-page";
+import MenuPage from "pages/menu-page";
 import CompanyPage from "pages/company-page";
-import LogoPage from "pages/logo-page";
-import CustomerListPage from "pages/customer-list-page";
-import CustomerPage from "pages/customer-page";
-import ProductListPage from "pages/product-list-page";
-import ProductPage from "pages/product-page";
+//import LogoPage from "pages/logo-page";
+//import CustomerListPage from "pages/customer-list-page";
+//import CustomerPage from "pages/customer-page";
+//import ProductListPage from "pages/product-list-page";
+//import ProductPage from "pages/product-page";
 import InvoicePage from "pages/invoice-page";
-import ReceiptPage from "pages/receipt-page";
-import WorkingOrderListPage from "pages/working-order-list-page";
-import RestaurantOrderListPage from "pages/restaurant-order-list-page";
-import WorkingOrderPage from "pages/working-order-page";
-import RestaurantOrderPage from "pages/restaurant-order-page";
-import InvoiceListPage from "pages/invoice-list-page";
-import DocumentListPage from "pages/document-list-page";
-import ReportsPage from "pages/reports-page";*/
-import { userLogout } from "state/session/asyncActions";
-import { getCompany } from "state/session/reducer";
+//import ReceiptPage from "pages/receipt-page";
+//import WorkingOrderListPage from "pages/working-order-list-page";
+//import RestaurantOrderListPage from "pages/restaurant-order-list-page";
+//import WorkingOrderPage from "pages/working-order-page";
+//import RestaurantOrderPage from "pages/restaurant-order-page";
+//import InvoiceListPage from "pages/invoice-list-page";
+//import DocumentListPage from "pages/document-list-page";
+//import ReportsPage from "pages/reports-page";*/
+//import { getCompany } from "state/session/reducer";
 import { getActiveSection } from "state/ui/reducer";
 
 const useStyles = makeStyles()(() => ({
@@ -72,7 +71,7 @@ export default function HomePage({
   const myRef = React.useRef<HTMLDivElement>(null);
 
   const activeSection = useSelector(getActiveSection);
-  const company = useSelector(getCompany);
+  //const company = useSelector(getCompany);
 
   React.useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -87,13 +86,13 @@ export default function HomePage({
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <div ref={myRef} className={classes.body}>
         Home Page
-        {/*activeSection === 0 && <MenuPage />}
+        {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
-        {activeSection === 2 && <LogoPage />}
+        {/*activeSection === 2 && <LogoPage />}
         {activeSection === 3 && <CustomerListPage />}
-        {activeSection === 4 && <ProductListPage />}
+        {activeSection === 4 && <ProductListPage />*/}
         {activeSection === 5 && <InvoicePage />}
-        {activeSection === 6 && <ReceiptPage />}
+        {/*activeSection === 6 && <ReceiptPage />}
         {activeSection === 7 && <InvoiceListPage />}
         {activeSection === 8 && <DocumentListPage />}
         {activeSection === 9 ? (
@@ -103,7 +102,7 @@ export default function HomePage({
             <RestaurantOrderListPage />
           )
         ) : null}
-        {activeSection === 20 && <ReportsPage width={width} />}
+          {activeSection === 20 && <ReportsPage width={width} />}
         {activeSection === 21 ? (
           company?.mode === 1 ? (
             <WorkingOrderPage />

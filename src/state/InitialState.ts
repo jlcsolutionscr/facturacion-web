@@ -10,6 +10,7 @@ import {
   EconomicActivityType,
   IdDescriptionType,
   DeviceType,
+  PermissionType,
 } from "types/domain";
 import {
   defaultCompany,
@@ -46,8 +47,8 @@ type SessionStateType = {
   branchId: number;
   terminalId: number;
   reportList: IdValueType[];
-  vendorList: IdValueType[];
-  permissions: IdValueType[];
+  vendorList: IdDescriptionType[];
+  permissions: PermissionType[];
   printer: string;
   token: string;
 };

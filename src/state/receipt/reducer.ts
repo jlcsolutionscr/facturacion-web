@@ -20,11 +20,15 @@ export const receiptSlice = createSlice({
         [action.payload.attribute]: action.payload.value,
       };
     },
-    setProductList: (state, action) => {
-      state.entity.productDetailList = action.payload.details;
+    setProductDetailsList: (state, action) => {
+      state.entity.productDetailsList = action.payload.details;
     },
-    resetProductDetail: (state) => {
+    resetProductDetails: (state) => {
       state.entity.productDetails = defaultReceiptProduct;
+    },
+    setProductTaxDetails: (state, action) => {
+      state.entity.productDetails.taxRate = action.payload.rate;
+      state.entity.productDetails.taxRateType = action.payload.type;
     },
     setSummary: (state, action) => {
       state.entity.summary = action.payload.summary;
@@ -50,8 +54,9 @@ export const receiptSlice = createSlice({
 export const {
   setIssuerDetails,
   setProductDetails,
-  setProductList,
-  resetProductDetail,
+  setProductDetailsList,
+  resetProductDetails,
+  setProductTaxDetails,
   setSummary,
   setExonerationDetails,
   setActivityCode,
@@ -63,8 +68,8 @@ export const getIssuerDetails = (state: RootState) =>
   state.receipt.entity.issuer;
 export const getProductDetails = (state: RootState) =>
   state.receipt.entity.productDetails;
-export const getProductList = (state: RootState) =>
-  state.receipt.entity.productDetailList;
+export const getProductDetailsList = (state: RootState) =>
+  state.receipt.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.receipt.entity.summary;
 export const getExonerationDetails = (state: RootState) =>
   state.receipt.entity.exoneration;

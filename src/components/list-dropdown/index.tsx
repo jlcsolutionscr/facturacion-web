@@ -13,7 +13,7 @@ interface ListDropdownProps {
   label: string;
   value: string;
   disabled: boolean;
-  onChange: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onPageChange: (page: number) => void;
   onItemSelected: (row: any) => void;
 }

@@ -1,8 +1,7 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
 import { getCompany } from "state/company/asyncActions";
 import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getProductListFirstPage } from "state/product/asyncActions";
@@ -13,7 +12,12 @@ import {
 import { setReceiptParameters } from "state/receipt/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";
 import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
-import { setBranchId } from "state/session/actions";
+import {
+  getBranchId,
+  getBranchList,
+  getPermissions,
+  setBranchId,
+} from "state/session/reducer";
 
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -93,22 +97,14 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function MenuPage({
-  permissions,
-  getCompany,
-  branchId,
-  branchList,
-  setBranchId,
-  setActiveSection,
-  getCustomerListFirstPage,
-  getProductListFirstPage,
-  setInvoiceParameters,
-  setReceiptParameters,
-  getInvoiceListFirstPage,
-  getDocumentListFirstPage,
-  getWorkingOrderListFirstPage,
-}) {
+export default function MenuPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
+
+  const permissions = useSelector(getPermissions);
+  const branchId = useSelector(getBranchId);
+  const branchList = useSelector(getBranchList);
+
   const updateCompanyInfo =
     permissions.filter((role) => [1, 61].includes(role.IdRole)).length > 0;
   const manageCustomers =
@@ -133,7 +129,7 @@ function MenuPage({
     );
   });
   return (
-    <Grid className={classes.root} container align="center">
+    <Grid className={classes.root} container>
       <Grid item xs={12}>
         <div className={classes.branches}>
           {branchList.length > 1 && switchBrand ? (
@@ -142,16 +138,15 @@ function MenuPage({
               <Select
                 id="Sucursal"
                 value={branchId}
-                onChange={(event) => setBranchId(event.target.value)}
+                onChange={(event) => dispatch(setBranchId(event.target.value))}
               >
                 {branchItems}
               </Select>
             </FormControl>
           ) : (
             <Typography className={classes.branchText} align="center" paragraph>
-              {`Sucursal: ${
-                branchList.find((branch) => branch.Id === branchId).Descripcion
-              }`}
+              {`Sucursal: ${branchList.find((branch) => branch.Id === branchId)
+                ?.Descripcion}`}
             </Typography>
           )}
         </div>
@@ -160,7 +155,7 @@ function MenuPage({
         <Button
           disabled={!updateCompanyInfo}
           classes={{ root: classes.button }}
-          onClick={() => getCompany()}
+          onClick={() => dispatch(getCompany())}
         >
           Actualizar empresa
         </Button>
@@ -169,7 +164,7 @@ function MenuPage({
         <Button
           disabled={!updateCompanyInfo}
           classes={{ root: classes.button }}
-          onClick={() => setActiveSection(2)}
+          onClick={() => dispatch(setActiveSection(2))}
         >
           Agregar logotipo
         </Button>
@@ -178,7 +173,15 @@ function MenuPage({
         <Button
           disabled={!manageCustomers}
           classes={{ root: classes.button }}
-          onClick={() => getCustomerListFirstPage(3, "", 8)}
+          onClick={() =>
+            dispatch(
+              getCustomerListFirstPage({
+                id: 3,
+                filterText: "",
+                rowsPerPage: 8,
+              })
+            )
+          }
         >
           Catálogo de clientes
         </Button>
@@ -187,7 +190,16 @@ function MenuPage({
         <Button
           disabled={!manageProducts}
           classes={{ root: classes.button }}
-          onClick={() => getProductListFirstPage(4, "", 2, 7)}
+          onClick={() =>
+            dispatch(
+              getProductListFirstPage({
+                id: 4,
+                filterText: "",
+                type: 2,
+                rowsPerPage: 7,
+              })
+            )
+          }
         >
           Catálogo de productos
         </Button>
@@ -196,7 +208,7 @@ function MenuPage({
         <Button
           disabled={!generateInvoice}
           classes={{ root: classes.button }}
-          onClick={() => setInvoiceParameters(5)}
+          onClick={() => dispatch(setInvoiceParameters({ id: 5 }))}
         >
           Facturar
         </Button>
@@ -205,7 +217,7 @@ function MenuPage({
         <Button
           disabled={!generateInvoice}
           classes={{ root: classes.button }}
-          onClick={() => setReceiptParameters(6)}
+          onClick={() => dispatch(setReceiptParameters({ id: 6 }))}
         >
           Factura de compra
         </Button>
@@ -214,7 +226,7 @@ function MenuPage({
         <Button
           disabled={!generateInvoice}
           classes={{ root: classes.button }}
-          onClick={() => getInvoiceListFirstPage(7)}
+          onClick={() => dispatch(getInvoiceListFirstPage({ id: 7 }))}
         >
           Facturas electrónicas
         </Button>
@@ -223,7 +235,7 @@ function MenuPage({
         <Button
           disabled={!manageDocuments}
           classes={{ root: classes.button }}
-          onClick={() => getDocumentListFirstPage(8)}
+          onClick={() => dispatch(getDocumentListFirstPage({ id: 8 }))}
         >
           Documentos electrónicos
         </Button>
@@ -232,7 +244,7 @@ function MenuPage({
         <Button
           disabled={!generateWorkingOrder}
           classes={{ root: classes.button }}
-          onClick={() => getWorkingOrderListFirstPage(9)}
+          onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 9 }))}
         >
           Ordenes de servicio
         </Button>
@@ -241,7 +253,7 @@ function MenuPage({
         <Button
           disabled={!reportingMenu}
           classes={{ root: classes.button }}
-          onClick={() => setActiveSection(20)}
+          onClick={() => dispatch(setActiveSection({ id: 20 }))}
         >
           Menu de reportes
         </Button>
@@ -249,31 +261,3 @@ function MenuPage({
     </Grid>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    permissions: state.session.permissions,
-    branchId: state.session.branchId,
-    branchList: state.session.branchList,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      setActiveSection,
-      setBranchId,
-      getCompany,
-      getCustomerListFirstPage,
-      getProductListFirstPage,
-      setInvoiceParameters,
-      setReceiptParameters,
-      getInvoiceListFirstPage,
-      getDocumentListFirstPage,
-      getWorkingOrderListFirstPage,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MenuPage);

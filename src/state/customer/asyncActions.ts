@@ -29,7 +29,7 @@ import { CustomerType } from "types/domain";
 export const getCustomerListFirstPage = createAsyncThunk(
   "customer/getCustomerListFirstPage",
   async (
-    payload: { id: number; filter: string; rowsPerPage: number },
+    payload: { id: number; filterText: string; rowsPerPage: number },
     { getState, dispatch }
   ) => {
     const { session } = getState() as RootState;
@@ -40,7 +40,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
       const recordCount = await getCustomerListCount(
         token,
         companyId,
-        payload.filter
+        payload.filterText
       );
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
@@ -49,7 +49,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
           companyId,
           1,
           payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
-          payload.filter
+          payload.filterText
         );
         dispatch(setCustomerList(newList));
       } else {
@@ -67,7 +67,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
 export const getCustomerListByPageNumber = createAsyncThunk(
   "customer/getCustomerListByPageNumber",
   async (
-    payload: { filter: string; pageNumber: number; rowsPerPage: number },
+    payload: { filterText: string; pageNumber: number; rowsPerPage?: number },
     { getState, dispatch }
   ) => {
     const { session } = getState() as RootState;
@@ -79,7 +79,7 @@ export const getCustomerListByPageNumber = createAsyncThunk(
         companyId,
         payload.pageNumber,
         payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
-        payload.filter
+        payload.filterText
       );
       dispatch(setCustomerListPage(payload.pageNumber));
       dispatch(setCustomerList(newList));
@@ -214,7 +214,7 @@ export const getCustomer = createAsyncThunk(
 export const filterCustomerList = createAsyncThunk(
   "customer/filterCustomerList",
   async (
-    payload: { rowsPerPage: number; filter: string },
+    payload: { filterText: string; rowsPerPage?: number },
     { getState, dispatch }
   ) => {
     const { session } = getState() as RootState;
@@ -225,7 +225,7 @@ export const filterCustomerList = createAsyncThunk(
       const recordCount = await getCustomerListCount(
         token,
         companyId,
-        payload.filter
+        payload.filterText
       );
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
@@ -234,7 +234,7 @@ export const filterCustomerList = createAsyncThunk(
           companyId,
           1,
           payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
-          payload.filter
+          payload.filterText
         );
         dispatch(setCustomerList(newList));
       } else {

@@ -653,6 +653,7 @@ export function getCustomerPrice(
   taxRateTypeList: IdValueType[]
 ) {
   let customerPrice = 0;
+  let taxRateType = product.IdImpuesto;
   let taxRate = getTaxeRateFromId(taxRateTypeList, product.IdImpuesto);
   switch (customer.priceTypeId) {
     case 1:
@@ -676,10 +677,11 @@ export function getCustomerPrice(
   customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
   if (customer.differentiatedTaxRateApply) {
     taxRate = customer.taxRate;
+    taxRateType = customer.taxRateType;
   }
   if (company.PrecioVentaIncluyeIVA && taxRate > 0)
     customerPrice = customerPrice * (1 + taxRate / 100);
-  return { taxRate, finalPrice: roundNumber(customerPrice, 2) };
+  return { taxRate, taxRateType, finalPrice: roundNumber(customerPrice, 2) };
 }
 
 export function getProductSummary(
@@ -739,7 +741,7 @@ export async function saveInvoiceEntity(
   vendorId: number,
   orderId: number,
   customerDetails: CustomerDetailsType,
-  productDetailList: ProductDetailsType[],
+  productDetailsList: ProductDetailsType[],
   summary: SummaryType,
   comment: string
 ) {
@@ -749,10 +751,10 @@ export async function saveInvoiceEntity(
     paymentDetailsList[0].paymentId
   );
   const invoiceDetails: DetalleFacturaType[] = [];
-  productDetailList.forEach((item) => {
+  productDetailsList.forEach((item) => {
     const detail = {
       IdFactura: 0,
-      IdProducto: item.id ?? 0,
+      IdProducto: parseInt(item.id),
       Descripcion: item.description,
       Cantidad: item.quantity,
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
@@ -907,11 +909,11 @@ export async function saveWorkingOrderEntity(
   order: WorkingOrderType
 ) {
   const workingOrderDetails: DetalleOrdenServicioType[] = [];
-  order.productDetailList.forEach((item, index) => {
+  order.productDetailsList.forEach((item, index) => {
     const detail = {
       IdConsecutivo: index,
       IdOrden: order?.id ?? 0,
-      IdProducto: item.id ?? 0,
+      IdProducto: parseInt(item.id),
       Codigo: item.code,
       Descripcion: item.description,
       Cantidad: item.quantity,
@@ -1202,13 +1204,13 @@ export async function saveReceiptEntity(
   receipt: ReceiptType
 ) {
   const receiptDetails: DetalleFacturaCompraType[] = [];
-  receipt.productDetailList.forEach((item, index) => {
+  receipt.productDetailsList.forEach((item, index) => {
     const detail = {
       Linea: index + 1,
       Cantidad: item.quantity,
       Codigo: item.code,
       Descripcion: item.description,
-      IdImpuesto: item.taxRateType ?? 8,
+      IdImpuesto: item.taxRateType,
       PorcentajeIVA: item.taxRate,
       UnidadMedida: item.unit,
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
@@ -1264,13 +1266,13 @@ export async function saveReceiptEntity(
 
 export async function getProductClasificationList(
   token: string,
-  filter: string
+  filterText: string
 ) {
   const data =
     "{NombreMetodo: 'ObtenerListadoClasificacionProducto', Parametros: {NumeroPagina: 1, FilasPorPagina: " +
     100 +
     ", Descripcion: '" +
-    filter +
+    filterText +
     "'}}";
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",

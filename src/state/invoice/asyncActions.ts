@@ -15,8 +15,8 @@ import {
   setDescription,
   setQuantity,
   setPrice,
-  resetProductDetail,
-  setProductList,
+  resetProductDetails,
+  setProductDetailsList,
   setSummary,
   setActivityCode,
   setVendorId,
@@ -32,7 +32,11 @@ import {
   setCustomerListCount,
   setCustomerList,
 } from "state/customer/reducer";
-import { setProductListPage, setProductListCount } from "state/product/reducer";
+import {
+  setProductListPage,
+  setProductListCount,
+  setProductList,
+} from "state/product/reducer";
 import { RootState } from "state/store";
 import { defaultCustomerDetails, defaultPaymentDetails } from "utils/defaults";
 import {
@@ -113,19 +117,16 @@ export const setInvoiceParameters = createAsyncThunk(
 
 export const getProduct = createAsyncThunk(
   "invoice/getProduct",
-  async (
-    payload: { id: number; filterType: number },
-    { getState, dispatch }
-  ) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { session, invoice, ui } = getState() as RootState;
-    const { token, company } = session;
+    const { token, branchId, company } = session;
     const { taxTypeList } = ui;
     if (company) {
       dispatch(startLoader());
       try {
-        const product = await getProductEntity(token, payload.id, 1);
+        const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
-          const { finalPrice, taxRate } = getCustomerPrice(
+          const { finalPrice, taxRate, taxRateType } = getCustomerPrice(
             company,
             invoice.entity.customerDetails,
             product,
@@ -138,6 +139,7 @@ export const getProduct = createAsyncThunk(
               code: product.code,
               description: product.description,
               taxRate,
+              taxRateType,
               unit: "UND",
               price: finalPrice,
               costPrice: product.costPrice,
@@ -162,12 +164,11 @@ export const addDetails = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, invoice } = getState() as RootState;
     const { company } = session;
-    const { customerDetails, productDetails, productDetailList } =
+    const { customerDetails, productDetails, productDetailsList } =
       invoice.entity;
     if (
       company &&
-      productDetails.id &&
-      productDetails.id > 0 &&
+      productDetails.id !== "" &&
       productDetails.description !== "" &&
       productDetails.quantity > 0 &&
       productDetails.price > 0
@@ -180,33 +181,34 @@ export const addDetails = createAsyncThunk(
           description: productDetails.description,
           quantity: productDetails.quantity,
           taxRate: productDetails.taxRate,
+          taxRateType: productDetails.taxRateType,
           unit: "UND",
           price: productDetails.price,
           costPrice: productDetails.costPrice,
           instalationPrice: 0,
         };
-        const index = productDetailList.findIndex(
+        const index = productDetailsList.findIndex(
           (item) => item.id === productDetails.id
         );
         if (index >= 0) {
           newProducts = [
-            ...productDetailList.slice(0, index),
+            ...productDetailsList.slice(0, index),
             {
               ...item,
-              quantity: productDetailList[index].quantity + item.quantity,
+              quantity: productDetailsList[index].quantity + item.quantity,
             },
-            ...productDetailList.slice(index + 1),
+            ...productDetailsList.slice(index + 1),
           ];
         } else {
-          newProducts = [...productDetailList, item];
+          newProducts = [...productDetailsList, item];
         }
-        dispatch(setProductList(newProducts));
+        dispatch(setProductDetailsList(newProducts));
         const summary = getProductSummary(
           newProducts,
           customerDetails.exonerationPercentage
         );
         dispatch(setSummary(summary));
-        dispatch(resetProductDetail());
+        dispatch(resetProductDetails());
       } catch (error) {
         dispatch(setMessage({ message: getErrorMessage(error) }));
       }
@@ -216,15 +218,17 @@ export const addDetails = createAsyncThunk(
 
 export const removeDetails = createAsyncThunk(
   "invoice/removeDetails",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { id: string }, { getState, dispatch }) => {
     const { invoice } = getState() as RootState;
-    const { customerDetails, productDetailList } = invoice.entity;
-    const index = productDetailList.findIndex((item) => item.id === payload.id);
+    const { customerDetails, productDetailsList } = invoice.entity;
+    const index = productDetailsList.findIndex(
+      (item) => item.id === payload.id
+    );
     const newProducts = [
-      ...productDetailList.slice(0, index),
-      ...productDetailList.slice(index + 1),
+      ...productDetailsList.slice(0, index),
+      ...productDetailsList.slice(index + 1),
     ];
-    dispatch(setProductList(newProducts));
+    dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(
       newProducts,
       customerDetails.exonerationPercentage
@@ -235,7 +239,7 @@ export const removeDetails = createAsyncThunk(
 
 export const saveInvoice = createAsyncThunk(
   "invoice/saveInvoice",
-  async (_payload: { id: number }, { getState, dispatch }) => {
+  async (_payload, { getState, dispatch }) => {
     const { session, invoice } = getState() as RootState;
     const { token, userId, branchId, companyId, currencyType } = session;
     const {
@@ -243,7 +247,7 @@ export const saveInvoice = createAsyncThunk(
       paymentDetailsList,
       vendorId,
       customerDetails,
-      productDetailList,
+      productDetailsList,
       summary,
       comment,
     } = invoice.entity;
@@ -261,7 +265,7 @@ export const saveInvoice = createAsyncThunk(
         vendorId,
         0,
         customerDetails,
-        productDetailList,
+        productDetailsList,
         summary,
         comment
       );
@@ -379,14 +383,14 @@ export const generatePDF = createAsyncThunk(
 
 export const generateInvoiceTicket = createAsyncThunk(
   "invoice/revokeInvoice",
-  async (payload: { id: number; ref: string }, { getState, dispatch }) => {
+  async (payload: { id: number; ref?: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, userCode, device, branchList, branchId, company } = session;
     dispatch(startLoader());
     try {
       const invoice = await getInvoiceEntity(token, payload.id);
       const branchName =
-        branchList.find((x) => x.id === branchId)?.description ??
+        branchList.find((x) => x.Id === branchId)?.Descripcion ??
         "SIN DESCRIPCION";
       if (company !== null) {
         printInvoice(

@@ -1,11 +1,15 @@
 export type IdValueType = {
-  id: number;
-  value: number;
+  Id: number;
+  Valor: number;
+};
+
+export type PermissionType = {
+  IdRole: number;
 };
 
 export type IdDescriptionType = {
-  id: number;
-  description: string;
+  Id: number;
+  Descripcion: string;
 };
 
 export type EconomicActivityType = {
@@ -108,6 +112,7 @@ export type CustomerDetailsType = {
   priceTypeId: number;
   differentiatedTaxRateApply: boolean;
   taxRate: number;
+  taxRateType: number;
   exonerationType: number;
   exonerationRef: string;
   exoneratedBy: string;
@@ -116,12 +121,12 @@ export type CustomerDetailsType = {
 };
 
 export type ProductDetailsType = {
-  id?: number;
+  id: string;
   quantity: number;
   code: string;
   description: string;
   taxRate: number;
-  taxRateType?: number;
+  taxRateType: number;
   unit: string;
   price: number;
   costPrice?: number;
@@ -153,7 +158,7 @@ export type InvoiceType = {
   activityCode: number;
   customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;
-  productDetailList: ProductDetailsType[];
+  productDetailsList: ProductDetailsType[];
   paymentDetailsList: PaymentDetailsType[];
   vendorId: number;
   summary: SummaryType;
@@ -170,7 +175,7 @@ export type WorkingOrderType = {
   activityCode: number;
   customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;
-  productDetailList: ProductDetailsType[];
+  productDetailsList: ProductDetailsType[];
   paymentDetailsList: PaymentDetailsType[];
   cashAdvance: number;
   vendorId: number;
@@ -198,7 +203,7 @@ export type ReceiptType = {
     email: string;
   };
   productDetails: ProductDetailsType;
-  productDetailList: ProductDetailsType[];
+  productDetailsList: ProductDetailsType[];
   summary: SummaryType;
   exoneration: {
     type: number;

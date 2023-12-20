@@ -26,9 +26,9 @@ function StepThreeScreen({
   setDeliveryAttribute,
 }) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const myRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (value === 2) myRef.current.scrollTo(0, 0);
+    if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
   const fieldDisabled = status === "converted";
   return (

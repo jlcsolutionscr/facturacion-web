@@ -1,24 +1,31 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-
-import {
-  setActivityCode,
-  setPaymentDetailsList,
-  setVendorId,
-  setComment,
-  saveInvoice,
-  setInvoiceParameters,
-  generateInvoiceTicket,
-} from "state/invoice/asyncActions";
-
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
+import {
+  saveInvoice,
+  setInvoiceParameters,
+  generateInvoiceTicket,
+} from "state/invoice/asyncActions";
+import {
+  setActivityCode,
+  setPaymentDetailsList,
+  setVendorId,
+  setComment,
+  getSummary,
+  getActivityCode,
+  getPaymentDetailsList,
+  getVendorId,
+  getComment,
+  getSuccessful,
+  getInvoiceId,
+} from "state/invoice/reducer";
+import { getCompany, getVendorList } from "state/session/reducer";
 import Button from "components/button";
 import TextField from "components/text-field";
 import { formatCurrency } from "utils/utilities";
@@ -57,33 +64,38 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function StepThreeScreen({
-  value,
+interface StepThreeScreenProps {
+  index: number;
+  value: number;
+  setValue: (value: number) => void;
+}
+
+export default function StepThreeScreen({
   index,
-  company,
-  summary,
-  activityCode,
-  paymentDetails,
-  vendorId,
-  comment,
-  successful,
-  invoiceId,
-  vendorList,
-  setPaymentDetailsList,
-  setVendorId,
-  setComment,
-  saveInvoice,
-  setInvoiceParameters,
-  generateInvoiceTicket,
-  setActivityCode,
+  value,
   setValue,
-}) {
-  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+}: StepThreeScreenProps) {
   const { classes } = useStyles();
-  const myRef = React.useRef(null);
+  const dispatch = useDispatch();
+  const myRef = React.useRef<HTMLDivElement>(null);
+
+  const invoiceId = useSelector(getInvoiceId);
+  const company = useSelector(getCompany);
+  const summary = useSelector(getSummary);
+  const activityCode = useSelector(getActivityCode);
+  const paymentDetails = useSelector(getPaymentDetailsList);
+  const vendorId = useSelector(getVendorId);
+  const comment = useSelector(getComment);
+  const successful = useSelector(getSuccessful);
+
+  const vendorList = useSelector(getVendorList);
+
+  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+
   React.useEffect(() => {
-    if (value === 2) myRef.current.scrollTo(0, 0);
+    if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
+
   const buttonDisabled = total === 0;
   const paymentMethods: { id: number; description: string }[] = [
     { id: 1, description: "EFECTIVO" },
@@ -100,22 +112,24 @@ function StepThreeScreen({
   });
   const handleOnPress = () => {
     if (!successful) {
-      saveInvoice();
+      dispatch(saveInvoice());
     } else {
-      setInvoiceParameters(5);
+      dispatch(setInvoiceParameters({ id: 5 }));
       setValue(0);
     }
   };
   const handleOnPrintButton = () => {
-    generateInvoiceTicket(invoiceId);
+    invoiceId && dispatch(generateInvoiceTicket({ id: invoiceId }));
   };
-  const activityItems = company.ActividadEconomicaEmpresa.map((item) => {
-    return (
-      <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const activityItems = company
+    ? company.ActividadEconomicaEmpresa.map((item) => {
+        return (
+          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+            {item.Descripcion}
+          </MenuItem>
+        );
+      })
+    : [];
   const vendorItems = vendorList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -125,14 +139,14 @@ function StepThreeScreen({
   });
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
-      <Grid container spacing={2} className={classes.gridContainer}>
+      <Grid container spacing={2}>
         <Grid item xs={12} className={classes.centered}>
           <TextField
             disabled={successful}
             label="Observaciones"
             id="Observacion"
             value={comment}
-            onChange={(event) => setComment(event.target.value)}
+            onChange={(event) => dispatch(setComment(event.target.value))}
           />
         </Grid>
         {activityItems.length > 1 && (
@@ -145,7 +159,9 @@ function StepThreeScreen({
                 <Select
                   id="CodigoActividad"
                   value={activityCode}
-                  onChange={(event) => setActivityCode(event.target.value)}
+                  onChange={(event) =>
+                    dispatch(setActivityCode(event.target.value))
+                  }
                 >
                   {activityItems}
                 </Select>
@@ -163,7 +179,9 @@ function StepThreeScreen({
                 <Select
                   id="VendorId"
                   value={vendorId}
-                  onChange={(event) => setVendorId(event.target.value)}
+                  onChange={(event) =>
+                    dispatch(setVendorId(event.target.value))
+                  }
                 >
                   {vendorItems}
                 </Select>
@@ -236,14 +254,16 @@ function StepThreeScreen({
               id="Sucursal"
               value={paymentDetails[0].paymentId}
               onChange={(event) =>
-                setPaymentDetailsList({
-                  paymentId: event.target.value,
-                  description:
-                    paymentMethods.find(
-                      (method) => method.id === event.target.value
-                    )?.description ?? "NO ESPECIFICADO",
-                  amount: total,
-                })
+                dispatch(
+                  setPaymentDetailsList({
+                    paymentId: event.target.value,
+                    description:
+                      paymentMethods.find(
+                        (method) => method.id === event.target.value
+                      )?.description ?? "NO ESPECIFICADO",
+                    amount: total,
+                  })
+                )
               }
             >
               {paymentItems}
@@ -270,36 +290,3 @@ function StepThreeScreen({
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    company: state.company.company,
-    invoiceId: state.invoice.invoiceId,
-    activityCode: state.invoice.activityCode,
-    paymentDetails: state.invoice.paymentDetails,
-    summary: state.invoice.summary,
-    comment: state.invoice.comment,
-    successful: state.invoice.successful,
-    branchList: state.ui.branchList,
-    vendorList: state.session.vendorList,
-    vendorId: state.invoice.vendorId,
-    error: state.invoice.error,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      setActivityCode,
-      setPaymentDetailsList,
-      setVendorId,
-      setComment,
-      saveInvoice,
-      setInvoiceParameters,
-      generateInvoiceTicket,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepThreeScreen);
