@@ -26,22 +26,22 @@ const uiSlice = createSlice({
       state.messageType = action.payload.type;
     },
     setCantonList: (state, action) => {
-      state.cantonList = action.payload.list;
+      state.cantonList = action.payload;
     },
     setDistritoList: (state, action) => {
-      state.distritoList = action.payload.list;
+      state.distritoList = action.payload;
     },
     setBarrioList: (state, action) => {
-      state.barrioList = action.payload.list;
+      state.barrioList = action.payload;
     },
     setTaxTypeList: (state, action) => {
-      state.taxTypeList = action.payload.list;
+      state.taxTypeList = action.payload;
     },
     setExonerationTypeList: (state, action) => {
-      state.exonerationTypeList = action.payload.list;
+      state.exonerationTypeList = action.payload;
     },
     setIdTypeList: (state, action) => {
-      state.idTypeList = action.payload.list;
+      state.idTypeList = action.payload;
     },
   },
 });
@@ -68,7 +68,7 @@ export const getMessage = createSelector(
     return { message: ui.message, messageType: ui.messageType };
   }
 );
-export const getCantonList = (state: RootState) => state.ui.distritoList;
+export const getCantonList = (state: RootState) => state.ui.cantonList;
 export const getDistritoList = (state: RootState) => state.ui.distritoList;
 export const getBarrioList = (state: RootState) => state.ui.barrioList;
 export const getTaxTypeList = (state: RootState) => state.ui.taxTypeList;

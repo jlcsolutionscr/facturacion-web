@@ -39,6 +39,7 @@ import {
   setCompanyAttribute,
   setCredentialsAttribute,
   getAvailableEconomicActivityList,
+  getCompanyEconomicActivityList,
 } from "state/company/reducer";
 import { convertToDateString } from "utils/utilities";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
@@ -69,6 +70,9 @@ export default function CompanyPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
+  const companyEconomicActivityList = useSelector(
+    getCompanyEconomicActivityList
+  );
   const credentials = useSelector(getCredentials);
   const cantonList = useSelector(getCantonList);
   const distritoList = useSelector(getDistritoList);
@@ -76,10 +80,8 @@ export default function CompanyPage() {
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   const [certificate, setCertificate] = React.useState("");
-  const [activityCode, setActivityCode] = React.useState(
-    economicActivityList.length > 0
-      ? economicActivityList[0].CodigoActividad
-      : null
+  const [activityCode, setActivityCode] = React.useState<string>(
+    economicActivityList.length > 0 ? economicActivityList[0].Id.toString() : ""
   );
   const inputFile = React.useRef<HTMLInputElement>(null);
   let disabled = true;
@@ -93,11 +95,11 @@ export default function CompanyPage() {
     company.CorreoNotificacion === "" ||
     (!company.RegimenSimplificado &&
       (credentials === null ||
-        company.ActividadEconomicaEmpresa.length === 0 ||
-        credentials.user === "" ||
-        credentials.password === "" ||
-        credentials.certificate === "" ||
-        credentials.certificatePin === ""));
+        companyEconomicActivityList.length === 0 ||
+        credentials.UsuarioHacienda === "" ||
+        credentials.ClaveHacienda === "" ||
+        credentials.Certificado === "" ||
+        credentials.PinCertificado === ""));
   const handleChange = (event: { target: { id?: any; value: any } }) => {
     dispatch(
       setCompanyAttribute({
@@ -175,7 +177,7 @@ export default function CompanyPage() {
   });
   const activityItems = economicActivityList.map((item) => {
     return (
-      <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+      <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
@@ -234,7 +236,7 @@ export default function CompanyPage() {
             <InputLabel id="demo-simple-select-label">Cantón</InputLabel>
             <Select
               id="IdCanton"
-              value={company && cantonItems.length > 0 ? company.IdCanton : ""}
+              value={cantonItems.length > 1 ? company.IdCanton : ""}
               onChange={(event) =>
                 handleSelectChange(
                   "IdCanton",
@@ -251,9 +253,7 @@ export default function CompanyPage() {
             <InputLabel id="demo-simple-select-label">Distrito</InputLabel>
             <Select
               id="IdDistrito"
-              value={
-                company && distritoItems.length > 0 ? company.IdDistrito : ""
-              }
+              value={distritoItems.length > 1 ? company.IdDistrito : ""}
               onChange={(event) =>
                 handleSelectChange(
                   "IdDistrito",
@@ -270,7 +270,7 @@ export default function CompanyPage() {
             <InputLabel id="demo-simple-select-label">Barrio</InputLabel>
             <Select
               id="IdBarrio"
-              value={company && barrioItems.length > 0 ? company.IdBarrio : ""}
+              value={barrioItems.length > 1 ? company.IdBarrio : ""}
               onChange={(event) =>
                 handleSelectChange(
                   "IdBarrio",
@@ -286,7 +286,7 @@ export default function CompanyPage() {
           <TextField
             required
             id="Direccion"
-            value={company ? company.Direccion : ""}
+            value={company.Direccion}
             label="Dirección"
             onChange={handleChange}
           />
@@ -295,7 +295,7 @@ export default function CompanyPage() {
           <TextField
             required
             id="Telefono1"
-            value={company ? company.Telefono1 : ""}
+            value={company.Telefono1}
             label="Teléfono 1"
             numericFormat
             onChange={handleChange}
@@ -304,7 +304,7 @@ export default function CompanyPage() {
         <Grid item xs={12}>
           <TextField
             id="Telefono2"
-            value={company ? company.Telefono2 : ""}
+            value={company.Telefono2}
             label="Teléfono 2"
             numericFormat
             onChange={handleChange}
@@ -314,21 +314,21 @@ export default function CompanyPage() {
           <TextField
             required
             id="CorreoNotificacion"
-            value={company ? company.CorreoNotificacion : ""}
+            value={company.CorreoNotificacion}
             label="Correo para notificaciones"
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={company ? company.RegimenSimplificado : true}
-            id="user"
-            value={credentials ? credentials.user : ""}
+            disabled={company.RegimenSimplificado}
+            id="UsuarioHacienda"
+            value={credentials.UsuarioHacienda}
             label="Usuario ATV"
             onChange={(event) =>
               dispatch(
                 setCredentialsAttribute({
-                  attribute: "user",
+                  attribute: "UsuarioHacienda",
                   value: event.target.value,
                 })
               )
@@ -337,14 +337,14 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={company ? company.RegimenSimplificado : true}
-            id="password"
-            value={credentials ? credentials.password : ""}
+            disabled={company.RegimenSimplificado}
+            id="ClaveHacienda"
+            value={credentials.ClaveHacienda}
             label="Clave ATV"
             onChange={(event) =>
               dispatch(
                 setCredentialsAttribute({
-                  attribute: "password",
+                  attribute: "ClaveHacienda",
                   value: event.target.value,
                 })
               )
@@ -354,13 +354,13 @@ export default function CompanyPage() {
         <Grid item xs={8} sm={9} md={10}>
           <TextField
             disabled
-            id="certificate"
-            value={credentials ? credentials.certificate : ""}
+            id="Certificado"
+            value={credentials.Certificado}
             label="Llave criptográfica"
             onChange={(event) =>
               dispatch(
                 setCredentialsAttribute({
-                  attribute: "certificate",
+                  attribute: "Certificado",
                   value: event.target.value,
                 })
               )
@@ -378,21 +378,21 @@ export default function CompanyPage() {
             onChange={handleCertificateChange}
           />
           <Button
-            disabled={company ? company.RegimenSimplificado : true}
+            disabled={company.RegimenSimplificado}
             label="Cargar"
             onClick={() => inputFile.current?.click()}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={company ? company.RegimenSimplificado : true}
-            id="certificatePin"
-            value={credentials ? credentials.certificatePin : ""}
+            disabled={company.RegimenSimplificado}
+            id="PinCertificado"
+            value={credentials.PinCertificado}
             label="Pin de llave criptográfica"
             onChange={(event) =>
               dispatch(
                 setCredentialsAttribute({
-                  attribute: "certificatePin",
+                  attribute: "PinCertificado",
                   value: event.target.value,
                 })
               )
@@ -403,7 +403,7 @@ export default function CompanyPage() {
           <FormControlLabel
             control={
               <Checkbox
-                checked={company ? company.PrecioVentaIncluyeIVA : true}
+                checked={company.PrecioVentaIncluyeIVA}
                 onChange={() =>
                   dispatch(
                     setCompanyAttribute({
@@ -426,10 +426,8 @@ export default function CompanyPage() {
             </InputLabel>
             <Select
               id="CodigoActividad"
-              value={activityCode ? activityCode : ""}
-              onChange={(event) =>
-                dispatch(setActivityCode(event.target.value))
-              }
+              value={activityCode}
+              onChange={(event) => setActivityCode(event.target.value)}
             >
               {activityItems}
             </Select>
@@ -438,10 +436,10 @@ export default function CompanyPage() {
         <Grid item xs={2}>
           <IconButton
             color="primary"
-            disabled={activityCode === null}
+            disabled={activityCode === ""}
             component="span"
             onClick={() =>
-              dispatch(addActivity({ code: activityCode?.toString() ?? "" }))
+              dispatch(addActivity({ id: parseInt(activityCode) }))
             }
           >
             <AddCircleIcon />
@@ -458,25 +456,24 @@ export default function CompanyPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {company &&
-                    company.ActividadEconomicaEmpresa.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{`${row.CodigoActividad} - ${row.Descripcion}`}</TableCell>
-                        <TableCell>
-                          <IconButton
-                            color="secondary"
-                            component="span"
-                            onClick={() =>
-                              dispatch(
-                                removeActivity({ code: row.CodigoActividad })
-                              )
-                            }
-                          >
-                            <RemoveCircleIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                  {companyEconomicActivityList.map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{`${row.CodigoActividad} - ${row.Descripcion}`}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="secondary"
+                          component="span"
+                          onClick={() =>
+                            dispatch(
+                              removeActivity({ id: row.CodigoActividad })
+                            )
+                          }
+                        >
+                          <RemoveCircleIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </Grid>

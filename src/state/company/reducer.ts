@@ -7,18 +7,21 @@ const companySlice = createSlice({
   initialState: companyInitialState,
   reducers: {
     setCompany: (state, action) => {
-      state.entity = action.payload.company;
+      state.entity = action.payload;
     },
     setCompanyLogo: (state, action) => {
-      state.logo = action.payload.image;
+      state.logo = action.payload;
     },
     setCredentials: (state, action) => {
       state.credentialsChanged = false;
-      state.credentialsNew = !action.payload.credentials;
-      state.credentials = action.payload.credentials;
+      state.credentialsNew = !action.payload;
+      state.credentials.UsuarioHacienda = action.payload.UsuarioHacienda;
+      state.credentials.ClaveHacienda = action.payload.ClaveHacienda;
+      state.credentials.Certificado = action.payload.Certificado;
+      state.credentials.PinCertificado = action.payload.PinCertificado;
     },
     setAvailableEconomicActivityList: (state, action) => {
-      state.entity.ActividadEconomicaEmpresa = action.payload.list;
+      state.availableEconomicActivityList = action.payload;
     },
     setCompanyAttribute: (state, action) => {
       state.entity = {
@@ -51,6 +54,8 @@ export const {
 } = companySlice.actions;
 
 export const getCompany = (state: RootState) => state.company.entity;
+export const getCompanyEconomicActivityList = (state: RootState) =>
+  state.company.entity?.ActividadEconomicaEmpresa ?? [];
 export const getCompanyLogo = (state: RootState) => state.company.logo;
 export const getCredentials = (state: RootState) => state.company.credentials;
 export const getAvailableEconomicActivityList = (state: RootState) =>

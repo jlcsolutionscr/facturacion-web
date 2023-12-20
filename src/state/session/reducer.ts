@@ -43,16 +43,16 @@ export const sessionSlice = createSlice({
       sessionInitialState;
     },
     setCompany: (state, action) => {
-      state.company = { ...state.company, ...action.payload.company };
+      state.company = { ...state.company, ...action.payload };
     },
     setBranchId: (state, action) => {
-      state.branchId = action.payload.id;
+      state.branchId = action.payload;
     },
     setPrinter: (state, action) => {
-      state.printer = action.payload.device;
+      state.printer = action.payload;
     },
     setVendorList: (state, action) => {
-      state.vendorList = action.payload.list;
+      state.vendorList = action.payload;
     },
   },
 });

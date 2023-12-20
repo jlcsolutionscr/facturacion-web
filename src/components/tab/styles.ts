@@ -17,7 +17,7 @@ export const useStyles = makeStyles()(() => ({
     display: "flex",
     justifyContent: "center",
     fontSize: "18px",
-    fontFamily: "RussoOne",
+    fontFamily: "Russo One",
     margin: "10px 10px 0 10px",
   },
   actions: {

@@ -199,7 +199,7 @@ export async function post(endpointURL: string, token: string, data: string) {
 export async function postWithResponse(
   endpointURL: string,
   token: string,
-  data: object
+  data: string
 ) {
   const headers: HeaderType = {
     Accept: "application/json",

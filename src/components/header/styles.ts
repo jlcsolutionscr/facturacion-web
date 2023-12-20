@@ -77,8 +77,8 @@ export const useStyles = makeStyles()((theme) => ({
     },
   },
   h2: {
-    color: "#333",
-    fontFamily: "RussoOne",
+    color: theme.palette.mode === "dark" ? "#333" : "#08415c",
+    fontFamily: "Russo One",
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(25),
     textShadow: "1px 1px 3px #FFF",
@@ -92,7 +92,7 @@ export const useStyles = makeStyles()((theme) => ({
   h4: {
     marginTop: "8px",
     color: "#E2EBF1",
-    fontFamily: "RussoOne",
+    fontFamily: "Russo One",
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(17),
     textShadow: "2px 2px 3px rgba(0,0,0,0.85)",

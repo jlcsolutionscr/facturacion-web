@@ -7,7 +7,6 @@ import {
   CustomerType,
   WorkingOrderType,
   CredentialType,
-  EconomicActivityType,
   IdDescriptionType,
   DeviceType,
   PermissionType,
@@ -55,7 +54,7 @@ type SessionStateType = {
 
 type CompanyStateType = {
   entity: CompanyType;
-  availableEconomicActivityList: EconomicActivityType[];
+  availableEconomicActivityList: IdDescriptionType[];
   credentials: CredentialType;
   logo: string;
   credentialsNew: boolean;
@@ -148,10 +147,10 @@ export const companyInitialState: CompanyStateType = {
   entity: defaultCompany,
   availableEconomicActivityList: [],
   credentials: {
-    user: "",
-    password: "",
-    certificate: "",
-    certificatePin: "",
+    UsuarioHacienda: "",
+    ClaveHacienda: "",
+    Certificado: "",
+    PinCertificado: "",
   },
   logo: "",
   credentialsNew: true,

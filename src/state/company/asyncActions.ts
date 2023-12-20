@@ -38,7 +38,7 @@ import {
 
 import { ExportDataToXls, getErrorMessage } from "utils/utilities";
 import { RootState } from "state/store";
-import { EconomicActivityType } from "types/domain";
+import { EconomicActivityType, IdDescriptionType } from "types/domain";
 
 export const getCompany = createAsyncThunk(
   "company/getCompany",
@@ -97,23 +97,23 @@ export const saveCompany = createAsyncThunk(
         if (credentials == null)
           throw new Error("Los credenciales de Hacienda deben ingresarse");
         if (
-          credentials.user === "" ||
-          credentials.password === "" ||
-          credentials.certificate === "" ||
-          credentials.certificatePin === ""
+          credentials.UsuarioHacienda === "" ||
+          credentials.ClaveHacienda === "" ||
+          credentials.Certificado === "" ||
+          credentials.PinCertificado === ""
         )
           throw new Error(
             "Los credenciales de Hacienda no pueden contener valores nulos"
           );
         await validateCredentials(
           token,
-          credentials.user,
-          credentials.password
+          credentials.UsuarioHacienda,
+          credentials.ClaveHacienda
         );
         if (payload.certificate !== "")
           await validateCertificate(
             token,
-            credentials.certificatePin,
+            credentials.PinCertificado,
             payload.certificate
           );
       }
@@ -123,20 +123,20 @@ export const saveCompany = createAsyncThunk(
           await saveCredentialsEntity(
             token,
             companyEntity.IdEmpresa,
-            credentials.user,
-            credentials.password,
-            credentials.certificate,
-            credentials.certificatePin,
+            credentials.UsuarioHacienda,
+            credentials.ClaveHacienda,
+            credentials.Certificado,
+            credentials.PinCertificado,
             payload.certificate
           );
         else
           await updateCredentialsEntity(
             token,
             companyEntity.IdEmpresa,
-            credentials.user,
-            credentials.password,
-            credentials.certificate,
-            credentials.certificatePin,
+            credentials.UsuarioHacienda,
+            credentials.ClaveHacienda,
+            credentials.Certificado,
+            credentials.PinCertificado,
             payload.certificate
           );
       }
@@ -198,11 +198,11 @@ export const getLogo = createAsyncThunk(
 
 export const addActivity = createAsyncThunk(
   "company/addActivity",
-  async (payload: { code: string }, { getState, dispatch }) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
     const { entity: companyEntity, availableEconomicActivityList } = company;
     const activity = availableEconomicActivityList.find(
-      (x: EconomicActivityType) => x.CodigoActividad === payload.code
+      (x: IdDescriptionType) => x.Id === payload.id
     );
     if (!activity) {
       dispatch(
@@ -216,9 +216,9 @@ export const addActivity = createAsyncThunk(
         const list = [
           ...companyEntity.ActividadEconomicaEmpresa,
           {
-            companyId: companyEntity.IdEmpresa,
-            code: activity.CodigoActividad,
-            description: activity.Descripcion,
+            IdEmpresa: companyEntity.IdEmpresa,
+            CodigoActividad: activity.Id,
+            Descripcion: activity.Descripcion,
           },
         ];
         dispatch(
@@ -234,13 +234,13 @@ export const addActivity = createAsyncThunk(
 
 export const removeActivity = createAsyncThunk(
   "company/removeActivity",
-  async (payload: { code: string }, { getState, dispatch }) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
     const { entity } = company;
 
     if (entity) {
       const list = entity.ActividadEconomicaEmpresa.filter(
-        (item: EconomicActivityType) => item.CodigoActividad !== payload.code
+        (item: EconomicActivityType) => item.CodigoActividad !== payload.id
       );
       dispatch(
         setCompanyAttribute({

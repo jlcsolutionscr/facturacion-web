@@ -17,8 +17,8 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
-  const title = company?.name ?? "";
-  const companyIdentifier = company?.identifier ?? "";
+  const title = company?.NombreComercial ?? "";
+  const companyIdentifier = company?.Identificacion ?? "";
   const identification =
     companyIdentifier.length === 9
       ? companyIdentifier.substring(0, 1) +

@@ -85,7 +85,6 @@ export default function HomePage({
     >
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <div ref={myRef} className={classes.body}>
-        Home Page
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {/*activeSection === 2 && <LogoPage />}

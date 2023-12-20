@@ -84,7 +84,7 @@ export async function getCompanyEntity(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return response;
 }
@@ -105,7 +105,7 @@ export async function getCompanyLogo(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return response;
 }
@@ -160,7 +160,7 @@ export async function getCredentialsEntity(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -226,7 +226,7 @@ export async function getCantonList(token: string, provinceId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -246,7 +246,7 @@ export async function getDistritoList(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -269,7 +269,7 @@ export async function getBarrioList(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -283,7 +283,7 @@ export async function getEconomicActivityList(token: string, id: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -297,7 +297,7 @@ export async function getBranchList(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -311,7 +311,7 @@ export async function getVendorList(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -340,7 +340,7 @@ export async function getReportData(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -360,7 +360,7 @@ export async function getCustomerListCount(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -386,7 +386,7 @@ export async function getCustomerListPerPage(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -400,7 +400,7 @@ export async function getCustomerEntity(token: string, customerId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return response;
 }
@@ -419,7 +419,7 @@ export async function getCustomerByIdentifier(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return response;
 }
@@ -451,7 +451,7 @@ export async function getProductCategoryList(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -465,7 +465,7 @@ export async function getProductProviderList(token: string, companyId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -494,7 +494,7 @@ export async function getProductListCount(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -529,7 +529,7 @@ export async function getProductListPerPage(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -549,7 +549,7 @@ export async function getProductEntity(
   const product = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (product === null) return null;
   return product;
@@ -563,7 +563,7 @@ export async function getProductClasification(token: string, code: string) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (!response) return null;
   return { id: response.Id, value: response.Impuesto };
@@ -587,7 +587,7 @@ export async function getExonerationTypeList(token: string) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -613,7 +613,7 @@ export async function getPaymentBankId(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   if (response.length === 0) return null;
@@ -640,7 +640,7 @@ export async function getServicePointList(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -823,7 +823,7 @@ export async function saveInvoiceEntity(
   const invoiceId = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return invoiceId.split("-")[0];
 }
@@ -850,7 +850,7 @@ export async function getInvoiceEntity(token: string, invoiceId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return response;
 }
@@ -869,7 +869,7 @@ export async function getProcessedInvoiceListCount(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -895,7 +895,7 @@ export async function getProcessedInvoiceListPerPage(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -963,7 +963,7 @@ export async function saveWorkingOrderEntity(
     const invoiceId = await postWithResponse(
       APP_URL + "/ejecutarconsulta",
       token,
-      JSON.parse(data)
+      data
     );
     const ids = invoiceId.split("-");
     return {
@@ -998,7 +998,7 @@ export async function getWorkingOrderEntity(token: string, orderId: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return response;
 }
@@ -1020,7 +1020,7 @@ export async function getWorkingOrderListCount(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -1049,7 +1049,7 @@ export async function getWorkingOrderListPerPage(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -1069,7 +1069,7 @@ export async function getDocumentListCount(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -1095,7 +1095,7 @@ export async function getDocumentListPerPage(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;
@@ -1109,7 +1109,7 @@ export async function getDocumentEntity(token: string, idDocument: number) {
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return null;
   return response;
@@ -1166,7 +1166,7 @@ export async function generateInvoicePDF(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response.length > 0) {
     const byteArray = Uint8Array.from(atob(response), (c) => c.charCodeAt(0));
@@ -1187,7 +1187,7 @@ export async function generateWorkingOrderPDF(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response.length > 0) {
     const byteArray = Uint8Array.from(atob(response), (c) => c.charCodeAt(0));
@@ -1259,7 +1259,7 @@ export async function saveReceiptEntity(
   const receiptId = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   return receiptId;
 }
@@ -1277,7 +1277,7 @@ export async function getProductClasificationList(
   const response = await postWithResponse(
     APP_URL + "/ejecutarconsulta",
     token,
-    JSON.parse(data)
+    data
   );
   if (response === null) return [];
   return response;

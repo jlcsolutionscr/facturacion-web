@@ -29,6 +29,8 @@ import Typography from "@mui/material/Typography";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
+    display: "flex",
+    textAlign: "center",
     maxWidth: "640px",
     margin: "20px auto auto auto",
   },
@@ -38,7 +40,7 @@ const useStyles = makeStyles()((theme) => ({
     borderRadius: theme.shape.borderRadius,
     padding: "5px 0 5px 0",
     "@media screen and (max-width:600px)": {
-      maxWidth: "350px",
+      minWidth: "350px",
     },
     "@media screen and (max-width:414px)": {
       maxWidth: "100%",
@@ -130,7 +132,7 @@ export default function MenuPage() {
   });
   return (
     <Grid className={classes.root} container>
-      <Grid item xs={12}>
+      <Grid item xs={12} alignItems="center">
         <div className={classes.branches}>
           {branchList.length > 1 && switchBrand ? (
             <FormControl className={classes.formControl}>

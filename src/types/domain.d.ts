@@ -14,7 +14,7 @@ export type IdDescriptionType = {
 
 export type EconomicActivityType = {
   IdEmpresa: number;
-  CodigoActividad: string;
+  CodigoActividad: number;
   Descripcion: string;
 };
 
@@ -50,10 +50,10 @@ export type CompanyType = {
 };
 
 export type CredentialType = {
-  user: string;
-  password: string;
-  certificate: string;
-  certificatePin: string;
+  UsuarioHacienda: string;
+  ClaveHacienda: string;
+  Certificado: string;
+  PinCertificado: string;
 };
 
 export type ProductType = {

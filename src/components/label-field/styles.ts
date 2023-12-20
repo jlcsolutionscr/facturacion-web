@@ -19,7 +19,8 @@ export const useStyles = makeStyles()((theme) => ({
     fontSize: "1rem",
   },
   label: {
-    backgroundColor: "#424242",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#424242" : "rgb(242, 242, 242)",
     transform: "translate(14px, -6px) scale(0.75)",
     transformOrigin: "top left",
     zIndex: "1",
