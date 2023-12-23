@@ -17,7 +17,7 @@ const companySlice = createSlice({
       state.credentialsNew = !action.payload;
       state.credentials.UsuarioHacienda = action.payload.UsuarioHacienda;
       state.credentials.ClaveHacienda = action.payload.ClaveHacienda;
-      state.credentials.Certificado = action.payload.Certificado;
+      state.credentials.NombreCertificado = action.payload.NombreCertificado;
       state.credentials.PinCertificado = action.payload.PinCertificado;
     },
     setAvailableEconomicActivityList: (state, action) => {

@@ -2,7 +2,6 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -34,6 +33,7 @@ import {
   removeActivity,
 } from "state/company/asyncActions";
 import {
+  getCompany,
   getCredentials,
   setCompanyAttribute,
   setCredentialsAttribute,
@@ -41,7 +41,6 @@ import {
 } from "state/company/reducer";
 import { convertToDateString } from "utils/utilities";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { getCompany } from "state/session/reducer";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -93,7 +92,7 @@ export default function CompanyPage() {
         company.ActividadEconomicaEmpresa.length === 0 ||
         credentials.UsuarioHacienda === "" ||
         credentials.ClaveHacienda === "" ||
-        credentials.Certificado === "" ||
+        credentials.NombreCertificado === "" ||
         credentials.PinCertificado === ""));
 
   const handleChange = (event: { target: { id?: any; value: any } }) => {
@@ -339,19 +338,10 @@ export default function CompanyPage() {
           />
         </Grid>
         <Grid item xs={8} sm={9} md={10}>
-          <TextField
-            disabled
+          <LabelField
             id="Certificado"
-            value={credentials.Certificado}
+            value={credentials.NombreCertificado}
             label="Llave criptográfica"
-            onChange={(event) =>
-              dispatch(
-                setCredentialsAttribute({
-                  attribute: "Certificado",
-                  value: event.target.value,
-                })
-              )
-            }
           />
         </Grid>
         <Grid item xs={1}>

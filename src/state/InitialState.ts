@@ -149,7 +149,7 @@ export const companyInitialState: CompanyStateType = {
   credentials: {
     UsuarioHacienda: "",
     ClaveHacienda: "",
-    Certificado: "",
+    NombreCertificado: "",
     PinCertificado: "",
   },
   logo: "",

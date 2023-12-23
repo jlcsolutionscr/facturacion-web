@@ -66,7 +66,28 @@ export const getCompany = createAsyncThunk(
         token,
         company.Identificacion
       );
-      dispatch(setCompany(company));
+      const partialCompany = {
+        IdEmpresa: company.IdEmpresa,
+        NombreEmpresa: company.NombreEmpresa,
+        NombreComercial: company.NombreComercial,
+        IdTipoIdentificacion: company.IdTipoIdentificacion,
+        Identificacion: company.Identificacion,
+        IdProvincia: company.IdProvincia,
+        IdCanton: company.IdCanton,
+        IdDistrito: company.IdDistrito,
+        IdBarrio: company.IdBarrio,
+        IdTipoMoneda: company.IdTipoMoneda,
+        Direccion: company.Direccion,
+        Telefono1: company.Telefono1,
+        Telefono2: company.Telefono2,
+        FechaVence: company.FechaVence,
+        RegimenSimplificado: company.RegimenSimplificado,
+        PrecioVentaIncluyeIVA: company.PrecioVentaIncluyeIVA,
+        CorreoNotificacion: company.CorreoNotificacion,
+        Modalidad: company.Modalidad,
+        ActividadEconomicaEmpresa: company.ActividadEconomicaEmpresa,
+      };
+      dispatch(setCompany(partialCompany));
       dispatch(setCredentials(credentials));
       dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
       dispatch(setCantonList(cantonList));

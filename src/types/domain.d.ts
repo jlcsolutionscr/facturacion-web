@@ -52,7 +52,7 @@ export type CompanyType = {
 export type CredentialType = {
   UsuarioHacienda: string;
   ClaveHacienda: string;
-  Certificado: string;
+  NombreCertificado: string;
   PinCertificado: string;
 };
 
