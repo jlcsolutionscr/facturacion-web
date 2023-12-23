@@ -15,7 +15,6 @@ import {
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -28,6 +27,7 @@ import DataGrid from "components/data-grid";
 import TextField from "components/text-field";
 import LabelField from "components/label-field";
 import Button from "components/button";
+import Select from "components/select";
 
 import { getPriceFromTaxRate } from "utils/domainHelper";
 import { roundNumber } from "utils/utilities";
@@ -244,34 +244,28 @@ function ProductPage({
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="Tipo">Seleccione el tipo de producto</InputLabel>
-            <Select
-              id="Tipo"
-              value={product.Tipo}
-              onChange={(event) =>
-                setProductAttribute("Tipo", event.target.value)
-              }
-            >
-              {productTypes}
-            </Select>
-          </FormControl>
+          <Select
+            id="tipo-select-id"
+            label="Seleccione el tipo de producto"
+            value={product.Tipo}
+            onChange={(event) =>
+              setProductAttribute("Tipo", event.target.value)
+            }
+          >
+            {productTypes}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="IdLinea">
-              Seleccione la línea del producto
-            </InputLabel>
-            <Select
-              id="IdLinea"
-              value={product.IdLinea}
-              onChange={(event) =>
-                setProductAttribute("IdLinea", event.target.value)
-              }
-            >
-              {categories}
-            </Select>
-          </FormControl>
+          <Select
+            id="id-linea-select-id"
+            label="Seleccione la línea del producto"
+            value={product.IdLinea}
+            onChange={(event) =>
+              setProductAttribute("IdLinea", event.target.value)
+            }
+          >
+            {categories}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -323,18 +317,16 @@ function ProductPage({
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="IdProveedor">Seleccione el proveedor</InputLabel>
-            <Select
-              id="IdProveedor"
-              value={product.IdProveedor}
-              onChange={(event) =>
-                setProductAttribute("IdProveedor", event.target.value)
-              }
-            >
-              {providers}
-            </Select>
-          </FormControl>
+          <Select
+            id="id-proveedor-select-id"
+            label="Seleccione el proveedor"
+            value={product.IdProveedor}
+            onChange={(event) =>
+              setProductAttribute("IdProveedor", event.target.value)
+            }
+          >
+            {providers}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField

@@ -13,12 +13,11 @@ import {
 } from "state/working-order/asyncActions";
 
 import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
+import Select from "components/select";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()((theme) => ({
@@ -120,18 +119,14 @@ function StepTwoScreen({
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={12} sm={7} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Seleccione la Actividad Económica
-                </InputLabel>
-                <Select
-                  id="CodigoActividad"
-                  value={activityCode}
-                  onChange={(event) => setActivityCode(event.target.value)}
-                >
-                  {activityItems}
-                </Select>
-              </FormControl>
+              <Select
+                id="codigo-actividad-select-id"
+                label="Seleccione la Actividad Económica"
+                value={activityCode}
+                onChange={(event) => setActivityCode(event.target.value)}
+              >
+                {activityItems}
+              </Select>
             </Grid>
           </Grid>
         )}
@@ -191,28 +186,25 @@ function StepTwoScreen({
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <FormControl style={{ width: "215px", textAlign: "left" }}>
-            <InputLabel id="demo-simple-select-label">
-              Seleccione la forma de pago:
-            </InputLabel>
-            <Select
-              id="forma-Pago"
-              value={paymentDetails[0].paymentId}
-              disabled={buttonDisabled}
-              onChange={(event) =>
-                setPaymentDetailsList({
-                  paymentId: event.target.value,
-                  description:
-                    paymentMethods.find(
-                      (method) => method.id === event.target.value
-                    )?.description ?? "NO ESPECIFICADO",
-                  amount: total,
-                })
-              }
-            >
-              {paymentItems}
-            </Select>
-          </FormControl>
+          <Select
+            style={{ width: "215px", textAlign: "left" }}
+            id="forma-pago-select-id"
+            label="Seleccione la forma de pago:"
+            value={paymentDetails[0].paymentId}
+            disabled={buttonDisabled}
+            onChange={(event) =>
+              setPaymentDetailsList({
+                paymentId: event.target.value,
+                description:
+                  paymentMethods.find(
+                    (method) => method.id === event.target.value
+                  )?.description ?? "NO ESPECIFICADO",
+                amount: total,
+              })
+            }
+          >
+            {paymentItems}
+          </Select>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
           <Button

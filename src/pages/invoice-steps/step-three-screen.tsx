@@ -4,7 +4,6 @@ import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import {
@@ -28,6 +27,7 @@ import {
 import { getCompany, getVendorList } from "state/session/reducer";
 import Button from "components/button";
 import TextField from "components/text-field";
+import Select from "components/select";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()((theme) => ({
@@ -152,40 +152,30 @@ export default function StepThreeScreen({
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={12} sm={7} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Seleccione la Actividad Económica
-                </InputLabel>
-                <Select
-                  id="CodigoActividad"
-                  value={activityCode}
-                  onChange={(event) =>
-                    dispatch(setActivityCode(event.target.value))
-                  }
-                >
-                  {activityItems}
-                </Select>
-              </FormControl>
+              <Select
+                id="codigo-actividad-select-id"
+                label="Seleccione la Actividad Económica"
+                value={activityCode.toString()}
+                onChange={(event) =>
+                  dispatch(setActivityCode(event.target.value))
+                }
+              >
+                {activityItems}
+              </Select>
             </Grid>
           </Grid>
         )}
         {vendorItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={12} sm={7} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Seleccione el Vendedor
-                </InputLabel>
-                <Select
-                  id="VendorId"
-                  value={vendorId}
-                  onChange={(event) =>
-                    dispatch(setVendorId(event.target.value))
-                  }
-                >
-                  {vendorItems}
-                </Select>
-              </FormControl>
+              <Select
+                id="id-vendedor-select-id"
+                label="Seleccione el Vendedor"
+                value={vendorId.toString()}
+                onChange={(event) => dispatch(setVendorId(event.target.value))}
+              >
+                {vendorItems}
+              </Select>
             </Grid>
           </Grid>
         )}
@@ -245,30 +235,26 @@ export default function StepThreeScreen({
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <FormControl style={{ width: "215px", textAlign: "left" }}>
-            <InputLabel id="demo-simple-select-label">
-              Seleccione la forma de pago:
-            </InputLabel>
-            <Select
-              disabled={successful}
-              id="Sucursal"
-              value={paymentDetails[0].paymentId}
-              onChange={(event) =>
-                dispatch(
-                  setPaymentDetailsList({
-                    paymentId: event.target.value,
-                    description:
-                      paymentMethods.find(
-                        (method) => method.id === event.target.value
-                      )?.description ?? "NO ESPECIFICADO",
-                    amount: total,
-                  })
-                )
-              }
-            >
-              {paymentItems}
-            </Select>
-          </FormControl>
+          <Select
+            disabled={successful}
+            id="sucursal-select-id"
+            label="Seleccione la forma de pago:"
+            value={paymentDetails[0].paymentId.toString()}
+            onChange={(event) =>
+              dispatch(
+                setPaymentDetailsList({
+                  paymentId: event.target.value,
+                  description:
+                    paymentMethods.find(
+                      (method) => method.id === parseInt(event.target.value)
+                    )?.description ?? "NO ESPECIFICADO",
+                  amount: total,
+                })
+              )
+            }
+          >
+            {paymentItems}
+          </Select>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
           <Button

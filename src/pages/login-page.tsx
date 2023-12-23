@@ -143,6 +143,7 @@ export default function LoginPage({
               label="Código usuario"
               name="username"
               value={username}
+              autoComplete="username"
               onChange={handleOnChange("username")}
               autoFocus
             />
@@ -155,6 +156,7 @@ export default function LoginPage({
               type="password"
               id="password"
               value={password}
+              autoComplete="current-password"
               onChange={handleOnChange("password")}
             />
             <TextField

@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -18,6 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "components/text-field";
 import LabelField from "components/label-field";
 import Button from "components/button";
+import Select from "components/select";
 import {
   updateCantonList,
   updateDistritoList,
@@ -39,7 +38,6 @@ import {
   setCompanyAttribute,
   setCredentialsAttribute,
   getAvailableEconomicActivityList,
-  getCompanyEconomicActivityList,
 } from "state/company/reducer";
 import { convertToDateString } from "utils/utilities";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
@@ -70,9 +68,6 @@ export default function CompanyPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
-  const companyEconomicActivityList = useSelector(
-    getCompanyEconomicActivityList
-  );
   const credentials = useSelector(getCredentials);
   const cantonList = useSelector(getCantonList);
   const distritoList = useSelector(getDistritoList);
@@ -95,11 +90,12 @@ export default function CompanyPage() {
     company.CorreoNotificacion === "" ||
     (!company.RegimenSimplificado &&
       (credentials === null ||
-        companyEconomicActivityList.length === 0 ||
+        company.ActividadEconomicaEmpresa.length === 0 ||
         credentials.UsuarioHacienda === "" ||
         credentials.ClaveHacienda === "" ||
         credentials.Certificado === "" ||
         credentials.PinCertificado === ""));
+
   const handleChange = (event: { target: { id?: any; value: any } }) => {
     dispatch(
       setCompanyAttribute({
@@ -108,6 +104,7 @@ export default function CompanyPage() {
       })
     );
   };
+
   const handleSelectChange = (id: string, value: number) => {
     if (id === "IdProvincia") {
       dispatch(updateCantonList({ id: value }));
@@ -134,6 +131,7 @@ export default function CompanyPage() {
       dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: value }));
     }
   };
+
   const handleCertificateChange = (event: {
     preventDefault: () => void;
     target: { files: FileList | null };
@@ -154,6 +152,7 @@ export default function CompanyPage() {
       reader.readAsDataURL(file);
     }
   };
+
   const cantonItems = cantonList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -161,6 +160,7 @@ export default function CompanyPage() {
       </MenuItem>
     );
   });
+
   const distritoItems = distritoList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -168,6 +168,7 @@ export default function CompanyPage() {
       </MenuItem>
     );
   });
+
   const barrioItems = barrioList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -175,6 +176,7 @@ export default function CompanyPage() {
       </MenuItem>
     );
   });
+
   const activityItems = economicActivityList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -182,6 +184,7 @@ export default function CompanyPage() {
       </MenuItem>
     );
   });
+
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -190,6 +193,7 @@ export default function CompanyPage() {
             id="NombreEmpresa"
             value={company.NombreEmpresa}
             label="Nombre empresa"
+            autoComplete="off"
             onChange={handleChange}
           />
         </Grid>
@@ -198,6 +202,7 @@ export default function CompanyPage() {
             id="NombreComercial"
             value={company.NombreComercial}
             label="Nombre comercial"
+            autoComplete="off"
             onChange={handleChange}
           />
         </Grid>
@@ -209,78 +214,60 @@ export default function CompanyPage() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Provincia</InputLabel>
-            <Select
-              id="IdProvincia"
-              value={company.IdProvincia}
-              onChange={(event) =>
-                handleSelectChange(
-                  "IdProvincia",
-                  parseInt(event.target.value.toString())
-                )
-              }
-            >
-              <MenuItem value={1}>SAN JOSE</MenuItem>
-              <MenuItem value={2}>ALAJUELA</MenuItem>
-              <MenuItem value={3}>CARTAGO</MenuItem>
-              <MenuItem value={4}>HEREDIA</MenuItem>
-              <MenuItem value={5}>GUANACASTE</MenuItem>
-              <MenuItem value={6}>PUNTARENAS</MenuItem>
-              <MenuItem value={7}>LIMON</MenuItem>
-            </Select>
-          </FormControl>
+          <Select
+            id="IdProvincia"
+            label="Provincia"
+            value={company.IdProvincia.toString()}
+            onChange={(event) =>
+              handleSelectChange("IdProvincia", parseInt(event.target.value))
+            }
+          >
+            <MenuItem value={1}>SAN JOSE</MenuItem>
+            <MenuItem value={2}>ALAJUELA</MenuItem>
+            <MenuItem value={3}>CARTAGO</MenuItem>
+            <MenuItem value={4}>HEREDIA</MenuItem>
+            <MenuItem value={5}>GUANACASTE</MenuItem>
+            <MenuItem value={6}>PUNTARENAS</MenuItem>
+            <MenuItem value={7}>LIMON</MenuItem>
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Cantón</InputLabel>
-            <Select
-              id="IdCanton"
-              value={cantonItems.length > 1 ? company.IdCanton : ""}
-              onChange={(event) =>
-                handleSelectChange(
-                  "IdCanton",
-                  parseInt(event.target.value.toString())
-                )
-              }
-            >
-              {cantonItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdCanton"
+            label="Cantón"
+            value={cantonItems.length > 1 ? company.IdCanton.toString() : ""}
+            onChange={(event) =>
+              handleSelectChange("IdCanton", parseInt(event.target.value))
+            }
+          >
+            {cantonItems}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Distrito</InputLabel>
-            <Select
-              id="IdDistrito"
-              value={distritoItems.length > 1 ? company.IdDistrito : ""}
-              onChange={(event) =>
-                handleSelectChange(
-                  "IdDistrito",
-                  parseInt(event.target.value.toString())
-                )
-              }
-            >
-              {distritoItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdDistrito"
+            label="Distrito"
+            value={
+              distritoItems.length > 1 ? company.IdDistrito.toString() : ""
+            }
+            onChange={(event) =>
+              handleSelectChange("IdDistrito", parseInt(event.target.value))
+            }
+          >
+            {distritoItems}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Barrio</InputLabel>
-            <Select
-              id="IdBarrio"
-              value={barrioItems.length > 1 ? company.IdBarrio : ""}
-              onChange={(event) =>
-                handleSelectChange(
-                  "IdBarrio",
-                  parseInt(event.target.value.toString())
-                )
-              }
-            >
-              {barrioItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdBarrio"
+            label="Barrio"
+            value={barrioItems.length > 1 ? company.IdBarrio.toString() : ""}
+            onChange={(event) =>
+              handleSelectChange("IdBarrio", parseInt(event.target.value))
+            }
+          >
+            {barrioItems}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -420,18 +407,14 @@ export default function CompanyPage() {
           />
         </Grid>
         <Grid item xs={8} md={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Seleccione la Actividad Económica
-            </InputLabel>
-            <Select
-              id="CodigoActividad"
-              value={activityCode}
-              onChange={(event) => setActivityCode(event.target.value)}
-            >
-              {activityItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="codigo-actividad-id"
+            label="Seleccione la Actividad Económica"
+            value={activityCode}
+            onChange={(event) => setActivityCode(event.target.value)}
+          >
+            {activityItems}
+          </Select>
         </Grid>
         <Grid item xs={2}>
           <IconButton
@@ -456,7 +439,7 @@ export default function CompanyPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {companyEconomicActivityList.map((row, index) => (
+                  {company.ActividadEconomicaEmpresa.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell>{`${row.CodigoActividad} - ${row.Descripcion}`}</TableCell>
                       <TableCell>

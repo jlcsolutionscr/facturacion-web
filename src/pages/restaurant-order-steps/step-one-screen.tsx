@@ -8,7 +8,6 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -21,6 +20,7 @@ import LabelField from "components/label-field";
 import TextField from "components/text-field";
 import ListDropdown from "components/list-dropdown";
 import Button from "components/button";
+import Select from "components/select";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -152,18 +152,14 @@ function StepOneScreen({
           <Grid container spacing={2}>
             {workingOrderId === 0 && (
               <Grid item xs={12} className={classes.centered}>
-                <FormControl style={{ width: "250px", textAlign: "left" }}>
-                  <InputLabel id="demo-simple-select-label">
-                    Seleccione el punto de servicio:
-                  </InputLabel>
-                  <Select
-                    id="punto-servicio-id"
-                    value={customerName}
-                    onChange={handleCustomerNameChange}
-                  >
-                    {paymentItems}
-                  </Select>
-                </FormControl>
+                <Select
+                  id="punto-servicio-select-id"
+                  label="Seleccione el punto de servicio:"
+                  value={customerName}
+                  onChange={handleCustomerNameChange}
+                >
+                  {paymentItems}
+                </Select>
               </Grid>
             )}
             {workingOrderId > 0 && (

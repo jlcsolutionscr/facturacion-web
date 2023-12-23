@@ -5,6 +5,7 @@ interface CustomTextFieldProps {
   label: string;
   id?: string;
   numericFormat?: boolean;
+  autoComplete?: string;
   variant?: TextFieldVariants;
   disabled?: boolean;
   required?: boolean;

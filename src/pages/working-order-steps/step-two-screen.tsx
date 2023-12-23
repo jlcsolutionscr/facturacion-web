@@ -6,7 +6,6 @@ import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -17,6 +16,7 @@ import IconButton from "@mui/material/IconButton";
 
 import ListDropdown from "components/list-dropdown";
 import TextField from "components/text-field";
+import Select from "components/select";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { ROWS_PER_PRODUCT } from "utils/constants";
 
@@ -145,20 +145,16 @@ function StepTwoScreen({
         <div>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="filter-type-select-label">
-                  Filtrar producto por:
-                </InputLabel>
-                <Select
-                  labelId="filter-type-select-label"
-                  id="filter-type-select"
-                  value={filterType}
-                  onChange={handleFilterTypeChange}
-                >
-                  <MenuItem value={1}>Código</MenuItem>
-                  <MenuItem value={2}>Descripción</MenuItem>
-                </Select>
-              </FormControl>
+              <Select
+                className={classes.formControl}
+                id="filter-type-select-id"
+                label="Filtrar producto por:"
+                value={filterType.toString()}
+                onChange={handleFilterTypeChange}
+              >
+                <MenuItem value={1}>Código</MenuItem>
+                <MenuItem value={2}>Descripción</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={12}>
               <ListDropdown

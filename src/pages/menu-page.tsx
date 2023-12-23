@@ -1,5 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
 
 import { setActiveSection } from "state/ui/reducer";
 import { getCompany } from "state/company/asyncActions";
@@ -18,14 +22,7 @@ import {
   getPermissions,
   setBranchId,
 } from "state/session/reducer";
-
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
+import Select from "components/select";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -135,16 +132,14 @@ export default function MenuPage() {
       <Grid item xs={12} alignItems="center">
         <div className={classes.branches}>
           {branchList.length > 1 && switchBrand ? (
-            <FormControl className={classes.formControl}>
-              <InputLabel>Seleccione la sucursal:</InputLabel>
-              <Select
-                id="Sucursal"
-                value={branchId}
-                onChange={(event) => dispatch(setBranchId(event.target.value))}
-              >
-                {branchItems}
-              </Select>
-            </FormControl>
+            <Select
+              id="sucursal-select-id"
+              label="Seleccione la sucursal:"
+              value={branchId.toString()}
+              onChange={(event) => dispatch(setBranchId(event.target.value))}
+            >
+              {branchItems}
+            </Select>
           ) : (
             <Typography className={classes.branchText} align="center" paragraph>
               {`Sucursal: ${branchList.find((branch) => branch.Id === branchId)

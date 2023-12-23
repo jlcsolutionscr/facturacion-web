@@ -5,7 +5,6 @@ import { makeStyles } from "tss-react/mui";
 
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
@@ -24,6 +23,7 @@ import DataGrid from "components/data-grid";
 import TextField from "components/text-field";
 import LabelField from "components/label-field";
 import Button from "components/button";
+import Select from "components/select";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 
 import { setActiveSection } from "state/ui/actions";
@@ -214,33 +214,25 @@ function ReceiptPage({
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Seleccione la Actividad Económica
-            </InputLabel>
-            <Select
-              id="CodigoActividad"
-              value={activityCode}
-              onChange={(event) => setActivityCode(event.target.value)}
-            >
-              {activityItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="codigo-actividad-select-id"
+            label="Seleccione la Actividad Económica"
+            value={activityCode}
+            onChange={(event) => setActivityCode(event.target.value)}
+          >
+            {activityItems}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Seleccione el tipo de Identificación
-            </InputLabel>
-            <Select
-              disabled={successful}
-              id="IdTipoIdentificacion"
-              value={issuer.typeId}
-              onChange={(event) => handleIdTypeChange(event.target.value)}
-            >
-              {idTypeItems}
-            </Select>
-          </FormControl>
+          <Select
+            disabled={successful}
+            id="id-tipo-identificacion-select-id"
+            label="Seleccione el tipo de Identificación"
+            value={issuer.typeId}
+            onChange={(event) => handleIdTypeChange(event.target.value)}
+          >
+            {idTypeItems}
+          </Select>
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
@@ -303,21 +295,17 @@ function ReceiptPage({
           />
         </Grid>
         <Grid item xs={12} sm={7}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Seleccione el tipo de exoneración
-            </InputLabel>
-            <Select
-              disabled={successful}
-              id="IdTipoExoneracion"
-              value={exoneration.type}
-              onChange={(event) =>
-                setExonerationDetails("type", event.target.value)
-              }
-            >
-              {exonerationTypesItems}
-            </Select>
-          </FormControl>
+          <Select
+            disabled={successful}
+            id="id-tipo-exoneracion-select-id"
+            label="Seleccione el tipo de exoneración"
+            value={exoneration.type}
+            onChange={(event) =>
+              setExonerationDetails("type", event.target.value)
+            }
+          >
+            {exonerationTypesItems}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField

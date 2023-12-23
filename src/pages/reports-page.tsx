@@ -13,14 +13,12 @@ import {
 } from "state/company/asyncActions";
 
 import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 
 import Button from "components/button";
+import Select from "components/select";
 import ReportLayout from "components/report-layout";
 
 const useStyles = makeStyles()((theme) => ({
@@ -170,18 +168,14 @@ function ReportsPage({
         {viewLayout === 1 && (
           <Grid container spacing={3} className={classes.firstLayout}>
             <Grid item xs={12} sm={12}>
-              <FormControl>
-                <InputLabel id="demo-simple-select-label">
-                  Seleccione el reporte:
-                </InputLabel>
-                <Select
-                  id="TipoReporte"
-                  value={reportId}
-                  onChange={(event) => setReportId(event.target.value)}
-                >
-                  {reportItems}
-                </Select>
-              </FormControl>
+              <Select
+                id="tipo-reporte-select-id"
+                label="Seleccione el reporte:"
+                value={reportId}
+                onChange={(event) => setReportId(event.target.value)}
+              >
+                {reportItems}
+              </Select>
             </Grid>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid item xs={5} sm={3}>

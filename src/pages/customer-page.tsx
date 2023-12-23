@@ -14,7 +14,6 @@ import {
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -23,6 +22,7 @@ import DateFnsUtils from "@date-io/date-fns";
 
 import TextField from "components/text-field";
 import Button from "components/button";
+import Select from "components/select";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -159,18 +159,14 @@ function CustomerPage({
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="IdTipoIdentificacion">
-              Tipo de identificación
-            </InputLabel>
-            <Select
-              id="IdTipoIdentificacion"
-              value={customer.IdTipoIdentificacion}
-              onChange={(event) => handleIdTypeChange(event.target.value)}
-            >
-              {idTypeItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdTipoIdentificacion"
+            label="Tipo de identificación"
+            value={customer.IdTipoIdentificacion}
+            onChange={(event) => handleIdTypeChange(event.target.value)}
+          >
+            {idTypeItems}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField

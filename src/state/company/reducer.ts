@@ -54,8 +54,6 @@ export const {
 } = companySlice.actions;
 
 export const getCompany = (state: RootState) => state.company.entity;
-export const getCompanyEconomicActivityList = (state: RootState) =>
-  state.company.entity?.ActividadEconomicaEmpresa ?? [];
 export const getCompanyLogo = (state: RootState) => state.company.logo;
 export const getCredentials = (state: RootState) => state.company.credentials;
 export const getAvailableEconomicActivityList = (state: RootState) =>

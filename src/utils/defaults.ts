@@ -13,7 +13,7 @@ import {
 export const defaultCompany: CompanyType = {
   IdEmpresa: 0,
   Modalidad: 1,
-  IdTipoIdentificacion: 1,
+  IdTipoIdentificacion: 0,
   Identificacion: "",
   NombreEmpresa: "",
   NombreComercial: "",
