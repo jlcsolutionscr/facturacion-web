@@ -12,7 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 
-import TextField from "components/text-field";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import LabelField from "components/label-field";
 import Button from "components/button";
 import Select from "components/select";
@@ -95,7 +95,7 @@ export default function CompanyPage() {
         credentials.NombreCertificado === "" ||
         credentials.PinCertificado === ""));
 
-  const handleChange = (event: { target: { id?: any; value: any } }) => {
+  const handleChange = (event: TextFieldOnChangeEventType) => {
     dispatch(
       setCompanyAttribute({
         attribute: event.target.id,

@@ -5,6 +5,8 @@ import { TablePaginationActions } from "components/data-grid";
 
 import { useStyles } from "./styles";
 
+export type ListDropdownOnChangeEventType = React.ChangeEvent<HTMLInputElement>;
+
 interface ListDropdownProps {
   page: number;
   rowsCount: number;
@@ -13,7 +15,7 @@ interface ListDropdownProps {
   label: string;
   value: string;
   disabled: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ListDropdownOnChangeEventType) => void;
   onPageChange: (page: number) => void;
   onItemSelected: (row: any) => void;
 }

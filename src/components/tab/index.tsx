@@ -11,7 +11,7 @@ interface TabProps {
 
 export default function Tab({ title, edit, close }: TabProps) {
   const { classes } = useStyles();
-  const onButtonClick = (e) => {
+  const onButtonClick = (e: React.SyntheticEvent) => {
     e.stopPropagation();
     close();
   };
@@ -21,11 +21,7 @@ export default function Tab({ title, edit, close }: TabProps) {
         <span>{title}</span>
       </div>
       <div className={classes.actions}>
-        <IconButton
-          className={classes.icon}
-          component="span"
-          onClick={onButtonClick}
-        >
+        <IconButton component="span" onClick={onButtonClick}>
           <DeleteIcon />
         </IconButton>
       </div>
