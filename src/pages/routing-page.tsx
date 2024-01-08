@@ -68,6 +68,7 @@ function RoutingPage() {
       toggleDarkMode={() => setDarkMode((prev) => !prev)}
     />
   );
+
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <div

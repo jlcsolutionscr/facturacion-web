@@ -13,7 +13,7 @@ import Button from "components/button";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     overflowY: "hidden",
     margin: "20px 15% auto 15%",
     padding: "20px",

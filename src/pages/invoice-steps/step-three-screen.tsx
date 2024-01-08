@@ -35,7 +35,7 @@ const useStyles = makeStyles()((theme) => ({
     flex: 1,
     overflowY: "auto",
     padding: "2%",
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
   },
   summary: {
     flexDirection: "column",

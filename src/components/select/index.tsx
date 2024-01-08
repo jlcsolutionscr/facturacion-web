@@ -13,7 +13,7 @@ export default function CustomSelect({
   return (
     <FormControl className={className} style={style}>
       {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
-      <Select {...rest} inputProps={{ id: id }}>
+      <Select {...rest} variant="standard" inputProps={{ id: id }}>
         {children}
       </Select>
     </FormControl>

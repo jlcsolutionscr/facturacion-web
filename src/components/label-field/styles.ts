@@ -28,7 +28,7 @@ export const useStyles = makeStyles()((theme) => ({
     left: "0",
     position: "absolute",
     display: "block",
-    color: "rgba(0, 0, 0, 0.57)",
+    color: theme.palette.text.primary,
     lineHeight: "1",
     paddingInlineStart: "5px",
     paddingInlineEnd: "7px",
@@ -56,7 +56,11 @@ export const useStyles = makeStyles()((theme) => ({
     boxSizing: "content-box",
     textRendering: "auto",
     borderRadius: theme.shape.borderRadius,
-    border: `1px solid ${theme.palette.custom.borderColor}`,
+    border: `1px solid ${
+      theme.palette.mode === "dark"
+        ? "rgba(255, 255, 255, 0.23)"
+        : "rgba(0, 0, 0, 0.23)"
+    }`,
     "&:focus": {
       outline: "0",
       borderColor: "#90CAF9",

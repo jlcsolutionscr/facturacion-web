@@ -44,7 +44,7 @@ import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     overflow: "auto",
     margin: "20px auto auto auto",
     padding: "20px",

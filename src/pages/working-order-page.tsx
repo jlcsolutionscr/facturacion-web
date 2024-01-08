@@ -21,7 +21,7 @@ const useStyles = makeStyles()((theme) => ({
     flexDirection: "column",
     flex: 1,
     overflow: "hidden",
-    backgroundColor: theme.palette.custom.navbarBackground,
+    backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     color: "#FFF",
     maxWidth: "900px",
     margin: "10px auto 0 auto",

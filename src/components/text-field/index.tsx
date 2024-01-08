@@ -1,5 +1,7 @@
 import TextField, { TextFieldVariants } from "@mui/material/TextField";
 
+import { useStyles } from "./styles";
+
 export type TextFieldOnChangeEventType = {
   target: { id?: string; value: string };
 };
@@ -17,6 +19,7 @@ interface CustomTextFieldProps {
 }
 
 export default function CustomTextField(props: CustomTextFieldProps) {
+  const { classes } = useStyles();
   const { onChange, numericFormat, variant, ...restProps } = props;
   const handleChange = (event: { target: { value: string } }) => {
     let value = event.target.value;
@@ -28,6 +31,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
   return (
     <TextField
       {...restProps}
+      className={classes.input}
       size="small"
       fullWidth
       variant={variant ? variant : "outlined"}

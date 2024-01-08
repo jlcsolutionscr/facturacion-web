@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import LabelField from "components/label-field";
@@ -44,7 +45,7 @@ import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
     margin: "20px 10%",
     padding: "20px",
@@ -382,6 +383,9 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
+            componentsProps={{
+              typography: { variant: "body1", color: "text.primary" },
+            }}
             control={
               <Checkbox
                 checked={company.PrecioVentaIncluyeIVA}
@@ -394,7 +398,6 @@ export default function CompanyPage() {
                   )
                 }
                 name="PrecioVentaIncluyeIVA"
-                color="primary"
               />
             }
             label="IVA incluido en precio de venta"

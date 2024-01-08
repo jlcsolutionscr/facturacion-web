@@ -23,7 +23,7 @@ import ReportLayout from "components/report-layout";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     overflow: "hidden",
     margin: "20px auto auto auto",
     "@media screen and (max-width:960px)": {

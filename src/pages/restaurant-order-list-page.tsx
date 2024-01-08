@@ -21,7 +21,7 @@ import Tab from "components/tab";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     width: "100%",
     height: "100%",
     display: "flex",

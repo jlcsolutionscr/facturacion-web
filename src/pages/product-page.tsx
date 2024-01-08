@@ -35,7 +35,7 @@ import { SearchIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
     margin: "20px auto auto auto",
     padding: "20px",
@@ -448,8 +448,8 @@ function ProductPage({
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
-            classes={{
-              root: classes.label,
+            componentsProps={{
+              typography: { variant: "body1", color: "text.primary" },
             }}
             control={
               <Checkbox

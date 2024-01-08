@@ -26,7 +26,7 @@ import Select from "components/select";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
     margin: "20px auto auto auto",
     padding: "20px",
@@ -251,6 +251,9 @@ function CustomerPage({
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControlLabel
+            componentsProps={{
+              typography: { variant: "body1", color: "text.primary" },
+            }}
             control={
               <Checkbox
                 checked={customer.AplicaTasaDiferenciada}

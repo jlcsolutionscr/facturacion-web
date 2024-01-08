@@ -27,7 +27,7 @@ import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
-    backgroundColor: theme.palette.custom.pagesBackground,
+    backgroundColor: theme.palette.background.paper,
     width: "100%",
     display: "flex",
     flexDirection: "column",
