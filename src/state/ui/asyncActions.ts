@@ -30,7 +30,7 @@ export const updateCantonList = createAsyncThunk(
       dispatch(setBarrioList(barrioList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -58,7 +58,7 @@ export const updateDistritoList = createAsyncThunk(
       dispatch(setBarrioList(barrioList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -83,7 +83,7 @@ export const updateBarrioList = createAsyncThunk(
       dispatch(setBarrioList(barrioList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

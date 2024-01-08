@@ -12,7 +12,6 @@ import {
 
 export const defaultCompany: CompanyType = {
   IdEmpresa: 0,
-  Modalidad: 1,
   IdTipoIdentificacion: 0,
   Identificacion: "",
   NombreEmpresa: "",
@@ -25,16 +24,13 @@ export const defaultCompany: CompanyType = {
   Telefono1: "",
   Telefono2: "",
   CorreoNotificacion: "",
+  Modalidad: 1,
+  TipoContrato: 1,
   IdTipoMoneda: 1,
   FechaVence: "",
   RegimenSimplificado: false,
   ActividadEconomicaEmpresa: [],
   PrecioVentaIncluyeIVA: false,
-  ListadoTipoIdentificacion: [],
-  ListadoTipoImpuesto: [],
-  ListadoTipoExoneracion: [],
-  ListadoTipoPrecio: [],
-  ListadoTipoProducto: [],
 };
 
 export const defaultCustomerDetails: CustomerDetailsType = {

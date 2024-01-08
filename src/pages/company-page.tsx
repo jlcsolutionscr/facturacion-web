@@ -214,6 +214,7 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
+            style={{ minWidth: "100%" }}
             id="IdProvincia"
             label="Provincia"
             value={company.IdProvincia.toString()}
@@ -232,6 +233,7 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
+            style={{ minWidth: "100%" }}
             id="IdCanton"
             label="Cantón"
             value={cantonItems.length > 1 ? company.IdCanton.toString() : ""}
@@ -244,6 +246,7 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
+            style={{ minWidth: "100%" }}
             id="IdDistrito"
             label="Distrito"
             value={
@@ -258,6 +261,7 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
+            style={{ minWidth: "100%" }}
             id="IdBarrio"
             label="Barrio"
             value={barrioItems.length > 1 ? company.IdBarrio.toString() : ""}
@@ -396,8 +400,9 @@ export default function CompanyPage() {
             label="IVA incluido en precio de venta"
           />
         </Grid>
-        <Grid item xs={8} md={6}>
+        <Grid item xs={10} md={8}>
           <Select
+            style={{ minWidth: "100%" }}
             id="codigo-actividad-id"
             label="Seleccione la Actividad Económica"
             value={activityCode}
@@ -420,7 +425,7 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={2} style={{ overflowY: "auto" }}>
-            <Grid item xs={12} md={10}>
+            <Grid item xs={12}>
               <Table size="small">
                 <TableHead>
                   <TableRow>

@@ -75,7 +75,7 @@ export const getProductListFirstPage = createAsyncThunk(
       if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -110,7 +110,7 @@ export const getProductListByPageNumber = createAsyncThunk(
       dispatch(setProductList(productList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -137,7 +137,7 @@ export const getProduct = createAsyncThunk(
       dispatch(setActiveSection(23));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -176,7 +176,7 @@ export const filterProductList = createAsyncThunk(
       dispatch(setProductList(newList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -193,7 +193,7 @@ export const filterClasificationList = createAsyncThunk(
       dispatch(setClasificationList(list));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -234,7 +234,7 @@ export const validateProductCode = createAsyncThunk(
         dispatch(stopLoader());
       }
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -257,7 +257,7 @@ export const saveProduct = createAsyncThunk(
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

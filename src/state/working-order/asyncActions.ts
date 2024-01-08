@@ -126,7 +126,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -168,7 +168,9 @@ export const getProduct = createAsyncThunk(
         }
         dispatch(stopLoader());
       } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error) }));
+        dispatch(
+          setMessage({ message: getErrorMessage(error), type: "ERROR" })
+        );
         dispatch(stopLoader());
         dispatch(setDescription(""));
         dispatch(setQuantity(1));
@@ -233,7 +235,9 @@ export const addDetails = createAsyncThunk(
         dispatch(setSummary(summary));
         dispatch(resetProductDetails());
       } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error) }));
+        dispatch(
+          setMessage({ message: getErrorMessage(error), type: "ERROR" })
+        );
       }
     }
   }
@@ -287,7 +291,7 @@ export const saveWorkingOrder = createAsyncThunk(
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -324,7 +328,7 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
       if (payload.id !== null) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -349,7 +353,7 @@ export const getWorkingOrderListByPageNumber = createAsyncThunk(
       dispatch(setWorkingOrderList(newList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -371,7 +375,7 @@ export const revokeWorkingOrder = createAsyncThunk(
         })
       );
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -442,7 +446,7 @@ export const openWorkingOrder = createAsyncThunk(
       dispatch(setStatus("ready"));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -490,7 +494,7 @@ export const generateInvoice = createAsyncThunk(
         })
       );
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -519,7 +523,7 @@ export const generateInvoiceTicket = createAsyncThunk(
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -535,7 +539,7 @@ export const generatePDF = createAsyncThunk(
       await generateWorkingOrderPDF(token, payload.id, payload.ref);
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -564,7 +568,7 @@ export const generateWorkingOrderTicket = createAsyncThunk(
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

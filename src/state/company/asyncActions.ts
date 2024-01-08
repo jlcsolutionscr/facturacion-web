@@ -66,28 +66,7 @@ export const getCompany = createAsyncThunk(
         token,
         company.Identificacion
       );
-      const partialCompany = {
-        IdEmpresa: company.IdEmpresa,
-        NombreEmpresa: company.NombreEmpresa,
-        NombreComercial: company.NombreComercial,
-        IdTipoIdentificacion: company.IdTipoIdentificacion,
-        Identificacion: company.Identificacion,
-        IdProvincia: company.IdProvincia,
-        IdCanton: company.IdCanton,
-        IdDistrito: company.IdDistrito,
-        IdBarrio: company.IdBarrio,
-        IdTipoMoneda: company.IdTipoMoneda,
-        Direccion: company.Direccion,
-        Telefono1: company.Telefono1,
-        Telefono2: company.Telefono2,
-        FechaVence: company.FechaVence,
-        RegimenSimplificado: company.RegimenSimplificado,
-        PrecioVentaIncluyeIVA: company.PrecioVentaIncluyeIVA,
-        CorreoNotificacion: company.CorreoNotificacion,
-        Modalidad: company.Modalidad,
-        ActividadEconomicaEmpresa: company.ActividadEconomicaEmpresa,
-      };
-      dispatch(setCompany(partialCompany));
+      dispatch(setCompany(company));
       dispatch(setCredentials(credentials));
       dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
       dispatch(setCantonList(cantonList));
@@ -95,7 +74,7 @@ export const getCompany = createAsyncThunk(
       dispatch(setBarrioList(barrioList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -120,7 +99,7 @@ export const saveCompany = createAsyncThunk(
         if (
           credentials.UsuarioHacienda === "" ||
           credentials.ClaveHacienda === "" ||
-          credentials.Certificado === "" ||
+          credentials.NombreCertificado === "" ||
           credentials.PinCertificado === ""
         )
           throw new Error(
@@ -146,7 +125,7 @@ export const saveCompany = createAsyncThunk(
             companyEntity.IdEmpresa,
             credentials.UsuarioHacienda,
             credentials.ClaveHacienda,
-            credentials.Certificado,
+            credentials.NombreCertificado,
             credentials.PinCertificado,
             payload.certificate
           );
@@ -156,7 +135,7 @@ export const saveCompany = createAsyncThunk(
             companyEntity.IdEmpresa,
             credentials.UsuarioHacienda,
             credentials.ClaveHacienda,
-            credentials.Certificado,
+            credentials.NombreCertificado,
             credentials.PinCertificado,
             payload.certificate
           );
@@ -164,13 +143,13 @@ export const saveCompany = createAsyncThunk(
       dispatch(setSessionCompany(companyEntity));
       dispatch(
         setMessage({
-          error: "Transacción completada satisfactoriamente",
+          message: "Transacción completada satisfactoriamente",
           type: "INFO",
         })
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -188,13 +167,13 @@ export const saveLogo = createAsyncThunk(
       }
       dispatch(
         setMessage({
-          error: "Transacción completada satisfactoriamente",
+          message: "Transacción completada satisfactoriamente",
           type: "INFO",
         })
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -211,7 +190,7 @@ export const getLogo = createAsyncThunk(
       dispatch(setCompanyLogo(logo));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -228,7 +207,7 @@ export const addActivity = createAsyncThunk(
     if (!activity) {
       dispatch(
         setMessage({
-          error: "La actividad económica seleccionada no está asignada",
+          message: "La actividad económica seleccionada no está asignada",
           type: "INFO",
         })
       );
@@ -301,14 +280,15 @@ export const generateReport = createAsyncThunk(
       } else {
         dispatch(
           setMessage({
-            error: "No existen registros para el rango de fecha seleccionado.",
+            message:
+              "No existen registros para el rango de fecha seleccionado.",
             type: "INFO",
           })
         );
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -338,14 +318,15 @@ export const exportReport = createAsyncThunk(
       } else {
         dispatch(
           setMessage({
-            error: "No existen registros para el rango de fecha seleccionado.",
+            message:
+              "No existen registros para el rango de fecha seleccionado.",
             type: "INFO",
           })
         );
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -371,13 +352,13 @@ export const sendReportToEmail = createAsyncThunk(
       );
       dispatch(
         setMessage({
-          error: "Reporte enviado al correo satisfactoriamente",
+          message: "Reporte enviado al correo satisfactoriamente",
           type: "INFO",
         })
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

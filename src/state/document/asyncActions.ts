@@ -51,7 +51,7 @@ export const getDocumentListFirstPage = createAsyncThunk(
       if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -75,7 +75,7 @@ export const getDocumentListByPageNumber = createAsyncThunk(
       dispatch(setDocumentList(newList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -94,13 +94,13 @@ export const sendNotification = createAsyncThunk(
       await sendDocumentByEmail(token, payload.idDocument, payload.emailTo);
       dispatch(
         setMessage({
-          error: "Correo enviado satisfactoriamente.",
+          message: "Correo enviado satisfactoriamente.",
           type: "INFO",
         })
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -118,7 +118,7 @@ export const getDocumentDetails = createAsyncThunk(
       dispatch(setDocumentDetails(details.DetalleMensaje));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

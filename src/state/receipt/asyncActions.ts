@@ -41,7 +41,7 @@ export const setReceiptParameters = createAsyncThunk(
       dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -74,7 +74,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
         dispatch(stopLoader());
       }
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(setIssuerDetails({ attribute: "name", value: "" }));
       dispatch(stopLoader());
     }
@@ -113,7 +113,7 @@ export const validateProductCode = createAsyncThunk(
         dispatch(stopLoader());
       }
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -207,7 +207,9 @@ export const saveReceipt = createAsyncThunk(
         );
         dispatch(stopLoader());
       } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error) }));
+        dispatch(
+          setMessage({ message: getErrorMessage(error), type: "ERROR" })
+        );
         dispatch(stopLoader());
       }
     }

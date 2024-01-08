@@ -41,12 +41,8 @@ export type CompanyType = {
   PrecioVentaIncluyeIVA: boolean;
   CorreoNotificacion: string;
   Modalidad: number;
+  TipoContrato: number;
   ActividadEconomicaEmpresa: EconomicActivityType[];
-  ListadoTipoIdentificacion: IdDescriptionType[];
-  ListadoTipoImpuesto: IdDescriptionType[];
-  ListadoTipoExoneracion: IdDescriptionType[];
-  ListadoTipoPrecio: IdDescriptionType[];
-  ListadoTipoProducto: IdDescriptionType[];
 };
 
 export type CredentialType = {

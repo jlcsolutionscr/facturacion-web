@@ -58,7 +58,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
       if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -85,7 +85,7 @@ export const getCustomerListByPageNumber = createAsyncThunk(
       dispatch(setCustomerList(newList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -127,7 +127,7 @@ export const openCustomer = createAsyncThunk(
       dispatch(setActiveSection(22));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -164,7 +164,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -181,13 +181,13 @@ export const saveCustomer = createAsyncThunk(
       await saveCustomerEntity(token, customerEntity);
       dispatch(
         setMessage({
-          error: "Transacción completada satisfactoriamente",
+          message: "Transacción completada satisfactoriamente",
           type: "INFO",
         })
       );
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -205,7 +205,7 @@ export const getCustomer = createAsyncThunk(
       dispatch(setCustomer(customer));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -242,7 +242,7 @@ export const filterCustomerList = createAsyncThunk(
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

@@ -109,7 +109,7 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -153,7 +153,9 @@ export const getProduct = createAsyncThunk(
         dispatch(setDescription(""));
         dispatch(setQuantity(1));
         dispatch(setPrice(0));
-        dispatch(setMessage({ message: getErrorMessage(error) }));
+        dispatch(
+          setMessage({ message: getErrorMessage(error), type: "ERROR" })
+        );
       }
     }
   }
@@ -210,7 +212,9 @@ export const addDetails = createAsyncThunk(
         dispatch(setSummary(summary));
         dispatch(resetProductDetails());
       } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error) }));
+        dispatch(
+          setMessage({ message: getErrorMessage(error), type: "ERROR" })
+        );
       }
     }
   }
@@ -272,14 +276,14 @@ export const saveInvoice = createAsyncThunk(
       dispatch(setSuccessful({ id: invoiceId, success: true }));
       dispatch(
         setMessage({
-          error: "Transacción completada satisfactoriamente",
+          message: "Transacción completada satisfactoriamente",
           type: "INFO",
         })
       );
       dispatch(stopLoader());
     } catch (error) {
       dispatch(stopLoader());
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
   }
 );
@@ -313,7 +317,7 @@ export const getInvoiceListFirstPage = createAsyncThunk(
       if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -337,7 +341,7 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
       dispatch(setInvoiceList(newList));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -354,12 +358,12 @@ export const revokeInvoice = createAsyncThunk(
       dispatch(getInvoiceListFirstPage({ id: null }));
       dispatch(
         setMessage({
-          error: "Transacción completada satisfactoriamente",
+          message: "Transacción completada satisfactoriamente",
           type: "INFO",
         })
       );
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -375,7 +379,7 @@ export const generatePDF = createAsyncThunk(
       await generateInvoicePDF(token, payload.id, payload.ref);
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }
@@ -403,7 +407,7 @@ export const generateInvoiceTicket = createAsyncThunk(
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
   }

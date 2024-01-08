@@ -2,7 +2,7 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { XMLParser } from "fast-xml-parser";
 import CryptoJS from "crypto-js";
-import { IdValueType } from "types/domain";
+import { CompanyType, IdValueType } from "types/domain";
 
 type HeaderType = {
   Accept: string;

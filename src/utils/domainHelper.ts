@@ -86,7 +86,28 @@ export async function getCompanyEntity(token: string, companyId: number) {
     token,
     data
   );
-  return response;
+  return {
+    IdEmpresa: response.IdEmpresa,
+    IdTipoIdentificacion: response.IdTipoIdentificacion,
+    Identificacion: response.Identificacion,
+    NombreEmpresa: response.NombreEmpresa,
+    NombreComercial: response.NombreComercial,
+    IdProvincia: response.IdProvincia,
+    IdCanton: response.IdCanton,
+    IdDistrito: response.IdDistrito,
+    IdBarrio: response.IdBarrio,
+    Direccion: response.Direccion,
+    Telefono1: response.Telefono1,
+    Telefono2: response.Telefono2,
+    CorreoNotificacion: response.CorreoNotificacion,
+    Modalidad: response.Modalidad,
+    TipoContrato: response.TipoContrato,
+    IdTipoMoneda: response.IdTipoMoneda,
+    FechaVence: response.FechaVence,
+    RegimenSimplificado: response.RegimenSimplificado,
+    ActividadEconomicaEmpresa: response.ActividadEconomicaEmpresa,
+    PrecioVentaIncluyeIVA: response.PrecioVentaIncluyeIVA,
+  };
 }
 
 export async function saveCompanyEntity(token: string, company: CompanyType) {

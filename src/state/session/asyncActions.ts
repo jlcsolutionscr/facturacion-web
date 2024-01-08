@@ -11,13 +11,21 @@ import {
   setExonerationTypeList,
   setIdTypeList,
 } from "state/ui/reducer";
-import { CompanyType } from "types/domain";
+import { CompanyType, IdDescriptionType } from "types/domain";
 import { requestUserLogin } from "utils/domainHelper";
 import {
   writeToLocalStorage,
   cleanLocalStorage,
   getErrorMessage,
 } from "utils/utilities";
+
+type SessionCompanyType = CompanyType & {
+  ListadoTipoIdentificacion: IdDescriptionType[];
+  ListadoTipoImpuesto: IdDescriptionType[];
+  ListadoTipoExoneracion: IdDescriptionType[];
+  ListadoTipoPrecio: IdDescriptionType[];
+  ListadoTipoProducto: IdDescriptionType[];
+};
 
 export const userLogin = createAsyncThunk(
   "session/userLogin",
@@ -27,7 +35,7 @@ export const userLogin = createAsyncThunk(
   ) => {
     dispatch(startLoader());
     try {
-      const company: CompanyType = await requestUserLogin(
+      const company: SessionCompanyType = await requestUserLogin(
         payload.username,
         payload.password,
         payload.id
@@ -41,7 +49,7 @@ export const userLogin = createAsyncThunk(
       writeToLocalStorage(payload.username, company);
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(logout());
       dispatch(stopLoader());
       console.error("Exeption authenticating session", error);
@@ -56,7 +64,7 @@ export const userLogout = createAsyncThunk(
       cleanLocalStorage();
       dispatch(logout());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       console.error("Exeption on logout session", error);
     }
   }
@@ -75,7 +83,7 @@ export const restoreSession = createAsyncThunk(
       dispatch(setProductTypeList(payload.ListadoTipoProducto));
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error) }));
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(logout());
       dispatch(stopLoader());
       console.error("Exeption authenticating session", error);
