@@ -27,8 +27,8 @@ type UIStateType = {
   cantonList: IdDescriptionType[];
   distritoList: IdDescriptionType[];
   barrioList: IdDescriptionType[];
-  taxTypeList: IdValueType[];
-  idTypeList: IdValueType[];
+  taxTypeList: IdDescriptionType[];
+  idTypeList: IdDescriptionType[];
   exonerationTypeList: IdDescriptionType[];
   message: string;
   messageType: string;
@@ -71,7 +71,7 @@ type CustomerStateType = {
   listPage: number;
   listCount: number;
   list: IdDescriptionType[];
-  priceTypeList: IdValueType[];
+  priceTypeList: IdDescriptionType[];
 };
 
 type ProductStateType = {

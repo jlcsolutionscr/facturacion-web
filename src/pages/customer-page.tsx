@@ -1,26 +1,32 @@
-import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import format from "date-fns/format";
 
-import { setActiveSection } from "state/ui/actions";
 import {
-  validateCustomerIdentifier,
+  getIdTypeList,
+  getTaxTypeList,
+  getExonerationTypeList,
+  setActiveSection,
+} from "state/ui/reducer";
+import {
+  getCustomer,
+  getPriceTypeList,
   setCustomer,
   setCustomerAttribute,
+} from "state/customer/reducer";
+import {
+  validateCustomerIdentifier,
   saveCustomer,
 } from "state/customer/asyncActions";
 
 import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-import TextField from "components/text-field";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import Button from "components/button";
 import Select from "components/select";
 
@@ -28,18 +34,18 @@ const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
-    margin: "20px auto auto auto",
+    margin: "20px 10%",
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      marginTop: "16px",
+      margin: "16px 5%",
       padding: "16px",
     },
     "@media screen and (max-width:600px)": {
-      marginTop: "13px",
+      margin: "13px",
       padding: "13px",
     },
     "@media screen and (max-width:414px)": {
-      marginTop: "10px",
+      margin: "0",
       padding: "10px",
     },
   },
@@ -48,19 +54,15 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function CustomerPage({
-  idTypeList,
-  priceTypeList,
-  taxTypeList,
-  exonerationTypeList,
-  customer,
-  validateCustomerIdentifier,
-  setCustomer,
-  setCustomerAttribute,
-  saveCustomer,
-  setActiveSection,
-}) {
+export default function CustomerPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
+  const idTypeList = useSelector(getIdTypeList);
+  const priceTypeList = useSelector(getPriceTypeList);
+  const taxTypeList = useSelector(getTaxTypeList);
+  const exonerationTypeList = useSelector(getExonerationTypeList);
+  const customer = useSelector(getCustomer);
+
   const idTypeItems = idTypeList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -68,15 +70,15 @@ function CustomerPage({
       </MenuItem>
     );
   });
-  const rentTypeItems = [];
-  taxTypeList.forEach((item) => {
-    if (item.Id > 1)
-      rentTypeItems.push(
+  const rentTypeItems = taxTypeList
+    .filter((item) => item.Id > 1)
+    .map((item) => {
+      return (
         <MenuItem key={item.Id} value={item.Id}>
           {item.Descripcion}
         </MenuItem>
       );
-  });
+    });
   const priceTypeItems = priceTypeList.map((item) => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -103,35 +105,50 @@ function CustomerPage({
       customer.IdImpuesto === null ||
       customer.IdTipoExoneracion === null;
   }
-  const handlePaste = (e) => {
+  const handlePaste = (e: React.SyntheticEvent) => {
     e.preventDefault();
   };
-  const handleChange = (event) => {
-    setCustomerAttribute(event.target.id, event.target.value);
+
+  const handleChange = (event: TextFieldOnChangeEventType) => {
+    dispatch(
+      setCustomerAttribute({
+        attribute: event.target.id,
+        value: event.target.value,
+      })
+    );
     if (
       event.target.id === "Identificacion" &&
       customer.IdTipoIdentificacion === 0 &&
       event.target.value.length === 9
     ) {
-      validateCustomerIdentifier(event.target.value);
+      dispatch(validateCustomerIdentifier({ identifier: event.target.value }));
     }
   };
-  const handleIdTypeChange = (value) => {
-    setCustomerAttribute("IdTipoIdentificacion", value);
-    setCustomerAttribute("Identificacion", "");
-    setCustomerAttribute("Nombre", "");
-  };
-  const handleCheckboxChange = () => {
-    setCustomerAttribute(
-      "AplicaTasaDiferenciada",
-      !customer.AplicaTasaDiferenciada
+
+  const handleIdTypeChange = (value: string) => {
+    dispatch(
+      setCustomerAttribute({ attribute: "IdTipoIdentificacion", value })
     );
-    if (customer.AplicaTasaDiferenciada) setCustomerAttribute("IdImpuesto", 8);
+    dispatch(setCustomerAttribute({ attribute: "Identificacion", value: "" }));
+    dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
   };
+
+  const handleCheckboxChange = () => {
+    dispatch(
+      setCustomerAttribute({
+        attribute: "AplicaTasaDiferenciada",
+        value: !customer.AplicaTasaDiferenciada,
+      })
+    );
+    if (customer.AplicaTasaDiferenciada)
+      dispatch(setCustomerAttribute({ attribute: "IdImpuesto", value: 8 }));
+  };
+
   const handleOnClose = () => {
-    setCustomer(null);
-    setActiveSection(3);
+    dispatch(setCustomer(null));
+    dispatch(setActiveSection(3));
   };
+
   let idPlaceholder = "";
   let idMaxLength = 0;
   switch (customer.IdTipoIdentificacion) {
@@ -162,7 +179,7 @@ function CustomerPage({
           <Select
             id="IdTipoIdentificacion"
             label="Tipo de identificación"
-            value={customer.IdTipoIdentificacion}
+            value={customer.IdTipoIdentificacion.toString()}
             onChange={(event) => handleIdTypeChange(event.target.value)}
           >
             {idTypeItems}
@@ -236,18 +253,21 @@ function CustomerPage({
           />
         </Grid>
         <Grid item xs={12} sm={7}>
-          <FormControl fullWidth>
-            <InputLabel id="IdTipoPrecio">Tipo de precio</InputLabel>
-            <Select
-              id="IdTipoPrecio"
-              value={customer.IdTipoPrecio}
-              onChange={(event) =>
-                setCustomerAttribute("IdTipoPrecio", event.target.value)
-              }
-            >
-              {priceTypeItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdTipoPrecio"
+            label="Tipo de precio"
+            value={customer.IdTipoPrecio.toString()}
+            onChange={(event) =>
+              dispatch(
+                setCustomerAttribute({
+                  attribute: "IdTipoPrecio",
+                  value: event.target.value,
+                })
+              )
+            }
+          >
+            {priceTypeItems}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControlLabel
@@ -266,34 +286,38 @@ function CustomerPage({
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth disabled={!customer.AplicaTasaDiferenciada}>
-            <InputLabel id="IdTipoImpuesto">
-              Tasa de IVA diferenciada
-            </InputLabel>
-            <Select
-              id="IdImpuesto"
-              value={customer.IdImpuesto}
-              onChange={(event) =>
-                setCustomerAttribute("IdImpuesto", event.target.value)
-              }
-            >
-              {rentTypeItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdImpuesto"
+            label="Tasa de IVA diferenciada"
+            value={customer.IdImpuesto.toString()}
+            onChange={(event) =>
+              dispatch(
+                setCustomerAttribute({
+                  attribute: "IdImpuesto",
+                  value: event.target.value,
+                })
+              )
+            }
+          >
+            {rentTypeItems}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={7}>
-          <FormControl fullWidth>
-            <InputLabel id="IdTipoExoneracion">Tasa de exoneración</InputLabel>
-            <Select
-              id="IdTipoExoneracion"
-              value={customer.IdTipoExoneracion}
-              onChange={(event) =>
-                setCustomerAttribute("IdTipoExoneracion", event.target.value)
-              }
-            >
-              {exonerationTypesItems}
-            </Select>
-          </FormControl>
+          <Select
+            id="IdTipoExoneracion"
+            label="Tasa de exoneración"
+            value={customer.IdTipoExoneracion.toString()}
+            onChange={(event) =>
+              dispatch(
+                setCustomerAttribute({
+                  attribute: "IdTipoExoneracion",
+                  value: event.target.value,
+                })
+              )
+            }
+          >
+            {exonerationTypesItems}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -311,23 +335,32 @@ function CustomerPage({
             onChange={handleChange}
           />
         </Grid>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Grid item xs={5} sm={3}>
             <DatePicker
               label="Fecha exoneración"
               format="dd/MM/yyyy"
-              value={customer.FechaEmisionDoc}
-              onChange={(value) =>
-                setCustomerAttribute("FechaEmisionDoc", value)
-              }
-              animateYearScrolling
+              value={new Date(customer.FechaEmisionDoc)}
+              onChange={(value: Date | null) => {
+                console.log("value", value);
+                dispatch(
+                  setCustomerAttribute({
+                    attribute: "FechaEmisionDoc",
+                    value:
+                      format(
+                        value !== null ? value : Date.now(),
+                        "yyyy-MM-dd"
+                      ) + "T23:59:59",
+                  })
+                );
+              }}
             />
           </Grid>
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
         <Grid item xs={12}>
           <TextField
             id="PorcentajeExoneracion"
-            value={customer.PorcentajeExoneracion}
+            value={customer.PorcentajeExoneracion.toString()}
             label="Porcentaje de exoneración"
             numericFormat
             onChange={handleChange}
@@ -337,7 +370,7 @@ function CustomerPage({
           <Button
             disabled={disabled}
             label="Guardar"
-            onClick={() => saveCustomer()}
+            onClick={() => dispatch(saveCustomer())}
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
@@ -347,29 +380,3 @@ function CustomerPage({
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    customerList: state.customer.customerList,
-    idTypeList: state.ui.idTypeList,
-    priceTypeList: state.customer.priceTypeList,
-    taxTypeList: state.ui.taxTypeList,
-    exonerationTypeList: state.ui.exonerationTypeList,
-    customer: state.customer.customer,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      setActiveSection,
-      validateCustomerIdentifier,
-      setCustomer,
-      setCustomerAttribute,
-      saveCustomer,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerPage);

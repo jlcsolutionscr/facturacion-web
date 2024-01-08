@@ -10,12 +10,15 @@ interface CustomTextFieldProps {
   value: string;
   label: string;
   id?: string;
+  placeholder?: string;
   numericFormat?: boolean;
   autoComplete?: string;
   variant?: TextFieldVariants;
   disabled?: boolean;
   required?: boolean;
+  inputProps?: { [key: string]: string | number | boolean };
   onChange: (event: TextFieldOnChangeEventType) => void;
+  onPaste?: (event: React.SyntheticEvent) => void;
 }
 
 export default function CustomTextField(props: CustomTextFieldProps) {

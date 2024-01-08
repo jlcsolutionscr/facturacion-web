@@ -449,10 +449,7 @@ export async function saveCustomerEntity(
   token: string,
   customer: CustomerType
 ) {
-  const entidad = JSON.stringify({
-    ...customer,
-    FechaEmisionDoc: convertToDateTimeString(customer.FechaEmisionDoc),
-  });
+  const entidad = JSON.stringify(customer);
   const data =
     "{NombreMetodo: '" +
     (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") +

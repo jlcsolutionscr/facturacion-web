@@ -14,8 +14,8 @@ import {
 
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import Button from "components/button";
 import Select from "components/select";
@@ -177,7 +177,7 @@ function ReportsPage({
                 {reportItems}
               </Select>
             </Grid>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid item xs={5} sm={3}>
                 <DatePicker
                   label="Fecha inicial"
@@ -196,7 +196,7 @@ function ReportsPage({
                   animateYearScrolling
                 />
               </Grid>
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <Grid item xs={isMobile ? 6 : 4} sm={3}>
               <Button
                 disabled={reportId === 0}

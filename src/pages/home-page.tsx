@@ -8,7 +8,7 @@ import MenuPage from "pages/menu-page";
 import CompanyPage from "pages/company-page";
 import LogoPage from "pages/logo-page";
 import CustomerListPage from "pages/customer-list-page";
-//import CustomerPage from "pages/customer-page";
+import CustomerPage from "pages/customer-page";
 //import ProductListPage from "pages/product-list-page";
 //import ProductPage from "pages/product-page";
 import InvoicePage from "pages/invoice-page";
@@ -100,9 +100,9 @@ export default function HomePage({
           ) : (
             <RestaurantOrderPage />
           )
-        ) : null}
+          ) : null*/}
         {activeSection === 22 && <CustomerPage />}
-        {activeSection === 23 && <ProductPage />*/}
+        {/*activeSection === 23 && <ProductPage />*/}
       </div>
     </div>
   );

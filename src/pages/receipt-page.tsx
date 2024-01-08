@@ -4,11 +4,10 @@ import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 
 import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -329,7 +328,7 @@ function ReceiptPage({
             }
           />
         </Grid>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Grid item xs={5} sm={3}>
             <DatePicker
               disabled={successful}
@@ -337,10 +336,9 @@ function ReceiptPage({
               format="dd/MM/yyyy"
               value={exoneration.date}
               onChange={(date) => setExonerationDetails("date", date)}
-              animateYearScrolling
             />
           </Grid>
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
         <Grid item xs={12}>
           <TextField
             disabled={successful}

@@ -11,7 +11,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import LabelField from "components/label-field";
