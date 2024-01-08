@@ -9,13 +9,13 @@ const customerSlice = createSlice({
   initialState: customerInitialState,
   reducers: {
     setCustomerListPage: (state, action) => {
-      state.listPage = action.payload.page;
+      state.listPage = action.payload;
     },
     setCustomerListCount: (state, action) => {
-      state.listCount = action.payload.count;
+      state.listCount = action.payload;
     },
     setCustomerList: (state, action) => {
-      state.list = action.payload.list;
+      state.list = action.payload;
     },
     setCustomer: (state, action) => {
       state.entity = action.payload;
@@ -24,7 +24,7 @@ const customerSlice = createSlice({
       state.entity = defaultCustomer;
     },
     setPriceTypeList: (state, action) => {
-      state.priceTypeList = action.payload.list;
+      state.priceTypeList = action.payload;
     },
     setCustomerAttribute: (state, action) => {
       state.entity = {

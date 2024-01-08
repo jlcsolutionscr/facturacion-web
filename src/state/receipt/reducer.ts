@@ -21,7 +21,7 @@ export const receiptSlice = createSlice({
       };
     },
     setProductDetailsList: (state, action) => {
-      state.entity.productDetailsList = action.payload.details;
+      state.entity.productDetailsList = action.payload;
     },
     resetProductDetails: (state) => {
       state.entity.productDetails = defaultReceiptProduct;
@@ -31,7 +31,7 @@ export const receiptSlice = createSlice({
       state.entity.productDetails.taxRateType = action.payload.type;
     },
     setSummary: (state, action) => {
-      state.entity.summary = action.payload.summary;
+      state.entity.summary = action.payload;
     },
     setExonerationDetails: (state, action) => {
       state.entity.exoneration = {
@@ -40,7 +40,7 @@ export const receiptSlice = createSlice({
       };
     },
     setActivityCode: (state, action) => {
-      state.entity.activityCode = action.payload.code;
+      state.entity.activityCode = action.payload;
     },
     setSuccessful: (state) => {
       state.entity.successful = true;

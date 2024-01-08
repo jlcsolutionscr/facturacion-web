@@ -13,28 +13,28 @@ const productSlice = createSlice({
   initialState: productInitialState,
   reducers: {
     setProductListPage: (state, action) => {
-      state.listPage = action.payload.page;
+      state.listPage = action.payload;
     },
     setProductListCount: (state, action) => {
-      state.listCount = action.payload.count;
+      state.listCount = action.payload;
     },
     setProductList: (state, action) => {
-      state.list = action.payload.list;
+      state.list = action.payload;
     },
     setProduct: (state, action) => {
-      state.entity = action.payload.product;
+      state.entity = action.payload;
     },
     setProductTypeList: (state, action) => {
-      state.productTypeList = action.payload.list;
+      state.productTypeList = action.payload;
     },
     setCategoryList: (state, action) => {
-      state.categoryList = action.payload.list;
+      state.categoryList = action.payload;
     },
     setProviderList: (state, action) => {
-      state.providerList = action.payload.list;
+      state.providerList = action.payload;
     },
     setClasificationList: (state, action) => {
-      state.clasificationList = action.payload.list;
+      state.clasificationList = action.payload;
     },
     setProductAttribute: (state, action) => {
       state.entity = {

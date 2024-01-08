@@ -7,16 +7,16 @@ const documentSlice = createSlice({
   initialState: documentInitialState,
   reducers: {
     setDocumentList: (state, action) => {
-      state.list = action.payload.list;
+      state.list = action.payload;
     },
     setDocumentCount: (state, action) => {
-      state.listCount = action.payload.count;
+      state.listCount = action.payload;
     },
     setDocumentPage: (state, action) => {
-      state.listPage = action.payload.page;
+      state.listPage = action.payload;
     },
     setDocumentDetails: (state, action) => {
-      state.details = action.payload.details;
+      state.details = action.payload;
     },
   },
 });
