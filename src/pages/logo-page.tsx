@@ -1,9 +1,8 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
 
 import { saveLogo } from "state/company/asyncActions";
 
@@ -16,18 +15,18 @@ const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflowY: "hidden",
-    margin: "20px auto auto auto",
+    margin: "20px 15% auto 15%",
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      marginTop: "16px",
+      margin: "16px 10% auto 10%",
       padding: "16px",
     },
     "@media screen and (max-width:600px)": {
-      marginTop: "13px",
+      margin: "13px 5% auto 5%",
       padding: "13px",
     },
     "@media screen and (max-width:414px)": {
-      marginTop: "10px",
+      margin: "10px 10px auto 10px",
       padding: "10px",
     },
   },
@@ -42,33 +41,34 @@ const useStyles = makeStyles()((theme) => ({
   imagePreview: {
     borderRadius: theme.shape.borderRadius,
     border: "1px solid rgba(0, 0, 0, 0.23)",
-    textAlign: "center",
     height: "160px",
     width: "350px",
-    "@media screen and (max-width:460px)": {
-      width: "100%",
-    },
   },
 }));
 
-function LogoPage({ setActiveSection, saveLogo }) {
+export default function LogoPage() {
+  const dispatch = useDispatch();
   const { classes } = useStyles();
   const [logo, setLogo] = React.useState("");
   const [filename, setFilename] = React.useState("");
-  const inputFile = React.useRef(null);
-  const handleImageChange = (event) => {
+  const inputFile = React.useRef<HTMLInputElement>(null);
+  const handleImageChange = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    let reader = new FileReader();
-    let file = event.target.files[0];
-    reader.onloadend = () => {
-      setLogo(reader.result);
-      setFilename(file.name);
-    };
-    reader.readAsDataURL(file);
+    const reader = new FileReader();
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      reader.onloadend = () => {
+        if (reader.result) {
+          setLogo(reader.result.toString());
+          setFilename(file.name);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
   const handleSaveButton = () => {
     const logoBase64 = logo.substring(logo.indexOf(",") + 1);
-    saveLogo(logoBase64);
+    dispatch(saveLogo({ logo: logoBase64 }));
   };
   const imagePreview =
     logo !== "" ? (
@@ -83,8 +83,8 @@ function LogoPage({ setActiveSection, saveLogo }) {
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={6} sm={6}>
-          <TextField disabled={true} value={filename} id="Logotipo" />
+        <Grid item xs={6} sm={8}>
+          <TextField fullWidth disabled={true} value={filename} id="Logotipo" />
         </Grid>
         <Grid item xs={2} sm={2}>
           <input
@@ -99,7 +99,7 @@ function LogoPage({ setActiveSection, saveLogo }) {
           <Button
             style={{ marginTop: "11px" }}
             label="Seleccionar"
-            onClick={() => inputFile.current.click()}
+            onClick={() => inputFile.current?.click()}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -113,19 +113,12 @@ function LogoPage({ setActiveSection, saveLogo }) {
           />
         </Grid>
         <Grid item xs={5} sm={3}>
-          <Button label="Regresar" onClick={() => setActiveSection(0)} />
+          <Button
+            label="Regresar"
+            onClick={() => dispatch(setActiveSection(0))}
+          />
         </Grid>
       </Grid>
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return { message: state.ui.message };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ setActiveSection, saveLogo }, dispatch);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LogoPage);

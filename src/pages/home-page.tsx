@@ -6,7 +6,7 @@ import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
 import MenuPage from "pages/menu-page";
 import CompanyPage from "pages/company-page";
-//import LogoPage from "pages/logo-page";
+import LogoPage from "pages/logo-page";
 import CustomerListPage from "pages/customer-list-page";
 //import CustomerPage from "pages/customer-page";
 //import ProductListPage from "pages/product-list-page";
@@ -79,7 +79,7 @@ export default function HomePage({
       <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
-        {/*activeSection === 2 && <LogoPage />*/}
+        {activeSection === 2 && <LogoPage />}
         {activeSection === 3 && <CustomerListPage />}
         {/*activeSection === 4 && <ProductListPage />*/}
         {activeSection === 5 && <InvoicePage />}
