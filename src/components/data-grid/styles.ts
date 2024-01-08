@@ -9,11 +9,11 @@ export const useStyles = makeStyles()((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#333",
+    backgroundColor: theme.palette.mode === "dark" ? "#333" : "#FFF",
   },
   tableContainer: {
     flex: "1 1 auto",
-    color: "white",
+    color: theme.palette.mode === "dark" ? "#FFF" : "#333",
   },
   pagination: {
     flex: "1 0 auto",

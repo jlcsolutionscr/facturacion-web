@@ -26,18 +26,19 @@ const useStyles = makeStyles()((theme) => ({
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    margin: "20px 10%",
+    "@media screen and (max-width:960px)": {
+      margin: "16px 5%",
+    },
+    "@media screen and (max-width:414px)": {
+      margin: "0",
+    },
   },
   dataContainer: {
     overflowY: "auto",
     marginBottom: "auto",
-    padding: "20px",
+    padding: "12px",
     "@media screen and (max-width:960px)": {
-      padding: "16px",
-    },
-    "@media screen and (max-width:600px)": {
-      padding: "13px",
-    },
-    "@media screen and (max-width:414px)": {
       padding: "10px",
     },
   },

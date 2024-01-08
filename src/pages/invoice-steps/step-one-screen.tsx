@@ -5,7 +5,9 @@ import Grid from "@mui/material/Grid";
 
 import LabelField from "components/label-field";
 import TextField from "components/text-field";
-import ListDropdown from "components/list-dropdown";
+import ListDropdown, {
+  ListDropdownOnChangeEventType,
+} from "components/list-dropdown";
 import {
   getCustomer as getCustomerAction,
   filterCustomerList,
@@ -56,7 +58,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
 
   const [filterText, setFilterText] = React.useState("");
 
-  const handleOnFilterChange = (event: { target: { value: string } }) => {
+  const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
     setFilterText(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);

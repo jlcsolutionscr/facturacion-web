@@ -70,7 +70,7 @@ type CustomerStateType = {
   entity: CustomerType;
   listPage: number;
   listCount: number;
-  list: IdValueType[];
+  list: IdDescriptionType[];
   priceTypeList: IdValueType[];
 };
 

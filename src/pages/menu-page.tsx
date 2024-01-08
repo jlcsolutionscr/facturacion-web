@@ -30,6 +30,10 @@ const useStyles = makeStyles()((theme) => ({
     textAlign: "center",
     maxWidth: "640px",
     margin: "20px auto auto auto",
+    "@media screen and (max-width:414px)": {
+      margin: "15px 0 auto 0",
+      padding: "5px",
+    },
   },
   branches: {
     backgroundColor:

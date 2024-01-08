@@ -7,7 +7,7 @@ import Header from "components/header";
 import MenuPage from "pages/menu-page";
 import CompanyPage from "pages/company-page";
 //import LogoPage from "pages/logo-page";
-//import CustomerListPage from "pages/customer-list-page";
+import CustomerListPage from "pages/customer-list-page";
 //import CustomerPage from "pages/customer-page";
 //import ProductListPage from "pages/product-list-page";
 //import ProductPage from "pages/product-page";
@@ -42,16 +42,8 @@ const useStyles = makeStyles()(() => ({
     overflowY: "auto",
     overflowX: "hidden",
     backgroundColor: "#FFF",
-    padding: "0px 10% 20px 10%",
-    "@media (max-width:960px)": {
-      padding: "0 16px 16px 16px",
-    },
-    "@media (max-width:600px)": {
-      padding: "0 13px 13px 13px",
-    },
     "@media (max-width:414px)": {
       backgroundImage: `none`,
-      padding: "0 10px 10px 10px",
     },
   },
 }));
@@ -87,9 +79,9 @@ export default function HomePage({
       <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
-        {/*activeSection === 2 && <LogoPage />}
+        {/*activeSection === 2 && <LogoPage />*/}
         {activeSection === 3 && <CustomerListPage />}
-        {activeSection === 4 && <ProductListPage />*/}
+        {/*activeSection === 4 && <ProductListPage />*/}
         {activeSection === 5 && <InvoicePage />}
         {/*activeSection === 6 && <ReceiptPage />}
         {activeSection === 7 && <InvoiceListPage />}

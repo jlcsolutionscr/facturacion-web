@@ -25,17 +25,13 @@ export const useStyles = makeStyles()((theme) => ({
     height: "105px",
     width: "100%",
     "@media (max-width:600px)": {
-      backgroundSize: "95px 95px",
-      height: "95px",
-    },
-    "@media (max-width:414px)": {
       backgroundSize: "75px 75px",
       height: "75px",
     },
   },
   toogle: {
     position: "absolute",
-    top: "78px",
+    top: "89px",
     right: "52px",
     zIndex: 2,
     "@media (max-width:960px)": {
@@ -44,13 +40,10 @@ export const useStyles = makeStyles()((theme) => ({
     "@media (max-width:600px)": {
       top: "101px",
     },
-    "@media (max-width:414px)": {
-      top: "89px",
-    },
   },
   logout: {
     position: "absolute",
-    top: "78px",
+    top: "89px",
     right: "8px",
     zIndex: 2,
     "@media (max-width:960px)": {
@@ -58,9 +51,6 @@ export const useStyles = makeStyles()((theme) => ({
     },
     "@media (max-width:600px)": {
       top: "101px",
-    },
-    "@media (max-width:414px)": {
-      top: "89px",
     },
   },
   text: {
@@ -70,9 +60,6 @@ export const useStyles = makeStyles()((theme) => ({
       margin: "30px 0 0 120px",
     },
     "@media (max-width:600px)": {
-      margin: "30px 0 0 110px",
-    },
-    "@media (max-width:414px)": {
       margin: "20px 0 10px 90px",
     },
   },
@@ -83,9 +70,6 @@ export const useStyles = makeStyles()((theme) => ({
     fontSize: theme.typography.pxToRem(25),
     textShadow: "1px 1px 3px #FFF",
     "@media (max-width:600px)": {
-      fontSize: theme.typography.pxToRem(22),
-    },
-    "@media (max-width:414px)": {
       fontSize: theme.typography.pxToRem(20),
     },
   },
@@ -97,9 +81,6 @@ export const useStyles = makeStyles()((theme) => ({
     fontSize: theme.typography.pxToRem(17),
     textShadow: "2px 2px 3px rgba(0,0,0,0.85)",
     "@media (max-width:600px)": {
-      fontSize: theme.typography.pxToRem(15),
-    },
-    "@media (max-width:414px)": {
       fontSize: theme.typography.pxToRem(13),
     },
   },
@@ -124,9 +105,6 @@ export const useStyles = makeStyles()((theme) => ({
     textShadow: "4px 4px 6px rgba(0,0,0,0.45)",
     marginBottom: 0,
     "@media (max-width:600px)": {
-      fontSize: theme.typography.pxToRem(23),
-    },
-    "@media (max-width:414px)": {
       fontSize: theme.typography.pxToRem(20),
     },
   },

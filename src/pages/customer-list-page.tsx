@@ -1,9 +1,14 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
+
+import {
+  getCustomerList,
+  getCustomerListCount,
+  getCustomerListPage,
+} from "state/customer/reducer";
 import {
   filterCustomerList,
   getCustomerListByPageNumber,
@@ -14,7 +19,7 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 
 import DataGrid from "components/data-grid";
-import TextField from "components/text-field";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import Button from "components/button";
 import { EditIcon } from "utils/iconsHelper";
 
@@ -24,32 +29,26 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    margin: "10px auto auto auto",
-  },
-  filterContainer: {
-    padding: "20px 20px 0 20px",
+    margin: "20px 10%",
     "@media screen and (max-width:960px)": {
-      padding: "15px 15px 0 15px",
-    },
-    "@media screen and (max-width:600px)": {
-      padding: "10px 10px 0 10px",
+      margin: "16px 5%",
     },
     "@media screen and (max-width:414px)": {
-      padding: "5px 5px 0 5px",
+      margin: "0",
+    },
+  },
+  filterContainer: {
+    padding: "12px 12px 0 12px",
+    "@media screen and (max-width:960px)": {
+      padding: "10px 10px 0 10px",
     },
   },
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    margin: "20px",
+    padding: "12px",
     "@media screen and (max-width:960px)": {
-      margin: "15px",
-    },
-    "@media screen and (max-width:600px)": {
-      margin: "10px",
-    },
-    "@media screen and (max-width:414px)": {
-      margin: "5px",
+      padding: "10px",
     },
   },
   icon: {
@@ -76,25 +75,27 @@ const useStyles = makeStyles()((theme) => ({
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function CustomerListPage({
-  listPage,
-  listCount,
-  list,
-  filterCustomerList,
-  getCustomerListByPageNumber,
-  openCustomer,
-  setActiveSection,
-}) {
+export default function CustomerListPage() {
+  const dispatch = useDispatch();
+  const listPage = useSelector(getCustomerListPage);
+  const listCount = useSelector(getCustomerListCount);
+  const list = useSelector(getCustomerList);
+
   const rowsPerPage = 8;
   const { classes } = useStyles();
   const [filter, setFilter] = React.useState("");
-  const handleOnFilterChange = (event) => {
+  const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterCustomerList(event.target.value, rowsPerPage);
+      dispatch(
+        filterCustomerList({
+          filterText: event.target.value,
+          rowsPerPage: rowsPerPage,
+        })
+      );
     }, 1000);
   };
   const rows = list.map((row) => ({
@@ -105,7 +106,7 @@ function CustomerListPage({
         className={classes.icon}
         color="primary"
         component="span"
-        onClick={() => openCustomer(row.Id)}
+        onClick={() => dispatch(openCustomer({ idCustomer: row.Id }))}
       >
         <EditIcon className={classes.icon} />
       </IconButton>
@@ -139,40 +140,27 @@ function CustomerListPage({
           rowsCount={listCount}
           rowsPerPage={rowsPerPage}
           onPageChange={(page) => {
-            getCustomerListByPageNumber(page + 1, filter, rowsPerPage);
+            dispatch(
+              getCustomerListByPageNumber({
+                pageNumber: page + 1,
+                filterText: filter,
+                rowsPerPage: rowsPerPage,
+              })
+            );
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Agregar cliente" onClick={() => openCustomer(null)} />
+        <Button
+          label="Agregar cliente"
+          onClick={() => dispatch(openCustomer({ idCustomer: undefined }))}
+        />
         <Button
           style={{ marginLeft: "10px" }}
           label="Regresar"
-          onClick={() => setActiveSection(0)}
+          onClick={() => dispatch(setActiveSection(0))}
         />
       </div>
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    listPage: state.customer.listPage,
-    listCount: state.customer.listCount,
-    list: state.customer.list,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      filterCustomerList,
-      getCustomerListByPageNumber,
-      openCustomer,
-      setActiveSection,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerListPage);

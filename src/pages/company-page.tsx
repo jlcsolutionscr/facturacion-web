@@ -46,18 +46,18 @@ const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.custom.pagesBackground,
     overflowY: "auto",
-    margin: "20px auto auto auto",
+    margin: "20px 10%",
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      marginTop: "16px",
+      margin: "16px 5%",
       padding: "16px",
     },
     "@media screen and (max-width:600px)": {
-      marginTop: "13px",
+      margin: "13px",
       padding: "13px",
     },
     "@media screen and (max-width:414px)": {
-      marginTop: "10px",
+      margin: "0",
       padding: "10px",
     },
   },

@@ -31,19 +31,19 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    margin: "10px auto auto auto",
+    margin: "20px 10%",
+    "@media screen and (max-width:960px)": {
+      margin: "16px 5%",
+    },
+    "@media screen and (max-width:414px)": {
+      margin: "0",
+    },
   },
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "20px",
+    padding: "12px",
     "@media screen and (max-width:960px)": {
-      padding: "16px",
-    },
-    "@media screen and (max-width:600px)": {
-      padding: "13px",
-    },
-    "@media screen and (max-width:414px)": {
       padding: "10px",
     },
   },

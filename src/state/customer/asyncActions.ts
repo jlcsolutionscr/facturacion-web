@@ -93,7 +93,7 @@ export const getCustomerListByPageNumber = createAsyncThunk(
 
 export const openCustomer = createAsyncThunk(
   "customer/openCustomer",
-  async (payload: { idCustomer: number }, { getState, dispatch }) => {
+  async (payload: { idCustomer?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());

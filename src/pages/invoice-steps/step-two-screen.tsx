@@ -14,8 +14,10 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import IconButton from "@mui/material/IconButton";
 
-import ListDropdown from "components/list-dropdown";
-import TextField from "components/text-field";
+import ListDropdown, {
+  ListDropdownOnChangeEventType,
+} from "components/list-dropdown";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { ROWS_PER_PRODUCT } from "utils/constants";
 
@@ -101,7 +103,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const isPriceChangeEnabled =
     permissions.filter((role) => [1, 52].includes(role.IdRole)).length > 0;
 
-  const handleOnFilterChange = (event: { target: { value: string } }) => {
+  const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -124,7 +126,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
     setFilter("");
     dispatch(filterProductList({ text: "", type: newFilterType }));
   };
-  const handlePriceChange = (event: { target: { value: string } }) => {
+  const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     isPriceChangeEnabled && setPrice(event.target.value);
   };
   const products = productDetailsList.map((item) => ({

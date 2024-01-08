@@ -27,32 +27,26 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    margin: "10px auto auto auto",
-  },
-  filterContainer: {
-    padding: "20px 20px 0 20px",
+    margin: "20px 10%",
     "@media screen and (max-width:960px)": {
-      padding: "15px 15px 0 15px",
-    },
-    "@media screen and (max-width:600px)": {
-      padding: "10px 10px 0 10px",
+      margin: "16px 5%",
     },
     "@media screen and (max-width:414px)": {
-      padding: "5px 5px 0 5px",
+      margin: "0",
+    },
+  },
+  filterContainer: {
+    padding: "12px 12px 0 12px",
+    "@media screen and (max-width:960px)": {
+      padding: "10px 10px 0 10px",
     },
   },
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    margin: "20px",
+    padding: "12px",
     "@media screen and (max-width:960px)": {
-      margin: "15px",
-    },
-    "@media screen and (max-width:600px)": {
-      margin: "10px",
-    },
-    "@media screen and (max-width:414px)": {
-      margin: "5px",
+      padding: "10px",
     },
   },
   icon: {
