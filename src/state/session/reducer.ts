@@ -40,7 +40,7 @@ export const sessionSlice = createSlice({
       state.token = action.payload.Usuario.Token;
     },
     logout: () => {
-      sessionInitialState;
+      return sessionInitialState;
     },
     setCompany: (state, action) => {
       state.company = { ...state.company, ...action.payload };
@@ -66,6 +66,8 @@ export const {
   setVendorList,
 } = sessionSlice.actions;
 
+export const getAuthenticated = (state: RootState) =>
+  state.session.authenticated;
 export const getCompany = (state: RootState) => state.session.company;
 export const getBranchId = (state: RootState) => state.session.branchId;
 export const getPrinter = (state: RootState) => state.session.printer;

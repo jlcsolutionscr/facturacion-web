@@ -1,12 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { productInitialState } from "state/InitialState";
-import { resetInvoice } from "state/invoice/reducer";
-import { resetReceipt } from "state/receipt/reducer";
 import { RootState } from "state/store";
-import { resetWorkingOrder } from "state/working-order/reducer";
-
-import { defaultProduct } from "utils/defaults";
 
 const productSlice = createSlice({
   name: "product",
@@ -42,17 +37,6 @@ const productSlice = createSlice({
         [action.payload.attribute]: action.payload.value,
       };
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(resetInvoice, (state) => {
-      state.entity = defaultProduct;
-    });
-    builder.addCase(resetReceipt, (state) => {
-      state.entity = defaultProduct;
-    });
-    builder.addCase(resetWorkingOrder, (state) => {
-      state.entity = defaultProduct;
-    });
   },
 });
 

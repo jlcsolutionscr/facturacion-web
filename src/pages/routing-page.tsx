@@ -8,7 +8,6 @@ import Slide from "@mui/material/Slide";
 import SnackbarContent from "@mui/material/SnackbarContent";
 
 import { setMessage, getMessage } from "state/ui/reducer";
-import { RootState } from "state/store";
 
 import Loader from "components/loader";
 import useWindowSize from "hooks/use-window-size";
@@ -17,6 +16,7 @@ import HomePage from "pages/home-page";
 
 import { darkTheme, lightTheme } from "utils/muiThemeProvider";
 import { ErrorIcon, InfoIcon } from "utils/iconsHelper";
+import { getAuthenticated } from "state/session/reducer";
 
 const useStyles = makeStyles()((theme) => ({
   container: {
@@ -47,9 +47,7 @@ const useStyles = makeStyles()((theme) => ({
 function RoutingPage() {
   const dispatch = useDispatch();
   const size = useWindowSize();
-  const authenticated = useSelector(
-    (state: RootState) => state.session.authenticated
-  );
+  const authenticated = useSelector(getAuthenticated);
   const { message, messageType } = useSelector(getMessage);
 
   const [isDarkMode, setDarkMode] = React.useState(false);
