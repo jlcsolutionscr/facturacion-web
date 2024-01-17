@@ -2,38 +2,35 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-import {
-  setProduct,
-  filterClasificationList,
-  setProductAttribute,
-  validateProductCode,
-  saveProduct,
-} from "state/product/asyncActions";
-
-import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
 
-import DataGrid from "components/data-grid";
-import TextField from "components/text-field";
-import LabelField from "components/label-field";
 import Button from "components/button";
+import DataGrid from "components/data-grid";
+import LabelField from "components/label-field";
 import Select from "components/select";
-
+import TextField from "components/text-field";
+import {
+  filterClasificationList,
+  saveProduct,
+  setProduct,
+  setProductAttribute,
+  validateProductCode,
+} from "state/product/asyncActions";
+import { setActiveSection } from "state/ui/actions";
 import { getPriceFromTaxRate } from "utils/domainHelper";
-import { roundNumber } from "utils/utilities";
 import { SearchIcon } from "utils/iconsHelper";
+import { roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
@@ -90,35 +87,28 @@ function ProductPage({
   const [untaxPrice5, setUntaxPrice5] = React.useState(0);
   React.useEffect(() => {
     const calculatePrice = (value, taxId) =>
-      roundNumber(
-        getPriceFromTaxRate(
-          value,
-          taxTypeList.find((elm) => elm.Id === taxId).Valor,
-          false
-        ),
-        2
-      );
+      roundNumber(getPriceFromTaxRate(value, taxTypeList.find(elm => elm.Id === taxId).Valor, false), 2);
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto));
     setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto));
     setUntaxPrice3(calculatePrice(product.PrecioVenta3, product.IdImpuesto));
     setUntaxPrice4(calculatePrice(product.PrecioVenta4, product.IdImpuesto));
     setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto));
   }, [product, taxTypeList]);
-  const productTypes = productTypeList.map((item) => {
+  const productTypes = productTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
   });
-  const categories = categoryList.map((item) => {
+  const categories = categoryList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
   });
-  const providers = providerList.map((item) => {
+  const providers = providerList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -135,16 +125,12 @@ function ProductPage({
     product.PrecioVenta3 === "" ||
     product.PrecioVenta4 === "" ||
     product.PrecioVenta5 === "";
-  const handleChange = (event) => {
+  const handleChange = event => {
     setProductAttribute(event.target.id, event.target.value);
   };
-  const handlePriceChange = (event) => {
+  const handlePriceChange = event => {
     const untaxPrice = roundNumber(
-      getPriceFromTaxRate(
-        event.target.value,
-        taxTypeList.find((elm) => elm.id === product.IdImpuesto).value,
-        false
-      ),
+      getPriceFromTaxRate(event.target.value, taxTypeList.find(elm => elm.id === product.IdImpuesto).value, false),
       2
     );
     setUntaxPrice1(untaxPrice);
@@ -159,13 +145,9 @@ function ProductPage({
     setProductAttribute("PrecioVenta5", event.target.value);
   };
 
-  const handleUntaxPriceChange = (event) => {
+  const handleUntaxPriceChange = event => {
     const taxPrice = roundNumber(
-      getPriceFromTaxRate(
-        event.target.value,
-        taxTypeList.find((elm) => elm.Id === product.IdImpuesto).Valor,
-        true
-      ),
+      getPriceFromTaxRate(event.target.value, taxTypeList.find(elm => elm.Id === product.IdImpuesto).Valor, true),
       2
     );
     switch (event.target.id) {
@@ -210,7 +192,7 @@ function ProductPage({
     setClasificationFilter("");
     filterClasificationList("");
   };
-  const handleClasificationFilterChange = (event) => {
+  const handleClasificationFilterChange = event => {
     setClasificationFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -219,18 +201,16 @@ function ProductPage({
       filterClasificationList(event.target.value);
     }, 1000);
   };
-  const handleClasificationRowClick = (code) => {
+  const handleClasificationRowClick = code => {
     if (code !== "") {
-      const codeEntity = clasificationList.find((elm) => elm.Id === code);
-      const taxRateId = codeEntity
-        ? taxTypeList.find((elm) => elm.Valor === codeEntity.Impuesto).Id
-        : undefined;
+      const codeEntity = clasificationList.find(elm => elm.Id === code);
+      const taxRateId = codeEntity ? taxTypeList.find(elm => elm.Valor === codeEntity.Impuesto).Id : undefined;
       setProductAttribute("CodigoClasificacion", code);
       if (taxRateId) setProductAttribute("IdImpuesto", taxRateId);
     }
     setDialogOpen(false);
   };
-  const rows = clasificationList.map((row) => ({
+  const rows = clasificationList.map(row => ({
     id: row.Id,
     taxRate: row.Impuesto,
     description: row.Descripcion,
@@ -248,9 +228,7 @@ function ProductPage({
             id="tipo-select-id"
             label="Seleccione el tipo de producto"
             value={product.Tipo}
-            onChange={(event) =>
-              setProductAttribute("Tipo", event.target.value)
-            }
+            onChange={event => setProductAttribute("Tipo", event.target.value)}
           >
             {productTypes}
           </Select>
@@ -260,21 +238,13 @@ function ProductPage({
             id="id-linea-select-id"
             label="Seleccione la línea del producto"
             value={product.IdLinea}
-            onChange={(event) =>
-              setProductAttribute("IdLinea", event.target.value)
-            }
+            onChange={event => setProductAttribute("IdLinea", event.target.value)}
           >
             {categories}
           </Select>
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            required
-            id="Codigo"
-            value={product.Codigo}
-            label="Código"
-            onChange={handleChange}
-          />
+          <TextField required id="Codigo" value={product.Codigo} label="Código" onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -292,7 +262,7 @@ function ProductPage({
             value={product.CodigoClasificacion}
             label="Codigo CABYS"
             inputProps={{ maxLength: 13 }}
-            onChange={(event) => validateProductCode(event.target.value)}
+            onChange={event => validateProductCode(event.target.value)}
           />
         </Grid>
         <Grid item xs={2} sm={1}>
@@ -309,10 +279,7 @@ function ProductPage({
           <LabelField
             disabled
             id="TasaIva"
-            value={
-              taxTypeList.find((elm) => elm.Id === product.IdImpuesto)
-                .Descripcion
-            }
+            value={taxTypeList.find(elm => elm.Id === product.IdImpuesto).Descripcion}
             label="Tasa del IVA"
           />
         </Grid>
@@ -321,9 +288,7 @@ function ProductPage({
             id="id-proveedor-select-id"
             label="Seleccione el proveedor"
             value={product.IdProveedor}
-            onChange={(event) =>
-              setProductAttribute("IdProveedor", event.target.value)
-            }
+            onChange={event => setProductAttribute("IdProveedor", event.target.value)}
           >
             {providers}
           </Select>
@@ -439,12 +404,7 @@ function ProductPage({
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            id="Observacion"
-            value={product.Observacion}
-            label="Observación"
-            onChange={handleChange}
-          />
+          <TextField id="Observacion" value={product.Observacion} label="Observación" onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
@@ -454,9 +414,7 @@ function ProductPage({
             control={
               <Checkbox
                 checked={product.Activo}
-                onChange={(event) =>
-                  setProductAttribute("Activo", !product.Activo)
-                }
+                onChange={event => setProductAttribute("Activo", !product.Activo)}
                 name="AplicaTasaDiferenciada"
                 color="primary"
               />
@@ -465,21 +423,13 @@ function ProductPage({
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button
-            disabled={disabled}
-            label="Guardar"
-            onClick={() => saveProduct()}
-          />
+          <Button disabled={disabled} label="Guardar" onClick={() => saveProduct()} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
           <Button label="Regresar" onClick={handleOnClose} />
         </Grid>
       </Grid>
-      <Dialog
-        id="clasification-dialog"
-        onClose={() => setDialogOpen(false)}
-        open={dialogOpen}
-      >
+      <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -506,18 +456,14 @@ function ProductPage({
           </Grid>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button
-            negative
-            label="Cerrar"
-            onClick={() => setDialogOpen(false)}
-          />
+          <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
         </DialogActions>
       </Dialog>
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     product: state.product.product,
     productList: state.product.list,
@@ -529,7 +475,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setActiveSection,

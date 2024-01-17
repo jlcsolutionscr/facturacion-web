@@ -1,30 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-import { setActiveSection } from "state/ui/reducer";
+import Select from "components/select";
 import { getCompany } from "state/company/asyncActions";
 import { getCustomerListFirstPage } from "state/customer/asyncActions";
-import { getProductListFirstPage } from "state/product/asyncActions";
-import {
-  setInvoiceParameters,
-  getInvoiceListFirstPage,
-} from "state/invoice/asyncActions";
-import { setReceiptParameters } from "state/receipt/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";
+import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asyncActions";
+import { getProductListFirstPage } from "state/product/asyncActions";
+import { setReceiptParameters } from "state/receipt/asyncActions";
+import { getBranchId, getBranchList, getPermissions, setBranchId } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
-import {
-  getBranchId,
-  getBranchList,
-  getPermissions,
-  setBranchId,
-} from "state/session/reducer";
-import Select from "components/select";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     display: "flex",
     textAlign: "center",
@@ -36,8 +28,7 @@ const useStyles = makeStyles()((theme) => ({
     },
   },
   branches: {
-    backgroundColor:
-      theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "transparent",
+    backgroundColor: theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "transparent",
     borderRadius: theme.shape.borderRadius,
     padding: "5px 0 5px 0",
     "@media screen and (max-width:600px)": {
@@ -108,23 +99,15 @@ export default function MenuPage() {
   const branchId = useSelector(getBranchId);
   const branchList = useSelector(getBranchList);
 
-  const updateCompanyInfo =
-    permissions.filter((role) => [1, 61].includes(role.IdRole)).length > 0;
-  const manageCustomers =
-    permissions.filter((role) => [1, 100].includes(role.IdRole)).length > 0;
-  const manageProducts =
-    permissions.filter((role) => [1, 103].includes(role.IdRole)).length > 0;
-  const generateInvoice =
-    permissions.filter((role) => [1, 203].includes(role.IdRole)).length > 0;
-  const manageDocuments =
-    permissions.filter((role) => [1, 402].includes(role.IdRole)).length > 0;
-  const reportingMenu =
-    permissions.filter((role) => [1, 2, 57].includes(role.IdRole)).length > 0;
-  const generateWorkingOrder =
-    permissions.filter((role) => [1, 201].includes(role.IdRole)).length > 0;
-  const switchBrand =
-    permissions.filter((role) => [1, 2, 48].includes(role.IdRole)).length > 0;
-  const branchItems = branchList.map((item) => {
+  const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0;
+  const manageCustomers = permissions.filter(role => [1, 100].includes(role.IdRole)).length > 0;
+  const manageProducts = permissions.filter(role => [1, 103].includes(role.IdRole)).length > 0;
+  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
+  const manageDocuments = permissions.filter(role => [1, 402].includes(role.IdRole)).length > 0;
+  const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0;
+  const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0;
+  const switchBrand = permissions.filter(role => [1, 2, 48].includes(role.IdRole)).length > 0;
+  const branchItems = branchList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -140,24 +123,19 @@ export default function MenuPage() {
               id="sucursal-select-id"
               label="Seleccione la sucursal:"
               value={branchId.toString()}
-              onChange={(event) => dispatch(setBranchId(event.target.value))}
+              onChange={event => dispatch(setBranchId(event.target.value))}
             >
               {branchItems}
             </Select>
           ) : (
             <Typography className={classes.branchText} align="center" paragraph>
-              {`Sucursal: ${branchList.find((branch) => branch.Id === branchId)
-                ?.Descripcion}`}
+              {`Sucursal: ${branchList.find(branch => branch.Id === branchId)?.Descripcion}`}
             </Typography>
           )}
         </div>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!updateCompanyInfo}
-          classes={{ root: classes.button }}
-          onClick={() => dispatch(getCompany())}
-        >
+        <Button disabled={!updateCompanyInfo} classes={{ root: classes.button }} onClick={() => dispatch(getCompany())}>
           Actualizar empresa
         </Button>
       </Grid>

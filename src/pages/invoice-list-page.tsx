@@ -3,28 +3,26 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 import UAParser from "ua-parser-js";
-
-import { setActiveSection } from "state/ui/actions";
-import {
-  getInvoiceListByPageNumber,
-  revokeInvoice,
-  generatePDF,
-  generateInvoiceTicket,
-} from "state/invoice/asyncActions";
-
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
-import DataGrid from "components/data-grid";
 import Button from "components/button";
-import { PrinterIcon, DownloadPdfIcon, DeleteIcon } from "utils/iconsHelper";
+import DataGrid from "components/data-grid";
+import {
+  generateInvoiceTicket,
+  generatePDF,
+  getInvoiceListByPageNumber,
+  revokeInvoice,
+} from "state/invoice/asyncActions";
+import { setActiveSection } from "state/ui/actions";
+import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: "100%",
@@ -81,7 +79,7 @@ function InvoiceListPage({
   const [invoiceId, setInvoiceId] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
   const isMobile = !!result.device.type;
-  const printReceipt = (id) => {
+  const printReceipt = id => {
     generateInvoiceTicket(id);
   };
   const handlePdfButtonClick = (id, ref) => {
@@ -95,7 +93,7 @@ function InvoiceListPage({
     setDialogOpen({ open: false, id: 0 });
     revokeInvoice(invoiceId);
   };
-  const rows = list.map((row) => ({
+  const rows = list.map(row => ({
     id: row.Consecutivo,
     date: row.Fecha,
     name: row.NombreCliente,
@@ -159,7 +157,7 @@ function InvoiceListPage({
           rows={rows}
           rowsCount={listCount}
           rowsPerPage={10}
-          onPageChange={(page) => {
+          onPageChange={page => {
             getInvoiceListByPageNumber(page + 1);
           }}
         />
@@ -167,11 +165,7 @@ function InvoiceListPage({
       <div className={classes.buttonContainer}>
         <Button label="Regresar" onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog
-        id="revoke-dialog"
-        onClose={() => setDialogOpen({ open: false, id: 0 })}
-        open={dialogOpen.open}
-      >
+      <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
         <DialogTitle>Anular factura</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -179,11 +173,7 @@ function InvoiceListPage({
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button
-            negative
-            label="Cerrar"
-            onClick={() => setDialogOpen({ open: false, id: 0 })}
-          />
+          <Button negative label="Cerrar" onClick={() => setDialogOpen({ open: false, id: 0 })} />
           <Button label="Anular" autoFocus onClick={handleConfirmButtonClick} />
         </DialogActions>
       </Dialog>
@@ -191,7 +181,7 @@ function InvoiceListPage({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     listPage: state.invoice.listPage,
     listCount: state.invoice.listCount,
@@ -200,7 +190,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getInvoiceListByPageNumber,

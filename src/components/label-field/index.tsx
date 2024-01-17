@@ -12,13 +12,9 @@ export default function LabelField(props: LabelFieldProps) {
     <div className={classes.container}>
       <div className={classes.root}>
         <div className={classes.input}>
-          <span className={`${classes.innerText} ${classes.font}`}>
-            {props.value}
-          </span>
+          <span className={`${classes.innerText} ${classes.font}`}>{props.value}</span>
         </div>
-        <label className={`${classes.label} ${classes.font}`}>
-          {props.label}
-        </label>
+        <label className={`${classes.label} ${classes.font}`}>{props.label}</label>
       </div>
     </div>
   );

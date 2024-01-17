@@ -23,7 +23,7 @@ export const receiptSlice = createSlice({
     setProductDetailsList: (state, action) => {
       state.entity.productDetailsList = action.payload;
     },
-    resetProductDetails: (state) => {
+    resetProductDetails: state => {
       state.entity.productDetails = defaultReceiptProduct;
     },
     setProductTaxDetails: (state, action) => {
@@ -42,10 +42,10 @@ export const receiptSlice = createSlice({
     setActivityCode: (state, action) => {
       state.entity.activityCode = action.payload;
     },
-    setSuccessful: (state) => {
+    setSuccessful: state => {
       state.entity.successful = true;
     },
-    resetReceipt: (state) => {
+    resetReceipt: state => {
       state.entity = defaultReceipt;
     },
   },
@@ -64,18 +64,12 @@ export const {
   resetReceipt,
 } = receiptSlice.actions;
 
-export const getIssuerDetails = (state: RootState) =>
-  state.receipt.entity.issuer;
-export const getProductDetails = (state: RootState) =>
-  state.receipt.entity.productDetails;
-export const getProductDetailsList = (state: RootState) =>
-  state.receipt.entity.productDetailsList;
+export const getIssuerDetails = (state: RootState) => state.receipt.entity.issuer;
+export const getProductDetails = (state: RootState) => state.receipt.entity.productDetails;
+export const getProductDetailsList = (state: RootState) => state.receipt.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.receipt.entity.summary;
-export const getExonerationDetails = (state: RootState) =>
-  state.receipt.entity.exoneration;
-export const getActivityCode = (state: RootState) =>
-  state.receipt.entity.activityCode;
-export const getSuccessful = (state: RootState) =>
-  state.receipt.entity.successful;
+export const getExonerationDetails = (state: RootState) => state.receipt.entity.exoneration;
+export const getActivityCode = (state: RootState) => state.receipt.entity.activityCode;
+export const getSuccessful = (state: RootState) => state.receipt.entity.successful;
 
 export default receiptSlice.reducer;

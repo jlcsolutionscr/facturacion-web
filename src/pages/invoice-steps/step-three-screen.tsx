@@ -1,36 +1,32 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
+import Button from "components/button";
+import Select from "components/select";
+import TextField from "components/text-field";
+import { generateInvoiceTicket, saveInvoice, setInvoiceParameters } from "state/invoice/asyncActions";
 import {
-  saveInvoice,
-  setInvoiceParameters,
-  generateInvoiceTicket,
-} from "state/invoice/asyncActions";
-import {
+  getActivityCode,
+  getComment,
+  getInvoiceId,
+  getPaymentDetailsList,
+  getSuccessful,
+  getSummary,
+  getVendorId,
   setActivityCode,
+  setComment,
   setPaymentDetailsList,
   setVendorId,
-  setComment,
-  getSummary,
-  getActivityCode,
-  getPaymentDetailsList,
-  getVendorId,
-  getComment,
-  getSuccessful,
-  getInvoiceId,
 } from "state/invoice/reducer";
 import { getCompany, getVendorList } from "state/session/reducer";
-import Button from "components/button";
-import TextField from "components/text-field";
-import Select from "components/select";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -70,11 +66,7 @@ interface StepThreeScreenProps {
   setValue: (value: number) => void;
 }
 
-export default function StepThreeScreen({
-  index,
-  value,
-  setValue,
-}: StepThreeScreenProps) {
+export default function StepThreeScreen({ index, value, setValue }: StepThreeScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = React.useRef<HTMLDivElement>(null);
@@ -103,7 +95,7 @@ export default function StepThreeScreen({
     { id: 3, description: "CHEQUE" },
     { id: 4, description: "TRANSFERENCIA" },
   ];
-  const paymentItems = paymentMethods.map((item) => {
+  const paymentItems = paymentMethods.map(item => {
     return (
       <MenuItem key={item.id} value={item.id}>
         {item.description}
@@ -122,7 +114,7 @@ export default function StepThreeScreen({
     invoiceId && dispatch(generateInvoiceTicket({ id: invoiceId }));
   };
   const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map((item) => {
+    ? company.ActividadEconomicaEmpresa.map(item => {
         return (
           <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
             {item.Descripcion}
@@ -130,7 +122,7 @@ export default function StepThreeScreen({
         );
       })
     : [];
-  const vendorItems = vendorList.map((item) => {
+  const vendorItems = vendorList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -146,7 +138,7 @@ export default function StepThreeScreen({
             label="Observaciones"
             id="Observacion"
             value={comment}
-            onChange={(event) => dispatch(setComment(event.target.value))}
+            onChange={event => dispatch(setComment(event.target.value))}
           />
         </Grid>
         {activityItems.length > 1 && (
@@ -156,9 +148,7 @@ export default function StepThreeScreen({
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
                 value={activityCode.toString()}
-                onChange={(event) =>
-                  dispatch(setActivityCode(event.target.value))
-                }
+                onChange={event => dispatch(setActivityCode(event.target.value))}
               >
                 {activityItems}
               </Select>
@@ -172,7 +162,7 @@ export default function StepThreeScreen({
                 id="id-vendedor-select-id"
                 label="Seleccione el Vendedor"
                 value={vendorId.toString()}
-                onChange={(event) => dispatch(setVendorId(event.target.value))}
+                onChange={event => dispatch(setVendorId(event.target.value))}
               >
                 {vendorItems}
               </Select>
@@ -180,57 +170,43 @@ export default function StepThreeScreen({
           </Grid>
         )}
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-          <InputLabel className={classes.summaryTitle}>
-            RESUMEN DE FACTURA
-          </InputLabel>
+          <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
           <Grid container spacing={2} className={classes.details}>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(taxed)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(exonerated)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Excento</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(exempt)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(subTotal)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(taxes)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Total</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(total)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
             </Grid>
           </Grid>
         </Grid>
@@ -240,14 +216,13 @@ export default function StepThreeScreen({
             id="sucursal-select-id"
             label="Seleccione la forma de pago:"
             value={paymentDetails[0].paymentId.toString()}
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setPaymentDetailsList({
                   paymentId: event.target.value,
                   description:
-                    paymentMethods.find(
-                      (method) => method.id === parseInt(event.target.value)
-                    )?.description ?? "NO ESPECIFICADO",
+                    paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                    "NO ESPECIFICADO",
                   amount: total,
                 })
               )
@@ -257,19 +232,11 @@ export default function StepThreeScreen({
           </Select>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button
-            disabled={buttonDisabled}
-            label={successful ? "Nueva factura" : "Agregar"}
-            onClick={handleOnPress}
-          />
+          <Button disabled={buttonDisabled} label={successful ? "Nueva factura" : "Agregar"} onClick={handleOnPress} />
         </Grid>
         {successful && (
           <Grid item xs={12} className={classes.centered}>
-            <Button
-              disabled={buttonDisabled}
-              label="Imprimir"
-              onClick={handleOnPrintButton}
-            />
+            <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
           </Grid>
         )}
       </Grid>

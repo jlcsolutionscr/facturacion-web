@@ -2,35 +2,28 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-import {
-  getWorkingOrderListByPageNumber,
-  setWorkingOrderParameters,
-  revokeWorkingOrder,
-  generatePDF,
-  openWorkingOrder,
-  generateWorkingOrderTicket,
-} from "state/working-order/asyncActions";
-
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
-import DataGrid from "components/data-grid";
 import Button from "components/button";
+import DataGrid from "components/data-grid";
+import { setActiveSection } from "state/ui/actions";
 import {
-  EditIcon,
-  PrinterIcon,
-  DownloadPdfIcon,
-  DeleteIcon,
-} from "utils/iconsHelper";
+  generatePDF,
+  generateWorkingOrderTicket,
+  getWorkingOrderListByPageNumber,
+  openWorkingOrder,
+  revokeWorkingOrder,
+  setWorkingOrderParameters,
+} from "state/working-order/asyncActions";
+import { DeleteIcon, DownloadPdfIcon, EditIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: "100%",
@@ -89,10 +82,10 @@ function WorkingOrderListPage({
   const { classes } = useStyles();
   const [workingOrderId, setWorkingOrderId] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
-  const printReceipt = (id) => {
+  const printReceipt = id => {
     generateWorkingOrderTicket(id);
   };
-  const handleOpenOrderClick = (id) => {
+  const handleOpenOrderClick = id => {
     openWorkingOrder(id);
   };
   const handleRevokeButtonClick = (id, ref) => {
@@ -106,7 +99,7 @@ function WorkingOrderListPage({
     setDialogOpen({ open: false, id: 0 });
     revokeWorkingOrder(workingOrderId);
   };
-  const rows = list.map((row) => ({
+  const rows = list.map(row => ({
     id: row.Consecutivo,
     date: row.Fecha,
     name: row.NombreCliente,
@@ -180,27 +173,16 @@ function WorkingOrderListPage({
           rows={rows}
           rowsCount={listCount}
           rowsPerPage={10}
-          onPageChange={(page) => {
+          onPageChange={page => {
             getWorkingOrderListByPageNumber(page + 1);
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button
-          label="Nueva Orden"
-          onClick={() => setWorkingOrderParameters()}
-        />
-        <Button
-          style={{ marginLeft: "10px" }}
-          label="Regresar"
-          onClick={() => setActiveSection(0)}
-        />
+        <Button label="Nueva Orden" onClick={() => setWorkingOrderParameters()} />
+        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog
-        id="revoke-dialog"
-        onClose={() => setDialogOpen({ open: false, id: 0 })}
-        open={dialogOpen.open}
-      >
+      <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
         <DialogTitle>Anular orden de servicio</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -208,11 +190,7 @@ function WorkingOrderListPage({
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button
-            negative
-            label="Cerrar"
-            onClick={() => setDialogOpen(false)}
-          />
+          <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
           <Button label="Anular" autoFocus onClick={handleConfirmButtonClick} />
         </DialogActions>
       </Dialog>
@@ -220,7 +198,7 @@ function WorkingOrderListPage({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     listPage: state.workingOrder.listPage,
     listCount: state.workingOrder.listCount,
@@ -228,7 +206,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getWorkingOrderListByPageNumber,
@@ -243,7 +221,4 @@ const mapDispatchToProps = (dispatch) => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkingOrderListPage);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkingOrderListPage);

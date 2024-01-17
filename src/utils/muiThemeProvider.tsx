@@ -1,4 +1,4 @@
-import { ThemeOptions, createTheme } from "@mui/material/styles";
+import { createTheme, ThemeOptions } from "@mui/material/styles";
 
 const baseTheme: ThemeOptions = createTheme({
   components: {

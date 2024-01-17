@@ -1,47 +1,44 @@
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
 
-import DataGrid from "components/data-grid";
-import TextField from "components/text-field";
-import LabelField from "components/label-field";
 import Button from "components/button";
+import DataGrid from "components/data-grid";
+import LabelField from "components/label-field";
 import Select from "components/select";
-import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
-
-import { setActiveSection } from "state/ui/actions";
+import TextField from "components/text-field";
 import { filterClasificationList } from "state/product/asyncActions";
 import {
-  setIssuerDetails,
-  validateCustomerIdentifier,
-  validateProductCode,
-  setExonerationDetails,
-  setProductDetails,
   addDetails,
   removeDetails,
-  setActivityCode,
   saveReceipt,
+  setActivityCode,
+  setExonerationDetails,
+  setIssuerDetails,
+  setProductDetails,
+  validateCustomerIdentifier,
+  validateProductCode,
 } from "state/receipt/asyncActions";
-
+import { setActiveSection } from "state/ui/actions";
+import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflow: "auto",
@@ -118,21 +115,21 @@ function ReceiptPage({
   const { classes } = useStyles();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [clasificationFilter, setClasificationFilter] = React.useState("");
-  const idTypeItems = idTypeList.map((item) => {
+  const idTypeItems = idTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
   });
-  const exonerationTypesItems = exonerationTypeList.map((item) => {
+  const exonerationTypesItems = exonerationTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
   });
-  const handleIdTypeChange = (value) => {
+  const handleIdTypeChange = value => {
     setIssuerDetails("typeId", value);
     setIssuerDetails("id", "");
     setIssuerDetails("name", "");
@@ -142,7 +139,7 @@ function ReceiptPage({
     setClasificationFilter("");
     filterClasificationList("");
   };
-  const handleClasificationFilterChange = (event) => {
+  const handleClasificationFilterChange = event => {
     setClasificationFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -151,12 +148,10 @@ function ReceiptPage({
       filterClasificationList(event.target.value);
     }, 1000);
   };
-  const handleClasificationRowClick = (code) => {
+  const handleClasificationRowClick = code => {
     if (code !== "") {
-      const codeEntity = clasificationList.find((elm) => elm.Id === code);
-      const taxRateId = codeEntity
-        ? taxTypeList.find((elm) => elm.Valor === codeEntity.Impuesto).Id
-        : undefined;
+      const codeEntity = clasificationList.find(elm => elm.Id === code);
+      const taxRateId = codeEntity ? taxTypeList.find(elm => elm.Valor === codeEntity.Impuesto).Id : undefined;
       setProductDetails("code", code);
       if (taxRateId) setProductDetails("taxTypeId", taxRateId);
     }
@@ -185,7 +180,7 @@ function ReceiptPage({
       idPlaceholder = "999999999";
       idMaxLength = 9;
   }
-  const rows = clasificationList.map((row) => ({
+  const rows = clasificationList.map(row => ({
     id: row.Id,
     taxRate: row.Impuesto,
     description: row.Descripcion,
@@ -202,7 +197,7 @@ function ReceiptPage({
     product.quantity === "" ||
     product.price === "" ||
     product.price === 0;
-  const activityItems = company.ActividadEconomicaEmpresa.map((item) => {
+  const activityItems = company.ActividadEconomicaEmpresa.map(item => {
     return (
       <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
         {item.Descripcion}
@@ -217,7 +212,7 @@ function ReceiptPage({
             id="codigo-actividad-select-id"
             label="Seleccione la Actividad Económica"
             value={activityCode}
-            onChange={(event) => setActivityCode(event.target.value)}
+            onChange={event => setActivityCode(event.target.value)}
           >
             {activityItems}
           </Select>
@@ -228,7 +223,7 @@ function ReceiptPage({
             id="id-tipo-identificacion-select-id"
             label="Seleccione el tipo de Identificación"
             value={issuer.typeId}
-            onChange={(event) => handleIdTypeChange(event.target.value)}
+            onChange={event => handleIdTypeChange(event.target.value)}
           >
             {idTypeItems}
           </Select>
@@ -241,7 +236,7 @@ function ReceiptPage({
             required
             value={issuer.id}
             label="Identificación"
-            onChange={(event) => validateCustomerIdentifier(event.target.value)}
+            onChange={event => validateCustomerIdentifier(event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -250,7 +245,7 @@ function ReceiptPage({
             required
             value={issuer.name}
             label="Nombre"
-            onChange={(event) => setIssuerDetails("name", event.target.value)}
+            onChange={event => setIssuerDetails("name", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -259,9 +254,7 @@ function ReceiptPage({
             required
             value={issuer.comercialName}
             label="Nombre comercial"
-            onChange={(event) =>
-              setIssuerDetails("comercialName", event.target.value)
-            }
+            onChange={event => setIssuerDetails("comercialName", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -270,9 +263,7 @@ function ReceiptPage({
             required
             value={issuer.address}
             label="Dirección"
-            onChange={(event) =>
-              setIssuerDetails("address", event.target.value)
-            }
+            onChange={event => setIssuerDetails("address", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -281,7 +272,7 @@ function ReceiptPage({
             required
             value={issuer.phone}
             label="Teléfono"
-            onChange={(event) => setIssuerDetails("phone", event.target.value)}
+            onChange={event => setIssuerDetails("phone", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -290,7 +281,7 @@ function ReceiptPage({
             required
             value={issuer.email}
             label="Correo electrónico"
-            onChange={(event) => setIssuerDetails("email", event.target.value)}
+            onChange={event => setIssuerDetails("email", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={7}>
@@ -299,9 +290,7 @@ function ReceiptPage({
             id="id-tipo-exoneracion-select-id"
             label="Seleccione el tipo de exoneración"
             value={exoneration.type}
-            onChange={(event) =>
-              setExonerationDetails("type", event.target.value)
-            }
+            onChange={event => setExonerationDetails("type", event.target.value)}
           >
             {exonerationTypesItems}
           </Select>
@@ -312,9 +301,7 @@ function ReceiptPage({
             id="NumDocExoneracion"
             label="Documento de exoneración"
             value={exoneration.ref}
-            onChange={(event) =>
-              setExonerationDetails("ref", event.target.value)
-            }
+            onChange={event => setExonerationDetails("ref", event.target.value)}
           />
         </Grid>
         <Grid item xs={12}>
@@ -323,9 +310,7 @@ function ReceiptPage({
             id="NombreInstExoneracion"
             label="Nombre de institución"
             value={exoneration.exoneratedBy}
-            onChange={(event) =>
-              setExonerationDetails("exoneratedBy", event.target.value)
-            }
+            onChange={event => setExonerationDetails("exoneratedBy", event.target.value)}
           />
         </Grid>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -335,7 +320,7 @@ function ReceiptPage({
               label="Fecha exoneración"
               format="dd/MM/yyyy"
               value={exoneration.date}
-              onChange={(date) => setExonerationDetails("date", date)}
+              onChange={date => setExonerationDetails("date", date)}
             />
           </Grid>
         </LocalizationProvider>
@@ -346,15 +331,11 @@ function ReceiptPage({
             value={exoneration.percentage}
             label="Porcentaje de exoneración"
             numericFormat
-            onChange={(event) =>
-              setExonerationDetails("percentage", event.target.value)
-            }
+            onChange={event => setExonerationDetails("percentage", event.target.value)}
           />
         </Grid>
         <Grid style={{ textAlign: "center" }} item xs={12}>
-          <InputLabel className={classes.summaryTitle}>
-            DETALLE DE FACTURA
-          </InputLabel>
+          <InputLabel className={classes.summaryTitle}>DETALLE DE FACTURA</InputLabel>
         </Grid>
         <Grid item xs={10} sm={4}>
           <TextField
@@ -363,7 +344,7 @@ function ReceiptPage({
             id="Codigo"
             inputProps={{ maxLength: 13 }}
             value={product.code}
-            onChange={(event) => validateProductCode(event.target.value)}
+            onChange={event => validateProductCode(event.target.value)}
           />
         </Grid>
         <Grid item sm={1}>
@@ -379,10 +360,7 @@ function ReceiptPage({
         <Grid item xs={12} sm={7}>
           <LabelField
             id="TasaIva"
-            value={
-              taxTypeList.find((elm) => elm.Id === product.taxTypeId)
-                .Descripcion
-            }
+            value={taxTypeList.find(elm => elm.Id === product.taxTypeId).Descripcion}
             label="Tasa del IVA"
           />
         </Grid>
@@ -392,9 +370,7 @@ function ReceiptPage({
             label="Descripción"
             id="Descripcion"
             value={product.description}
-            onChange={(event) =>
-              setProductDetails("description", event.target.value)
-            }
+            onChange={event => setProductDetails("description", event.target.value)}
           />
         </Grid>
         <Grid item xs={3}>
@@ -403,7 +379,7 @@ function ReceiptPage({
             label="Unidad"
             id="Unidad"
             value={product.unit}
-            onChange={(event) => setProductDetails("unit", event.target.value)}
+            onChange={event => setProductDetails("unit", event.target.value)}
           />
         </Grid>
         <Grid item xs={3}>
@@ -413,9 +389,7 @@ function ReceiptPage({
             id="Cantidad"
             numericFormat
             value={product.quantity}
-            onChange={(event) =>
-              setProductDetails("quantity", event.target.value)
-            }
+            onChange={event => setProductDetails("quantity", event.target.value)}
           />
         </Grid>
         <Grid item xs={4}>
@@ -424,7 +398,7 @@ function ReceiptPage({
             label="Precio"
             numericFormat
             value={product.price}
-            onChange={(event) => setProductDetails("price", event.target.value)}
+            onChange={event => setProductDetails("price", event.target.value)}
           />
         </Grid>
         <Grid item xs={2}>
@@ -456,10 +430,7 @@ function ReceiptPage({
                   <TableCell>{row.Descripcion}</TableCell>
                   <TableCell align="right">{row.Cantidad}</TableCell>
                   <TableCell align="right">
-                    {formatCurrency(
-                      roundNumber(row.Cantidad * row.PrecioVenta, 2),
-                      2
-                    )}
+                    {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
                   </TableCell>
                   <TableCell align="right">
                     <IconButton
@@ -478,21 +449,13 @@ function ReceiptPage({
           </Table>
         </div>
         <Grid item xs={5} sm={3} md={2}>
-          <Button
-            disabled={summary.total === 0 || successful}
-            label="Guardar"
-            onClick={() => saveReceipt()}
-          />
+          <Button disabled={summary.total === 0 || successful} label="Guardar" onClick={() => saveReceipt()} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
           <Button label="Regresar" onClick={() => setActiveSection(0)} />
         </Grid>
       </Grid>
-      <Dialog
-        id="clasification-dialog"
-        onClose={() => setDialogOpen(false)}
-        open={dialogOpen}
-      >
+      <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -519,18 +482,14 @@ function ReceiptPage({
           </Grid>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button
-            negative
-            label="Cerrar"
-            onClick={() => setDialogOpen(false)}
-          />
+          <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
         </DialogActions>
       </Dialog>
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     idTypeList: state.ui.idTypeList,
     clasificationList: state.product.clasificationList,
@@ -547,7 +506,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setIssuerDetails,

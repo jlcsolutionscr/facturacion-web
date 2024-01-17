@@ -1,6 +1,7 @@
+import { Align, Model, Printer, Style, WebUSB } from "escpos-buffer-web";
 import { CompanyType, InvoiceType, WorkingOrderType } from "types/domain";
+
 import { formatCurrency } from "utils/utilities";
-import { Model, Printer, Style, WebUSB, Align } from "escpos-buffer-web";
 
 type LineType = {
   text: string;
@@ -12,7 +13,7 @@ function splitLines(text: string, lineWidth: number) {
   const words = text.split(" ");
   const results = [];
   let row = "";
-  words.forEach((word) => {
+  words.forEach(word => {
     if (row.length + word.length > lineWidth - 17) {
       results.push(row);
       row = word;
@@ -24,13 +25,7 @@ function splitLines(text: string, lineWidth: number) {
   return results;
 }
 
-function createHeader(
-  date: string,
-  userCode: string,
-  branchName: string,
-  company: CompanyType,
-  lineWidth: number
-) {
+function createHeader(date: string, userCode: string, branchName: string, company: CompanyType, lineWidth: number) {
   const lines = [];
   lines.push({
     text: date.padEnd(lineWidth - (userCode.length + 17), " ") + userCode,
@@ -48,7 +43,7 @@ function createHeader(
     align: Align.Center,
   });
   const locations = splitLines(company.Direccion, lineWidth);
-  locations.forEach((line) => {
+  locations.forEach(line => {
     lines.push({
       text: line,
       align: Align.Center,
@@ -82,13 +77,7 @@ function createHeader(
   return lines;
 }
 
-function createFooter(
-  total: number,
-  taxes: number,
-  payment: number,
-  otherText: string,
-  lineWidth: number
-) {
+function createFooter(total: number, taxes: number, payment: number, otherText: string, lineWidth: number) {
   const lines: LineType[] = [];
   lines.push({ text: "" });
   let amount = formatCurrency(total - taxes);
@@ -125,7 +114,7 @@ function createFooter(
   if (otherText && otherText.length > 0) {
     lines.push({ text: "" });
     const text = splitLines(otherText, lineWidth);
-    text.forEach((line) => {
+    text.forEach(line => {
       lines.push({
         text: line,
         align: Align.Center,
@@ -162,15 +151,10 @@ export const printInvoice = async (
   lineWidth: number
 ) => {
   const lines: LineType[] = [];
-  lines.concat(
-    createHeader(invoice.date, userCode, branchName, company, lineWidth)
-  );
+  lines.concat(createHeader(invoice.date, userCode, branchName, company, lineWidth));
   if (invoice.reference) {
     lines.push({
-      text:
-        invoice.customerDetails.id === 1
-          ? "TIQUETE ELECTRONICO"
-          : "FACTURA ELECTRONICA",
+      text: invoice.customerDetails.id === 1 ? "TIQUETE ELECTRONICO" : "FACTURA ELECTRONICA",
       style: Style.Bold,
       align: Align.Center,
     });
@@ -209,7 +193,7 @@ export const printInvoice = async (
     align: Align.Center,
   });
   let padLength = 0;
-  invoice.paymentDetailsList.forEach((row) => {
+  invoice.paymentDetailsList.forEach(row => {
     const amount = formatCurrency(row.amount);
     padLength = lineWidth - 17 - (row.description.length + amount.length);
     lines.push({
@@ -230,15 +214,11 @@ export const printInvoice = async (
   });
   padLength = (lineWidth - 28) / 2;
   lines.push({
-    text:
-      "CANT".padEnd(8, " ") +
-      "PRECIO/U".padStart(padLength, " ") +
-      "TOTAL".padStart(padLength, " ") +
-      " GR",
+    text: "CANT".padEnd(8, " ") + "PRECIO/U".padStart(padLength, " ") + "TOTAL".padStart(padLength, " ") + " GR",
     style: Style.Bold,
     align: Align.Left,
   });
-  invoice.productDetailsList.forEach((row) => {
+  invoice.productDetailsList.forEach(row => {
     lines.push({
       text: row.description,
       align: Align.Left,
@@ -256,13 +236,7 @@ export const printInvoice = async (
     });
   });
   lines.concat(
-    createFooter(
-      invoice.summary.total,
-      invoice.summary.taxes,
-      invoice.summary.cashAmount,
-      invoice.comment,
-      lineWidth
-    )
+    createFooter(invoice.summary.total, invoice.summary.taxes, invoice.summary.cashAmount, invoice.comment, lineWidth)
   );
   printLines(lines, lineWidth);
 };
@@ -275,9 +249,7 @@ export const printWorkingOrder = async (
   lineWidth: number
 ) => {
   const lines: LineType[] = [];
-  lines.concat(
-    createHeader(workingOrder.date, userCode, branchName, company, lineWidth)
-  );
+  lines.concat(createHeader(workingOrder.date, userCode, branchName, company, lineWidth));
   lines.push({
     text: "Factura nro.: " + workingOrder.consecutive,
     style: Style.Bold,
@@ -305,7 +277,7 @@ export const printWorkingOrder = async (
       style: Style.Bold,
       align: Align.Center,
     });
-    workingOrder.paymentDetailsList.forEach((row) => {
+    workingOrder.paymentDetailsList.forEach(row => {
       const amount = formatCurrency(row.amount);
       padLength = lineWidth - 17 - (row.description.length + amount.length);
       lines.push({
@@ -327,15 +299,11 @@ export const printWorkingOrder = async (
   });
   padLength = (lineWidth - 28) / 2;
   lines.push({
-    text:
-      "CANT".padEnd(8, " ") +
-      "PRECIO/U".padStart(padLength, " ") +
-      "TOTAL".padStart(padLength, " ") +
-      " GR",
+    text: "CANT".padEnd(8, " ") + "PRECIO/U".padStart(padLength, " ") + "TOTAL".padStart(padLength, " ") + " GR",
     style: Style.Bold,
     align: Align.Left,
   });
-  workingOrder.productDetailsList.forEach((row) => {
+  workingOrder.productDetailsList.forEach(row => {
     lines.push({
       text: row.description,
       align: Align.Left,
@@ -374,7 +342,7 @@ async function printLines(lines: LineType[], lineWidth: number) {
     const model = new Model("TM-T20");
     const printer = new Printer(model, connection);
     printer.columns = lineWidth;
-    lines.forEach((line) => {
+    lines.forEach(line => {
       printer.writeln(line.text, line.style, line.align);
     });
     printer.feed(4);

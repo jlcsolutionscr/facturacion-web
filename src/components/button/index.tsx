@@ -11,14 +11,7 @@ interface ButtonProps {
   autoFocus?: boolean;
 }
 
-export default function Button({
-  disabled,
-  style,
-  negative,
-  autoFocus,
-  label,
-  onClick,
-}: ButtonProps) {
+export default function Button({ disabled, style, negative, autoFocus, label, onClick }: ButtonProps) {
   const { classes } = useStyles();
   let styles = {};
   if (negative) styles = { backgroundColor: "#505050" };

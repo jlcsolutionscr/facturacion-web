@@ -1,25 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { setDocumentCount, setDocumentDetails, setDocumentList, setDocumentPage } from "state/document/reducer";
 import { RootState } from "state/store";
+import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
-  setDocumentPage,
-  setDocumentCount,
-  setDocumentList,
-  setDocumentDetails,
-} from "state/document/reducer";
-import {
-  startLoader,
-  stopLoader,
-  setMessage,
-  setActiveSection,
-} from "state/ui/reducer";
-import {
+  getDocumentEntity,
   getDocumentListCount,
   getDocumentListPerPage,
   sendDocumentByEmail,
-  getDocumentEntity,
 } from "utils/domainHelper";
-
 import { getErrorMessage, xmlToObject } from "utils/utilities";
 
 export const getDocumentListFirstPage = createAsyncThunk(
@@ -30,20 +19,10 @@ export const getDocumentListFirstPage = createAsyncThunk(
     dispatch(startLoader());
     try {
       dispatch(setDocumentPage(1));
-      const recordCount = await getDocumentListCount(
-        token,
-        companyId,
-        branchId
-      );
+      const recordCount = await getDocumentListCount(token, companyId, branchId);
       dispatch(setDocumentCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getDocumentListPerPage(
-          token,
-          companyId,
-          branchId,
-          1,
-          10
-        );
+        const newList = await getDocumentListPerPage(token, companyId, branchId, 1, 10);
         dispatch(setDocumentList(newList));
       } else {
         dispatch(setDocumentList([]));
@@ -64,13 +43,7 @@ export const getDocumentListByPageNumber = createAsyncThunk(
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getDocumentListPerPage(
-        token,
-        companyId,
-        branchId,
-        payload.pageNumber,
-        10
-      );
+      const newList = await getDocumentListPerPage(token, companyId, branchId, payload.pageNumber, 10);
       dispatch(setDocumentPage(payload.pageNumber));
       dispatch(setDocumentList(newList));
       dispatch(stopLoader());
@@ -83,10 +56,7 @@ export const getDocumentListByPageNumber = createAsyncThunk(
 
 export const sendNotification = createAsyncThunk(
   "document/sendNotification",
-  async (
-    payload: { idDocument: number; emailTo: string },
-    { getState, dispatch }
-  ) => {
+  async (payload: { idDocument: number; emailTo: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());

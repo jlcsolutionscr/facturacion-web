@@ -1,23 +1,24 @@
 import {
+  CompanyType,
+  CredentialType,
+  CustomerType,
+  DeviceType,
+  IdDescriptionType,
   IdValueType,
   InvoiceType,
+  PermissionType,
   ProductType,
   ReceiptType,
-  CompanyType,
-  CustomerType,
   WorkingOrderType,
-  CredentialType,
-  IdDescriptionType,
-  DeviceType,
-  PermissionType,
 } from "types/domain";
+
 import {
   defaultCompany,
-  defaultInvoice,
-  defaultReceipt,
-  defaultProduct,
-  defaultWorkingOrder,
   defaultCustomer,
+  defaultInvoice,
+  defaultProduct,
+  defaultReceipt,
+  defaultWorkingOrder,
 } from "utils/defaults";
 
 type UIStateType = {
@@ -72,6 +73,7 @@ type CustomerStateType = {
   listCount: number;
   list: IdDescriptionType[];
   priceTypeList: IdDescriptionType[];
+  isDialogOpen: boolean;
 };
 
 type ProductStateType = {
@@ -168,6 +170,7 @@ export const customerInitialState: CustomerStateType = {
   listCount: 0,
   list: [],
   priceTypeList: [],
+  isDialogOpen: false,
 };
 
 export const productInitialState: ProductStateType = {

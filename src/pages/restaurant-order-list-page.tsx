@@ -2,24 +2,19 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-import {
-  setWorkingOrderParameters,
-  revokeWorkingOrder,
-  openWorkingOrder,
-} from "state/working-order/asyncActions";
-
-import Grid from "@mui/material/Grid";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid";
+
 import Button from "components/button";
 import Tab from "components/tab";
+import { setActiveSection } from "state/ui/actions";
+import { openWorkingOrder, revokeWorkingOrder, setWorkingOrderParameters } from "state/working-order/asyncActions";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: "100%",
@@ -72,7 +67,7 @@ function RestaurantOrderListPage({
   const { classes } = useStyles();
   const [workingOrderId, setWorkingOrderId] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
-  const handleOpenOrderClick = (id) => {
+  const handleOpenOrderClick = id => {
     openWorkingOrder(id);
   };
   const handleRevokeButtonClick = (id, ref) => {
@@ -83,7 +78,7 @@ function RestaurantOrderListPage({
     setDialogOpen({ open: false, id: 0 });
     revokeWorkingOrder(workingOrderId);
   };
-  const rows = list.map((row) => (
+  const rows = list.map(row => (
     <Grid item key={row.IdFactura} xs={6} sm={4} md={3}>
       <Tab
         title={row.NombreCliente}
@@ -100,21 +95,10 @@ function RestaurantOrderListPage({
         </Grid>
       </div>
       <div className={classes.buttonContainer}>
-        <Button
-          label="Nueva Orden"
-          onClick={() => setWorkingOrderParameters()}
-        />
-        <Button
-          style={{ marginLeft: "10px" }}
-          label="Regresar"
-          onClick={() => setActiveSection(0)}
-        />
+        <Button label="Nueva Orden" onClick={() => setWorkingOrderParameters()} />
+        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => setActiveSection(0)} />
       </div>
-      <Dialog
-        id="revoke-dialog"
-        onClose={() => setDialogOpen({ open: false, id: 0 })}
-        open={dialogOpen.open}
-      >
+      <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
         <DialogTitle>Anular orden de servicio</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -122,11 +106,7 @@ function RestaurantOrderListPage({
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button
-            negative
-            label="Cerrar"
-            onClick={() => setDialogOpen(false)}
-          />
+          <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
           <Button label="Anular" autoFocus onClick={handleConfirmButtonClick} />
         </DialogActions>
       </Dialog>
@@ -134,13 +114,13 @@ function RestaurantOrderListPage({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     list: state.workingOrder.list,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setWorkingOrderParameters,
@@ -152,7 +132,4 @@ const mapDispatchToProps = (dispatch) => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RestaurantOrderListPage);
+export default connect(mapStateToProps, mapDispatchToProps)(RestaurantOrderListPage);

@@ -1,17 +1,17 @@
-import React from "react";
-import { makeStyles } from "tss-react/mui";
-import { useSelector } from "react-redux";
-
 import BannerImage from "assets/img/home-background.webp";
-import Header from "components/header";
-import MenuPage from "pages/menu-page";
 import CompanyPage from "pages/company-page";
-import LogoPage from "pages/logo-page";
 import CustomerListPage from "pages/customer-list-page";
 import CustomerPage from "pages/customer-page";
 //import ProductListPage from "pages/product-list-page";
 //import ProductPage from "pages/product-page";
 import InvoicePage from "pages/invoice-page";
+import LogoPage from "pages/logo-page";
+import MenuPage from "pages/menu-page";
+import React from "react";
+import { useSelector } from "react-redux";
+import { makeStyles } from "tss-react/mui";
+
+import Header from "components/header";
 //import ReceiptPage from "pages/receipt-page";
 //import WorkingOrderListPage from "pages/working-order-list-page";
 //import RestaurantOrderListPage from "pages/restaurant-order-list-page";
@@ -54,11 +54,7 @@ interface HomePageProps {
   toggleDarkMode: () => void;
 }
 
-export default function HomePage({
-  width,
-  isDarkMode,
-  toggleDarkMode,
-}: HomePageProps) {
+export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePageProps) {
   const { classes } = useStyles();
   const myRef = React.useRef<HTMLDivElement>(null);
 
@@ -70,11 +66,7 @@ export default function HomePage({
   }, [activeSection]);
 
   return (
-    <div
-      id="id_home_page"
-      className={classes.root}
-      style={{ minWidth: `${width}px` }}
-    >
+    <div id="id_home_page" className={classes.root} style={{ minWidth: `${width}px` }}>
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}

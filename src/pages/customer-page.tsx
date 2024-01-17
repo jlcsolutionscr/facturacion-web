@@ -1,36 +1,21 @@
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import format from "date-fns/format";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import format from "date-fns/format";
-
-import {
-  getIdTypeList,
-  getTaxTypeList,
-  getExonerationTypeList,
-  setActiveSection,
-} from "state/ui/reducer";
-import {
-  getCustomer,
-  getPriceTypeList,
-  setCustomer,
-  setCustomerAttribute,
-} from "state/customer/reducer";
-import {
-  validateCustomerIdentifier,
-  saveCustomer,
-} from "state/customer/asyncActions";
-
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import Button from "components/button";
 import Select from "components/select";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
+import { getCustomer, getPriceTypeList, setCustomer, setCustomerAttribute } from "state/customer/reducer";
+import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
@@ -63,7 +48,7 @@ export default function CustomerPage() {
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const customer = useSelector(getCustomer);
 
-  const idTypeItems = idTypeList.map((item) => {
+  const idTypeItems = idTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -71,22 +56,22 @@ export default function CustomerPage() {
     );
   });
   const rentTypeItems = taxTypeList
-    .filter((item) => item.Id > 1)
-    .map((item) => {
+    .filter(item => item.Id > 1)
+    .map(item => {
       return (
         <MenuItem key={item.Id} value={item.Id}>
           {item.Descripcion}
         </MenuItem>
       );
     });
-  const priceTypeItems = priceTypeList.map((item) => {
+  const priceTypeItems = priceTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
   });
-  const exonerationTypesItems = exonerationTypeList.map((item) => {
+  const exonerationTypesItems = exonerationTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -126,9 +111,7 @@ export default function CustomerPage() {
   };
 
   const handleIdTypeChange = (value: string) => {
-    dispatch(
-      setCustomerAttribute({ attribute: "IdTipoIdentificacion", value })
-    );
+    dispatch(setCustomerAttribute({ attribute: "IdTipoIdentificacion", value }));
     dispatch(setCustomerAttribute({ attribute: "Identificacion", value: "" }));
     dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
   };
@@ -140,8 +123,7 @@ export default function CustomerPage() {
         value: !customer.AplicaTasaDiferenciada,
       })
     );
-    if (customer.AplicaTasaDiferenciada)
-      dispatch(setCustomerAttribute({ attribute: "IdImpuesto", value: 8 }));
+    if (customer.AplicaTasaDiferenciada) dispatch(setCustomerAttribute({ attribute: "IdImpuesto", value: 8 }));
   };
 
   const handleOnClose = () => {
@@ -180,7 +162,7 @@ export default function CustomerPage() {
             id="IdTipoIdentificacion"
             label="Tipo de identificación"
             value={customer.IdTipoIdentificacion.toString()}
-            onChange={(event) => handleIdTypeChange(event.target.value)}
+            onChange={event => handleIdTypeChange(event.target.value)}
           >
             {idTypeItems}
           </Select>
@@ -199,13 +181,7 @@ export default function CustomerPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            required
-            id="Nombre"
-            value={customer.Nombre}
-            label="Nombre del cliente"
-            onChange={handleChange}
-          />
+          <TextField required id="Nombre" value={customer.Nombre} label="Nombre del cliente" onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -216,13 +192,7 @@ export default function CustomerPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            required
-            id="Direccion"
-            value={customer.Direccion}
-            label="Dirección"
-            onChange={handleChange}
-          />
+          <TextField required id="Direccion" value={customer.Direccion} label="Dirección" onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -235,13 +205,7 @@ export default function CustomerPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            id="Fax"
-            value={customer.Fax}
-            label="Fax"
-            numericFormat
-            onChange={handleChange}
-          />
+          <TextField id="Fax" value={customer.Fax} label="Fax" numericFormat onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -257,7 +221,7 @@ export default function CustomerPage() {
             id="IdTipoPrecio"
             label="Tipo de precio"
             value={customer.IdTipoPrecio.toString()}
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCustomerAttribute({
                   attribute: "IdTipoPrecio",
@@ -290,7 +254,7 @@ export default function CustomerPage() {
             id="IdImpuesto"
             label="Tasa de IVA diferenciada"
             value={customer.IdImpuesto.toString()}
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCustomerAttribute({
                   attribute: "IdImpuesto",
@@ -307,7 +271,7 @@ export default function CustomerPage() {
             id="IdTipoExoneracion"
             label="Tasa de exoneración"
             value={customer.IdTipoExoneracion.toString()}
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCustomerAttribute({
                   attribute: "IdTipoExoneracion",
@@ -346,11 +310,7 @@ export default function CustomerPage() {
                 dispatch(
                   setCustomerAttribute({
                     attribute: "FechaEmisionDoc",
-                    value:
-                      format(
-                        value !== null ? value : Date.now(),
-                        "yyyy-MM-dd"
-                      ) + "T23:59:59",
+                    value: format(value !== null ? value : Date.now(), "yyyy-MM-dd") + "T23:59:59",
                   })
                 );
               }}
@@ -367,11 +327,7 @@ export default function CustomerPage() {
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button
-            disabled={disabled}
-            label="Guardar"
-            onClick={() => dispatch(saveCustomer())}
-          />
+          <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCustomer())} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
           <Button label="Regresar" onClick={handleOnClose} />

@@ -1,6 +1,6 @@
 import { makeStyles } from "tss-react/mui";
 
-export const useStyles = makeStyles()((theme) => ({
+export const useStyles = makeStyles()(theme => ({
   root: {
     width: "100%",
     display: "flex",
@@ -9,8 +9,7 @@ export const useStyles = makeStyles()((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    backgroundColor:
-      theme.palette.mode === "dark" ? "#333" : "rgba(255, 255, 255, .87)",
+    backgroundColor: theme.palette.mode === "dark" ? "#333" : "rgba(255, 255, 255, .87)",
   },
   tableContainer: {
     flex: "1 1 auto",

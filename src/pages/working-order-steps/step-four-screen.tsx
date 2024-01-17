@@ -2,26 +2,24 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import {
-  setActivityCode,
-  setPaymentDetailsList,
-  setDeliveryAttribute,
-  saveWorkingOrder,
-  generateWorkingOrderTicket,
-  generateInvoice,
-  generateInvoiceTicket,
-} from "state/working-order/asyncActions";
-
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
 import Select from "components/select";
+import {
+  generateInvoice,
+  generateInvoiceTicket,
+  generateWorkingOrderTicket,
+  saveWorkingOrder,
+  setActivityCode,
+  setDeliveryAttribute,
+  setPaymentDetailsList,
+} from "state/working-order/asyncActions";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -90,15 +88,14 @@ function StepFourScreen({
   React.useEffect(() => {
     if (value === 3) myRef.current?.scrollTo(0, 0);
   }, [value]);
-  const buttonDisabled =
-    total === 0 || status === "ready" || status === "converted";
+  const buttonDisabled = total === 0 || status === "ready" || status === "converted";
   const paymentMethods: { id: number; description: string }[] = [
     { id: 1, description: "EFECTIVO" },
     { id: 2, description: "TARJETA" },
     { id: 3, description: "CHEQUE" },
     { id: 4, description: "TRANSFERENCIA" },
   ];
-  const paymentItems = paymentMethods.map((item) => {
+  const paymentItems = paymentMethods.map(item => {
     return (
       <MenuItem key={item.id} value={item.id}>
         {item.description}
@@ -112,14 +109,14 @@ function StepFourScreen({
       generateWorkingOrderTicket(order.IdOrden);
     }
   };
-  const activityItems = company.ActividadEconomicaEmpresa.map((item) => {
+  const activityItems = company.ActividadEconomicaEmpresa.map(item => {
     return (
       <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
         {item.Descripcion}
       </MenuItem>
     );
   });
-  const vendorItems = vendorList.map((item) => {
+  const vendorItems = vendorList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -136,7 +133,7 @@ function StepFourScreen({
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
                 value={activityCode}
-                onChange={(event) => setActivityCode(event.target.value)}
+                onChange={event => setActivityCode(event.target.value)}
               >
                 {activityItems}
               </Select>
@@ -150,9 +147,7 @@ function StepFourScreen({
                 id="id-vendedor-select-id"
                 label="Seleccione el Vendedor"
                 value={vendorId}
-                onChange={(event) =>
-                  setDeliveryAttribute("vendorId", event.target.value)
-                }
+                onChange={event => setDeliveryAttribute("vendorId", event.target.value)}
               >
                 {vendorItems}
               </Select>
@@ -160,57 +155,43 @@ function StepFourScreen({
           </Grid>
         )}
         <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-          <InputLabel className={classes.summaryTitle}>
-            RESUMEN DE ORDEN SERVICIO
-          </InputLabel>
+          <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN SERVICIO</InputLabel>
           <Grid container spacing={2} className={classes.details}>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(taxed)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(exonerated)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Excento</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(exempt)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(subTotal)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(taxes)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
             </Grid>
             <Grid item xs={6}>
               <InputLabel className={classes.summaryRow}>Total</InputLabel>
             </Grid>
             <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>
-                {formatCurrency(total)}
-              </InputLabel>
+              <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
             </Grid>
           </Grid>
         </Grid>
@@ -225,26 +206,17 @@ function StepFourScreen({
         )}
         {(status === "ready" || status === "converted") && (
           <Grid item xs={12} className={classes.centered}>
-            <Button
-              label={status === "ready" ? "Imprimir Orden" : "Imprimir Factura"}
-              onClick={handleOnPrintClick}
-            />
+            <Button label={status === "ready" ? "Imprimir Orden" : "Imprimir Factura"} onClick={handleOnPrintClick} />
           </Grid>
         )}
         {status === "ready" && (
-          <Grid
-            item
-            xs={12}
-            className={`${classes.summary} ${classes.centered}`}
-          >
+          <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
             <Grid container spacing={2} className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Saldo</InputLabel>
               </Grid>
               <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>
-                  {formatCurrency(total - order.MontoAdelanto)}
-                </InputLabel>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(total - order.MontoAdelanto)}</InputLabel>
               </Grid>
             </Grid>
           </Grid>
@@ -256,13 +228,12 @@ function StepFourScreen({
               id="forma-pago-select-id"
               label="Seleccione la forma de pago:"
               value={paymentDetails[0].paymentId}
-              onChange={(event) =>
+              onChange={event =>
                 setPaymentDetailsList({
                   paymentId: event.target.value,
                   description:
-                    paymentMethods.find(
-                      (method) => method.id === parseInt(event.target.value)
-                    )?.description ?? "NO ESPECIFICADO",
+                    paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                    "NO ESPECIFICADO",
                   amount: total,
                 })
               }
@@ -281,7 +252,7 @@ function StepFourScreen({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     order: state.workingOrder.order,
     status: state.workingOrder.status,
@@ -295,7 +266,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setActivityCode,

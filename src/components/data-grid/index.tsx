@@ -1,3 +1,5 @@
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -5,16 +7,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
 
-import {
-  FirstPageIcon,
-  KeyboardArrowLeftIcon,
-  KeyboardArrowRightIcon,
-  LastPageIcon,
-} from "utils/iconsHelper";
 import { useStyles } from "./styles";
+import { FirstPageIcon, KeyboardArrowLeftIcon, KeyboardArrowRightIcon, LastPageIcon } from "utils/iconsHelper";
 
 type EventType = React.MouseEvent<HTMLButtonElement>;
 
@@ -29,18 +24,10 @@ interface TablePaginationActionsProps {
   count: number;
   page: number;
   rowsPerPage: number;
-  onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    newPage: number
-  ) => void;
+  onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
 }
 
-export function TablePaginationActions({
-  count,
-  page,
-  rowsPerPage,
-  onPageChange,
-}: TablePaginationActionsProps) {
+export function TablePaginationActions({ count, page, rowsPerPage, onPageChange }: TablePaginationActionsProps) {
   const { classes } = useStyles();
   const handleFirstPageButtonClick = (event: EventType) => {
     onPageChange(event, 0);
@@ -56,18 +43,10 @@ export function TablePaginationActions({
   };
   return (
     <div className={classes.paginationActions}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
+      <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0} aria-label="first page">
         <FirstPageIcon />
       </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
+      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
         <KeyboardArrowLeftIcon />
       </IconButton>
       <IconButton
@@ -130,8 +109,7 @@ export default function DataGrid({
     color: "white",
     minWidth: minWidth || "auto",
   };
-  if (height > 0)
-    tableStyle = { ...tableStyle, display: "list-table", height: height };
+  if (height > 0) tableStyle = { ...tableStyle, display: "list-table", height: height };
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -141,13 +119,11 @@ export default function DataGrid({
               <TableHead>
                 <TableRow>
                   {columns
-                    .filter((col) => !col.hidden)
-                    .map((cell) => (
+                    .filter(col => !col.hidden)
+                    .map(cell => (
                       <TableCell
                         key={cell.field}
-                        align={
-                          cell.type && cell.type === "number" ? "right" : "left"
-                        }
+                        align={cell.type && cell.type === "number" ? "right" : "left"}
                         padding="normal"
                         style={{ width: cell.width || "auto" }}
                       >
@@ -164,14 +140,10 @@ export default function DataGrid({
                     hover
                     tabIndex={-1}
                     key={rowIndex}
-                    onDoubleClick={() =>
-                      rowAction && rowActionValue
-                        ? rowAction(row[rowActionValue])
-                        : null
-                    }
+                    onDoubleClick={() => (rowAction && rowActionValue ? rowAction(row[rowActionValue]) : null)}
                   >
                     {columns
-                      .filter((col) => !col.hidden)
+                      .filter(col => !col.hidden)
                       .map((cell, cellIndex) => (
                         <TableCell
                           style={{ whiteSpace: "nowrap" }}
@@ -179,11 +151,7 @@ export default function DataGrid({
                           component="th"
                           scope="row"
                           padding="normal"
-                          align={
-                            cell.type && cell.type === "number"
-                              ? "right"
-                              : "left"
-                          }
+                          align={cell.type && cell.type === "number" ? "right" : "left"}
                         >
                           {row[cell.field]}
                         </TableCell>
@@ -207,9 +175,7 @@ export default function DataGrid({
             count={rowsCount ?? rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
-            onPageChange={(_event, newPage) =>
-              onPageChange && onPageChange(newPage)
-            }
+            onPageChange={(_event, newPage) => onPageChange && onPageChange(newPage)}
             ActionsComponent={TablePaginationActions}
           />
         )}

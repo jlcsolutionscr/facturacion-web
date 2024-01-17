@@ -1,6 +1,6 @@
 import { makeStyles } from "tss-react/mui";
 
-export const useStyles = makeStyles()((theme) => ({
+export const useStyles = makeStyles()(theme => ({
   container: {
     border: "none",
     margin: "5px 0 0 0",
@@ -55,11 +55,7 @@ export const useStyles = makeStyles()((theme) => ({
     textRendering: "auto",
     cursor: "text",
     borderRadius: theme.shape.borderRadius,
-    border: `1px solid ${
-      theme.palette.mode === "dark"
-        ? "rgba(255, 255, 255, 0.23)"
-        : "rgba(0, 0, 0, 0.23)"
-    }`,
+    border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.23)" : "rgba(0, 0, 0, 0.23)"}`,
   },
   inputOutline: {
     outline: "0",

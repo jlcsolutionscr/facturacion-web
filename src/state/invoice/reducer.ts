@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { invoiceInitialState } from "state/InitialState";
 import { RootState } from "state/store";
 import { defaultInvoice, defaultInvoiceProduct } from "utils/defaults";
@@ -22,7 +23,7 @@ const invoiceSlice = createSlice({
     setPrice: (state, action) => {
       state.entity.productDetails.price = action.payload;
     },
-    resetProductDetails: (state) => {
+    resetProductDetails: state => {
       state.entity.productDetails = defaultInvoiceProduct;
     },
     setProductDetailsList: (state, action) => {
@@ -56,7 +57,7 @@ const invoiceSlice = createSlice({
     setInvoiceList: (state, action) => {
       state.list = action.payload;
     },
-    resetInvoice: (state) => {
+    resetInvoice: state => {
       state.entity = defaultInvoice;
     },
   },
@@ -82,26 +83,18 @@ export const {
   resetInvoice,
 } = invoiceSlice.actions;
 
-export const getInvoiceId = (state: RootState) =>
-  state.invoice.entity.invoiceId;
-export const getCustomerDetails = (state: RootState) =>
-  state.invoice.entity.customerDetails;
-export const getProductDetails = (state: RootState) =>
-  state.invoice.entity.productDetails;
-export const getProductList = (state: RootState) =>
-  state.invoice.entity.productDetailsList;
+export const getInvoiceId = (state: RootState) => state.invoice.entity.invoiceId;
+export const getCustomerDetails = (state: RootState) => state.invoice.entity.customerDetails;
+export const getProductDetails = (state: RootState) => state.invoice.entity.productDetails;
+export const getProductList = (state: RootState) => state.invoice.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.invoice.entity.summary;
-export const getActivityCode = (state: RootState) =>
-  state.invoice.entity.activityCode;
-export const getPaymentDetailsList = (state: RootState) =>
-  state.invoice.entity.paymentDetailsList;
+export const getActivityCode = (state: RootState) => state.invoice.entity.activityCode;
+export const getPaymentDetailsList = (state: RootState) => state.invoice.entity.paymentDetailsList;
 export const getVendorId = (state: RootState) => state.invoice.entity.vendorId;
 export const getComment = (state: RootState) => state.invoice.entity.comment;
-export const getSuccessful = (state: RootState) =>
-  state.invoice.entity.successful;
+export const getSuccessful = (state: RootState) => state.invoice.entity.successful;
 export const getInvoiceListPage = (state: RootState) => state.invoice.listPage;
-export const getInvoiceListCount = (state: RootState) =>
-  state.invoice.listCount;
+export const getInvoiceListCount = (state: RootState) => state.invoice.listCount;
 export const getInvoiceList = (state: RootState) => state.invoice.list;
 
 export default invoiceSlice.reducer;

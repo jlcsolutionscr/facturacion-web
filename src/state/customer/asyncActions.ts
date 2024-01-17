@@ -1,47 +1,35 @@
+import { CustomerType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { ROWS_PER_CUSTOMER } from "utils/constants";
 import {
-  setCustomerListPage,
-  setCustomerListCount,
-  setCustomerList,
+  resetCustomer,
   setCustomer,
   setCustomerAttribute,
-  resetCustomer,
+  setCustomerList,
+  setCustomerListCount,
+  setCustomerListPage,
 } from "state/customer/reducer";
+import { RootState } from "state/store";
+import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
+import { ROWS_PER_CUSTOMER } from "utils/constants";
 import {
-  startLoader,
-  stopLoader,
-  setActiveSection,
-  setMessage,
-} from "state/ui/reducer";
-import {
+  getCustomerByIdentifier,
+  getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
-  getCustomerEntity,
-  getCustomerByIdentifier,
   saveCustomerEntity,
 } from "utils/domainHelper";
-import { RootState } from "state/store";
 import { getErrorMessage } from "utils/utilities";
-import { CustomerType } from "types/domain";
 
 export const getCustomerListFirstPage = createAsyncThunk(
   "customer/getCustomerListFirstPage",
-  async (
-    payload: { id: number; filterText: string; rowsPerPage: number },
-    { getState, dispatch }
-  ) => {
+  async (payload: { id: number; filterText: string; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
     try {
       dispatch(setCustomerListPage(1));
-      const recordCount = await getCustomerListCount(
-        token,
-        companyId,
-        payload.filterText
-      );
+      const recordCount = await getCustomerListCount(token, companyId, payload.filterText);
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
         const newList = await getCustomerListPerPage(
@@ -66,10 +54,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
 
 export const getCustomerListByPageNumber = createAsyncThunk(
   "customer/getCustomerListByPageNumber",
-  async (
-    payload: { filterText: string; pageNumber: number; rowsPerPage?: number },
-    { getState, dispatch }
-  ) => {
+  async (payload: { filterText: string; pageNumber: number; rowsPerPage?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
@@ -140,16 +125,10 @@ export const validateCustomerIdentifier = createAsyncThunk(
     const { token, companyId } = session;
     dispatch(startLoader());
     try {
-      const customer: CustomerType = await getCustomerByIdentifier(
-        token,
-        companyId,
-        payload.identifier
-      );
+      const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
       if (customer) {
         if (customer.IdCliente > 0) {
-          dispatch(
-            setMessage("Ya existe un cliente con la identificación ingresada")
-          );
+          dispatch(setMessage("Ya existe un cliente con la identificación ingresada"));
         } else {
           dispatch(
             setCustomerAttribute({
@@ -170,28 +149,25 @@ export const validateCustomerIdentifier = createAsyncThunk(
   }
 );
 
-export const saveCustomer = createAsyncThunk(
-  "customer/saveCustomer",
-  async (_payload, { getState, dispatch }) => {
-    const { session, customer } = getState() as RootState;
-    const { token } = session;
-    const { entity: customerEntity } = customer;
-    dispatch(startLoader());
-    try {
-      await saveCustomerEntity(token, customerEntity);
-      dispatch(
-        setMessage({
-          message: "Transacción completada satisfactoriamente",
-          type: "INFO",
-        })
-      );
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
+export const saveCustomer = createAsyncThunk("customer/saveCustomer", async (_payload, { getState, dispatch }) => {
+  const { session, customer } = getState() as RootState;
+  const { token } = session;
+  const { entity: customerEntity } = customer;
+  dispatch(startLoader());
+  try {
+    await saveCustomerEntity(token, customerEntity);
+    dispatch(
+      setMessage({
+        message: "Transacción completada satisfactoriamente",
+        type: "INFO",
+      })
+    );
+    dispatch(stopLoader());
+  } catch (error) {
+    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    dispatch(stopLoader());
   }
-);
+});
 
 export const getCustomer = createAsyncThunk(
   "customer/getCustomer",
@@ -213,20 +189,13 @@ export const getCustomer = createAsyncThunk(
 
 export const filterCustomerList = createAsyncThunk(
   "customer/filterCustomerList",
-  async (
-    payload: { filterText: string; rowsPerPage?: number },
-    { getState, dispatch }
-  ) => {
+  async (payload: { filterText: string; rowsPerPage?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
     try {
       dispatch(setCustomerListPage(1));
-      const recordCount = await getCustomerListCount(
-        token,
-        companyId,
-        payload.filterText
-      );
+      const recordCount = await getCustomerListCount(token, companyId, payload.filterText);
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
         const newList = await getCustomerListPerPage(

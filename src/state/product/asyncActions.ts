@@ -1,36 +1,30 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { ROWS_PER_PRODUCT } from "utils/constants";
 import {
-  setProductListPage,
-  setProductListCount,
-  setProductList,
-  setProduct,
   setCategoryList,
-  setProviderList,
   setClasificationList,
+  setProduct,
   setProductAttribute,
+  setProductList,
+  setProductListCount,
+  setProductListPage,
+  setProviderList,
 } from "state/product/reducer";
-import {
-  startLoader,
-  stopLoader,
-  setActiveSection,
-  setMessage,
-} from "state/ui/reducer";
 import { RootState } from "state/store";
-
+import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
+import { ROWS_PER_PRODUCT } from "utils/constants";
+import { defaultProduct } from "utils/defaults";
 import {
-  getProductListCount,
-  getProductListPerPage,
   getProductCategoryList,
-  getProductProviderList,
+  getProductClasification,
   getProductClasificationList,
   getProductEntity,
-  getProductClasification,
+  getProductListCount,
+  getProductListPerPage,
+  getProductProviderList,
   saveProductEntity,
 } from "utils/domainHelper";
 import { getErrorMessage } from "utils/utilities";
-import { defaultProduct } from "utils/defaults";
 
 export const getProductListFirstPage = createAsyncThunk(
   "product/getProductListFirstPage",
@@ -145,23 +139,13 @@ export const getProduct = createAsyncThunk(
 
 export const filterProductList = createAsyncThunk(
   "product/filterProductList",
-  async (
-    payload: { text: string; type: number; rowsPerPage?: number },
-    { getState, dispatch }
-  ) => {
+  async (payload: { text: string; type: number; rowsPerPage?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
     try {
       dispatch(setProductListPage(1));
-      const productCount = await getProductListCount(
-        token,
-        companyId,
-        branchId,
-        true,
-        payload.text,
-        payload.type
-      );
+      const productCount = await getProductListCount(token, companyId, branchId, true, payload.text, payload.type);
       const newList = await getProductListPerPage(
         token,
         companyId,
@@ -209,14 +193,9 @@ export const validateProductCode = createAsyncThunk(
       dispatch(setProductAttribute({ attribute: "code", value: payload.code }));
       if (payload.code.length === 13) {
         dispatch(startLoader());
-        const clasification = await getProductClasification(
-          token,
-          payload.code
-        );
+        const clasification = await getProductClasification(token, payload.code);
         if (clasification != null) {
-          const taxTypeId = taxTypeList?.find(
-            (elm) => elm.Valor === clasification?.value
-          );
+          const taxTypeId = taxTypeList?.find(elm => elm.Valor === clasification?.value);
           dispatch(
             setProductAttribute({
               attribute: "IdImpuesto",
@@ -240,25 +219,22 @@ export const validateProductCode = createAsyncThunk(
   }
 );
 
-export const saveProduct = createAsyncThunk(
-  "product/saveProduct",
-  async (_payload, { getState, dispatch }) => {
-    const { product, session } = getState() as RootState;
-    const { token } = session;
-    const { entity: productEntity } = product;
-    dispatch(startLoader());
-    try {
-      await saveProductEntity(token, productEntity);
-      dispatch(
-        setMessage({
-          message: "Transacción completada satisfactoriamente",
-          type: "INFO",
-        })
-      );
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
+export const saveProduct = createAsyncThunk("product/saveProduct", async (_payload, { getState, dispatch }) => {
+  const { product, session } = getState() as RootState;
+  const { token } = session;
+  const { entity: productEntity } = product;
+  dispatch(startLoader());
+  try {
+    await saveProductEntity(token, productEntity);
+    dispatch(
+      setMessage({
+        message: "Transacción completada satisfactoriamente",
+        type: "INFO",
+      })
+    );
+    dispatch(stopLoader());
+  } catch (error) {
+    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    dispatch(stopLoader());
   }
-);
+});

@@ -1,18 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getBarrioList,
-  getCantonList,
-  getDistritoList,
-} from "utils/domainHelper";
-import {
-  setBarrioList,
-  setCantonList,
-  setDistritoList,
-  setMessage,
-  startLoader,
-  stopLoader,
-} from "./reducer";
+
+import { setBarrioList, setCantonList, setDistritoList, setMessage, startLoader, stopLoader } from "./reducer";
 import { RootState } from "state/store";
+import { getBarrioList, getCantonList, getDistritoList } from "utils/domainHelper";
 import { getErrorMessage } from "utils/utilities";
 
 export const updateCantonList = createAsyncThunk(
@@ -43,18 +33,9 @@ export const updateDistritoList = createAsyncThunk(
     const { token } = session;
     dispatch(startLoader());
     try {
-      const distritoList = await getDistritoList(
-        token,
-        payload.id,
-        payload.subId
-      );
+      const distritoList = await getDistritoList(token, payload.id, payload.subId);
       dispatch(setDistritoList(distritoList));
-      const barrioList = await getBarrioList(
-        token,
-        payload.id,
-        payload.subId,
-        1
-      );
+      const barrioList = await getBarrioList(token, payload.id, payload.subId, 1);
       dispatch(setBarrioList(barrioList));
       dispatch(stopLoader());
     } catch (error) {
@@ -66,20 +47,12 @@ export const updateDistritoList = createAsyncThunk(
 
 export const updateBarrioList = createAsyncThunk(
   "ui/updateBarrioList",
-  async (
-    payload: { id: number; subId: number; subSubId: number },
-    { getState, dispatch }
-  ) => {
+  async (payload: { id: number; subId: number; subSubId: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
-      const barrioList = await getBarrioList(
-        token,
-        payload.id,
-        payload.subId,
-        payload.subSubId
-      );
+      const barrioList = await getBarrioList(token, payload.id, payload.subId, payload.subSubId);
       dispatch(setBarrioList(barrioList));
       dispatch(stopLoader());
     } catch (error) {

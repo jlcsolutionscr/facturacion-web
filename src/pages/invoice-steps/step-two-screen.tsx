@@ -2,48 +2,31 @@ import React from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import Grid from "@mui/material/Grid";
-import FormGroup from "@mui/material/FormGroup";
+import { IdDescriptionType } from "types/domain";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
 
-import ListDropdown, {
-  ListDropdownOnChangeEventType,
-} from "components/list-dropdown";
+import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
-import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { ROWS_PER_PRODUCT } from "utils/constants";
-
-import {
-  getProduct,
-  addDetails,
-  removeDetails,
-} from "state/invoice/asyncActions";
-import {
-  setDescription,
-  setQuantity,
-  setPrice,
-  getProductDetails,
-  getSuccessful,
-} from "state/invoice/reducer";
-import {
-  filterProductList,
-  getProductListByPageNumber,
-} from "state/product/asyncActions";
-import { formatCurrency, roundNumber } from "utils/utilities";
-import { getPermissions } from "state/session/reducer";
+import { addDetails, getProduct, removeDetails } from "state/invoice/asyncActions";
+import { getProductDetails, getSuccessful, setDescription, setPrice, setQuantity } from "state/invoice/reducer";
+import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
 import { getProductListPage } from "state/product/reducer";
 import { getProductDetailsList } from "state/receipt/reducer";
-import { IdDescriptionType } from "types/domain";
+import { getPermissions } from "state/session/reducer";
+import { ROWS_PER_PRODUCT } from "utils/constants";
+import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
+import { formatCurrency, roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     flex: 1,
     overflowY: "auto",
@@ -100,8 +83,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
     if (value === 1) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
-  const isPriceChangeEnabled =
-    permissions.filter((role) => [1, 52].includes(role.IdRole)).length > 0;
+  const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
 
   const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
     setFilter(event.target.value);
@@ -109,9 +91,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      dispatch(
-        filterProductList({ text: event.target.value, type: filterType })
-      );
+      dispatch(filterProductList({ text: event.target.value, type: filterType }));
     }, 1000);
   };
 
@@ -129,19 +109,12 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     isPriceChangeEnabled && setPrice(event.target.value);
   };
-  const products = productDetailsList.map((item) => ({
+  const products = productDetailsList.map(item => ({
     ...item,
-    description:
-      filterType === 1
-        ? `${item.code} - ${item.description}`
-        : item.description,
+    description: filterType === 1 ? `${item.code} - ${item.description}` : item.description,
   }));
   const buttonEnabled =
-    product !== null &&
-    description !== "" &&
-    quantity !== null &&
-    price !== null &&
-    successful === false;
+    product !== null && description !== "" && quantity !== null && price !== null && successful === false;
   const display = value !== index ? "none" : "flex";
 
   return (
@@ -153,12 +126,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
               <FormGroup>
                 <FormControlLabel
                   className={classes.formControl}
-                  control={
-                    <Switch
-                      value={filterType === 1}
-                      onChange={handleFilterTypeChange}
-                    />
-                  }
+                  control={<Switch value={filterType === 1} onChange={handleFilterTypeChange} />}
                   label="Filtrar producto por código"
                 />
               </FormGroup>
@@ -174,7 +142,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                 rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
-                onPageChange={(pageNumber) =>
+                onPageChange={pageNumber =>
                   dispatch(
                     getProductListByPageNumber({
                       pageNumber: pageNumber + 1,
@@ -191,9 +159,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                 label="Descripción"
                 id="Descripcion"
                 value={description}
-                onChange={(event) =>
-                  dispatch(setDescription(event.target.value))
-                }
+                onChange={event => dispatch(setDescription(event.target.value))}
               />
             </Grid>
             <Grid item xs={3}>
@@ -203,7 +169,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                 id="Cantidad"
                 value={quantity.toString()}
                 numericFormat
-                onChange={(event) => dispatch(setQuantity(event.target.value))}
+                onChange={event => dispatch(setQuantity(event.target.value))}
               />
             </Grid>
             <Grid item xs={6}>
@@ -245,20 +211,13 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                     <TableRow key={index}>
                       <TableCell>{row.quantity}</TableCell>
                       <TableCell>{`${row.code} - ${row.description}`}</TableCell>
-                      <TableCell align="right">
-                        {formatCurrency(
-                          roundNumber(row.quantity * row.price, 2),
-                          2
-                        )}
-                      </TableCell>
+                      <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() =>
-                            dispatch(removeDetails({ id: row.id }))
-                          }
+                          onClick={() => dispatch(removeDetails({ id: row.id }))}
                         >
                           <RemoveCircleIcon />
                         </IconButton>

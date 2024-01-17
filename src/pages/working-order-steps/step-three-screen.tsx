@@ -2,14 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setDeliveryAttribute } from "state/working-order/asyncActions";
-
 import Grid from "@mui/material/Grid";
 
 import TextField from "components/text-field";
+import { setDeliveryAttribute } from "state/working-order/asyncActions";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -18,13 +16,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function StepThreeScreen({
-  value,
-  index,
-  delivery,
-  status,
-  setDeliveryAttribute,
-}) {
+function StepThreeScreen({ value, index, delivery, status, setDeliveryAttribute }) {
   const { classes } = useStyles();
   const myRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -40,9 +32,7 @@ function StepThreeScreen({
             label="Teléfono"
             id="Telefono"
             value={delivery.phone}
-            onChange={(event) =>
-              setDeliveryAttribute("phone", event.target.value)
-            }
+            onChange={event => setDeliveryAttribute("phone", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.centered}>
@@ -51,9 +41,7 @@ function StepThreeScreen({
             label="Dirección"
             id="Direccion"
             value={delivery.address}
-            onChange={(event) =>
-              setDeliveryAttribute("address", event.target.value)
-            }
+            onChange={event => setDeliveryAttribute("address", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.centered}>
@@ -62,9 +50,7 @@ function StepThreeScreen({
             label="Descripción"
             id="ThreeDescripcion"
             value={delivery.description}
-            onChange={(event) =>
-              setDeliveryAttribute("description", event.target.value)
-            }
+            onChange={event => setDeliveryAttribute("description", event.target.value)}
           />
         </Grid>
         <Grid item xs={6} className={classes.centered}>
@@ -73,9 +59,7 @@ function StepThreeScreen({
             label="Fecha de entrega"
             id="FechaDeEntrega"
             value={delivery.date}
-            onChange={(event) =>
-              setDeliveryAttribute("date", event.target.value)
-            }
+            onChange={event => setDeliveryAttribute("date", event.target.value)}
           />
         </Grid>
         <Grid item xs={6} className={classes.centered}>
@@ -84,9 +68,7 @@ function StepThreeScreen({
             label="Hora de entrega"
             id="HoraDeEntrega"
             value={delivery.time}
-            onChange={(event) =>
-              setDeliveryAttribute("time", event.target.value)
-            }
+            onChange={event => setDeliveryAttribute("time", event.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.centered}>
@@ -95,9 +77,7 @@ function StepThreeScreen({
             label="Observaciones"
             id="Observaciones"
             value={delivery.details}
-            onChange={(event) =>
-              setDeliveryAttribute("details", event.target.value)
-            }
+            onChange={event => setDeliveryAttribute("details", event.target.value)}
           />
         </Grid>
       </Grid>
@@ -105,14 +85,14 @@ function StepThreeScreen({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     status: state.workingOrder.status,
     delivery: state.workingOrder.delivery,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators({ setDeliveryAttribute }, dispatch);
 };
 

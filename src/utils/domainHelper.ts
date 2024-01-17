@@ -1,25 +1,26 @@
+import { saveAs } from "file-saver";
 import {
   CompanyType,
-  CustomerType,
-  ProductType,
-  IdValueType,
-  ProductDetailsType,
-  PaymentDetailsType,
   CustomerDetailsType,
+  CustomerType,
+  IdValueType,
+  PaymentDetailsType,
+  ProductDetailsType,
+  ProductType,
+  ReceiptType,
   SummaryType,
   WorkingOrderType,
-  ReceiptType,
 } from "types/domain";
+
 import {
+  convertToDateTimeString,
   encryptString,
-  roundNumber,
+  getTaxeRateFromId,
   getWithResponse,
   post,
   postWithResponse,
-  convertToDateTimeString,
-  getTaxeRateFromId,
+  roundNumber,
 } from "./utilities";
-import { saveAs } from "file-saver";
 
 const SERVICE_URL = import.meta.env.VITE_APP_SERVER_URL;
 const APP_URL = `${SERVICE_URL}/puntoventa`;
@@ -58,34 +59,17 @@ type DetalleFacturaCompraType = {
   PrecioVenta: number;
 };
 
-export async function requestUserLogin(
-  user: string,
-  password: string,
-  id: string
-) {
+export async function requestUserLogin(user: string, password: string, id: string) {
   const ecryptedPass = encryptString(password);
   const endpoint =
-    APP_URL +
-    "/validarcredencialesweb?usuario=" +
-    user +
-    "&clave=" +
-    ecryptedPass +
-    "&identificacion=" +
-    id;
+    APP_URL + "/validarcredencialesweb?usuario=" + user + "&clave=" + ecryptedPass + "&identificacion=" + id;
   const company = await getWithResponse(endpoint, "");
   return company;
 }
 
 export async function getCompanyEntity(token: string, companyId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " +
-    companyId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return {
     IdEmpresa: response.IdEmpresa,
     IdTipoIdentificacion: response.IdTipoIdentificacion,
@@ -111,45 +95,23 @@ export async function getCompanyEntity(token: string, companyId: number) {
 }
 
 export async function saveCompanyEntity(token: string, company: CompanyType) {
-  const data =
-    "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" +
-    JSON.stringify(company) +
-    "'}";
+  const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" + JSON.stringify(company) + "'}";
   await post(APP_URL + "/ejecutar", token, data);
 }
 
 export async function getCompanyLogo(token: string, companyId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerLogotipoEmpresa', Parametros: {IdEmpresa: " +
-    companyId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerLogotipoEmpresa', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return response;
 }
 
-export async function saveCompanyLogo(
-  token: string,
-  companyId: number,
-  strLogo: string
-) {
+export async function saveCompanyLogo(token: string, companyId: number, strLogo: string) {
   const data =
-    "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " +
-    companyId +
-    ", Logotipo: '" +
-    strLogo +
-    "'}}";
+    "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + companyId + ", Logotipo: '" + strLogo + "'}}";
   await post(APP_URL + "/ejecutar", token, data);
 }
 
-export async function validateCredentials(
-  token: string,
-  userCode: string,
-  userPass: string
-) {
+export async function validateCredentials(token: string, userCode: string, userPass: string) {
   const data =
     "{NombreMetodo: 'ValidarCredencialesHacienda', Parametros: {CodigoUsuario: '" +
     userCode +
@@ -159,11 +121,7 @@ export async function validateCredentials(
   await post(APP_URL + "/ejecutar", token, data);
 }
 
-export async function validateCertificate(
-  token: string,
-  strPin: string,
-  strCertificate: string
-) {
+export async function validateCertificate(token: string, strPin: string, strCertificate: string) {
   const data =
     "{NombreMetodo: 'ValidarCertificadoHacienda', Parametros: {PinCertificado: '" +
     strPin +
@@ -174,15 +132,8 @@ export async function validateCertificate(
 }
 
 export async function getCredentialsEntity(token: string, companyId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {IdEmpresa: " +
-    companyId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
@@ -240,45 +191,25 @@ export async function updateCredentialsEntity(
 }
 
 export async function getCantonList(token: string, provinceId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " +
-    provinceId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " + provinceId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export async function getDistritoList(
-  token: string,
-  provinceId: number,
-  cantonId: number
-) {
+export async function getDistritoList(token: string, provinceId: number, cantonId: number) {
   const data =
     "{NombreMetodo: 'ObtenerListadoDistritos', Parametros: {IdProvincia: " +
     provinceId +
     ", IdCanton: " +
     cantonId +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export async function getBarrioList(
-  token: string,
-  provinceId: number,
-  cantonId: number,
-  districtId: number
-) {
+export async function getBarrioList(token: string, provinceId: number, cantonId: number, districtId: number) {
   const data =
     "{NombreMetodo: 'ObtenerListadoBarrios', Parametros: {IdProvincia: " +
     provinceId +
@@ -287,53 +218,28 @@ export async function getBarrioList(
     ", IdDistrito: " +
     districtId +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
 export async function getEconomicActivityList(token: string, id: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerListadoActividadEconomica', Parametros: {Identificacion: '" +
-    id +
-    "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerListadoActividadEconomica', Parametros: {Identificacion: '" + id + "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
 export async function getBranchList(token: string, companyId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerListadoSucursales', Parametros: {IdEmpresa: " +
-    companyId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerListadoSucursales', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
 export async function getVendorList(token: string, companyId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerListadoVendedores', Parametros: {IdEmpresa: " +
-    companyId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerListadoVendedores', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
@@ -358,31 +264,19 @@ export async function getReportData(
     "', FechaFinal: '" +
     endDate +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export async function getCustomerListCount(
-  token: string,
-  companyId: number,
-  strFilter: string
-) {
+export async function getCustomerListCount(token: string, companyId: number, strFilter: string) {
   const data =
     "{NombreMetodo: 'ObtenerTotalListaClientes', Parametros: {IdEmpresa: " +
     companyId +
     ", Nombre: '" +
     strFilter +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
@@ -404,73 +298,40 @@ export async function getCustomerListPerPage(
     ", Nombre: '" +
     strFilter +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
 export async function getCustomerEntity(token: string, customerId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerCliente', Parametros: {IdCliente: " +
-    customerId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerCliente', Parametros: {IdCliente: " + customerId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return response;
 }
 
-export async function getCustomerByIdentifier(
-  token: string,
-  companyId: number,
-  identifier: string
-) {
+export async function getCustomerByIdentifier(token: string, companyId: number, identifier: string) {
   const data =
     "{NombreMetodo: 'ValidaIdentificacionCliente', Parametros: {IdEmpresa: " +
     companyId +
     ", Identificacion: '" +
     identifier +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return response;
 }
 
-export async function saveCustomerEntity(
-  token: string,
-  customer: CustomerType
-) {
+export async function saveCustomerEntity(token: string, customer: CustomerType) {
   const entidad = JSON.stringify(customer);
   const data =
-    "{NombreMetodo: '" +
-    (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") +
-    "', Entidad: " +
-    entidad +
-    "}";
+    "{NombreMetodo: '" + (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") + "', Entidad: " + entidad + "}";
   const response = await post(APP_URL + "/ejecutar", token, data);
   if (response === null) return null;
   return response;
 }
 
 export async function getProductCategoryList(token: string, companyId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerListadoLineas', Parametros: {IdEmpresa: " +
-    companyId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerListadoLineas', Parametros: {IdEmpresa: " + companyId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
@@ -480,11 +341,7 @@ export async function getProductProviderList(token: string, companyId: number) {
     "{NombreMetodo: 'ObtenerListadoProveedores', Parametros: {IdEmpresa: " +
     companyId +
     ", NumeroPagina: 1, FilasPorPagina: 0}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
@@ -509,11 +366,7 @@ export async function getProductListCount(
     "', Descripcion: '" +
     (type === 2 ? filterText : "") +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
@@ -544,45 +397,22 @@ export async function getProductListPerPage(
     "', Descripcion: '" +
     (type === 2 ? filterText : "") +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export async function getProductEntity(
-  token: string,
-  productId: number,
-  branchId: number
-) {
+export async function getProductEntity(token: string, productId: number, branchId: number) {
   const data =
-    "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " +
-    productId +
-    ", IdSucursal: " +
-    branchId +
-    "}}";
-  const product = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+    "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " + productId + ", IdSucursal: " + branchId + "}}";
+  const product = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (product === null) return null;
   return product;
 }
 
 export async function getProductClasification(token: string, code: string) {
-  const data =
-    "{NombreMetodo: 'ObtenerClasificacionProducto', Parametros: {Codigo: '" +
-    code +
-    "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerClasificacionProducto', Parametros: {Codigo: '" + code + "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (!response) return null;
   return { id: response.Id, value: response.Impuesto };
 }
@@ -602,37 +432,19 @@ export async function saveProductEntity(token: string, product: ProductType) {
 
 export async function getExonerationTypeList(token: string) {
   const data = "{NombreMetodo: 'ObtenerListadoTipoExoneracion'}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export async function getPaymentBankId(
-  token: string,
-  companyId: number,
-  paymentMethod: number
-) {
+export async function getPaymentBankId(token: string, companyId: number, paymentMethod: number) {
   let data;
   if (paymentMethod === 1 || paymentMethod === 2) {
-    data =
-      "{NombreMetodo: 'ObtenerListadoBancoAdquiriente', Parametros: {IdEmpresa: " +
-      companyId +
-      "}}";
+    data = "{NombreMetodo: 'ObtenerListadoBancoAdquiriente', Parametros: {IdEmpresa: " + companyId + "}}";
   } else {
-    data =
-      "{NombreMetodo: 'ObtenerListadoCuentasBanco', Parametros: {IdEmpresa: " +
-      companyId +
-      "}}";
+    data = "{NombreMetodo: 'ObtenerListadoCuentasBanco', Parametros: {IdEmpresa: " + companyId + "}}";
   }
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   if (response.length === 0) return null;
   return response[0].Id;
@@ -655,11 +467,7 @@ export async function getServicePointList(
     "', Descripcion: '" +
     strDescription +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
@@ -697,15 +505,11 @@ export function getCustomerPrice(
     taxRate = customer.taxRate;
     taxRateType = customer.taxRateType;
   }
-  if (company.PrecioVentaIncluyeIVA && taxRate > 0)
-    customerPrice = customerPrice * (1 + taxRate / 100);
+  if (company.PrecioVentaIncluyeIVA && taxRate > 0) customerPrice = customerPrice * (1 + taxRate / 100);
   return { taxRate, taxRateType, finalPrice: roundNumber(customerPrice, 2) };
 }
 
-export function getProductSummary(
-  products: ProductDetailsType[],
-  percentage: number
-) {
+export function getProductSummary(products: ProductDetailsType[], percentage: number) {
   let taxed = 0;
   let exonerated = 0;
   let exempt = 0;
@@ -713,18 +517,14 @@ export function getProductSummary(
   let taxes = 0;
   let total = 0;
   const totalCost = 0;
-  products.forEach((item) => {
-    const precioUnitario = roundNumber(
-      item.price / (1 + item.taxRate / 100),
-      3
-    );
+  products.forEach(item => {
+    const precioUnitario = roundNumber(item.price / (1 + item.taxRate / 100), 3);
     if (item.taxRate > 0) {
       let impuestoUnitario = (precioUnitario * item.taxRate) / 100;
       if (percentage > 0) {
         const gravadoParcial = precioUnitario * (1 - percentage / 100);
         taxed += roundNumber(gravadoParcial, 2) * item.quantity;
-        exonerated +=
-          roundNumber(precioUnitario - gravadoParcial, 2) * item.quantity;
+        exonerated += roundNumber(precioUnitario - gravadoParcial, 2) * item.quantity;
         impuestoUnitario = (gravadoParcial * item.taxRate) / 100;
       } else {
         taxed += roundNumber(precioUnitario, 2) * item.quantity;
@@ -763,13 +563,9 @@ export async function saveInvoiceEntity(
   summary: SummaryType,
   comment: string
 ) {
-  const bankId = await getPaymentBankId(
-    token,
-    companyId,
-    paymentDetailsList[0].paymentId
-  );
+  const bankId = await getPaymentBankId(token, companyId, paymentDetailsList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
-  productDetailsList.forEach((item) => {
+  productDetailsList.forEach(item => {
     const detail = {
       IdFactura: 0,
       IdProducto: parseInt(item.id),
@@ -834,61 +630,30 @@ export async function saveInvoiceEntity(
     DetalleFactura: invoiceDetails,
     DesglosePagoFactura: invoicePayments,
   };
-  const data =
-    "{NombreMetodo: 'AgregarFactura', Entidad: " +
-    JSON.stringify(invoice) +
-    "}";
-  const invoiceId = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}";
+  const invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return invoiceId.split("-")[0];
 }
 
-export async function revokeInvoiceEntity(
-  token: string,
-  invoiceId: number,
-  idUser: number
-) {
-  const data =
-    "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " +
-    invoiceId +
-    ", IdUsuario: " +
-    idUser +
-    "}}";
+export async function revokeInvoiceEntity(token: string, invoiceId: number, idUser: number) {
+  const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + invoiceId + ", IdUsuario: " + idUser + "}}";
   await post(APP_URL + "/ejecutar", token, data);
 }
 
 export async function getInvoiceEntity(token: string, invoiceId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " +
-    invoiceId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + invoiceId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return response;
 }
 
-export async function getProcessedInvoiceListCount(
-  token: string,
-  companyId: number,
-  branchId: number
-) {
+export async function getProcessedInvoiceListCount(token: string, companyId: number, branchId: number) {
   const data =
     "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " +
     companyId +
     ", IdSucursal: " +
     branchId +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
@@ -910,11 +675,7 @@ export async function getProcessedInvoiceListPerPage(
     ",FilasPorPagina: " +
     rowPerPage +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
@@ -978,11 +739,7 @@ export async function saveWorkingOrderEntity(
     JSON.stringify(workingOrder) +
     "}";
   if (order === null) {
-    const invoiceId = await postWithResponse(
-      APP_URL + "/ejecutarconsulta",
-      token,
-      data
-    );
+    const invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
     const ids = invoiceId.split("-");
     return {
       IdOrden: ids[0],
@@ -994,30 +751,15 @@ export async function saveWorkingOrderEntity(
   }
 }
 
-export async function revokeWorkingOrderEntity(
-  token: string,
-  orderId: number,
-  idUser: number
-) {
+export async function revokeWorkingOrderEntity(token: string, orderId: number, idUser: number) {
   const data =
-    "{NombreMetodo: 'AnularOrdenServicio', Parametros: {IdOrdenServicio: " +
-    orderId +
-    ", IdUsuario: " +
-    idUser +
-    "}}";
+    "{NombreMetodo: 'AnularOrdenServicio', Parametros: {IdOrdenServicio: " + orderId + ", IdUsuario: " + idUser + "}}";
   await post(APP_URL + "/ejecutar", token, data);
 }
 
 export async function getWorkingOrderEntity(token: string, orderId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerOrdenServicio', Parametros: {IdOrdenServicio: " +
-    orderId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerOrdenServicio', Parametros: {IdOrdenServicio: " + orderId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return response;
 }
 
@@ -1035,11 +777,7 @@ export async function getWorkingOrderListCount(
     ", Aplicado: '" +
     bolApplied +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
@@ -1064,31 +802,19 @@ export async function getWorkingOrderListPerPage(
     "', FilasPorPagina: " +
     rowPerPage +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export async function getDocumentListCount(
-  token: string,
-  companyId: number,
-  branchId: number
-) {
+export async function getDocumentListCount(token: string, companyId: number, branchId: number) {
   const data =
     "{NombreMetodo: 'ObtenerTotalDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " +
     companyId +
     ", IdSucursal: " +
     branchId +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
@@ -1110,34 +836,19 @@ export async function getDocumentListPerPage(
     ",FilasPorPagina: " +
     rowPerPage +
     "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
 export async function getDocumentEntity(token: string, idDocument: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerDocumentoElectronico', Parametros: {IdDocumento: " +
-    idDocument +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'ObtenerDocumentoElectronico', Parametros: {IdDocumento: " + idDocument + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
 }
 
-export async function sendDocumentByEmail(
-  token: string,
-  idDocument: number,
-  emailTo: string
-) {
+export async function sendDocumentByEmail(token: string, idDocument: number, emailTo: string) {
   const data =
     "{NombreMetodo: 'EnviarNotificacionDocumentoElectronico', Parametros: {IdDocumento: " +
     idDocument +
@@ -1172,43 +883,21 @@ export async function sendReportEmail(
   }
 }
 
-export async function generateInvoicePDF(
-  token: string,
-  invoiceId: number,
-  ref: string
-) {
-  const data =
-    "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " +
-    invoiceId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+export async function generateInvoicePDF(token: string, invoiceId: number, ref: string) {
+  const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + invoiceId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
-    const byteArray = Uint8Array.from(atob(response), (c) => c.charCodeAt(0));
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
     const file = new Blob([byteArray], { type: "application/octet-stream" });
     saveAs(file, `Factura-${ref}.pdf`);
   }
 }
 
-export async function generateWorkingOrderPDF(
-  token: string,
-  orderId: number,
-  ref: string
-) {
-  const data =
-    "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrden: " +
-    orderId +
-    "}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+export async function generateWorkingOrderPDF(token: string, orderId: number, ref: string) {
+  const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrden: " + orderId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
-    const byteArray = Uint8Array.from(atob(response), (c) => c.charCodeAt(0));
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
     const file = new Blob([byteArray], { type: "application/octet-stream" });
     saveAs(file, `OrdenServicio-${ref}.pdf`);
   }
@@ -1270,42 +959,24 @@ export async function saveReceiptEntity(
     Impuesto: receipt.summary.taxes,
     DetalleFacturaCompra: receiptDetails,
   };
-  const data =
-    "{NombreMetodo: 'AgregarFacturaCompra', Entidad: " +
-    JSON.stringify(newReceipt) +
-    "}";
-  const receiptId = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const data = "{NombreMetodo: 'AgregarFacturaCompra', Entidad: " + JSON.stringify(newReceipt) + "}";
+  const receiptId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return receiptId;
 }
 
-export async function getProductClasificationList(
-  token: string,
-  filterText: string
-) {
+export async function getProductClasificationList(token: string, filterText: string) {
   const data =
     "{NombreMetodo: 'ObtenerListadoClasificacionProducto', Parametros: {NumeroPagina: 1, FilasPorPagina: " +
     100 +
     ", Descripcion: '" +
     filterText +
     "'}}";
-  const response = await postWithResponse(
-    APP_URL + "/ejecutarconsulta",
-    token,
-    data
-  );
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
 }
 
-export function getPriceFromTaxRate(
-  price: number,
-  taxRate: number,
-  withTaxes: boolean
-) {
+export function getPriceFromTaxRate(price: number, taxRate: number, withTaxes: boolean) {
   function withTaxesFunc(a: number, b: number) {
     return a * b;
   }

@@ -2,30 +2,28 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-import {
-  getDocumentListFirstPage,
-  getDocumentListByPageNumber,
-  sendNotification,
-  getDocumentDetails,
-  setDocumentDetails,
-} from "state/document/asyncActions";
-
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 
-import DataGrid from "components/data-grid";
 import Button from "components/button";
+import DataGrid from "components/data-grid";
+import {
+  getDocumentDetails,
+  getDocumentListByPageNumber,
+  getDocumentListFirstPage,
+  sendNotification,
+  setDocumentDetails,
+} from "state/document/asyncActions";
+import { setActiveSection } from "state/ui/actions";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: "100%",
@@ -100,11 +98,7 @@ function DocumentListPage({
       <div>
         <DialogTitle>Enviar documento electrónico</DialogTitle>
         <DialogContent>
-          <TextField
-            value={email}
-            label="Dirección electrónica"
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <TextField value={email} label="Dirección electrónica" onChange={e => setEmail(e.target.value)} />
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
           <Button negative label="Cancelar" onClick={() => setEmail("")} />
@@ -115,9 +109,7 @@ function DocumentListPage({
       <div>
         <DialogTitle>Mesaje de respuesta</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {decodeURIComponent(escape(details))}
-          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">{decodeURIComponent(escape(details))}</DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
           <Button negative label="Cerrar" onClick={() => handleDialogClose()} />
@@ -129,7 +121,7 @@ function DocumentListPage({
     setEmail(newEmail);
     setDialogStatus({ open: true, type: 1 });
   };
-  const handleDetailsClick = (id) => {
+  const handleDetailsClick = id => {
     getDocumentDetails(id);
     setDialogStatus({ open: true, type: 2 });
   };
@@ -138,9 +130,8 @@ function DocumentListPage({
     if (email !== "") setEmail("");
     if (details !== "") setDocumentDetails("");
   };
-  const rows = list.map((row) => {
-    const buttonDisabled =
-      row.IdTipoDocumento > 3 || row.EstadoEnvio !== "aceptado";
+  const rows = list.map(row => {
+    const buttonDisabled = row.IdTipoDocumento > 3 || row.EstadoEnvio !== "aceptado";
     return {
       id: row.IdDocumento,
       ref: row.Consecutivo,
@@ -154,9 +145,7 @@ function DocumentListPage({
           className={classes.emailIcon}
           color="secondary"
           component="span"
-          onClick={() =>
-            handleEmailClick(row.IdDocumento, row.CorreoNotificacion)
-          }
+          onClick={() => handleEmailClick(row.IdDocumento, row.CorreoNotificacion)}
         >
           <EmailIcon />
         </IconButton>
@@ -196,7 +185,7 @@ function DocumentListPage({
           rows={rows}
           rowsCount={listCount}
           rowsPerPage={10}
-          onPageChange={(page) => {
+          onPageChange={page => {
             getDocumentListByPageNumber(page + 1);
           }}
         />
@@ -206,11 +195,7 @@ function DocumentListPage({
       </div>
       <Dialog
         onClose={handleDialogClose}
-        open={
-          dialogStatus.open &&
-          (dialogStatus.type === 1 ||
-            (dialogStatus.type === 2 && details !== ""))
-        }
+        open={dialogStatus.open && (dialogStatus.type === 1 || (dialogStatus.type === 2 && details !== ""))}
       >
         {dialogContent}
       </Dialog>
@@ -218,7 +203,7 @@ function DocumentListPage({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     listPage: state.document.listPage,
     listCount: state.document.listCount,
@@ -227,7 +212,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getDocumentListFirstPage,

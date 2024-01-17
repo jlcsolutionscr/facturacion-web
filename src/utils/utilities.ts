@@ -1,8 +1,8 @@
-import { saveAs } from "file-saver";
-import * as XLSX from "xlsx";
-import { XMLParser } from "fast-xml-parser";
 import CryptoJS from "crypto-js";
+import { XMLParser } from "fast-xml-parser";
+import { saveAs } from "file-saver";
 import { IdValueType } from "types/domain";
+import * as XLSX from "xlsx";
 
 type HeaderType = {
   Accept: string;
@@ -35,26 +35,12 @@ export function encryptString(plainText: string) {
   return encryptedText;
 }
 
-export function formatCurrency(
-  number: number,
-  decPlaces = 2,
-  decSep = ".",
-  thouSep = ","
-) {
+export function formatCurrency(number: number, decPlaces = 2, decSep = ".", thouSep = ",") {
   const decIndex = number.toString().indexOf(decSep);
-  let decValue =
-    decIndex > 0
-      ? number.toString().substring(1 + decIndex, 1 + decIndex + decPlaces)
-      : "";
-  if (decValue.length < decPlaces)
-    decValue += "0".repeat(decPlaces - decValue.length);
-  const integerValue =
-    decIndex > 0 ? number.toString().substring(0, decIndex) : number.toString();
-  return (
-    integerValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${thouSep}`) +
-    decSep +
-    decValue
-  );
+  let decValue = decIndex > 0 ? number.toString().substring(1 + decIndex, 1 + decIndex + decPlaces) : "";
+  if (decValue.length < decPlaces) decValue += "0".repeat(decPlaces - decValue.length);
+  const integerValue = decIndex > 0 ? number.toString().substring(0, decIndex) : number.toString();
+  return integerValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${thouSep}`) + decSep + decValue;
 }
 
 export function roundNumber(number: number, places: number) {
@@ -64,21 +50,19 @@ export function roundNumber(number: number, places: number) {
 export function convertToDateString(date: Date | string) {
   if (typeof date === "string") date = new Date(date);
   const dayFormatted = (date.getDate() < 10 ? "0" : "") + date.getDate();
-  const monthFormatted =
-    (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
+  const monthFormatted = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
   return `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`;
 }
 
 export function convertToDateTimeString(date: Date | string) {
   if (typeof date === "string") date = new Date(date);
   const dayFormatted = (date.getDate() < 10 ? "0" : "") + date.getDate();
-  const monthFormatted =
-    (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
+  const monthFormatted = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
   return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T23:59:59`;
 }
 
 export function getTaxeRateFromId(taxTypeList: IdValueType[], id: number) {
-  return taxTypeList.find((x) => x.Id === id)?.Valor ?? 13;
+  return taxTypeList.find(x => x.Id === id)?.Valor ?? 13;
 }
 
 export function xmlToObject(value: string) {
@@ -92,10 +76,7 @@ export function xmlToObject(value: string) {
   return result;
 }
 
-function parseNode(
-  xmlNode: NodeType,
-  result: { [key: string]: string | object }
-) {
+function parseNode(xmlNode: NodeType, result: { [key: string]: string | object }) {
   if (xmlNode.name === "#text") {
     const v = xmlNode.value;
     if (v.trim()) result["#text"] = v;
@@ -112,11 +93,7 @@ function parseNode(
   }
 }
 
-export function ExportDataToXls(
-  filename: string,
-  title: string,
-  data: { [key: string]: string | number | boolean }[]
-) {
+export function ExportDataToXls(filename: string, title: string, data: { [key: string]: string | number | boolean }[]) {
   const wb = XLSX.utils.book_new();
   wb.Props = {
     Title: title,
@@ -126,18 +103,15 @@ export function ExportDataToXls(
   };
   wb.SheetNames.push("Datos");
   const ws_data = [];
-  const columns = Object.entries(data[0]).map((key) => key[0]);
-  ws_data.push(columns.map((key) => key));
-  data.forEach((row) => {
-    ws_data.push(columns.map((key) => row[key]));
+  const columns = Object.entries(data[0]).map(key => key[0]);
+  ws_data.push(columns.map(key => key));
+  data.forEach(row => {
+    ws_data.push(columns.map(key => row[key]));
   });
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
   wb.Sheets["Datos"] = ws;
   const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  saveAs(
-    new Blob([wbout], { type: "application/octet-stream" }),
-    filename + ".xlsx"
-  );
+  saveAs(new Blob([wbout], { type: "application/octet-stream" }), filename + ".xlsx");
 }
 
 export async function getWithResponse(endpointURL: string, token: string) {
@@ -157,8 +131,7 @@ export async function getWithResponse(endpointURL: string, token: string) {
     try {
       error = await response.json();
     } catch {
-      error =
-        "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
+      error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
     }
     throw new Error(error);
   } else {
@@ -189,18 +162,13 @@ export async function post(endpointURL: string, token: string, data: string) {
     try {
       error = await response.json();
     } catch {
-      error =
-        "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
+      error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
     }
     throw new Error(error);
   }
 }
 
-export async function postWithResponse(
-  endpointURL: string,
-  token: string,
-  data: string
-) {
+export async function postWithResponse(endpointURL: string, token: string, data: string) {
   const headers: HeaderType = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -218,8 +186,7 @@ export async function postWithResponse(
     try {
       error = await response.json();
     } catch {
-      error =
-        "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
+      error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
     }
     throw new Error(error);
   } else {
@@ -234,10 +201,7 @@ export async function postWithResponse(
 
 export function writeToLocalStorage(user: string, data: object) {
   const dateTime = Date.now();
-  window.sessionStorage.setItem(
-    "session",
-    JSON.stringify({ userName: user, dateTime, company: data })
-  );
+  window.sessionStorage.setItem("session", JSON.stringify({ userName: user, dateTime, company: data }));
 }
 
 export function readFromLocalStorage() {

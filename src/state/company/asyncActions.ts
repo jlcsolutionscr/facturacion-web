@@ -1,121 +1,89 @@
+import { EconomicActivityType, IdDescriptionType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { setCompany as setSessionCompany } from "state/session/reducer";
 import {
+  setAvailableEconomicActivityList,
   setCompany,
+  setCompanyAttribute,
   setCompanyLogo,
   setCredentials,
-  setCompanyAttribute,
-  setAvailableEconomicActivityList,
   setReportResults,
 } from "state/company/reducer";
+import { setCompany as setSessionCompany } from "state/session/reducer";
+import { RootState } from "state/store";
 import {
   setActiveSection,
-  startLoader,
-  stopLoader,
-  setMessage,
+  setBarrioList,
   setCantonList,
   setDistritoList,
-  setBarrioList,
+  setMessage,
+  startLoader,
+  stopLoader,
 } from "state/ui/reducer";
 import {
-  getCompanyEntity,
-  getCantonList,
-  getDistritoList,
   getBarrioList,
-  getEconomicActivityList,
-  saveCompanyEntity,
-  getCredentialsEntity,
-  validateCredentials,
-  validateCertificate,
-  saveCredentialsEntity,
-  updateCredentialsEntity,
+  getCantonList,
+  getCompanyEntity,
   getCompanyLogo,
-  saveCompanyLogo,
+  getCredentialsEntity,
+  getDistritoList,
+  getEconomicActivityList,
   getReportData,
+  saveCompanyEntity,
+  saveCompanyLogo,
+  saveCredentialsEntity,
   sendReportEmail,
+  updateCredentialsEntity,
+  validateCertificate,
+  validateCredentials,
 } from "utils/domainHelper";
-
 import { ExportDataToXls, getErrorMessage } from "utils/utilities";
-import { RootState } from "state/store";
-import { EconomicActivityType, IdDescriptionType } from "types/domain";
 
-export const getCompany = createAsyncThunk(
-  "company/getCompany",
-  async (_payload, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { companyId, token } = session;
-    dispatch(startLoader());
-    try {
-      dispatch(setActiveSection(1));
-      const company = await getCompanyEntity(token, companyId);
-      const credentials = await getCredentialsEntity(token, company.IdEmpresa);
-      const cantonList = await getCantonList(token, company.IdProvincia);
-      const distritoList = await getDistritoList(
-        token,
-        company.IdProvincia,
-        company.IdCanton
-      );
-      const barrioList = await getBarrioList(
-        token,
-        company.IdProvincia,
-        company.IdCanton,
-        company.IdDistrito
-      );
-      const availableEconomicActivityList = await getEconomicActivityList(
-        token,
-        company.Identificacion
-      );
-      dispatch(setCompany(company));
-      dispatch(setCredentials(credentials));
-      dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
-      dispatch(setCantonList(cantonList));
-      dispatch(setDistritoList(distritoList));
-      dispatch(setBarrioList(barrioList));
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
+export const getCompany = createAsyncThunk("company/getCompany", async (_payload, { getState, dispatch }) => {
+  const { session } = getState() as RootState;
+  const { companyId, token } = session;
+  dispatch(startLoader());
+  try {
+    dispatch(setActiveSection(1));
+    const company = await getCompanyEntity(token, companyId);
+    const credentials = await getCredentialsEntity(token, company.IdEmpresa);
+    const cantonList = await getCantonList(token, company.IdProvincia);
+    const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
+    const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito);
+    const availableEconomicActivityList = await getEconomicActivityList(token, company.Identificacion);
+    dispatch(setCompany(company));
+    dispatch(setCredentials(credentials));
+    dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
+    dispatch(setCantonList(cantonList));
+    dispatch(setDistritoList(distritoList));
+    dispatch(setBarrioList(barrioList));
+    dispatch(stopLoader());
+  } catch (error) {
+    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    dispatch(stopLoader());
   }
-);
+});
 
 export const saveCompany = createAsyncThunk(
   "company/saveCompany",
   async (payload: { certificate: string }, { getState, dispatch }) => {
     const { session, company } = getState() as RootState;
     const { token } = session;
-    const {
-      entity: companyEntity,
-      credentials,
-      credentialsNew,
-      credentialsChanged,
-    } = company;
+    const { entity: companyEntity, credentials, credentialsNew, credentialsChanged } = company;
     dispatch(startLoader());
     try {
       if (!companyEntity?.RegimenSimplificado) {
-        if (credentials == null)
-          throw new Error("Los credenciales de Hacienda deben ingresarse");
+        if (credentials == null) throw new Error("Los credenciales de Hacienda deben ingresarse");
         if (
           credentials.UsuarioHacienda === "" ||
           credentials.ClaveHacienda === "" ||
           credentials.NombreCertificado === "" ||
           credentials.PinCertificado === ""
         )
-          throw new Error(
-            "Los credenciales de Hacienda no pueden contener valores nulos"
-          );
-        await validateCredentials(
-          token,
-          credentials.UsuarioHacienda,
-          credentials.ClaveHacienda
-        );
+          throw new Error("Los credenciales de Hacienda no pueden contener valores nulos");
+        await validateCredentials(token, credentials.UsuarioHacienda, credentials.ClaveHacienda);
         if (payload.certificate !== "")
-          await validateCertificate(
-            token,
-            credentials.PinCertificado,
-            payload.certificate
-          );
+          await validateCertificate(token, credentials.PinCertificado, payload.certificate);
       }
       await saveCompanyEntity(token, companyEntity);
       if (!companyEntity?.RegimenSimplificado && credentialsChanged) {
@@ -179,31 +147,26 @@ export const saveLogo = createAsyncThunk(
   }
 );
 
-export const getLogo = createAsyncThunk(
-  "company/getLogo",
-  async (_payload, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { companyId, token } = session;
-    dispatch(startLoader());
-    try {
-      const logo = await getCompanyLogo(token, companyId);
-      dispatch(setCompanyLogo(logo));
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
+export const getLogo = createAsyncThunk("company/getLogo", async (_payload, { getState, dispatch }) => {
+  const { session } = getState() as RootState;
+  const { companyId, token } = session;
+  dispatch(startLoader());
+  try {
+    const logo = await getCompanyLogo(token, companyId);
+    dispatch(setCompanyLogo(logo));
+    dispatch(stopLoader());
+  } catch (error) {
+    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    dispatch(stopLoader());
   }
-);
+});
 
 export const addActivity = createAsyncThunk(
   "company/addActivity",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
     const { entity: companyEntity, availableEconomicActivityList } = company;
-    const activity = availableEconomicActivityList.find(
-      (x: IdDescriptionType) => x.Id === payload.id
-    );
+    const activity = availableEconomicActivityList.find((x: IdDescriptionType) => x.Id === payload.id);
     if (!activity) {
       dispatch(
         setMessage({
@@ -254,10 +217,7 @@ export const removeActivity = createAsyncThunk(
 
 export const generateReport = createAsyncThunk(
   "company/generateReport",
-  async (
-    payload: { reportName: string; startDate: string; endDate: string },
-    { getState, dispatch }
-  ) => {
+  async (payload: { reportName: string; startDate: string; endDate: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
@@ -280,8 +240,7 @@ export const generateReport = createAsyncThunk(
       } else {
         dispatch(
           setMessage({
-            message:
-              "No existen registros para el rango de fecha seleccionado.",
+            message: "No existen registros para el rango de fecha seleccionado.",
             type: "INFO",
           })
         );
@@ -296,10 +255,7 @@ export const generateReport = createAsyncThunk(
 
 export const exportReport = createAsyncThunk(
   "company/exportReport",
-  async (
-    payload: { reportName: string; startDate: string; endDate: string },
-    { getState, dispatch }
-  ) => {
+  async (payload: { reportName: string; startDate: string; endDate: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
@@ -318,8 +274,7 @@ export const exportReport = createAsyncThunk(
       } else {
         dispatch(
           setMessage({
-            message:
-              "No existen registros para el rango de fecha seleccionado.",
+            message: "No existen registros para el rango de fecha seleccionado.",
             type: "INFO",
           })
         );
@@ -334,22 +289,12 @@ export const exportReport = createAsyncThunk(
 
 export const sendReportToEmail = createAsyncThunk(
   "company/exportReport",
-  async (
-    payload: { reportName: string; startDate: string; endDate: string },
-    { getState, dispatch }
-  ) => {
+  async (payload: { reportName: string; startDate: string; endDate: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
     try {
-      await sendReportEmail(
-        token,
-        companyId,
-        branchId,
-        payload.reportName,
-        payload.startDate,
-        payload.endDate
-      );
+      await sendReportEmail(token, companyId, branchId, payload.reportName, payload.startDate, payload.endDate);
       dispatch(
         setMessage({
           message: "Reporte enviado al correo satisfactoriamente",

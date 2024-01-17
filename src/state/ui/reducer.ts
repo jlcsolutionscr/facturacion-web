@@ -9,12 +9,9 @@ const uiSlice = createSlice({
   reducers: {
     startLoader: (state, action: { payload?: { text?: string } }) => {
       state.isLoaderOpen = true;
-      state.loaderText =
-        action.payload?.text !== undefined
-          ? action.payload?.text
-          : "Procesando";
+      state.loaderText = action.payload?.text !== undefined ? action.payload?.text : "Procesando";
     },
-    stopLoader: (state) => {
+    stopLoader: state => {
       state.isLoaderOpen = false;
       state.loaderText = "";
     },
@@ -64,7 +61,7 @@ export const getActiveSection = (state: RootState) => state.ui.activeSection;
 export const getLoaderText = (state: RootState) => state.ui.loaderText;
 export const getMessage = createSelector(
   (state: RootState) => state.ui,
-  (ui) => {
+  ui => {
     return { message: ui.message, messageType: ui.messageType };
   }
 );
@@ -72,8 +69,7 @@ export const getCantonList = (state: RootState) => state.ui.cantonList;
 export const getDistritoList = (state: RootState) => state.ui.distritoList;
 export const getBarrioList = (state: RootState) => state.ui.barrioList;
 export const getTaxTypeList = (state: RootState) => state.ui.taxTypeList;
-export const getExonerationTypeList = (state: RootState) =>
-  state.ui.exonerationTypeList;
+export const getExonerationTypeList = (state: RootState) => state.ui.exonerationTypeList;
 export const getIdTypeList = (state: RootState) => state.ui.idTypeList;
 
 export default uiSlice.reducer;

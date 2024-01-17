@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/reducer";
-
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import IconButton from "@mui/material/IconButton";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 
-import { BackArrowIcon } from "utils/iconsHelper";
 import StepOneScreen from "./invoice-steps/step-one-screen";
-import StepTwoScreen from "./invoice-steps/step-two-screen";
 import StepThreeScreen from "./invoice-steps/step-three-screen";
+import StepTwoScreen from "./invoice-steps/step-two-screen";
+import { setActiveSection } from "state/ui/reducer";
+import { BackArrowIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     display: "flex",
     flexDirection: "column",
@@ -47,21 +45,11 @@ export default function InvoicePage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton
-          aria-label="close"
-          component="span"
-          onClick={() => dispatch(setActiveSection(0))}
-        >
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(0))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs
-        className={classes.tabs}
-        centered
-        value={value}
-        indicatorColor="secondary"
-        onChange={handleChange}
-      >
+      <Tabs className={classes.tabs} centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Cliente" />
         <Tab label="Detalle" />
         <Tab label="Generar" />

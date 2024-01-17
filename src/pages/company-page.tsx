@@ -1,48 +1,35 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import MenuItem from "@mui/material/MenuItem";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
 
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
-import LabelField from "components/label-field";
 import Button from "components/button";
+import LabelField from "components/label-field";
 import Select from "components/select";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { addActivity, removeActivity, saveCompany } from "state/company/asyncActions";
 import {
-  updateCantonList,
-  updateDistritoList,
-  updateBarrioList,
-} from "state/ui/asyncActions";
-import {
-  setActiveSection,
-  getBarrioList,
-  getCantonList,
-  getDistritoList,
-} from "state/ui/reducer";
-import {
-  saveCompany,
-  addActivity,
-  removeActivity,
-} from "state/company/asyncActions";
-import {
+  getAvailableEconomicActivityList,
   getCompany,
   getCredentials,
   setCompanyAttribute,
   setCredentialsAttribute,
-  getAvailableEconomicActivityList,
 } from "state/company/reducer";
-import { convertToDateString } from "utils/utilities";
+import { updateBarrioList, updateCantonList, updateDistritoList } from "state/ui/asyncActions";
+import { getBarrioList, getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
+import { convertToDateString } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
@@ -131,28 +118,21 @@ export default function CompanyPage() {
     }
   };
 
-  const handleCertificateChange = (event: {
-    preventDefault: () => void;
-    target: { files: FileList | null };
-  }) => {
+  const handleCertificateChange = (event: { preventDefault: () => void; target: { files: FileList | null } }) => {
     event.preventDefault();
     if (event.target.files !== null) {
       const reader: FileReader = new FileReader();
       const file = event.target.files[0];
-      dispatch(
-        setCredentialsAttribute({ attribute: "certificate", value: file.name })
-      );
+      dispatch(setCredentialsAttribute({ attribute: "certificate", value: file.name }));
       reader.onloadend = () => {
-        const certificateBase64 = (reader.result as string).substring(
-          (reader.result as string).indexOf(",") + 1
-        );
+        const certificateBase64 = (reader.result as string).substring((reader.result as string).indexOf(",") + 1);
         setCertificate(certificateBase64);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const cantonItems = cantonList.map((item) => {
+  const cantonItems = cantonList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -160,7 +140,7 @@ export default function CompanyPage() {
     );
   });
 
-  const distritoItems = distritoList.map((item) => {
+  const distritoItems = distritoList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -168,7 +148,7 @@ export default function CompanyPage() {
     );
   });
 
-  const barrioItems = barrioList.map((item) => {
+  const barrioItems = barrioList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -176,7 +156,7 @@ export default function CompanyPage() {
     );
   });
 
-  const activityItems = economicActivityList.map((item) => {
+  const activityItems = economicActivityList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -206,11 +186,7 @@ export default function CompanyPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          <LabelField
-            id="FechaVence"
-            value={convertToDateString(company.FechaVence)}
-            label="Fecha vencimiento plan"
-          />
+          <LabelField id="FechaVence" value={convertToDateString(company.FechaVence)} label="Fecha vencimiento plan" />
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
@@ -218,9 +194,7 @@ export default function CompanyPage() {
             id="IdProvincia"
             label="Provincia"
             value={company.IdProvincia.toString()}
-            onChange={(event) =>
-              handleSelectChange("IdProvincia", parseInt(event.target.value))
-            }
+            onChange={event => handleSelectChange("IdProvincia", parseInt(event.target.value))}
           >
             <MenuItem value={1}>SAN JOSE</MenuItem>
             <MenuItem value={2}>ALAJUELA</MenuItem>
@@ -237,9 +211,7 @@ export default function CompanyPage() {
             id="IdCanton"
             label="Cantón"
             value={cantonItems.length > 1 ? company.IdCanton.toString() : ""}
-            onChange={(event) =>
-              handleSelectChange("IdCanton", parseInt(event.target.value))
-            }
+            onChange={event => handleSelectChange("IdCanton", parseInt(event.target.value))}
           >
             {cantonItems}
           </Select>
@@ -249,12 +221,8 @@ export default function CompanyPage() {
             style={{ minWidth: "100%" }}
             id="IdDistrito"
             label="Distrito"
-            value={
-              distritoItems.length > 1 ? company.IdDistrito.toString() : ""
-            }
-            onChange={(event) =>
-              handleSelectChange("IdDistrito", parseInt(event.target.value))
-            }
+            value={distritoItems.length > 1 ? company.IdDistrito.toString() : ""}
+            onChange={event => handleSelectChange("IdDistrito", parseInt(event.target.value))}
           >
             {distritoItems}
           </Select>
@@ -265,21 +233,13 @@ export default function CompanyPage() {
             id="IdBarrio"
             label="Barrio"
             value={barrioItems.length > 1 ? company.IdBarrio.toString() : ""}
-            onChange={(event) =>
-              handleSelectChange("IdBarrio", parseInt(event.target.value))
-            }
+            onChange={event => handleSelectChange("IdBarrio", parseInt(event.target.value))}
           >
             {barrioItems}
           </Select>
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            required
-            id="Direccion"
-            value={company.Direccion}
-            label="Dirección"
-            onChange={handleChange}
-          />
+          <TextField required id="Direccion" value={company.Direccion} label="Dirección" onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -315,7 +275,7 @@ export default function CompanyPage() {
             id="UsuarioHacienda"
             value={credentials.UsuarioHacienda}
             label="Usuario ATV"
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCredentialsAttribute({
                   attribute: "UsuarioHacienda",
@@ -331,7 +291,7 @@ export default function CompanyPage() {
             id="ClaveHacienda"
             value={credentials.ClaveHacienda}
             label="Clave ATV"
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCredentialsAttribute({
                   attribute: "ClaveHacienda",
@@ -342,11 +302,7 @@ export default function CompanyPage() {
           />
         </Grid>
         <Grid item xs={8} sm={9} md={10}>
-          <LabelField
-            id="Certificado"
-            value={credentials.NombreCertificado}
-            label="Llave criptográfica"
-          />
+          <LabelField id="Certificado" value={credentials.NombreCertificado} label="Llave criptográfica" />
         </Grid>
         <Grid item xs={1}>
           <input
@@ -358,11 +314,7 @@ export default function CompanyPage() {
             type="file"
             onChange={handleCertificateChange}
           />
-          <Button
-            disabled={company.RegimenSimplificado}
-            label="Cargar"
-            onClick={() => inputFile.current?.click()}
-          />
+          <Button disabled={company.RegimenSimplificado} label="Cargar" onClick={() => inputFile.current?.click()} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -370,7 +322,7 @@ export default function CompanyPage() {
             id="PinCertificado"
             value={credentials.PinCertificado}
             label="Pin de llave criptográfica"
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCredentialsAttribute({
                   attribute: "PinCertificado",
@@ -408,7 +360,7 @@ export default function CompanyPage() {
             id="codigo-actividad-id"
             label="Seleccione la Actividad Económica"
             value={activityCode}
-            onChange={(event) => setActivityCode(event.target.value)}
+            onChange={event => setActivityCode(event.target.value)}
           >
             {activityItems}
           </Select>
@@ -418,9 +370,7 @@ export default function CompanyPage() {
             color="primary"
             disabled={activityCode === ""}
             component="span"
-            onClick={() =>
-              dispatch(addActivity({ id: parseInt(activityCode) }))
-            }
+            onClick={() => dispatch(addActivity({ id: parseInt(activityCode) }))}
           >
             <AddCircleIcon />
           </IconButton>
@@ -443,11 +393,7 @@ export default function CompanyPage() {
                         <IconButton
                           color="secondary"
                           component="span"
-                          onClick={() =>
-                            dispatch(
-                              removeActivity({ id: row.CodigoActividad })
-                            )
-                          }
+                          onClick={() => dispatch(removeActivity({ id: row.CodigoActividad }))}
                         >
                           <RemoveCircleIcon />
                         </IconButton>
@@ -460,17 +406,10 @@ export default function CompanyPage() {
           </Grid>
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button
-            disabled={disabled}
-            label="Guardar"
-            onClick={() => dispatch(saveCompany({ certificate }))}
-          />
+          <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCompany({ certificate }))} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button
-            label="Regresar"
-            onClick={() => dispatch(setActiveSection(0))}
-          />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
       </Grid>
     </div>

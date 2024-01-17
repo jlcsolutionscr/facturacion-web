@@ -1,16 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { IdDescriptionType } from "types/domain";
 import Grid from "@mui/material/Grid";
 
 import LabelField from "components/label-field";
+import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField from "components/text-field";
-import ListDropdown, {
-  ListDropdownOnChangeEventType,
-} from "components/list-dropdown";
 import {
-  getCustomer as getCustomerAction,
   filterCustomerList,
+  getCustomer as getCustomerAction,
   getCustomerListByPageNumber,
 } from "state/customer/asyncActions";
 import {
@@ -20,12 +19,11 @@ import {
   getCustomerListPage,
   setCustomerAttribute,
 } from "state/customer/reducer";
-import { convertToDateString } from "utils/utilities";
-import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { getSuccessful } from "state/invoice/reducer";
-import { IdDescriptionType } from "types/domain";
+import { ROWS_PER_CUSTOMER } from "utils/constants";
+import { convertToDateString } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -69,9 +67,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   };
 
   const handleOnPageChange = (pageNumber: number) => {
-    dispatch(
-      getCustomerListByPageNumber({ pageNumber: pageNumber + 1, filterText })
-    );
+    dispatch(getCustomerListByPageNumber({ pageNumber: pageNumber + 1, filterText }));
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
@@ -102,7 +98,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
             disabled={customer.IdCliente !== 1}
             value={customer.Nombre}
             label="Nombre del cliente"
-            onChange={(event) =>
+            onChange={event =>
               dispatch(
                 setCustomerAttribute({
                   attribute: "Nombre",
@@ -113,42 +109,22 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Nombre comercial"
-            value={customer ? customer.NombreComercial : ""}
-          />
+          <LabelField label="Nombre comercial" value={customer ? customer.NombreComercial : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Correo electrónico"
-            value={customer ? customer.CorreoElectronico : ""}
-          />
+          <LabelField label="Correo electrónico" value={customer ? customer.CorreoElectronico : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Tipo de exoneración"
-            value={customer ? customer.IdTipoExoneracion.toString() : ""}
-          />
+          <LabelField label="Tipo de exoneración" value={customer ? customer.IdTipoExoneracion.toString() : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Código del documento"
-            value={customer ? customer.NumDocExoneracion : ""}
-          />
+          <LabelField label="Código del documento" value={customer ? customer.NumDocExoneracion : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Nombre de la institución"
-            value={customer ? customer.NombreInstExoneracion : ""}
-          />
+          <LabelField label="Nombre de la institución" value={customer ? customer.NombreInstExoneracion : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Fecha de emisión"
-            value={
-              customer ? convertToDateString(customer.FechaEmisionDoc) : ""
-            }
-          />
+          <LabelField label="Fecha de emisión" value={customer ? convertToDateString(customer.FechaEmisionDoc) : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
           <LabelField

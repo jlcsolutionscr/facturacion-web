@@ -1,20 +1,12 @@
-import { makeStyles } from "tss-react/mui";
 import LogoDarkImage from "assets/img/company-logo-dark.webp";
+import { makeStyles } from "tss-react/mui";
 
-export const useStyles = makeStyles()((theme) => ({
+export const useStyles = makeStyles()(theme => ({
   header: {
     backgroundImage: `linear-gradient(to bottom, ${
-      theme.palette.mode === "dark"
-        ? "rgba(51, 51, 51, 0.6)"
-        : "rgba(8, 65, 92, 0.6)"
-    }, ${
-      theme.palette.mode === "dark"
-        ? "rgba(51, 51, 51, 0.9)"
-        : "rgba(8, 65, 92, 0.9)"
-    }, ${
-      theme.palette.mode === "dark"
-        ? "rgba(51, 51, 51, 1)"
-        : "rgba(8, 65, 92, 1)"
+      theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.6)" : "rgba(8, 65, 92, 0.6)"
+    }, ${theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "rgba(8, 65, 92, 0.9)"}, ${
+      theme.palette.mode === "dark" ? "rgba(51, 51, 51, 1)" : "rgba(8, 65, 92, 1)"
     })`,
     flex: "0 1 auto",
     paddingTop: "0",

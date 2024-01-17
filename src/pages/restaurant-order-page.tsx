@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import IconButton from "@mui/material/IconButton";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 
-import { BackArrowIcon } from "utils/iconsHelper";
 import StepOneScreen from "./restaurant-order-steps/step-one-screen";
 import StepTwoScreen from "./restaurant-order-steps/step-two-screen";
+import { setActiveSection } from "state/ui/actions";
+import { BackArrowIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     display: "flex",
     flexDirection: "column",
@@ -36,28 +34,18 @@ const useStyles = makeStyles()((theme) => ({
 function RestaurantOrderPage({ permissions, setActiveSection }) {
   const { classes } = useStyles();
   const [value, setValue] = useState(0);
-  const generateInvoice =
-    permissions.filter((role) => [1, 203].includes(role.IdRole)).length > 0;
+  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton
-          aria-label="upload picture"
-          component="span"
-          onClick={() => setActiveSection(9)}
-        >
+        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(9)}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs
-        centered
-        value={value}
-        indicatorColor="secondary"
-        onChange={handleChange}
-      >
+      <Tabs centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Detalle" />
         <Tab label="Generar" disabled={!generateInvoice} />
       </Tabs>
@@ -67,17 +55,14 @@ function RestaurantOrderPage({ permissions, setActiveSection }) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     permissions: state.session.permissions,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators({ setActiveSection }, dispatch);
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RestaurantOrderPage);
+export default connect(mapStateToProps, mapDispatchToProps)(RestaurantOrderPage);

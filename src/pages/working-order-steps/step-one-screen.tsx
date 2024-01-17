@@ -5,18 +5,18 @@ import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 
 import LabelField from "components/label-field";
-import TextField from "components/text-field";
 import ListDropdown from "components/list-dropdown";
+import TextField from "components/text-field";
 import {
-  getCustomer,
-  setCustomerAttribute,
   filterCustomerList,
+  getCustomer,
   getCustomerListByPageNumber,
+  setCustomerAttribute,
 } from "state/customer/asyncActions";
 import { setStatus } from "state/working-order/asyncActions";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
@@ -49,7 +49,7 @@ function StepOneScreen({
 
   const [filter, setFilter] = React.useState("");
 
-  const handleOnFilterChange = (event) => {
+  const handleOnFilterChange = event => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -59,7 +59,7 @@ function StepOneScreen({
     }, 1000);
   };
 
-  const handleOnPageChange = (pageNumber) => {
+  const handleOnPageChange = pageNumber => {
     getCustomerListByPageNumber(pageNumber + 1, filter);
   };
 
@@ -69,7 +69,7 @@ function StepOneScreen({
     setFilter("");
   };
 
-  const handleCustomerNameChange = (event) => {
+  const handleCustomerNameChange = event => {
     setCustomerAttribute("Nombre", event.target.value);
     setStatus("on-progress");
   };
@@ -101,53 +101,32 @@ function StepOneScreen({
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Nombre comercial"
-            value={customer ? customer.NombreComercial : ""}
-          />
+          <LabelField label="Nombre comercial" value={customer ? customer.NombreComercial : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Correo electrónico"
-            value={customer ? customer.CorreoElectronico : ""}
-          />
+          <LabelField label="Correo electrónico" value={customer ? customer.CorreoElectronico : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Tipo de exoneración"
-            value={customer ? customer.IdTipoExoneracion : ""}
-          />
+          <LabelField label="Tipo de exoneración" value={customer ? customer.IdTipoExoneracion : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Código del documento"
-            value={customer ? customer.NumDocExoneracion : ""}
-          />
+          <LabelField label="Código del documento" value={customer ? customer.NumDocExoneracion : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Nombre de la institución"
-            value={customer ? customer.NombreInstExoneracion : ""}
-          />
+          <LabelField label="Nombre de la institución" value={customer ? customer.NombreInstExoneracion : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Fecha de emisión"
-            value={customer ? customer.FechaEmisionDoc : ""}
-          />
+          <LabelField label="Fecha de emisión" value={customer ? customer.FechaEmisionDoc : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField
-            label="Porcentaje de exoneración"
-            value={customer ? customer.PorcentajeExoneracion : ""}
-          />
+          <LabelField label="Porcentaje de exoneración" value={customer ? customer.PorcentajeExoneracion : ""} />
         </Grid>
       </Grid>
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     customer: state.customer.customer,
     customerListCount: state.customer.listCount,
@@ -157,7 +136,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getCustomer,

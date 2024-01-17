@@ -2,40 +2,34 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
 
 import ListDropdown from "components/list-dropdown";
-import TextField from "components/text-field";
 import Select from "components/select";
-import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { ROWS_PER_PRODUCT } from "utils/constants";
-
+import TextField from "components/text-field";
+import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
 import {
-  filterProductList,
-  getProductListByPageNumber,
-} from "state/product/asyncActions";
-import {
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
   addDetails,
+  getProduct,
   removeDetails,
+  setDescription,
+  setPrice,
+  setQuantity,
 } from "state/working-order/asyncActions";
-
+import { ROWS_PER_PRODUCT } from "utils/constants";
+import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     flex: 1,
     overflowY: "auto",
@@ -95,10 +89,9 @@ function StepTwoScreen({
 
   const [filterType, setFilterType] = React.useState(2);
   const [filter, setFilter] = React.useState("");
-  const isPriceChangeEnabled =
-    permissions.filter((role) => [52].includes(role.IdRole)).length > 0;
+  const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0;
 
-  const handleOnFilterChange = (event) => {
+  const handleOnFilterChange = event => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -120,24 +113,17 @@ function StepTwoScreen({
     filterProductList("", newFilterType);
   };
 
-  const handlePriceChange = (event) => {
+  const handlePriceChange = event => {
     isPriceChangeEnabled && setPrice(event.target.value);
   };
 
-  const products = productList.map((item) => ({
+  const products = productList.map(item => ({
     ...item,
-    Descripcion:
-      filterType === 1
-        ? `${item.Codigo} - ${item.Descripcion}`
-        : item.Descripcion,
+    Descripcion: filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion,
   }));
   const fieldDisabled = status === "converted";
   let buttonEnabled =
-    product !== null &&
-    description !== "" &&
-    quantity !== null &&
-    price !== null &&
-    fieldDisabled === false;
+    product !== null && description !== "" && quantity !== null && price !== null && fieldDisabled === false;
   const display = value !== index ? "none" : "flex";
   return (
     <div ref={myRef} className={classes.root} style={{ display: display }}>
@@ -168,9 +154,7 @@ function StepTwoScreen({
                 rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
-                onPageChange={(pageNumber) =>
-                  getProductListByPageNumber(pageNumber + 1, filter, filterType)
-                }
+                onPageChange={pageNumber => getProductListByPageNumber(pageNumber + 1, filter, filterType)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -179,7 +163,7 @@ function StepTwoScreen({
                 label="Descripción"
                 id="Descripcion"
                 value={description}
-                onChange={(event) => setDescription(event.target.value)}
+                onChange={event => setDescription(event.target.value)}
               />
             </Grid>
             <Grid item xs={3}>
@@ -189,7 +173,7 @@ function StepTwoScreen({
                 id="Cantidad"
                 value={quantity}
                 numericFormat
-                onChange={(event) => setQuantity(event.target.value)}
+                onChange={event => setQuantity(event.target.value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -232,10 +216,7 @@ function StepTwoScreen({
                       <TableCell align="right">{row.Cantidad}</TableCell>
                       <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                       <TableCell align="right">
-                        {formatCurrency(
-                          roundNumber(row.Cantidad * row.PrecioVenta, 2),
-                          2
-                        )}
+                        {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
                       </TableCell>
                       <TableCell align="right">
                         <IconButton
@@ -260,7 +241,7 @@ function StepTwoScreen({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     permissions: state.session.permissions,
     description: state.workingOrder.description,
@@ -275,7 +256,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getProduct,

@@ -1,13 +1,13 @@
 import {
-  ProductType,
-  InvoiceType,
-  WorkingOrderType,
-  ReceiptType,
-  PaymentDetailsType,
-  CustomerType,
   CompanyType,
-  ProductDetailsType,
   CustomerDetailsType,
+  CustomerType,
+  InvoiceType,
+  PaymentDetailsType,
+  ProductDetailsType,
+  ProductType,
+  ReceiptType,
+  WorkingOrderType,
 } from "types/domain";
 
 export const defaultCompany: CompanyType = {

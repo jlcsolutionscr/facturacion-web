@@ -1,27 +1,20 @@
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 import UAParser from "ua-parser-js";
-
-import { setActiveSection, setMessage } from "state/ui/actions";
-import {
-  setReportResults,
-  generateReport,
-  exportReport,
-  sendReportToEmail,
-} from "state/company/asyncActions";
-
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import Button from "components/button";
-import Select from "components/select";
 import ReportLayout from "components/report-layout";
+import Select from "components/select";
+import { exportReport, generateReport, sendReportToEmail, setReportResults } from "state/company/asyncActions";
+import { setActiveSection, setMessage } from "state/ui/actions";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflow: "hidden",
@@ -85,58 +78,31 @@ function ReportsPage({
     }
   }, [reportResults]);
   const isMobile = !!result.device.type;
-  const isAccountingUser =
-    permissions.filter((role) => role.IdRole === 2).length > 0;
+  const isAccountingUser = permissions.filter(role => role.IdRole === 2).length > 0;
   const today = new Date();
-  const lastDayOfMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() + 1,
-    0
-  ).getDate();
+  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const [reportId, setReportId] = React.useState(
-    reportList.length > 0
-      ? !isAccountingUser
-        ? reportList[0].IdReporte
-        : 50
-      : 0
+    reportList.length > 0 ? (!isAccountingUser ? reportList[0].IdReporte : 50) : 0
   );
-  const [startDate, setStartDate] = React.useState(
-    new Date(today.getFullYear(), today.getMonth(), 1)
-  );
-  const [endDate, setEndDate] = React.useState(
-    new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth)
-  );
+  const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth));
   const [viewLayout, setViewLayout] = React.useState(1);
-  const processReport = (type) => {
-    const startDay =
-      (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
-    const startMonth =
-      (startDate.getMonth() + 1 < 10 ? "0" : "") + (startDate.getMonth() + 1);
+  const processReport = type => {
+    const startDay = (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
+    const startMonth = (startDate.getMonth() + 1 < 10 ? "0" : "") + (startDate.getMonth() + 1);
     const startDateFormatted = `${startDay}/${startMonth}/${startDate.getFullYear()}`;
     const endDay = (endDate.getDate() < 10 ? "0" : "") + endDate.getDate();
-    const endMonth =
-      (endDate.getMonth() + 1 < 10 ? "0" : "") + (endDate.getMonth() + 1);
+    const endMonth = (endDate.getMonth() + 1 < 10 ? "0" : "") + (endDate.getMonth() + 1);
     const endDateFormatted = `${endDay}/${endMonth}/${endDate.getFullYear()}`;
-    const reportLabel =
-      reportId > 0
-        ? reportList.filter((item) => item.IdReporte === reportId)[0]
-            .NombreReporte
-        : "";
-    if (type === 1)
-      generateReport(reportLabel, startDateFormatted, endDateFormatted);
-    if (type === 2)
-      exportReport(reportLabel, startDateFormatted, endDateFormatted);
+    const reportLabel = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte : "";
+    if (type === 1) generateReport(reportLabel, startDateFormatted, endDateFormatted);
+    if (type === 2) exportReport(reportLabel, startDateFormatted, endDateFormatted);
     if (type === 3) {
-      const reportLabel = reportList.filter(
-        (item) => item.IdReporte === reportId
-      )[0].NombreReporte;
+      const reportLabel = reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte;
       if (reportLabel !== "") {
         sendReportToEmail(reportLabel, startDateFormatted, endDateFormatted);
       } else {
-        setMessage(
-          "Debe seleccionar un reporte del listado disponible",
-          "INFO"
-        );
+        setMessage("Debe seleccionar un reporte del listado disponible", "INFO");
       }
     }
   };
@@ -144,18 +110,10 @@ function ReportsPage({
     setActiveSection(0);
     setReportResults([], null);
   };
-  const reportName =
-    reportId > 0
-      ? reportList.filter((item) => item.IdReporte === reportId)[0]
-          .NombreReporte
-      : "";
+  const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte : "";
   const reportItems = reportList
-    .filter(
-      (item) =>
-        !isAccountingUser ||
-        (isAccountingUser && [50, 51, 52].includes(item.IdReporte))
-    )
-    .map((rep) => {
+    .filter(item => !isAccountingUser || (isAccountingUser && [50, 51, 52].includes(item.IdReporte)))
+    .map(rep => {
       return (
         <MenuItem key={rep.IdReporte} value={rep.IdReporte}>
           {rep.NombreReporte}
@@ -172,7 +130,7 @@ function ReportsPage({
                 id="tipo-reporte-select-id"
                 label="Seleccione el reporte:"
                 value={reportId}
-                onChange={(event) => setReportId(event.target.value)}
+                onChange={event => setReportId(event.target.value)}
               >
                 {reportItems}
               </Select>
@@ -206,11 +164,7 @@ function ReportsPage({
             </Grid>
             {!isMobile && (
               <Grid item xs={4} sm={3}>
-                <Button
-                  disabled={reportId === 0}
-                  label="Exportar"
-                  onClick={() => processReport(2)}
-                />
+                <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />
               </Grid>
             )}
             <Grid item xs={isMobile ? 5 : 4} sm={3}>
@@ -219,12 +173,7 @@ function ReportsPage({
           </Grid>
         )}
         {viewLayout === 2 && (
-          <Grid
-            container
-            spacing={3}
-            className={classes.secondLayout}
-            style={{ width: `${width}px` }}
-          >
+          <Grid container spacing={3} className={classes.secondLayout} style={{ width: `${width}px` }}>
             <ReportLayout
               reportName={reportName}
               summary={reportSummary}
@@ -238,7 +187,7 @@ function ReportsPage({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     permissions: state.session.permissions,
     reportList: state.session.reportList,
@@ -247,7 +196,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setActiveSection,

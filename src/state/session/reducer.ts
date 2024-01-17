@@ -15,20 +15,15 @@ export const sessionSlice = createSlice({
       state.company = action.payload;
       state.device = action.payload.EquipoRegistrado;
       state.reportList = action.payload.ReportePorEmpresa.map(
-        (report: {
-          IdReporte: number;
-          CatalogoReporte: { NombreReporte: string };
-        }) => ({
+        (report: { IdReporte: number; CatalogoReporte: { NombreReporte: string } }) => ({
           IdReporte: report.IdReporte,
           NombreReporte: report.CatalogoReporte.NombreReporte,
         })
       );
-      state.permissions = action.payload.Usuario.RolePorUsuario.map(
-        (role: { IdUsuario: number; IdRole: number }) => ({
-          IdUsuario: role.IdUsuario,
-          IdRole: role.IdRole,
-        })
-      );
+      state.permissions = action.payload.Usuario.RolePorUsuario.map((role: { IdUsuario: number; IdRole: number }) => ({
+        IdUsuario: role.IdUsuario,
+        IdRole: role.IdRole,
+      }));
       state.branchList = action.payload.SucursalPorEmpresa.map(
         (branch: { IdSucursal: number; NombreSucursal: string }) => ({
           Id: branch.IdSucursal,
@@ -57,17 +52,9 @@ export const sessionSlice = createSlice({
   },
 });
 
-export const {
-  login,
-  logout,
-  setCompany,
-  setBranchId,
-  setPrinter,
-  setVendorList,
-} = sessionSlice.actions;
+export const { login, logout, setCompany, setBranchId, setPrinter, setVendorList } = sessionSlice.actions;
 
-export const getAuthenticated = (state: RootState) =>
-  state.session.authenticated;
+export const getAuthenticated = (state: RootState) => state.session.authenticated;
 export const getCompany = (state: RootState) => state.session.company;
 export const getBranchId = (state: RootState) => state.session.branchId;
 export const getPrinter = (state: RootState) => state.session.printer;

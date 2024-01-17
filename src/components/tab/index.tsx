@@ -1,7 +1,7 @@
 import IconButton from "@mui/material/IconButton";
 
-import { DeleteIcon } from "utils/iconsHelper";
 import { useStyles } from "./styles";
+import { DeleteIcon } from "utils/iconsHelper";
 
 interface TabProps {
   title: string;

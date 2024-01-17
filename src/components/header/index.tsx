@@ -1,12 +1,12 @@
-import Typography from "@mui/material/Typography";
+import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import { useDispatch, useSelector } from "react-redux";
+import Typography from "@mui/material/Typography";
 
-import { getCompany } from "state/session/reducer";
-import { userLogout } from "state/session/asyncActions";
-import { DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
 import { useStyles } from "./styles";
+import { userLogout } from "state/session/asyncActions";
+import { getCompany } from "state/session/reducer";
+import { DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -27,12 +27,12 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
         "-" +
         companyIdentifier.substring(5)
       : companyIdentifier.length === 10
-        ? companyIdentifier.substring(0, 1) +
-          "-" +
-          companyIdentifier.substring(1, 4) +
-          "-" +
-          companyIdentifier.substring(4)
-        : companyIdentifier;
+      ? companyIdentifier.substring(0, 1) +
+        "-" +
+        companyIdentifier.substring(1, 4) +
+        "-" +
+        companyIdentifier.substring(4)
+      : companyIdentifier;
   return (
     <div className={classes.header}>
       <div className={classes.banner} />
@@ -43,11 +43,7 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
           component="span"
           onClick={() => toggleDarkMode()}
         >
-          {isDarkMode ? (
-            <DarkModeIcon className={classes.icon} />
-          ) : (
-            <LightModeIcon className={classes.icon} />
-          )}
+          {isDarkMode ? <DarkModeIcon className={classes.icon} /> : <LightModeIcon className={classes.icon} />}
         </IconButton>
       </Tooltip>
       <Tooltip title="Cerrar sessión" aria-label="cerrar sessión">

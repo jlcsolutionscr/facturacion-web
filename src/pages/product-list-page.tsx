@@ -2,26 +2,20 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-import {
-  filterProductList,
-  getProductListByPageNumber,
-  getProduct,
-} from "state/product/asyncActions";
-
-import Grid from "@mui/material/Grid";
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
+import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import Switch from "@mui/material/Switch";
 
+import Button from "components/button";
 import DataGrid from "components/data-grid";
 import TextField from "components/text-field";
-import Button from "components/button";
+import { filterProductList, getProduct, getProductListByPageNumber } from "state/product/asyncActions";
+import { setActiveSection } from "state/ui/actions";
 import { EditIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: "100%",
@@ -95,7 +89,7 @@ function ProductListPage({
     setFilter("");
     filterProductList("", newFilterType, rowsPerPage);
   };
-  const handleOnFilterChange = (event) => {
+  const handleOnFilterChange = event => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -104,17 +98,11 @@ function ProductListPage({
       filterProductList(event.target.value, filterType, rowsPerPage);
     }, 1000);
   };
-  const rows = list.map((row) => ({
+  const rows = list.map(row => ({
     id: row.Id,
-    name:
-      filterType === 1 ? `${row.Codigo} - ${row.Descripcion}` : row.Descripcion,
+    name: filterType === 1 ? `${row.Codigo} - ${row.Descripcion}` : row.Descripcion,
     action1: (
-      <IconButton
-        className={classes.icon}
-        color="primary"
-        component="span"
-        onClick={() => getProduct(row.Id)}
-      >
+      <IconButton className={classes.icon} color="primary" component="span" onClick={() => getProduct(row.Id)}>
         <EditIcon className={classes.icon} />
       </IconButton>
     ),
@@ -131,12 +119,7 @@ function ProductListPage({
         <Grid item xs={12}>
           <FormGroup>
             <FormControlLabel
-              control={
-                <Switch
-                  value={filterType === 1}
-                  onChange={handleOnFilterTypeChange}
-                />
-              }
+              control={<Switch value={filterType === 1} onChange={handleOnFilterTypeChange} />}
               label="Filtrar producto por código"
             />
           </FormGroup>
@@ -159,29 +142,20 @@ function ProductListPage({
           rows={rows}
           rowsCount={listCount}
           rowsPerPage={rowsPerPage}
-          onPageChange={(page) => {
-            getProductListByPageNumber(
-              page + 1,
-              filter,
-              filterType,
-              rowsPerPage
-            );
+          onPageChange={page => {
+            getProductListByPageNumber(page + 1, filter, filterType, rowsPerPage);
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
         <Button label="Agregar producto" onClick={() => getProduct(null)} />
-        <Button
-          style={{ marginLeft: "10px" }}
-          label="Regresar"
-          onClick={() => setActiveSection(0)}
-        />
+        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => setActiveSection(0)} />
       </div>
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     listPage: state.product.listPage,
     listCount: state.product.listCount,
@@ -189,7 +163,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       filterProductList,

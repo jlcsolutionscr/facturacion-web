@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/actions";
-
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import IconButton from "@mui/material/IconButton";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 
-import { BackArrowIcon } from "utils/iconsHelper";
-import StepOneScreen from "./working-order-steps/step-one-screen";
-import StepTwoScreen from "./working-order-steps/step-two-screen";
-import StepThreeScreen from "./working-order-steps/step-three-screen";
 import StepFourScreen from "./working-order-steps/step-four-screen";
+import StepOneScreen from "./working-order-steps/step-one-screen";
+import StepThreeScreen from "./working-order-steps/step-three-screen";
+import StepTwoScreen from "./working-order-steps/step-two-screen";
+import { setActiveSection } from "state/ui/actions";
+import { BackArrowIcon } from "utils/iconsHelper";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     display: "flex",
     flexDirection: "column",
@@ -44,20 +42,11 @@ function WorkingOrderPage({ setActiveSection }) {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton
-          aria-label="upload picture"
-          component="span"
-          onClick={() => setActiveSection(9)}
-        >
+        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(9)}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs
-        centered
-        value={value}
-        indicatorColor="secondary"
-        onChange={handleChange}
-      >
+      <Tabs centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Cliente" />
         <Tab label="Detalle" />
         <Tab label="Otros" />
@@ -71,7 +60,7 @@ function WorkingOrderPage({ setActiveSection }) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators({ setActiveSection }, dispatch);
 };
 

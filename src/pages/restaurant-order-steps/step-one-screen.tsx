@@ -2,43 +2,41 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-
-import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Switch from "@mui/material/Switch";
 import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
 
-import LabelField from "components/label-field";
-import TextField from "components/text-field";
-import ListDropdown from "components/list-dropdown";
 import Button from "components/button";
+import LabelField from "components/label-field";
+import ListDropdown from "components/list-dropdown";
 import Select from "components/select";
+import TextField from "components/text-field";
+import { setCustomerAttribute } from "state/customer/asyncActions";
+import { filterProductList } from "state/product/asyncActions";
+import { setActiveSection } from "state/ui/actions";
+import {
+  addDetails,
+  getProduct,
+  removeDetails,
+  saveWorkingOrder,
+  setDescription,
+  setPrice,
+  setQuantity,
+  setStatus,
+} from "state/working-order/asyncActions";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
-import { setActiveSection } from "state/ui/actions";
-import { setCustomerAttribute } from "state/customer/asyncActions";
-import { filterProductList } from "state/product/asyncActions";
-import {
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
-  addDetails,
-  removeDetails,
-  setStatus,
-  saveWorkingOrder,
-} from "state/working-order/asyncActions";
-
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     flex: 1,
     overflowY: "auto",
@@ -110,11 +108,11 @@ function StepOneScreen({
   }, [value]);
   const [filter, setFilter] = React.useState("");
   const [serviceIncluded, setServiceIncluded] = React.useState(false);
-  const handleCustomerNameChange = (event) => {
+  const handleCustomerNameChange = event => {
     setCustomerAttribute("Nombre", event.target.value);
     setStatus("on-progress");
   };
-  const handleOnFilterChange = (event) => {
+  const handleOnFilterChange = event => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
@@ -127,17 +125,12 @@ function StepOneScreen({
     getProduct({ id: item.Id });
     setFilter("");
   };
-  const handlePriceChange = (event) => {
-    const isPriceChangeEnabled =
-      permissions.filter((role) => [52].includes(role.IdRole)).length > 0;
+  const handlePriceChange = event => {
+    const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0;
     isPriceChangeEnabled && setPrice(event.target.value);
   };
-  const buttonEnabled =
-    product !== null &&
-    description !== "" &&
-    quantity !== null &&
-    price !== null;
-  const paymentItems = servicePointList.map((item) => {
+  const buttonEnabled = product !== null && description !== "" && quantity !== null && price !== null;
+  const paymentItems = servicePointList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -181,7 +174,7 @@ function StepOneScreen({
                 label="Descripción"
                 id="Descripcion"
                 value={description}
-                onChange={(event) => setDescription(event.target.value)}
+                onChange={event => setDescription(event.target.value)}
               />
             </Grid>
             <Grid item xs={3}>
@@ -190,16 +183,11 @@ function StepOneScreen({
                 id="Cantidad"
                 value={quantity}
                 numericFormat
-                onChange={(event) => setQuantity(event.target.value)}
+                onChange={event => setQuantity(event.target.value)}
               />
             </Grid>
             <Grid item xs={4}>
-              <TextField
-                label="Precio"
-                value={price}
-                numericFormat
-                onChange={handlePriceChange}
-              />
+              <TextField label="Precio" value={price} numericFormat onChange={handlePriceChange} />
             </Grid>
             <Grid item xs={1}>
               <IconButton
@@ -245,10 +233,7 @@ function StepOneScreen({
                       <TableCell align="right">{row.Cantidad}</TableCell>
                       <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
                       <TableCell align="right">
-                        {formatCurrency(
-                          roundNumber(row.Cantidad * row.PrecioVenta, 2),
-                          2
-                        )}
+                        {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
                       </TableCell>
                       <TableCell align="right">
                         <IconButton
@@ -279,7 +264,7 @@ function StepOneScreen({
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     permissions: state.session.permissions,
     customerName: state.customer.customer.Nombre,
@@ -296,7 +281,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setCustomerAttribute,

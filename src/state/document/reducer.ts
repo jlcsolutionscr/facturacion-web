@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { documentInitialState } from "state/InitialState";
 import { RootState } from "state/store";
 
@@ -21,12 +22,7 @@ const documentSlice = createSlice({
   },
 });
 
-export const {
-  setDocumentList,
-  setDocumentCount,
-  setDocumentPage,
-  setDocumentDetails,
-} = documentSlice.actions;
+export const { setDocumentList, setDocumentCount, setDocumentPage, setDocumentDetails } = documentSlice.actions;
 
 export const getDocumentList = (state: RootState) => state.document.list;
 export const getDocumentCount = (state: RootState) => state.document.listCount;

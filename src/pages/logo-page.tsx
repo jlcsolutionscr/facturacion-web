@@ -1,17 +1,14 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-
-import { setActiveSection } from "state/ui/reducer";
-
-import { saveLogo } from "state/company/asyncActions";
-
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 
 import Button from "components/button";
+import { saveLogo } from "state/company/asyncActions";
+import { setActiveSection } from "state/ui/reducer";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "hidden",
@@ -72,11 +69,7 @@ export default function LogoPage() {
   };
   const imagePreview =
     logo !== "" ? (
-      <img
-        style={{ height: "100%", width: "100%", border: "none" }}
-        src={logo}
-        alt="Seleccione un archivo"
-      />
+      <img style={{ height: "100%", width: "100%", border: "none" }} src={logo} alt="Seleccione un archivo" />
     ) : (
       <div style={{ height: "100%", width: "100%", border: "none" }} />
     );
@@ -96,27 +89,16 @@ export default function LogoPage() {
             type="file"
             onChange={handleImageChange}
           />
-          <Button
-            style={{ marginTop: "11px" }}
-            label="Seleccionar"
-            onClick={() => inputFile.current?.click()}
-          />
+          <Button style={{ marginTop: "11px" }} label="Seleccionar" onClick={() => inputFile.current?.click()} />
         </Grid>
         <Grid item xs={12} sm={12}>
           <div className={classes.imagePreview}>{imagePreview}</div>
         </Grid>
         <Grid item xs={5} sm={3}>
-          <Button
-            disabled={logo === ""}
-            label="Actualizar"
-            onClick={() => handleSaveButton()}
-          />
+          <Button disabled={logo === ""} label="Actualizar" onClick={() => handleSaveButton()} />
         </Grid>
         <Grid item xs={5} sm={3}>
-          <Button
-            label="Regresar"
-            onClick={() => dispatch(setActiveSection(0))}
-          />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
       </Grid>
     </div>

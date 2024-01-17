@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 
 import { getIsLoaderOpen, getLoaderText } from "state/ui/reducer";
+
 import "./loader.css";
 
 export default function Loader() {

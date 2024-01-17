@@ -1,24 +1,21 @@
+import HomePage from "pages/home-page";
+import LoginPage from "pages/login-page";
 import React from "react";
-import { makeStyles } from "tss-react/mui";
 import { useDispatch, useSelector } from "react-redux";
-
-import { ThemeProvider } from "@mui/material/styles";
-import Snackbar from "@mui/material/Snackbar";
+import { makeStyles } from "tss-react/mui";
 import Slide from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
-
-import { setMessage, getMessage } from "state/ui/reducer";
+import { ThemeProvider } from "@mui/material/styles";
 
 import Loader from "components/loader";
 import useWindowSize from "hooks/use-window-size";
-import LoginPage from "pages/login-page";
-import HomePage from "pages/home-page";
-
-import { darkTheme, lightTheme } from "utils/muiThemeProvider";
-import { ErrorIcon, InfoIcon } from "utils/iconsHelper";
 import { getAuthenticated } from "state/session/reducer";
+import { getMessage, setMessage } from "state/ui/reducer";
+import { ErrorIcon, InfoIcon } from "utils/iconsHelper";
+import { darkTheme, lightTheme } from "utils/muiThemeProvider";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     display: "flex",
   },
@@ -54,17 +51,9 @@ function RoutingPage() {
   const { classes } = useStyles();
   const width = size.width > 320 ? size.width : 320;
   const component = !authenticated ? (
-    <LoginPage
-      width={width}
-      isDarkMode={isDarkMode}
-      toggleDarkMode={() => setDarkMode((prev) => ![prev])}
-    />
+    <LoginPage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => ![prev])} />
   ) : (
-    <HomePage
-      width={width}
-      isDarkMode={isDarkMode}
-      toggleDarkMode={() => setDarkMode((prev) => !prev)}
-    />
+    <HomePage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
   );
 
   return (
@@ -84,16 +73,11 @@ function RoutingPage() {
           TransitionComponent={Slide}
           autoHideDuration={6000}
           open={message !== ""}
-          onClose={() =>
-            dispatch(setMessage({ message: "", type: messageType }))
-          }
+          onClose={() => dispatch(setMessage({ message: "", type: messageType }))}
         >
           <SnackbarContent
             classes={{
-              root:
-                messageType === "ERROR"
-                  ? classes.snackbarError
-                  : classes.snackbarInfo,
+              root: messageType === "ERROR" ? classes.snackbarError : classes.snackbarInfo,
               message: classes.snackbarMessage,
             }}
             message={

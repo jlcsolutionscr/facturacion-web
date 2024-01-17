@@ -53,15 +53,12 @@ export const {
 } = productSlice.actions;
 
 export const getProductListPage = (state: RootState) => state.product.listPage;
-export const getProductListCount = (state: RootState) =>
-  state.product.listCount;
+export const getProductListCount = (state: RootState) => state.product.listCount;
 export const getProductList = (state: RootState) => state.product.list;
 export const getProduct = (state: RootState) => state.product.entity;
-export const getProductTypeList = (state: RootState) =>
-  state.product.productTypeList;
+export const getProductTypeList = (state: RootState) => state.product.productTypeList;
 export const getCategoryList = (state: RootState) => state.product.categoryList;
 export const getProviderList = (state: RootState) => state.product.providerList;
-export const getClasificationList = (state: RootState) =>
-  state.product.clasificationList;
+export const getClasificationList = (state: RootState) => state.product.clasificationList;
 
 export default productSlice.reducer;

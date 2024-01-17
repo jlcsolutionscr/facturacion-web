@@ -23,7 +23,7 @@ const workingOrderSlice = createSlice({
     setPrice: (state, action) => {
       state.entity.productDetails.price = action.payload.price;
     },
-    resetProductDetails: (state) => {
+    resetProductDetails: state => {
       state.entity.productDetails = defaultInvoiceProduct;
     },
     setProductDetailsList: (state, action) => {
@@ -70,7 +70,7 @@ const workingOrderSlice = createSlice({
     setServicePointList: (state, action) => {
       state.servicePointList = action.payload.list;
     },
-    resetWorkingOrder: (state) => {
+    resetWorkingOrder: state => {
       state.entity = defaultWorkingOrder;
     },
   },
@@ -99,33 +99,20 @@ export const {
   resetWorkingOrder,
 } = workingOrderSlice.actions;
 
-export const getCustomerDetails = (state: RootState) =>
-  state.workingOrder.entity.customerDetails;
-export const getProductDetails = (state: RootState) =>
-  state.workingOrder.entity.productDetails;
-export const getProductList = (state: RootState) =>
-  state.workingOrder.entity.productDetailsList;
-export const getSummary = (state: RootState) =>
-  state.workingOrder.entity.summary;
-export const getActivityCode = (state: RootState) =>
-  state.workingOrder.entity.activityCode;
-export const getPaymentDetailsList = (state: RootState) =>
-  state.workingOrder.entity.paymentDetailsList;
-export const getVendorId = (state: RootState) =>
-  state.workingOrder.entity.vendorId;
-export const getDeliveryDetails = (state: RootState) =>
-  state.workingOrder.entity.delivery;
+export const getCustomerDetails = (state: RootState) => state.workingOrder.entity.customerDetails;
+export const getProductDetails = (state: RootState) => state.workingOrder.entity.productDetails;
+export const getProductList = (state: RootState) => state.workingOrder.entity.productDetailsList;
+export const getSummary = (state: RootState) => state.workingOrder.entity.summary;
+export const getActivityCode = (state: RootState) => state.workingOrder.entity.activityCode;
+export const getPaymentDetailsList = (state: RootState) => state.workingOrder.entity.paymentDetailsList;
+export const getVendorId = (state: RootState) => state.workingOrder.entity.vendorId;
+export const getDeliveryDetails = (state: RootState) => state.workingOrder.entity.delivery;
 export const getWorkingOrder = (state: RootState) => state.workingOrder.entity;
-export const getInvoiceId = (state: RootState) =>
-  state.workingOrder.entity.invoiceId;
+export const getInvoiceId = (state: RootState) => state.workingOrder.entity.invoiceId;
 export const getStatus = (state: RootState) => state.workingOrder.entity.status;
-export const getWorkingOrderListPage = (state: RootState) =>
-  state.workingOrder.listPage;
-export const getWorkingOrderListCount = (state: RootState) =>
-  state.workingOrder.listCount;
-export const getWorkingOrderList = (state: RootState) =>
-  state.workingOrder.list;
-export const getServicePointList = (state: RootState) =>
-  state.workingOrder.servicePointList;
+export const getWorkingOrderListPage = (state: RootState) => state.workingOrder.listPage;
+export const getWorkingOrderListCount = (state: RootState) => state.workingOrder.listCount;
+export const getWorkingOrderList = (state: RootState) => state.workingOrder.list;
+export const getServicePointList = (state: RootState) => state.workingOrder.servicePointList;
 
 export default workingOrderSlice.reducer;
