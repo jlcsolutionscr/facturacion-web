@@ -1,13 +1,21 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Dialog from "@mui/material/Dialog";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 
+import CustomerPage from "./customer-page";
 import Button from "components/button";
 import DataGrid from "components/data-grid";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterCustomerList, getCustomerListByPageNumber, openCustomer } from "state/customer/asyncActions";
-import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
+import {
+  getCustomerDialogStatus,
+  getCustomerList,
+  getCustomerListCount,
+  getCustomerListPage,
+} from "state/customer/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { EditIcon } from "utils/iconsHelper";
 
@@ -59,6 +67,16 @@ const useStyles = makeStyles()(theme => ({
   dialogActions: {
     margin: "0 20px 10px 20px",
   },
+  dialog: {
+    "& .MuiPaper-root": {
+      margin: "32px",
+      maxHeight: "calc(100% - 64px)",
+      "@media screen and (max-width:414px)": {
+        margin: "5px",
+        maxHeight: "calc(100% - 10px)",
+      },
+    },
+  },
 }));
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
@@ -68,10 +86,11 @@ export default function CustomerListPage() {
   const listPage = useSelector(getCustomerListPage);
   const listCount = useSelector(getCustomerListCount);
   const list = useSelector(getCustomerList);
+  const isDialogOpen = useSelector(getCustomerDialogStatus);
 
   const rowsPerPage = 8;
   const { classes } = useStyles();
-  const [filter, setFilter] = React.useState("");
+  const [filter, setFilter] = useState("");
 
   const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
     setFilter(event.target.value);
@@ -140,6 +159,9 @@ export default function CustomerListPage() {
         <Button label="Agregar cliente" onClick={() => dispatch(openCustomer({ idCustomer: undefined }))} />
         <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
+      <Dialog className={classes.dialog} maxWidth="md" open={isDialogOpen}>
+        <CustomerPage />
+      </Dialog>
     </div>
   );
 }

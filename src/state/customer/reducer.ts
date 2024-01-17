@@ -17,7 +17,7 @@ const customerSlice = createSlice({
     setCustomerList: (state, action) => {
       state.list = action.payload;
     },
-    setCustomer: (state, action) => {
+    openCustomerDialog: (state, action) => {
       state.isDialogOpen = true;
       state.entity = action.payload;
     },
@@ -35,6 +35,7 @@ const customerSlice = createSlice({
     },
     closeCustomerDialog: state => {
       state.isDialogOpen = false;
+      state.entity = defaultCustomer;
     },
   },
 });
@@ -43,7 +44,7 @@ export const {
   setCustomerListPage,
   setCustomerListCount,
   setCustomerList,
-  setCustomer,
+  openCustomerDialog,
   resetCustomer,
   setPriceTypeList,
   setCustomerAttribute,

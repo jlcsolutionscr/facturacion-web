@@ -2,8 +2,8 @@ import { CustomerType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
+  openCustomerDialog,
   resetCustomer,
-  setCustomer,
   setCustomerAttribute,
   setCustomerList,
   setCustomerListCount,
@@ -108,8 +108,7 @@ export const openCustomer = createAsyncThunk(
           PorcentajeExoneracion: 0,
         };
       }
-      dispatch(setCustomer(customer));
-      dispatch(setActiveSection(22));
+      dispatch(openCustomerDialog(customer));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

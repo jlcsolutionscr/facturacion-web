@@ -12,25 +12,18 @@ import Button from "components/button";
 import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
-import { getCustomer, getPriceTypeList, setCustomer, setCustomerAttribute } from "state/customer/reducer";
-import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
+import { closeCustomerDialog, getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
+import { getExonerationTypeList, getIdTypeList, getTaxTypeList } from "state/ui/reducer";
 
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
-    margin: "20px 10%",
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      margin: "16px 5%",
-      padding: "16px",
-    },
-    "@media screen and (max-width:600px)": {
-      margin: "13px",
-      padding: "13px",
+      padding: "15px",
     },
     "@media screen and (max-width:414px)": {
-      margin: "0",
       padding: "10px",
     },
   },
@@ -124,11 +117,6 @@ export default function CustomerPage() {
       })
     );
     if (customer.AplicaTasaDiferenciada) dispatch(setCustomerAttribute({ attribute: "IdImpuesto", value: 8 }));
-  };
-
-  const handleOnClose = () => {
-    dispatch(setCustomer(null));
-    dispatch(setActiveSection(3));
   };
 
   let idPlaceholder = "";
@@ -330,7 +318,7 @@ export default function CustomerPage() {
           <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCustomer())} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button label="Regresar" onClick={handleOnClose} />
+          <Button label="Regresar" onClick={() => dispatch(closeCustomerDialog())} />
         </Grid>
       </Grid>
     </div>

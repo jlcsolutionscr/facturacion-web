@@ -93,7 +93,6 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
             <RestaurantOrderPage />
           )
           ) : null*/}
-        {activeSection === 22 && <CustomerPage />}
         {/*activeSection === 23 && <ProductPage />*/}
       </div>
     </div>
