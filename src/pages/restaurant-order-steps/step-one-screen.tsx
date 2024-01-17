@@ -2,11 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import Table from "@mui/material/Table";
@@ -20,9 +18,8 @@ import LabelField from "components/label-field";
 import ListDropdown from "components/list-dropdown";
 import Select from "components/select";
 import TextField from "components/text-field";
-import { setCustomerAttribute } from "state/customer/asyncActions";
 import { filterProductList } from "state/product/asyncActions";
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
 import {
   addDetails,
   getProduct,
@@ -33,6 +30,7 @@ import {
   setQuantity,
   setStatus,
 } from "state/working-order/asyncActions";
+import { setCustomerDetails } from "state/working-order/reducer";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -90,7 +88,7 @@ function StepOneScreen({
   productDetailsList,
   summary,
   servicePointList,
-  setCustomerAttribute,
+  setCustomerDetails,
   setStatus,
   getProduct,
   setDescription,
@@ -109,7 +107,7 @@ function StepOneScreen({
   const [filter, setFilter] = React.useState("");
   const [serviceIncluded, setServiceIncluded] = React.useState(false);
   const handleCustomerNameChange = event => {
-    setCustomerAttribute("Nombre", event.target.value);
+    setCustomerDetails("Nombre", event.target.value);
     setStatus("on-progress");
   };
   const handleOnFilterChange = event => {
@@ -284,7 +282,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      setCustomerAttribute,
+      setCustomerDetails,
       setStatus,
       getProduct,
       setDescription,

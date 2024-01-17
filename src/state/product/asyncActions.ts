@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
+  openProductDialog,
   setCategoryList,
   setClasificationList,
-  setProduct,
   setProductAttribute,
   setProductList,
   setProductListCount,
@@ -110,9 +110,9 @@ export const getProductListByPageNumber = createAsyncThunk(
   }
 );
 
-export const getProduct = createAsyncThunk(
-  "product/getProduct",
-  async (payload: { id: number }, { getState, dispatch }) => {
+export const openProduct = createAsyncThunk(
+  "product/openProduct",
+  async (payload: { id?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
@@ -127,8 +127,7 @@ export const getProduct = createAsyncThunk(
       } else {
         product = defaultProduct;
       }
-      dispatch(setProduct(product));
-      dispatch(setActiveSection(23));
+      dispatch(openProductDialog(product));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -139,13 +138,20 @@ export const getProduct = createAsyncThunk(
 
 export const filterProductList = createAsyncThunk(
   "product/filterProductList",
-  async (payload: { text: string; type: number; rowsPerPage?: number }, { getState, dispatch }) => {
+  async (payload: { filterText: string; type: number; rowsPerPage?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
     try {
       dispatch(setProductListPage(1));
-      const productCount = await getProductListCount(token, companyId, branchId, true, payload.text, payload.type);
+      const productCount = await getProductListCount(
+        token,
+        companyId,
+        branchId,
+        true,
+        payload.filterText,
+        payload.type
+      );
       const newList = await getProductListPerPage(
         token,
         companyId,
@@ -153,7 +159,7 @@ export const filterProductList = createAsyncThunk(
         true,
         1,
         payload.rowsPerPage ?? ROWS_PER_PRODUCT,
-        payload.text,
+        payload.filterText,
         payload.type
       );
       dispatch(setProductListCount(productCount));
@@ -168,12 +174,12 @@ export const filterProductList = createAsyncThunk(
 
 export const filterClasificationList = createAsyncThunk(
   "product/filterClasificationList",
-  async (payload: { text: string }, { getState, dispatch }) => {
+  async (payload: { filterText: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
-      const list = await getProductClasificationList(token, payload.text);
+      const list = await getProductClasificationList(token, payload.filterText);
       dispatch(setClasificationList(list));
       dispatch(stopLoader());
     } catch (error) {

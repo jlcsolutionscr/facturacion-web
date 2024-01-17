@@ -2,10 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -122,7 +120,7 @@ function StepTwoScreen({
     Descripcion: filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion,
   }));
   const fieldDisabled = status === "converted";
-  let buttonEnabled =
+  const buttonEnabled =
     product !== null && description !== "" && quantity !== null && price !== null && fieldDisabled === false;
   const display = value !== index ? "none" : "flex";
   return (

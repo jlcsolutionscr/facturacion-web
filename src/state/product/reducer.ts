@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { productInitialState } from "state/InitialState";
 import { RootState } from "state/store";
+import { defaultProduct } from "utils/defaults";
 
 const productSlice = createSlice({
   name: "product",
@@ -16,7 +17,8 @@ const productSlice = createSlice({
     setProductList: (state, action) => {
       state.list = action.payload;
     },
-    setProduct: (state, action) => {
+    openProductDialog: (state, action) => {
+      state.isDialogOpen = true;
       state.entity = action.payload;
     },
     setProductTypeList: (state, action) => {
@@ -37,6 +39,10 @@ const productSlice = createSlice({
         [action.payload.attribute]: action.payload.value,
       };
     },
+    closeProductDialog: state => {
+      state.isDialogOpen = false;
+      state.entity = defaultProduct;
+    },
   },
 });
 
@@ -44,12 +50,13 @@ export const {
   setProductListPage,
   setProductListCount,
   setProductList,
-  setProduct,
+  openProductDialog,
   setProductTypeList,
   setCategoryList,
   setProviderList,
   setClasificationList,
   setProductAttribute,
+  closeProductDialog,
 } = productSlice.actions;
 
 export const getProductListPage = (state: RootState) => state.product.listPage;
@@ -60,5 +67,6 @@ export const getProductTypeList = (state: RootState) => state.product.productTyp
 export const getCategoryList = (state: RootState) => state.product.categoryList;
 export const getProviderList = (state: RootState) => state.product.providerList;
 export const getClasificationList = (state: RootState) => state.product.clasificationList;
+export const getProductDialogStatus = (state: RootState) => state.product.isDialogOpen;
 
 export default productSlice.reducer;

@@ -12,6 +12,24 @@ export type IdDescriptionType = {
   Descripcion: string;
 };
 
+export type IdDescriptionValueType = {
+  Id: number;
+  Descripcion: string;
+  Valor: number;
+};
+
+export type IdDescriptionTaxType = {
+  Id: number;
+  Descripcion: string;
+  Impuesto: number;
+};
+
+export type CodeDescriptionType = {
+  Id: number;
+  Codigo: string;
+  Descripcion: string;
+};
+
 export type EconomicActivityType = {
   IdEmpresa: number;
   CodigoActividad: number;

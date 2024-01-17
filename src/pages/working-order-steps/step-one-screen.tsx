@@ -7,12 +7,7 @@ import Grid from "@mui/material/Grid";
 import LabelField from "components/label-field";
 import ListDropdown from "components/list-dropdown";
 import TextField from "components/text-field";
-import {
-  filterCustomerList,
-  getCustomer,
-  getCustomerListByPageNumber,
-  setCustomerAttribute,
-} from "state/customer/asyncActions";
+import { filterCustomerList, getCustomer, getCustomerListByPageNumber } from "state/customer/asyncActions";
 import { setStatus } from "state/working-order/asyncActions";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 
@@ -37,7 +32,6 @@ function StepOneScreen({
   status,
   filterCustomerList,
   getCustomerListByPageNumber,
-  getCustomer,
   setStatus,
   setCustomerAttribute,
 }) {

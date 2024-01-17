@@ -1,9 +1,12 @@
 import {
+  CodeDescriptionType,
   CompanyType,
   CredentialType,
   CustomerType,
   DeviceType,
+  IdDescriptionTaxType,
   IdDescriptionType,
+  IdDescriptionValueType,
   IdValueType,
   InvoiceType,
   PermissionType,
@@ -28,9 +31,9 @@ type UIStateType = {
   cantonList: IdDescriptionType[];
   distritoList: IdDescriptionType[];
   barrioList: IdDescriptionType[];
-  taxTypeList: IdDescriptionType[];
-  idTypeList: IdDescriptionType[];
-  exonerationTypeList: IdDescriptionType[];
+  taxTypeList: IdDescriptionValueType[];
+  idTypeList: IdDescriptionValueType[];
+  exonerationTypeList: IdDescriptionValueType[];
   message: string;
   messageType: string;
 };
@@ -72,7 +75,7 @@ type CustomerStateType = {
   listPage: number;
   listCount: number;
   list: IdDescriptionType[];
-  priceTypeList: IdDescriptionType[];
+  priceTypeList: IdDescriptionValueType[];
   isDialogOpen: boolean;
 };
 
@@ -80,11 +83,12 @@ type ProductStateType = {
   entity: ProductType;
   listPage: number;
   listCount: number;
-  list: IdValueType[];
-  productTypeList: IdValueType[];
-  categoryList: IdValueType[];
-  providerList: IdValueType[];
-  clasificationList: IdValueType[];
+  list: CodeDescriptionType[];
+  productTypeList: IdDescriptionType[];
+  categoryList: IdDescriptionType[];
+  providerList: IdDescriptionType[];
+  clasificationList: IdDescriptionTaxType[];
+  isDialogOpen: boolean;
 };
 
 type InvoiceStateType = {
@@ -182,6 +186,7 @@ export const productInitialState: ProductStateType = {
   categoryList: [],
   providerList: [],
   clasificationList: [],
+  isDialogOpen: false,
 };
 
 export const invoiceInitialState: InvoiceStateType = {

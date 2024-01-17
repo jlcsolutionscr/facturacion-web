@@ -1,31 +1,31 @@
-import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
 import LabelField from "components/label-field";
 import Select from "components/select";
-import TextField from "components/text-field";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { filterClasificationList, saveProduct, validateProductCode } from "state/product/asyncActions";
 import {
-  filterClasificationList,
-  saveProduct,
-  setProduct,
+  closeProductDialog,
+  getCategoryList,
+  getClasificationList,
+  getProduct,
+  getProductTypeList,
+  getProviderList,
   setProductAttribute,
-  validateProductCode,
-} from "state/product/asyncActions";
-import { setActiveSection } from "state/ui/actions";
+} from "state/product/reducer";
+import { getTaxTypeList } from "state/ui/reducer";
 import { getPriceFromTaxRate } from "utils/domainHelper";
 import { SearchIcon } from "utils/iconsHelper";
 import { roundNumber } from "utils/utilities";
@@ -34,18 +34,11 @@ const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
-    margin: "20px auto auto auto",
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      marginTop: "16px",
-      padding: "16px",
-    },
-    "@media screen and (max-width:600px)": {
-      marginTop: "13px",
-      padding: "13px",
+      padding: "15px",
     },
     "@media screen and (max-width:414px)": {
-      marginTop: "10px",
       padding: "10px",
     },
   },
@@ -63,20 +56,7 @@ const useStyles = makeStyles()(theme => ({
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function ProductPage({
-  product,
-  productTypeList,
-  categoryList,
-  providerList,
-  clasificationList,
-  taxTypeList,
-  setProduct,
-  filterClasificationList,
-  setProductAttribute,
-  validateProductCode,
-  saveProduct,
-  setActiveSection,
-}) {
+export default function ProductPage() {
   const { classes } = useStyles();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [clasificationFilter, setClasificationFilter] = React.useState("");
@@ -85,15 +65,25 @@ function ProductPage({
   const [untaxPrice3, setUntaxPrice3] = React.useState(0);
   const [untaxPrice4, setUntaxPrice4] = React.useState(0);
   const [untaxPrice5, setUntaxPrice5] = React.useState(0);
-  React.useEffect(() => {
-    const calculatePrice = (value, taxId) =>
-      roundNumber(getPriceFromTaxRate(value, taxTypeList.find(elm => elm.Id === taxId).Valor, false), 2);
+
+  const dispatch = useDispatch();
+  const product = useSelector(getProduct);
+  const productTypeList = useSelector(getProductTypeList);
+  const categoryList = useSelector(getCategoryList);
+  const providerList = useSelector(getProviderList);
+  const clasificationList = useSelector(getClasificationList);
+  const taxTypeList = useSelector(getTaxTypeList);
+
+  useEffect(() => {
+    const calculatePrice = (value: number, taxId: number) =>
+      roundNumber(getPriceFromTaxRate(value, taxTypeList.find(elm => elm.Id === taxId)?.Valor ?? 0, false), 2);
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto));
     setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto));
     setUntaxPrice3(calculatePrice(product.PrecioVenta3, product.IdImpuesto));
     setUntaxPrice4(calculatePrice(product.PrecioVenta4, product.IdImpuesto));
     setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto));
   }, [product, taxTypeList]);
+
   const productTypes = productTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -101,6 +91,7 @@ function ProductPage({
       </MenuItem>
     );
   });
+
   const categories = categoryList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -108,6 +99,7 @@ function ProductPage({
       </MenuItem>
     );
   });
+
   const providers = providerList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -115,22 +107,28 @@ function ProductPage({
       </MenuItem>
     );
   });
+
   const disabled =
-    product.IdLinea === "" ||
+    product.IdLinea === 0 ||
     product.Codigo === "" ||
     product.Descripcion === "" ||
-    product.PrecioCosto === "" ||
-    product.PrecioVenta1 === "" ||
-    product.PrecioVenta2 === "" ||
-    product.PrecioVenta3 === "" ||
-    product.PrecioVenta4 === "" ||
-    product.PrecioVenta5 === "";
-  const handleChange = event => {
-    setProductAttribute(event.target.id, event.target.value);
+    product.PrecioVenta1 === 0 ||
+    product.PrecioVenta2 === 0 ||
+    product.PrecioVenta3 === 0 ||
+    product.PrecioVenta4 === 0 ||
+    product.PrecioVenta5 === 0;
+
+  const handleChange = (event: TextFieldOnChangeEventType) => {
+    dispatch(setProductAttribute({ attribute: event.target.id, value: event.target.value }));
   };
-  const handlePriceChange = event => {
+
+  const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     const untaxPrice = roundNumber(
-      getPriceFromTaxRate(event.target.value, taxTypeList.find(elm => elm.id === product.IdImpuesto).value, false),
+      getPriceFromTaxRate(
+        parseFloat(event.target.value),
+        taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0,
+        false
+      ),
       2
     );
     setUntaxPrice1(untaxPrice);
@@ -138,88 +136,96 @@ function ProductPage({
     setUntaxPrice3(untaxPrice);
     setUntaxPrice4(untaxPrice);
     setUntaxPrice5(untaxPrice);
-    setProductAttribute("PrecioVenta1", event.target.value);
-    setProductAttribute("PrecioVenta2", event.target.value);
-    setProductAttribute("PrecioVenta3", event.target.value);
-    setProductAttribute("PrecioVenta4", event.target.value);
-    setProductAttribute("PrecioVenta5", event.target.value);
+    dispatch(setProductAttribute({ attribute: "PrecioVenta1", value: event.target.value }));
+    dispatch(setProductAttribute({ attribute: "PrecioVenta2", value: event.target.value }));
+    dispatch(setProductAttribute({ attribute: "PrecioVenta3", value: event.target.value }));
+    dispatch(setProductAttribute({ attribute: "PrecioVenta4", value: event.target.value }));
+    dispatch(setProductAttribute({ attribute: "PrecioVenta5", value: event.target.value }));
   };
 
-  const handleUntaxPriceChange = event => {
+  const handleUntaxPriceChange = (event: TextFieldOnChangeEventType) => {
     const taxPrice = roundNumber(
-      getPriceFromTaxRate(event.target.value, taxTypeList.find(elm => elm.Id === product.IdImpuesto).Valor, true),
+      getPriceFromTaxRate(
+        parseFloat(event.target.value),
+        taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0,
+        true
+      ),
       2
     );
     switch (event.target.id) {
       case "untaxPrice1":
-        setUntaxPrice1(event.target.value);
-        setUntaxPrice2(event.target.value);
-        setUntaxPrice3(event.target.value);
-        setUntaxPrice4(event.target.value);
-        setUntaxPrice5(event.target.value);
-        setProductAttribute("PrecioVenta1", taxPrice);
-        setProductAttribute("PrecioVenta2", taxPrice);
-        setProductAttribute("PrecioVenta3", taxPrice);
-        setProductAttribute("PrecioVenta4", taxPrice);
-        setProductAttribute("PrecioVenta5", taxPrice);
+        setUntaxPrice1(parseFloat(event.target.value));
+        setUntaxPrice2(parseFloat(event.target.value));
+        setUntaxPrice3(parseFloat(event.target.value));
+        setUntaxPrice4(parseFloat(event.target.value));
+        setUntaxPrice5(parseFloat(event.target.value));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta1", value: taxPrice }));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta2", value: taxPrice }));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta3", value: taxPrice }));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta4", value: taxPrice }));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta5", value: taxPrice }));
         break;
       case "untaxPrice2":
-        setUntaxPrice2(event.target.value);
-        setProductAttribute("PrecioVenta2", taxPrice);
+        setUntaxPrice2(parseFloat(event.target.value));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta2", value: taxPrice }));
         break;
       case "untaxPrice3":
-        setUntaxPrice3(event.target.value);
-        setProductAttribute("PrecioVenta3", taxPrice);
+        setUntaxPrice3(parseFloat(event.target.value));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta3", value: taxPrice }));
         break;
       case "untaxPrice4":
-        setUntaxPrice4(event.target.value);
-        setProductAttribute("PrecioVenta4", taxPrice);
+        setUntaxPrice4(parseFloat(event.target.value));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta4", value: taxPrice }));
         break;
       case "untaxPrice5":
-        setUntaxPrice5(event.target.value);
-        setProductAttribute("PrecioVenta5", taxPrice);
+        setUntaxPrice5(parseFloat(event.target.value));
+        dispatch(setProductAttribute({ attribute: "PrecioVenta5", value: taxPrice }));
         break;
       default:
         break;
     }
   };
-  const handleOnClose = () => {
-    setProduct(null);
-    setActiveSection(4);
-  };
+
   const handleClasificationClick = () => {
     setDialogOpen(true);
     setClasificationFilter("");
-    filterClasificationList("");
+    dispatch(filterClasificationList({ filterText: "" }));
   };
-  const handleClasificationFilterChange = event => {
+
+  const handleClasificationFilterChange = (event: { target: { id?: string; value: string } }) => {
     setClasificationFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterClasificationList(event.target.value);
+      dispatch(filterClasificationList({ filterText: event.target.value }));
     }, 1000);
   };
-  const handleClasificationRowClick = code => {
+
+  const handleClasificationRowClick = (code: string) => {
     if (code !== "") {
-      const codeEntity = clasificationList.find(elm => elm.Id === code);
-      const taxRateId = codeEntity ? taxTypeList.find(elm => elm.Valor === codeEntity.Impuesto).Id : undefined;
-      setProductAttribute("CodigoClasificacion", code);
-      if (taxRateId) setProductAttribute("IdImpuesto", taxRateId);
+      const codeEntity = clasificationList.find(elm => elm.Id === parseInt(code));
+      const taxRateId = codeEntity
+        ? taxTypeList.find(elm => elm.Valor === codeEntity?.Impuesto ?? 0)?.Id ?? undefined
+        : undefined;
+      dispatch(setProductAttribute({ attribute: "CodigoClasificacion", value: code }));
+      if (taxRateId) dispatch(setProductAttribute({ attribute: "IdImpuesto", value: taxRateId }));
     }
     setDialogOpen(false);
   };
+
   const rows = clasificationList.map(row => ({
     id: row.Id,
     taxRate: row.Impuesto,
     description: row.Descripcion,
   }));
+
   const columns = [
     { field: "id", headerName: "Código", hidden: true },
     { field: "taxRate", headerName: "IVA", type: "number" },
     { field: "description", headerName: "Descripcion" },
   ];
+
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -227,8 +233,8 @@ function ProductPage({
           <Select
             id="tipo-select-id"
             label="Seleccione el tipo de producto"
-            value={product.Tipo}
-            onChange={event => setProductAttribute("Tipo", event.target.value)}
+            value={product.Tipo.toString()}
+            onChange={event => dispatch(setProductAttribute({ attribute: "Tipo", value: event.target.value }))}
           >
             {productTypes}
           </Select>
@@ -237,8 +243,8 @@ function ProductPage({
           <Select
             id="id-linea-select-id"
             label="Seleccione la línea del producto"
-            value={product.IdLinea}
-            onChange={event => setProductAttribute("IdLinea", event.target.value)}
+            value={product.IdLinea.toString()}
+            onChange={event => dispatch(setProductAttribute({ attribute: "IdLinea", value: event.target.value }))}
           >
             {categories}
           </Select>
@@ -262,7 +268,7 @@ function ProductPage({
             value={product.CodigoClasificacion}
             label="Codigo CABYS"
             inputProps={{ maxLength: 13 }}
-            onChange={event => validateProductCode(event.target.value)}
+            onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
           />
         </Grid>
         <Grid item xs={2} sm={1}>
@@ -277,9 +283,8 @@ function ProductPage({
         </Grid>
         <Grid item xs={12} sm={6}>
           <LabelField
-            disabled
             id="TasaIva"
-            value={taxTypeList.find(elm => elm.Id === product.IdImpuesto).Descripcion}
+            value={taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Descripcion ?? ""}
             label="Tasa del IVA"
           />
         </Grid>
@@ -287,8 +292,8 @@ function ProductPage({
           <Select
             id="id-proveedor-select-id"
             label="Seleccione el proveedor"
-            value={product.IdProveedor}
-            onChange={event => setProductAttribute("IdProveedor", event.target.value)}
+            value={product.IdProveedor.toString()}
+            onChange={event => dispatch(setProductAttribute({ attribute: "IdProveedor", value: event.target.value }))}
           >
             {providers}
           </Select>
@@ -306,7 +311,7 @@ function ProductPage({
           <TextField
             required
             id="PrecioCosto"
-            value={product.PrecioCosto}
+            value={product.PrecioCosto.toString()}
             label="Precio costo"
             numericFormat
             onChange={handleChange}
@@ -315,7 +320,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="untaxPrice1"
-            value={untaxPrice1}
+            value={untaxPrice1.toString()}
             label="Precio sin impuesto"
             numericFormat
             onChange={handleUntaxPriceChange}
@@ -325,7 +330,7 @@ function ProductPage({
           <TextField
             required
             id="PrecioVenta1"
-            value={product.PrecioVenta1}
+            value={product.PrecioVenta1.toString()}
             label="Precio de venta 1"
             numericFormat
             onChange={handlePriceChange}
@@ -334,7 +339,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="untaxPrice2"
-            value={untaxPrice2}
+            value={untaxPrice2.toString()}
             label="Precio sin impuesto"
             numericFormat
             onChange={handleUntaxPriceChange}
@@ -343,7 +348,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="PrecioVenta2"
-            value={product.PrecioVenta2}
+            value={product.PrecioVenta2.toString()}
             label="Precio de venta 2"
             numericFormat
             onChange={handleChange}
@@ -352,7 +357,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="untaxPrice3"
-            value={untaxPrice3}
+            value={untaxPrice3.toString()}
             label="Precio sin impuesto"
             numericFormat
             onChange={handleUntaxPriceChange}
@@ -361,7 +366,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="PrecioVenta3"
-            value={product.PrecioVenta3}
+            value={product.PrecioVenta3.toString()}
             label="Precio de venta3"
             numericFormat
             onChange={handleChange}
@@ -370,7 +375,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="untaxPrice4"
-            value={untaxPrice4}
+            value={untaxPrice4.toString()}
             label="Precio sin impuesto"
             numericFormat
             onChange={handleUntaxPriceChange}
@@ -379,7 +384,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="PrecioVenta4"
-            value={product.PrecioVenta4}
+            value={product.PrecioVenta4.toString()}
             label="Precio de venta 4"
             numericFormat
             onChange={handleChange}
@@ -388,7 +393,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="untaxPrice5"
-            value={untaxPrice5}
+            value={untaxPrice5.toString()}
             label="Precio sin impuesto"
             numericFormat
             onChange={handleUntaxPriceChange}
@@ -397,7 +402,7 @@ function ProductPage({
         <Grid item xs={6}>
           <TextField
             id="PrecioVenta5"
-            value={product.PrecioVenta5}
+            value={product.PrecioVenta5.toString()}
             label="Precio de venta 5"
             numericFormat
             onChange={handleChange}
@@ -414,7 +419,7 @@ function ProductPage({
             control={
               <Checkbox
                 checked={product.Activo}
-                onChange={event => setProductAttribute("Activo", !product.Activo)}
+                onChange={() => dispatch(setProductAttribute({ attribute: "Activo", value: !product.Activo }))}
                 name="AplicaTasaDiferenciada"
                 color="primary"
               />
@@ -423,10 +428,10 @@ function ProductPage({
           />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button disabled={disabled} label="Guardar" onClick={() => saveProduct()} />
+          <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveProduct())} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button label="Regresar" onClick={handleOnClose} />
+          <Button label="Regresar" onClick={() => dispatch(closeProductDialog())} />
         </Grid>
       </Grid>
       <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
@@ -455,38 +460,10 @@ function ProductPage({
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions className={classes.dialogActions}>
+        <DialogActions>
           <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
         </DialogActions>
       </Dialog>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    product: state.product.product,
-    productList: state.product.list,
-    productTypeList: state.product.productTypeList,
-    categoryList: state.product.categoryList,
-    providerList: state.product.providerList,
-    clasificationList: state.product.clasificationList,
-    taxTypeList: state.ui.taxTypeList,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setActiveSection,
-      setProduct,
-      filterClasificationList,
-      setProductAttribute,
-      validateProductCode,
-      saveProduct,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);

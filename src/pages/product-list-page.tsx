@@ -1,18 +1,20 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Dialog from "@mui/material/Dialog";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
+import ProductPage from "./product-page";
 import Button from "components/button";
 import DataGrid from "components/data-grid";
-import TextField from "components/text-field";
-import { filterProductList, getProduct, getProductListByPageNumber } from "state/product/asyncActions";
-import { setActiveSection } from "state/ui/actions";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
+import { getProductDialogStatus, getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { EditIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -66,19 +68,27 @@ const useStyles = makeStyles()(theme => ({
   dialogActions: {
     margin: "0 20px 10px 20px",
   },
+  dialog: {
+    "& .MuiPaper-root": {
+      margin: "32px",
+      maxHeight: "calc(100% - 64px)",
+      "@media screen and (max-width:414px)": {
+        margin: "5px",
+        maxHeight: "calc(100% - 10px)",
+      },
+    },
+  },
 }));
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function ProductListPage({
-  listPage,
-  listCount,
-  list,
-  filterProductList,
-  getProductListByPageNumber,
-  getProduct,
-  setActiveSection,
-}) {
+export default function ProductListPage() {
+  const dispatch = useDispatch();
+  const listPage = useSelector(getProductListPage);
+  const listCount = useSelector(getProductListCount);
+  const list = useSelector(getProductList);
+  const isDialogOpen = useSelector(getProductDialogStatus);
+
   const rowsPerPage = 7;
   const { classes } = useStyles();
   const [filter, setFilter] = React.useState("");
@@ -87,22 +97,27 @@ function ProductListPage({
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    filterProductList("", newFilterType, rowsPerPage);
+    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: rowsPerPage }));
   };
-  const handleOnFilterChange = event => {
+  const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value, filterType, rowsPerPage);
+      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: rowsPerPage }));
     }, 1000);
   };
   const rows = list.map(row => ({
     id: row.Id,
     name: filterType === 1 ? `${row.Codigo} - ${row.Descripcion}` : row.Descripcion,
     action1: (
-      <IconButton className={classes.icon} color="primary" component="span" onClick={() => getProduct(row.Id)}>
+      <IconButton
+        className={classes.icon}
+        color="primary"
+        component="span"
+        onClick={() => dispatch(openProduct({ id: row.Id }))}
+      >
         <EditIcon className={classes.icon} />
       </IconButton>
     ),
@@ -143,36 +158,24 @@ function ProductListPage({
           rowsCount={listCount}
           rowsPerPage={rowsPerPage}
           onPageChange={page => {
-            getProductListByPageNumber(page + 1, filter, filterType, rowsPerPage);
+            dispatch(
+              getProductListByPageNumber({
+                pageNumber: page + 1,
+                filterText: filter,
+                type: filterType,
+                rowsPerPage: rowsPerPage,
+              })
+            );
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Agregar producto" onClick={() => getProduct(null)} />
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => setActiveSection(0)} />
+        <Button label="Agregar producto" onClick={() => dispatch(openProduct({ id: undefined }))} />
+        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
+      <Dialog className={classes.dialog} maxWidth="md" open={isDialogOpen}>
+        <ProductPage />
+      </Dialog>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    listPage: state.product.listPage,
-    listCount: state.product.listCount,
-    list: state.product.list,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      filterProductList,
-      getProductListByPageNumber,
-      getProduct,
-      setActiveSection,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListPage);

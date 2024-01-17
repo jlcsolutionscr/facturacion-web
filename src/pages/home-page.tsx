@@ -1,12 +1,10 @@
 import BannerImage from "assets/img/home-background.webp";
 import CompanyPage from "pages/company-page";
 import CustomerListPage from "pages/customer-list-page";
-import CustomerPage from "pages/customer-page";
-//import ProductListPage from "pages/product-list-page";
-//import ProductPage from "pages/product-page";
 import InvoicePage from "pages/invoice-page";
 import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
+import ProductListPage from "pages/product-list-page";
 import React from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -73,7 +71,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <LogoPage />}
         {activeSection === 3 && <CustomerListPage />}
-        {/*activeSection === 4 && <ProductListPage />*/}
+        {activeSection === 4 && <ProductListPage />}
         {activeSection === 5 && <InvoicePage />}
         {/*activeSection === 6 && <ReceiptPage />}
         {activeSection === 7 && <InvoiceListPage />}
@@ -93,7 +91,6 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
             <RestaurantOrderPage />
           )
           ) : null*/}
-        {/*activeSection === 23 && <ProductPage />*/}
       </div>
     </div>
   );
