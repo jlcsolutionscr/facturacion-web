@@ -15,6 +15,7 @@ import { setReceiptParameters } from "state/receipt/asyncActions";
 import { getBranchId, getBranchList, getPermissions, setBranchId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
+import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles()(theme => ({
     textAlign: "center",
     maxWidth: "640px",
     margin: "20px auto auto auto",
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "15px 0 auto 0",
       padding: "5px",
     },
@@ -34,7 +35,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       minWidth: "350px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       maxWidth: "100%",
     },
   },
@@ -51,7 +52,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       fontSize: theme.typography.pxToRem(16),
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       fontSize: theme.typography.pxToRem(14),
     },
   },
@@ -77,7 +78,7 @@ const useStyles = makeStyles()(theme => ({
       marginTop: "10px",
       padding: "8px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       width: "100%",
       marginTop: "2px",
       border: "none",
@@ -157,7 +158,7 @@ export default function MenuPage() {
               getCustomerListFirstPage({
                 id: 3,
                 filterText: "",
-                rowsPerPage: 8,
+                rowsPerPage: ROWS_PER_CUSTOMER,
               })
             )
           }
@@ -175,7 +176,7 @@ export default function MenuPage() {
                 id: 4,
                 filterText: "",
                 type: 2,
-                rowsPerPage: 7,
+                rowsPerPage: ROWS_PER_PRODUCT,
               })
             )
           }

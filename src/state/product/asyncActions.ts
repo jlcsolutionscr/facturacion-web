@@ -12,7 +12,6 @@ import {
 } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_PRODUCT } from "utils/constants";
 import { defaultProduct } from "utils/defaults";
 import {
   getProductCategoryList,
@@ -58,7 +57,7 @@ export const getProductListFirstPage = createAsyncThunk(
           branchId,
           false,
           1,
-          payload.rowsPerPage ?? ROWS_PER_PRODUCT,
+          payload.rowsPerPage,
           payload.filterText,
           payload.type
         );
@@ -82,7 +81,7 @@ export const getProductListByPageNumber = createAsyncThunk(
       filterText: string;
       type: number;
       pageNumber: number;
-      rowsPerPage?: number;
+      rowsPerPage: number;
     },
     { getState, dispatch }
   ) => {
@@ -96,7 +95,7 @@ export const getProductListByPageNumber = createAsyncThunk(
         branchId,
         false,
         payload.pageNumber,
-        payload.rowsPerPage ?? ROWS_PER_PRODUCT,
+        payload.rowsPerPage,
         payload.filterText,
         payload.type
       );
@@ -138,7 +137,7 @@ export const openProduct = createAsyncThunk(
 
 export const filterProductList = createAsyncThunk(
   "product/filterProductList",
-  async (payload: { filterText: string; type: number; rowsPerPage?: number }, { getState, dispatch }) => {
+  async (payload: { filterText: string; type: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
@@ -158,7 +157,7 @@ export const filterProductList = createAsyncThunk(
         branchId,
         true,
         1,
-        payload.rowsPerPage ?? ROWS_PER_PRODUCT,
+        payload.rowsPerPage,
         payload.filterText,
         payload.type
       );

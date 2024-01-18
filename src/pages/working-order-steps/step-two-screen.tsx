@@ -95,7 +95,7 @@ function StepTwoScreen({
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value, filterType);
+      filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT });
     }, 1000);
   };
 
@@ -108,7 +108,7 @@ function StepTwoScreen({
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    filterProductList("", newFilterType);
+    filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT });
   };
 
   const handlePriceChange = event => {
@@ -152,7 +152,14 @@ function StepTwoScreen({
                 rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
-                onPageChange={pageNumber => getProductListByPageNumber(pageNumber + 1, filter, filterType)}
+                onPageChange={pageNumber =>
+                  getProductListByPageNumber({
+                    pageNumber: pageNumber + 1,
+                    filterText: filter,
+                    type: filterType,
+                    rowsPerPage: ROWS_PER_PRODUCT,
+                  })
+                }
               />
             </Grid>
             <Grid item xs={12}>

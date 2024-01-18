@@ -14,12 +14,25 @@ export const useStyles = makeStyles()(theme => ({
   tableContainer: {
     flex: "1 1 auto",
     color: theme.palette.mode === "dark" ? "#FFF" : "#333",
+    "& .MuiTableCell-root": {
+      padding: "5px 16px",
+    },
   },
   pagination: {
     flex: "1 0 auto",
+    "& .MuiTablePagination-toolbar": {
+      minHeight: "38px",
+      " & .MuiTablePagination-displayedRows": {
+        margin: "8px 0",
+        height: "20px",
+      },
+    },
   },
   paginationActions: {
     flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
+    marginLeft: theme.spacing(2),
+    "& .MuiIconButton-root": {
+      padding: "6px 8px",
+    },
   },
 }));

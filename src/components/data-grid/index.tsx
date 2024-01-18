@@ -104,7 +104,7 @@ export default function DataGrid({
 }: DataGridProps) {
   const { classes } = useStyles();
   const emptyRows = rowsPerPage - rows.length;
-  const height = rowsPerPage * (dense ? 37 : 53) + (showHeader ? 37 : 0);
+  const height = rowsPerPage * (dense ? 35 : 45) + (showHeader ? 35 : 0);
   let tableStyle: TableStyleType = {
     color: "white",
     minWidth: minWidth || "auto",
@@ -160,7 +160,7 @@ export default function DataGrid({
                 );
               })}
               {page !== undefined && emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 37 : 53) * emptyRows }}>
+                <TableRow style={{ height: (dense ? 35 : 45) * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}

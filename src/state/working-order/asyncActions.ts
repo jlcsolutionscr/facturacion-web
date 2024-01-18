@@ -105,7 +105,7 @@ export const getProduct = createAsyncThunk(
             product,
             taxTypeList
           );
-          dispatch(filterProductList({ text: "", type: payload.filterType }));
+          dispatch(filterProductList({ filterText: "", type: payload.filterType, rowsPerPage: ROWS_PER_PRODUCT }));
           setProductDetails({
             id: product.id,
             quantity: 1,

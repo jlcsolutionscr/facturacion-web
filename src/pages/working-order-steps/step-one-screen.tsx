@@ -54,7 +54,7 @@ function StepOneScreen({
   };
 
   const handleOnPageChange = pageNumber => {
-    getCustomerListByPageNumber(pageNumber + 1, filter);
+    getCustomerListByPageNumber({ pageNumber: pageNumber + 1, filterText: filter, rowsPerPage: ROWS_PER_CUSTOMER });
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {

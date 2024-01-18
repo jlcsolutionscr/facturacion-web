@@ -36,6 +36,16 @@ export type EconomicActivityType = {
   Descripcion: string;
 };
 
+export type InvoiceEntityType = {
+  Consecutivo: number;
+  IdFactura: number;
+  Fecha: string;
+  NombreCliente: string;
+  Impuesto: number;
+  Total: number;
+  Anulando: boolean;
+};
+
 export type DeviceType = {
   lineWidth: number;
 };

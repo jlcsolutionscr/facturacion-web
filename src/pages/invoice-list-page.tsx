@@ -1,6 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import UAParser from "ua-parser-js";
 import Dialog from "@mui/material/Dialog";
@@ -18,7 +17,8 @@ import {
   getInvoiceListByPageNumber,
   revokeInvoice,
 } from "state/invoice/asyncActions";
-import { setActiveSection } from "state/ui/actions";
+import { getInvoiceList, getInvoiceListCount, getInvoiceListPage } from "state/invoice/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -32,7 +32,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       margin: "16px 5%",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0",
     },
   },
@@ -48,50 +48,60 @@ const useStyles = makeStyles()(theme => ({
     padding: 0,
   },
   buttonContainer: {
+    display: "flex",
     margin: "0 0 20px 20px",
+    width: "100%",
     "@media screen and (max-width:960px)": {
       margin: "0 0 10px 15px",
     },
     "@media screen and (max-width:600px)": {
       margin: "0 0 10px 10px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0 0 5px 5px",
+      justifyContent: "center",
     },
   },
   dialogActions: {
     margin: "0 20px 10px 20px",
   },
+  dialog: {
+    "& .MuiPaper-root": {
+      margin: "32px",
+      maxHeight: "calc(100% - 64px)",
+      "@media screen and (max-width:430px)": {
+        margin: "5px",
+        maxHeight: "calc(100% - 10px)",
+      },
+    },
+  },
 }));
 
-function InvoiceListPage({
-  listPage,
-  listCount,
-  list,
-  getInvoiceListByPageNumber,
-  revokeInvoice,
-  setActiveSection,
-  generatePDF,
-  generateInvoiceTicket,
-}) {
+export default function InvoiceListPage() {
+  const dispatch = useDispatch();
   const result = new UAParser().getResult();
   const { classes } = useStyles();
-  const [invoiceId, setInvoiceId] = React.useState(null);
+  const [invoiceId, setInvoiceId] = React.useState(0);
   const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
+
+  const listPage = useSelector(getInvoiceListPage);
+  const listCount = useSelector(getInvoiceListCount);
+  const list = useSelector(getInvoiceList);
+
   const isMobile = !!result.device.type;
-  const printReceipt = id => {
-    generateInvoiceTicket(id);
+  const printReceipt = (id: number) => {
+    dispatch(generateInvoiceTicket({ id }));
   };
-  const handlePdfButtonClick = (id, ref) => {
-    generatePDF(id, ref);
+  const handlePdfButtonClick = (id: number, ref: number) => {
+    dispatch(generatePDF({ id, ref }));
   };
-  const handleRevokeButtonClick = (id, ref) => {
+  const handleRevokeButtonClick = (id: number, ref: number) => {
     setInvoiceId(id);
     setDialogOpen({ open: true, id: ref });
   };
   const handleConfirmButtonClick = () => {
     setDialogOpen({ open: false, id: 0 });
-    revokeInvoice(invoiceId);
+    dispatch(revokeInvoice({ id: invoiceId }));
   };
   const rows = list.map(row => ({
     id: row.Consecutivo,
@@ -158,12 +168,12 @@ function InvoiceListPage({
           rowsCount={listCount}
           rowsPerPage={10}
           onPageChange={page => {
-            getInvoiceListByPageNumber(page + 1);
+            dispatch(getInvoiceListByPageNumber({ pageNumber: page + 1 }));
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Regresar" onClick={() => setActiveSection(0)} />
+        <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
         <DialogTitle>Anular factura</DialogTitle>
@@ -180,27 +190,3 @@ function InvoiceListPage({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    listPage: state.invoice.listPage,
-    listCount: state.invoice.listCount,
-    list: state.invoice.list,
-    ticket: state.invoice.ticket,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      getInvoiceListByPageNumber,
-      revokeInvoice,
-      generatePDF,
-      setActiveSection,
-      generateInvoiceTicket,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceListPage);

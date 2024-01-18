@@ -11,7 +11,6 @@ import {
 } from "state/customer/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER } from "utils/constants";
 import {
   getCustomerByIdentifier,
   getCustomerEntity,
@@ -32,13 +31,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
       const recordCount = await getCustomerListCount(token, companyId, payload.filterText);
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(
-          token,
-          companyId,
-          1,
-          payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
-          payload.filterText
-        );
+        const newList = await getCustomerListPerPage(token, companyId, 1, payload.rowsPerPage, payload.filterText);
         dispatch(setCustomerList(newList));
       } else {
         dispatch(setCustomerList([]));
@@ -54,7 +47,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
 
 export const getCustomerListByPageNumber = createAsyncThunk(
   "customer/getCustomerListByPageNumber",
-  async (payload: { filterText: string; pageNumber: number; rowsPerPage?: number }, { getState, dispatch }) => {
+  async (payload: { filterText: string; pageNumber: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
@@ -63,7 +56,7 @@ export const getCustomerListByPageNumber = createAsyncThunk(
         token,
         companyId,
         payload.pageNumber,
-        payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
+        payload.rowsPerPage,
         payload.filterText
       );
       dispatch(setCustomerListPage(payload.pageNumber));
@@ -188,7 +181,7 @@ export const getCustomer = createAsyncThunk(
 
 export const filterCustomerList = createAsyncThunk(
   "customer/filterCustomerList",
-  async (payload: { filterText: string; rowsPerPage?: number }, { getState, dispatch }) => {
+  async (payload: { filterText: string; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
@@ -197,13 +190,7 @@ export const filterCustomerList = createAsyncThunk(
       const recordCount = await getCustomerListCount(token, companyId, payload.filterText);
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(
-          token,
-          companyId,
-          1,
-          payload.rowsPerPage ?? ROWS_PER_CUSTOMER,
-          payload.filterText
-        );
+        const newList = await getCustomerListPerPage(token, companyId, 1, payload.rowsPerPage, payload.filterText);
         dispatch(setCustomerList(newList));
       } else {
         dispatch(setCustomerList([]));

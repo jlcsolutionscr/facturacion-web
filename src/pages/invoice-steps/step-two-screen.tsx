@@ -90,7 +90,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      dispatch(filterProductList({ text: event.target.value, type: filterType }));
+      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT }));
     }, 1000);
   };
 
@@ -103,7 +103,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    dispatch(filterProductList({ text: "", type: newFilterType }));
+    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     isPriceChangeEnabled && setPrice(event.target.value);
@@ -147,6 +147,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                       pageNumber: pageNumber + 1,
                       filterText: filter,
                       type: filterType,
+                      rowsPerPage: ROWS_PER_PRODUCT,
                     })
                   )
                 }

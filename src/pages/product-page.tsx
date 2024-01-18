@@ -38,7 +38,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       padding: "10px",
     },
   },

@@ -62,12 +62,12 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      dispatch(filterCustomerList({ filterText: event.target.value }));
+      dispatch(filterCustomerList({ filterText: event.target.value, rowsPerPage: ROWS_PER_CUSTOMER }));
     }, 1000);
   };
 
   const handleOnPageChange = (pageNumber: number) => {
-    dispatch(getCustomerListByPageNumber({ pageNumber: pageNumber + 1, filterText }));
+    dispatch(getCustomerListByPageNumber({ pageNumber: pageNumber + 1, filterText, rowsPerPage: ROWS_PER_CUSTOMER }));
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {

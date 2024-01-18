@@ -8,6 +8,7 @@ import {
   IdDescriptionType,
   IdDescriptionValueType,
   IdValueType,
+  InvoiceEntityType,
   InvoiceType,
   PermissionType,
   ProductType,
@@ -95,7 +96,7 @@ type InvoiceStateType = {
   entity: InvoiceType;
   listPage: number;
   listCount: number;
-  list: IdValueType[];
+  list: InvoiceEntityType[];
 };
 
 type ReceiptStateType = {

@@ -50,7 +50,7 @@ function DetailLayout({ reportName, summary, data, returnOnClick }: DetailLayout
           )}
         </div>
       </div>
-      <DataGrid showHeader dense columns={columns} rows={rows} rowsPerPage={8} />
+      <DataGrid showHeader dense columns={columns} rows={rows} rowsPerPage={9} />
       <div style={{ margin: "10px 0 10px 0" }}>
         <Button label="Regresar" onClick={() => returnOnClick()} />
       </div>

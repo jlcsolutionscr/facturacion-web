@@ -25,7 +25,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       marginTop: "13px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       marginTop: "10px",
     },
   },
@@ -37,7 +37,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       padding: "13px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       padding: "10px",
     },
   },
@@ -51,7 +51,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       padding: "13px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       padding: "10px",
     },
   },

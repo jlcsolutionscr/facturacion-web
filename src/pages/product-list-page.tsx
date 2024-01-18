@@ -2,8 +2,6 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
@@ -15,6 +13,7 @@ import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
 import { getProductDialogStatus, getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
+import { ROWS_PER_PRODUCT } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -27,7 +26,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       margin: "16px 5%",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0",
     },
   },
@@ -40,9 +39,9 @@ const useStyles = makeStyles()(theme => ({
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "12px",
+    padding: "6px 12px 12px 12px",
     "@media screen and (max-width:960px)": {
-      padding: "10px",
+      padding: "5px 10px 10px 10px",
     },
   },
   icon: {
@@ -58,8 +57,9 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       margin: "0 0 10px 10px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0 0 5px 5px",
+      justifyContent: "center",
     },
   },
   formControl: {
@@ -72,7 +72,7 @@ const useStyles = makeStyles()(theme => ({
     "& .MuiPaper-root": {
       margin: "32px",
       maxHeight: "calc(100% - 64px)",
-      "@media screen and (max-width:414px)": {
+      "@media screen and (max-width:430px)": {
         margin: "5px",
         maxHeight: "calc(100% - 10px)",
       },
@@ -89,7 +89,6 @@ export default function ProductListPage() {
   const list = useSelector(getProductList);
   const isDialogOpen = useSelector(getProductDialogStatus);
 
-  const rowsPerPage = 7;
   const { classes } = useStyles();
   const [filter, setFilter] = React.useState("");
   const [filterType, setFilterType] = React.useState(2);
@@ -97,7 +96,7 @@ export default function ProductListPage() {
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: rowsPerPage }));
+    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
   const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
     setFilter(event.target.value);
@@ -105,7 +104,7 @@ export default function ProductListPage() {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: rowsPerPage }));
+      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT }));
     }, 1000);
   };
   const rows = list.map(row => ({
@@ -131,21 +130,16 @@ export default function ProductListPage() {
   return (
     <div className={classes.root}>
       <Grid className={classes.filterContainer} container spacing={2}>
-        <Grid item xs={12}>
-          <FormGroup>
-            <FormControlLabel
-              control={<Switch value={filterType === 1} onChange={handleOnFilterTypeChange} />}
-              label="Filtrar producto por código"
-            />
-          </FormGroup>
-        </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={10} sm={10.5} md={11}>
           <TextField
             id="text-filter-id"
             value={filter}
             label={`Filtro por ${filterType === 1 ? "código" : "descripción"}`}
             onChange={handleOnFilterChange}
           />
+        </Grid>
+        <Grid item xs={2} sm={1.5} md={1}>
+          <Switch value={filterType === 1} onChange={handleOnFilterTypeChange} />
         </Grid>
       </Grid>
       <div className={classes.dataContainer}>
@@ -156,21 +150,21 @@ export default function ProductListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={rowsPerPage}
+          rowsPerPage={ROWS_PER_PRODUCT}
           onPageChange={page => {
             dispatch(
               getProductListByPageNumber({
                 pageNumber: page + 1,
                 filterText: filter,
                 type: filterType,
-                rowsPerPage: rowsPerPage,
+                rowsPerPage: ROWS_PER_PRODUCT,
               })
             );
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Agregar producto" onClick={() => dispatch(openProduct({ id: undefined }))} />
+        <Button label="Agregar" onClick={() => dispatch(openProduct({ id: undefined }))} />
         <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog className={classes.dialog} maxWidth="md" open={isDialogOpen}>

@@ -31,6 +31,7 @@ import {
   setStatus,
 } from "state/working-order/asyncActions";
 import { setCustomerDetails } from "state/working-order/reducer";
+import { ROWS_PER_PRODUCT } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -65,7 +66,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       margin: "10px 0 0 10px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "10px 0 0 5px",
     },
   },
@@ -116,7 +117,7 @@ function StepOneScreen({
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterProductList(event.target.value, 2);
+      filterProductList({ filterText: event.target.value, type: 2, rowsPerPage: ROWS_PER_PRODUCT });
     }, 1000);
   };
   const handleItemSelected = (item: IdDescriptionType) => {

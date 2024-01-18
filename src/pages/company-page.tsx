@@ -43,7 +43,7 @@ const useStyles = makeStyles()(theme => ({
       margin: "13px",
       padding: "13px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0",
       padding: "10px",
     },

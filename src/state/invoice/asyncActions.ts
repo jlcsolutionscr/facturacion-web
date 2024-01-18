@@ -286,7 +286,7 @@ export const revokeInvoice = createAsyncThunk(
 
 export const generatePDF = createAsyncThunk(
   "invoice/revokeInvoice",
-  async (payload: { id: number; ref: string }, { getState, dispatch }) => {
+  async (payload: { id: number; ref: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());

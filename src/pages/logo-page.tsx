@@ -22,7 +22,7 @@ const useStyles = makeStyles()(theme => ({
       margin: "13px 5% auto 5%",
       padding: "13px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "10px 10px auto 10px",
       padding: "10px",
     },

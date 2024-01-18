@@ -25,7 +25,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       margin: "16px 5%",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0",
     },
   },
@@ -48,7 +48,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       margin: "10px 0 10px 10px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "10px 0 5px 5px",
     },
   },

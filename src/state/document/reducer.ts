@@ -25,8 +25,8 @@ const documentSlice = createSlice({
 export const { setDocumentList, setDocumentCount, setDocumentPage, setDocumentDetails } = documentSlice.actions;
 
 export const getDocumentList = (state: RootState) => state.document.list;
-export const getDocumentCount = (state: RootState) => state.document.listCount;
-export const getDocumentPage = (state: RootState) => state.document.listPage;
+export const getDocumentListCount = (state: RootState) => state.document.listCount;
+export const getDocumentListPage = (state: RootState) => state.document.listPage;
 export const getDocumentDetails = (state: RootState) => state.document.details;
 
 export default documentSlice.reducer;

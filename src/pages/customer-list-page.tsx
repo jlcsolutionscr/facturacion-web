@@ -17,6 +17,7 @@ import {
   getCustomerListPage,
 } from "state/customer/reducer";
 import { setActiveSection } from "state/ui/reducer";
+import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       margin: "16px 5%",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0",
     },
   },
@@ -42,9 +43,9 @@ const useStyles = makeStyles()(theme => ({
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "12px",
+    padding: "6px 12px 12px 12px",
     "@media screen and (max-width:960px)": {
-      padding: "10px",
+      padding: "5px 10px 10px 10px 10px",
     },
   },
   icon: {
@@ -60,8 +61,9 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:600px)": {
       margin: "0 0 10px 10px",
     },
-    "@media screen and (max-width:414px)": {
+    "@media screen and (max-width:430px)": {
       margin: "0 0 5px 5px",
+      justifyContent: "center",
     },
   },
   dialogActions: {
@@ -71,7 +73,7 @@ const useStyles = makeStyles()(theme => ({
     "& .MuiPaper-root": {
       margin: "32px",
       maxHeight: "calc(100% - 64px)",
-      "@media screen and (max-width:414px)": {
+      "@media screen and (max-width:430px)": {
         margin: "5px",
         maxHeight: "calc(100% - 10px)",
       },
@@ -88,7 +90,6 @@ export default function CustomerListPage() {
   const list = useSelector(getCustomerList);
   const isDialogOpen = useSelector(getCustomerDialogStatus);
 
-  const rowsPerPage = 8;
   const { classes } = useStyles();
   const [filter, setFilter] = useState("");
 
@@ -101,7 +102,7 @@ export default function CustomerListPage() {
       dispatch(
         filterCustomerList({
           filterText: event.target.value,
-          rowsPerPage: rowsPerPage,
+          rowsPerPage: ROWS_PER_CUSTOMER,
         })
       );
     }, 1000);
@@ -143,20 +144,20 @@ export default function CustomerListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={rowsPerPage}
+          rowsPerPage={ROWS_PER_CUSTOMER}
           onPageChange={page => {
             dispatch(
               getCustomerListByPageNumber({
                 pageNumber: page + 1,
                 filterText: filter,
-                rowsPerPage: rowsPerPage,
+                rowsPerPage: ROWS_PER_CUSTOMER,
               })
             );
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Agregar cliente" onClick={() => dispatch(openCustomer({ idCustomer: undefined }))} />
+        <Button label="Agregar" onClick={() => dispatch(openCustomer({ idCustomer: undefined }))} />
         <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog className={classes.dialog} maxWidth="md" open={isDialogOpen}>

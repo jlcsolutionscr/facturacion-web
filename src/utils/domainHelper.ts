@@ -883,7 +883,7 @@ export async function sendReportEmail(
   }
 }
 
-export async function generateInvoicePDF(token: string, invoiceId: number, ref: string) {
+export async function generateInvoicePDF(token: string, invoiceId: number, ref: number) {
   const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + invoiceId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
