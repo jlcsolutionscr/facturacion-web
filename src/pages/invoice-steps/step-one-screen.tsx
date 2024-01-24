@@ -124,7 +124,10 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
           <LabelField label="Nombre de la institución" value={customer ? customer.NombreInstExoneracion : ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Fecha de emisión" value={customer ? convertToDateString(customer.FechaEmisionDoc) : ""} />
+          <LabelField
+            label="Fecha de emisión"
+            value={customer.FechaEmisionDoc ? convertToDateString(customer.FechaEmisionDoc) : ""}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <LabelField

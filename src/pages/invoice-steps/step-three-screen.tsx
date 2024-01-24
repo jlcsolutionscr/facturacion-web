@@ -217,13 +217,15 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
             value={paymentDetails[0].paymentId.toString()}
             onChange={event =>
               dispatch(
-                setPaymentDetailsList({
-                  paymentId: event.target.value,
-                  description:
-                    paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                    "NO ESPECIFICADO",
-                  amount: total,
-                })
+                setPaymentDetailsList([
+                  {
+                    paymentId: event.target.value,
+                    description:
+                      paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                      "NO ESPECIFICADO",
+                    amount: total,
+                  },
+                ])
               )
             }
           >

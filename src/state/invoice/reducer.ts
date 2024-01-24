@@ -36,7 +36,7 @@ const invoiceSlice = createSlice({
       state.entity.activityCode = action.payload;
     },
     setPaymentDetailsList: (state, action) => {
-      state.entity.paymentDetailsList = [action.payload];
+      state.entity.paymentDetailsList = action.payload;
     },
     setVendorId: (state, action) => {
       state.entity.vendorId = action.payload;

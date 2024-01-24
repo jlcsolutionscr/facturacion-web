@@ -229,13 +229,15 @@ function StepFourScreen({
               label="Seleccione la forma de pago:"
               value={paymentDetails[0].paymentId}
               onChange={event =>
-                setPaymentDetailsList({
-                  paymentId: event.target.value,
-                  description:
-                    paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                    "NO ESPECIFICADO",
-                  amount: total,
-                })
+                setPaymentDetailsList([
+                  {
+                    paymentId: event.target.value,
+                    description:
+                      paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                      "NO ESPECIFICADO",
+                    amount: total,
+                  },
+                ])
               }
             >
               {paymentItems}

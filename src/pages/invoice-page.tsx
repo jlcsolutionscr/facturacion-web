@@ -23,6 +23,12 @@ const useStyles = makeStyles()(theme => ({
   },
   tabs: {
     color: "#FFF",
+    "& .MuiTab-root": {
+      color: "#FFF",
+    },
+    "& .Mui-selected": {
+      color: theme.palette.mode === "dark" ? theme.palette.primary.main : theme.palette.primary.light,
+    },
   },
   backButton: {
     position: "absolute",

@@ -177,12 +177,14 @@ function StepTwoScreen({
             value={paymentDetails[0].paymentId}
             disabled={buttonDisabled}
             onChange={event =>
-              setPaymentDetailsList({
-                paymentId: event.target.value,
-                description:
-                  paymentMethods.find(method => method.id === event.target.value)?.description ?? "NO ESPECIFICADO",
-                amount: total,
-              })
+              setPaymentDetailsList([
+                {
+                  paymentId: event.target.value,
+                  description:
+                    paymentMethods.find(method => method.id === event.target.value)?.description ?? "NO ESPECIFICADO",
+                  amount: total,
+                },
+              ])
             }
           >
             {paymentItems}
