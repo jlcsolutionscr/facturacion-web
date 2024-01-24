@@ -88,6 +88,37 @@ export const setWorkingOrderParameters = createAsyncThunk(
   }
 );
 
+export const getCustomerDetails = createAsyncThunk(
+  "invoice/getCustomerDetails",
+  async (payload: { id: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token } = session;
+    dispatch(startLoader());
+    try {
+      const customer = await getCustomerEntity(token, payload.id);
+      console.log("customer", customer);
+      dispatch(
+        setCustomerDetails({
+          id: customer.IdCliente,
+          name: customer.Nombre,
+          comercialName: customer.NombreComercial,
+          email: customer.CorreoElectronico,
+          phoneNumber: customer.Telefono,
+          exonerationType: customer.IdTipoExoneracion,
+          exonerationRef: customer.NumDocExoneracion,
+          exoneratedBy: customer.NombreInstExoneracion,
+          exonerationDate: customer.FechaEmisionDoc,
+          exonerationPercentage: customer.PorcentajeExoneracion,
+        })
+      );
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
 export const getProduct = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
   async (payload: { id: number; filterType: number }, { getState, dispatch }) => {

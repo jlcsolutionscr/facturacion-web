@@ -27,6 +27,7 @@ import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import { defaultCustomerDetails, defaultPaymentDetails } from "utils/defaults";
 import {
   generateInvoicePDF,
+  getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
   getCustomerPrice,
@@ -69,6 +70,37 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
       dispatch(setActiveSection(payload.id));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getCustomerDetails = createAsyncThunk(
+  "invoice/getCustomerDetails",
+  async (payload: { id: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token } = session;
+    dispatch(startLoader());
+    try {
+      const customer = await getCustomerEntity(token, payload.id);
+      console.log("customer", customer);
+      dispatch(
+        setCustomerDetails({
+          id: customer.IdCliente,
+          name: customer.Nombre,
+          comercialName: customer.NombreComercial,
+          email: customer.CorreoElectronico,
+          phoneNumber: customer.Telefono,
+          exonerationType: customer.IdTipoExoneracion,
+          exonerationRef: customer.NumDocExoneracion,
+          exoneratedBy: customer.NombreInstExoneracion,
+          exonerationDate: customer.FechaEmisionDoc,
+          exonerationPercentage: customer.PorcentajeExoneracion,
+        })
+      );
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

@@ -4,6 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   openCustomerDialog,
   resetCustomer,
+  setCustomer,
   setCustomerAttribute,
   setCustomerList,
   setCustomerListCount,

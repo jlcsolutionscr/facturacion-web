@@ -142,8 +142,9 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
         </Grid>
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={12} sm={7} md={6}>
+            <Grid item xs={10} sm={6} md={4}>
               <Select
+                style={{ minWidth: "100%" }}
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
                 value={activityCode.toString()}
@@ -156,8 +157,9 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
         )}
         {vendorItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={12} sm={7} md={6}>
+            <Grid item xs={10} sm={6} md={4}>
               <Select
+                style={{ minWidth: "100%" }}
                 id="id-vendedor-select-id"
                 label="Seleccione el Vendedor"
                 value={vendorId.toString()}
@@ -168,49 +170,52 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-          <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
-          <Grid container spacing={2} className={classes.details}>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Excento</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Total</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+        <Grid item xs={12}>
+          <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
+            <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
+            <Grid container spacing={2} className={classes.details}>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Excento</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Total</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={10} sm={6} md={4} className={classes.centered}>
           <Select
+            style={{ minWidth: "100%" }}
             disabled={successful}
             id="sucursal-select-id"
             label="Seleccione la forma de pago:"

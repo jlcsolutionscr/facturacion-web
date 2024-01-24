@@ -11,6 +11,12 @@ const invoiceSlice = createSlice({
     setCustomerDetails: (state, action) => {
       state.entity.customerDetails = action.payload;
     },
+    setCustomerAttribute: (state, action) => {
+      state.entity.customerDetails = {
+        ...state.entity.customerDetails,
+        [action.payload.attribute]: action.payload.value,
+      };
+    },
     setProductDetails: (state, action) => {
       state.entity.productDetails = action.payload;
     },
@@ -65,6 +71,7 @@ const invoiceSlice = createSlice({
 
 export const {
   setCustomerDetails,
+  setCustomerAttribute,
   setProductDetails,
   setDescription,
   setQuantity,

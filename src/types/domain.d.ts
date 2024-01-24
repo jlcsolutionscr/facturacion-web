@@ -132,11 +132,9 @@ export type CustomerType = {
 export type CustomerDetailsType = {
   id: number;
   name: string;
+  comercialName: string;
+  email: string;
   phoneNumber: string;
-  priceTypeId: number;
-  differentiatedTaxRateApply: boolean;
-  taxRate: number;
-  taxRateType: number;
   exonerationType: number;
   exonerationRef: string;
   exoneratedBy: string;

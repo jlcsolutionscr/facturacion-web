@@ -2,8 +2,6 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType } from "types/domain";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
@@ -121,16 +119,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
       <div className={classes.container}>
         <div>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormGroup>
-                <FormControlLabel
-                  className={classes.formControl}
-                  control={<Switch value={filterType === 1} onChange={handleFilterTypeChange} />}
-                  label="Filtrar producto por código"
-                />
-              </FormGroup>
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={10} sm={10.5} md={11}>
               <ListDropdown
                 disabled={successful}
                 label="Seleccione un producto"
@@ -152,6 +141,9 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                   )
                 }
               />
+            </Grid>
+            <Grid item xs={2} sm={1.5} md={1}>
+              <Switch value={filterType === 1} onChange={handleFilterTypeChange} />
             </Grid>
             <Grid item xs={12}>
               <TextField

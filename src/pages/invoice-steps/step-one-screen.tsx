@@ -7,19 +7,10 @@ import Grid from "@mui/material/Grid";
 import LabelField from "components/label-field";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField from "components/text-field";
-import {
-  filterCustomerList,
-  getCustomer as getCustomerAction,
-  getCustomerListByPageNumber,
-} from "state/customer/asyncActions";
-import {
-  getCustomer,
-  getCustomerList,
-  getCustomerListCount,
-  getCustomerListPage,
-  setCustomerAttribute,
-} from "state/customer/reducer";
-import { getSuccessful } from "state/invoice/reducer";
+import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
+import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
+import { getCustomerDetails as getCustomerDetailsAction } from "state/invoice/asyncActions";
+import { getCustomerDetails, getSuccessful, setCustomerAttribute } from "state/invoice/reducer";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { convertToDateString } from "utils/utilities";
 
@@ -44,7 +35,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   const myRef = React.useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
 
-  const customer = useSelector(getCustomer);
+  const customer = useSelector(getCustomerDetails);
   const customerListCount = useSelector(getCustomerListCount);
   const customerListPage = useSelector(getCustomerListPage);
   const customerList = useSelector(getCustomerList);
@@ -71,7 +62,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    dispatch(getCustomerAction({ id: item.Id }));
+    dispatch(getCustomerDetailsAction({ id: item.Id }));
     setFilterText("");
   };
 
@@ -92,11 +83,11 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
             onPageChange={handleOnPageChange}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             required
-            disabled={customer.IdCliente !== 1}
-            value={customer.Nombre}
+            disabled={customer.id !== 1}
+            value={customer.name}
             label="Nombre del cliente"
             onChange={event =>
               dispatch(
@@ -108,31 +99,31 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
             }
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField label="Nombre comercial" value={customer ? customer.NombreComercial : ""} />
+        <Grid item xs={12} sm={6}>
+          <LabelField label="Nombre comercial" value={customer ? customer.comercialName : ""} />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField label="Correo electrónico" value={customer ? customer.CorreoElectronico : ""} />
+        <Grid item xs={12} sm={6}>
+          <LabelField label="Correo electrónico" value={customer ? customer.email : ""} />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField label="Tipo de exoneración" value={customer ? customer.IdTipoExoneracion.toString() : ""} />
+        <Grid item xs={12} sm={6}>
+          <LabelField label="Tipo de exoneración" value={customer ? customer.exonerationType.toString() : ""} />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField label="Código del documento" value={customer ? customer.NumDocExoneracion : ""} />
+        <Grid item xs={12} sm={6}>
+          <LabelField label="Código del documento" value={customer ? customer.exonerationRef : ""} />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <LabelField label="Nombre de la institución" value={customer ? customer.NombreInstExoneracion : ""} />
+        <Grid item xs={12} sm={6}>
+          <LabelField label="Nombre de la institución" value={customer ? customer.exoneratedBy : ""} />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <LabelField
             label="Fecha de emisión"
-            value={customer.FechaEmisionDoc ? convertToDateString(customer.FechaEmisionDoc) : ""}
+            value={customer.exonerationDate ? convertToDateString(customer.exonerationDate) : ""}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <LabelField
             label="Porcentaje de exoneración"
-            value={customer ? customer.PorcentajeExoneracion.toString() : ""}
+            value={customer ? customer.exonerationPercentage.toString() : ""}
           />
         </Grid>
       </Grid>
