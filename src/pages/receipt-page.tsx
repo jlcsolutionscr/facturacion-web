@@ -1,7 +1,7 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -23,6 +23,7 @@ import LabelField from "components/label-field";
 import Select from "components/select";
 import TextField from "components/text-field";
 import { filterClasificationList } from "state/product/asyncActions";
+import { getClasificationList } from "state/product/reducer";
 import {
   addDetails,
   removeDetails,
@@ -34,7 +35,18 @@ import {
   validateCustomerIdentifier,
   validateProductCode,
 } from "state/receipt/asyncActions";
+import {
+  getActivityCode,
+  getExonerationDetails,
+  getIssuerDetails,
+  getProductDetails,
+  getProductDetailsList,
+  getSuccessful,
+  getSummary,
+} from "state/receipt/reducer";
+import { getCompany } from "state/session/reducer";
 import { setActiveSection } from "state/ui/actions";
+import { getExonerationTypeList, getIdTypeList, getTaxTypeList } from "state/ui/reducer";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -87,34 +99,24 @@ const useStyles = makeStyles()(theme => ({
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function ReceiptPage({
-  idTypeList,
-  issuer,
-  exonerationTypeList,
-  clasificationList,
-  exoneration,
-  taxTypeList,
-  company,
-  product,
-  productDetailsList,
-  summary,
-  activityCode,
-  successful,
-  setExonerationDetails,
-  setIssuerDetails,
-  validateCustomerIdentifier,
-  validateProductCode,
-  setProductDetails,
-  filterClasificationList,
-  addDetails,
-  removeDetails,
-  setActivityCode,
-  saveReceipt,
-  setActiveSection,
-}) {
+function ReceiptPage() {
   const { classes } = useStyles();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [clasificationFilter, setClasificationFilter] = React.useState("");
+
+  const idTypeList = useSelector(getIdTypeList);
+  const issuer = useSelector(getIssuerDetails);
+  const exonerationTypeList = useSelector(getExonerationTypeList);
+  const clasificationList = useSelector(getClasificationList);
+  const exoneration = useSelector(getExonerationDetails);
+  const taxTypeList = useSelector(getTaxTypeList);
+  const company = useSelector(getCompany);
+  const productDetail = useSelector(getProductDetails);
+  const productDetailsList = useSelector(getProductDetailsList);
+  const summary = useSelector(getSummary);
+  const activityCode = useSelector(getActivityCode);
+  const successful = useSelector(getSuccessful);
+
   const idTypeItems = idTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -191,19 +193,20 @@ function ReceiptPage({
     { field: "description", headerName: "Descripcion" },
   ];
   const addDisabled =
-    product.code.length < 13 ||
-    product.description === "" ||
-    product.unit === "" ||
-    product.quantity === "" ||
-    product.price === "" ||
-    product.price === 0;
-  const activityItems = company.ActividadEconomicaEmpresa.map(item => {
-    return (
-      <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+    productDetail.code.length < 13 ||
+    productDetail.description === "" ||
+    productDetail.unit === "" ||
+    productDetail.quantity === 0 ||
+    productDetail.price === 0;
+  const activityItems = company
+    ? company.ActividadEconomicaEmpresa.map(item => {
+        return (
+          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+            {item.Descripcion}
+          </MenuItem>
+        );
+      })
+    : [];
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -211,7 +214,7 @@ function ReceiptPage({
           <Select
             id="codigo-actividad-select-id"
             label="Seleccione la Actividad Económica"
-            value={activityCode}
+            value={activityCode.toString()}
             onChange={event => setActivityCode(event.target.value)}
           >
             {activityItems}

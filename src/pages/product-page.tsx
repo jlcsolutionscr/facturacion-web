@@ -75,8 +75,10 @@ export default function ProductPage() {
   const taxTypeList = useSelector(getTaxTypeList);
 
   useEffect(() => {
-    const calculatePrice = (value: number, taxId: number) =>
-      roundNumber(getPriceFromTaxRate(value, taxTypeList.find(elm => elm.Id === taxId)?.Valor ?? 0, false), 2);
+    const calculatePrice = (value: number, taxId: number) => {
+      const taxRate = taxTypeList.find(elm => elm.Id === taxId)?.Valor ?? 0;
+      return roundNumber(getPriceFromTaxRate(value, taxRate, false), 2);
+    };
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto));
     setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto));
     setUntaxPrice3(calculatePrice(product.PrecioVenta3, product.IdImpuesto));
@@ -123,14 +125,8 @@ export default function ProductPage() {
   };
 
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
-    const untaxPrice = roundNumber(
-      getPriceFromTaxRate(
-        parseFloat(event.target.value),
-        taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0,
-        false
-      ),
-      2
-    );
+    const taxRate = taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0;
+    const untaxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate, false), 2);
     setUntaxPrice1(untaxPrice);
     setUntaxPrice2(untaxPrice);
     setUntaxPrice3(untaxPrice);
@@ -144,14 +140,8 @@ export default function ProductPage() {
   };
 
   const handleUntaxPriceChange = (event: TextFieldOnChangeEventType) => {
-    const taxPrice = roundNumber(
-      getPriceFromTaxRate(
-        parseFloat(event.target.value),
-        taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0,
-        true
-      ),
-      2
-    );
+    const taxRate = taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0;
+    const taxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate, true), 2);
     switch (event.target.id) {
       case "untaxPrice1":
         setUntaxPrice1(parseFloat(event.target.value));
@@ -206,7 +196,7 @@ export default function ProductPage() {
     if (code !== "") {
       const codeEntity = clasificationList.find(elm => elm.Id === parseInt(code));
       const taxRateId = codeEntity
-        ? taxTypeList.find(elm => elm.Valor === codeEntity?.Impuesto ?? 0)?.Id ?? undefined
+        ? taxTypeList.find(elm => elm.Valor === codeEntity.Impuesto)?.Id ?? undefined
         : undefined;
       dispatch(setProductAttribute({ attribute: "CodigoClasificacion", value: code }));
       if (taxRateId) dispatch(setProductAttribute({ attribute: "IdImpuesto", value: taxRateId }));
