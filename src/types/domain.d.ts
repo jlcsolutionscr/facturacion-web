@@ -140,6 +140,9 @@ export type CustomerDetailsType = {
   exoneratedBy: string;
   exonerationDate: string;
   exonerationPercentage: number;
+  priceTypeId: number;
+  differentiatedTaxRateApply: boolean;
+  taxRateType: number;
 };
 
 export type ProductDetailsType = {

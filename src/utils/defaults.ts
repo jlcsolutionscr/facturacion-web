@@ -44,6 +44,9 @@ export const defaultCustomerDetails: CustomerDetailsType = {
   exoneratedBy: "",
   exonerationDate: "01/01/2000",
   exonerationPercentage: 0,
+  priceTypeId: 1,
+  differentiatedTaxRateApply: false,
+  taxRateType: 8,
 };
 
 export const defaultCustomer: CustomerType = {

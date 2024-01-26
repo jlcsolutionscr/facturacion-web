@@ -93,7 +93,7 @@ export const {
 export const getInvoiceId = (state: RootState) => state.invoice.entity.invoiceId;
 export const getCustomerDetails = (state: RootState) => state.invoice.entity.customerDetails;
 export const getProductDetails = (state: RootState) => state.invoice.entity.productDetails;
-export const getProductList = (state: RootState) => state.invoice.entity.productDetailsList;
+export const getProductDetailsList = (state: RootState) => state.invoice.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.invoice.entity.summary;
 export const getActivityCode = (state: RootState) => state.invoice.entity.activityCode;
 export const getPaymentDetailsList = (state: RootState) => state.invoice.entity.paymentDetailsList;

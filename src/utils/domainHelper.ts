@@ -502,7 +502,7 @@ export function getCustomerPrice(
   }
   customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
   if (customer.differentiatedTaxRateApply) {
-    taxRate = customer.taxRate;
+    taxRate = getTaxeRateFromId(taxRateTypeList, customer.taxRateType);
     taxRateType = customer.taxRateType;
   }
   if (company.PrecioVentaIncluyeIVA && taxRate > 0) customerPrice = customerPrice * (1 + taxRate / 100);

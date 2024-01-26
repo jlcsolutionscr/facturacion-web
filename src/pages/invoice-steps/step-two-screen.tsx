@@ -14,14 +14,20 @@ import TableRow from "@mui/material/TableRow";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { addDetails, getProduct, removeDetails } from "state/invoice/asyncActions";
-import { getProductDetails, getSuccessful, setDescription, setPrice, setQuantity } from "state/invoice/reducer";
+import {
+  getProductDetails,
+  getProductDetailsList,
+  getSuccessful,
+  setDescription,
+  setPrice,
+  setQuantity,
+} from "state/invoice/reducer";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
-import { getProductListPage } from "state/product/reducer";
-import { getProductDetailsList } from "state/receipt/reducer";
+import { getProductList, getProductListPage } from "state/product/reducer";
 import { getPermissions } from "state/session/reducer";
 import { ROWS_PER_PRODUCT } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { formatCurrency, roundNumber } from "utils/utilities";
+import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -71,6 +77,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const productListPage = useSelector(getProductListPage);
   const productListCount = useSelector(getProductListPage);
   const product = useSelector(getProductDetails);
+  const productList = useSelector(getProductList);
   const productDetailsList = useSelector(getProductDetailsList);
   const successful = useSelector(getSuccessful);
 
@@ -104,11 +111,11 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
     dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
-    isPriceChangeEnabled && setPrice(event.target.value);
+    isPriceChangeEnabled && dispatch(setPrice(parseStringToNumber(event.target.value)));
   };
-  const products = productDetailsList.map(item => ({
+  const products = productList.map(item => ({
     ...item,
-    description: filterType === 1 ? `${item.code} - ${item.description}` : item.description,
+    description: filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion,
   }));
   const buttonEnabled =
     product !== null && description !== "" && quantity !== null && price !== null && successful === false;
@@ -161,7 +168,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                 id="Cantidad"
                 value={quantity.toString()}
                 numericFormat
-                onChange={event => dispatch(setQuantity(event.target.value))}
+                onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
               />
             </Grid>
             <Grid item xs={6}>

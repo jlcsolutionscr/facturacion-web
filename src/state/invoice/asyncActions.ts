@@ -86,7 +86,6 @@ export const getCustomerDetails = createAsyncThunk(
     dispatch(startLoader());
     try {
       const customer = await getCustomerEntity(token, payload.id);
-      console.log("customer", customer);
       dispatch(
         setCustomerDetails({
           id: customer.IdCliente,
@@ -99,6 +98,9 @@ export const getCustomerDetails = createAsyncThunk(
           exoneratedBy: customer.NombreInstExoneracion,
           exonerationDate: customer.FechaEmisionDoc,
           exonerationPercentage: customer.PorcentajeExoneracion,
+          priceTypeId: customer.IdTipoPrecio,
+          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
+          taxRateType: customer.IdImpuesto,
         })
       );
       dispatch(stopLoader());
@@ -128,15 +130,15 @@ export const getProduct = createAsyncThunk(
           );
           dispatch(
             setProductDetails({
-              id: product.id,
+              id: product.IdProducto,
               quantity: 1,
-              code: product.code,
-              description: product.description,
+              code: product.Codigo,
+              description: product.Descripcion,
               taxRate,
               taxRateType,
               unit: "UND",
               price: finalPrice,
-              costPrice: product.costPrice,
+              costPrice: product.PrecioCosto,
               instalationPrice: 0,
             })
           );
