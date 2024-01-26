@@ -56,20 +56,23 @@ export const userLogout = createAsyncThunk("session/userLogout", async (_payload
   }
 });
 
-export const restoreSession = createAsyncThunk("session/restoreSession", async (payload: CompanyType, { dispatch }) => {
-  dispatch(startLoader());
-  try {
-    dispatch(login(payload));
-    dispatch(setIdTypeList(payload.ListadoTipoIdentificacion));
-    dispatch(setTaxTypeList(payload.ListadoTipoImpuesto));
-    dispatch(setExonerationTypeList(payload.ListadoTipoExoneracion));
-    dispatch(setPriceTypeList(payload.ListadoTipoPrecio));
-    dispatch(setProductTypeList(payload.ListadoTipoProducto));
-    dispatch(stopLoader());
-  } catch (error) {
-    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-    dispatch(logout());
-    dispatch(stopLoader());
-    console.error("Exeption authenticating session", error);
+export const restoreSession = createAsyncThunk(
+  "session/restoreSession",
+  async (payload: SessionCompanyType, { dispatch }) => {
+    dispatch(startLoader());
+    try {
+      dispatch(login(payload));
+      dispatch(setIdTypeList(payload.ListadoTipoIdentificacion));
+      dispatch(setTaxTypeList(payload.ListadoTipoImpuesto));
+      dispatch(setExonerationTypeList(payload.ListadoTipoExoneracion));
+      dispatch(setPriceTypeList(payload.ListadoTipoPrecio));
+      dispatch(setProductTypeList(payload.ListadoTipoProducto));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(logout());
+      dispatch(stopLoader());
+      console.error("Exeption authenticating session", error);
+    }
   }
-});
+);

@@ -107,8 +107,8 @@ type WorkingOrderStateType = {
   entity: WorkingOrderType;
   listPage: number;
   listCount: number;
-  list: object[];
-  servicePointList: object[];
+  list: InvoiceEntityType[];
+  servicePointList: IdDescriptionType[];
 };
 
 type DocumentStateType = {

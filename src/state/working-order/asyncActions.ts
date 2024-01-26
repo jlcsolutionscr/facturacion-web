@@ -1,7 +1,7 @@
+import { ProductDetailType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
-import { filterProductList } from "state/product/asyncActions";
 import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import { setVendorList } from "state/session/reducer";
 import { RootState } from "state/store";
@@ -27,7 +27,7 @@ import {
   setWorkingOrderListPage,
 } from "state/working-order/reducer";
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
-import { defaultCustomerDetails } from "utils/defaults";
+import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
   getCustomerEntity,
@@ -49,7 +49,7 @@ import {
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
 import { printInvoice, printWorkingOrder } from "utils/printing";
-import { getErrorMessage } from "utils/utilities";
+import { convertToDateString, getErrorMessage, getIdFromRateValue } from "utils/utilities";
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -64,6 +64,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
         dispatch(setCustomerListPage(1));
         dispatch(setCustomerListCount(customerCount));
         dispatch(setCustomerList(customerList));
+        dispatch(setCustomerDetails(defaultCustomerDetails));
       } else {
         const servicePointList = await getServicePointList(token, companyId, branchId, true, "");
         dispatch(setServicePointList(servicePointList));
@@ -77,7 +78,6 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(setProductList(productList));
       dispatch(resetWorkingOrder());
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setCustomerDetails(defaultCustomerDetails));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
@@ -120,7 +120,7 @@ export const getCustomerDetails = createAsyncThunk(
 );
 
 export const getProduct = createAsyncThunk(
-  "working-order/setWorkingOrderParameters",
+  "working-order/getProduct",
   async (payload: { id: number; filterType: number }, { getState, dispatch }) => {
     const { session, ui, workingOrder } = getState() as RootState;
     const { token, branchId, company } = session;
@@ -130,25 +130,26 @@ export const getProduct = createAsyncThunk(
       try {
         const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
-          const { taxRate, taxRateType, finalPrice } = getCustomerPrice(
+          const { finalPrice, taxRate, taxRateType } = getCustomerPrice(
             company,
             workingOrder.entity.customerDetails,
             product,
             taxTypeList
           );
-          dispatch(filterProductList({ filterText: "", type: payload.filterType, rowsPerPage: ROWS_PER_PRODUCT }));
-          setProductDetails({
-            id: product.id,
-            quantity: 1,
-            code: product.code,
-            description: product.description,
-            taxRate,
-            taxRateType,
-            unit: "UND",
-            price: finalPrice,
-            costPrice: product.costPrice,
-            instalationPrice: 0,
-          });
+          dispatch(
+            setProductDetails({
+              id: product.IdProducto,
+              quantity: 1,
+              code: product.Codigo,
+              description: product.Descripcion,
+              taxRate,
+              taxRateType,
+              unit: "UND",
+              price: finalPrice,
+              costPrice: product.PrecioCosto,
+              instalationPrice: 0,
+            })
+          );
         }
         dispatch(stopLoader());
       } catch (error) {
@@ -219,7 +220,7 @@ export const removeDetails = createAsyncThunk(
   async (payload: { id: string; pos: number }, { getState, dispatch }) => {
     const { workingOrder } = getState() as RootState;
     const { customerDetails, productDetailsList } = workingOrder.entity;
-    const index = productDetailsList.findIndex(item => item.id === payload.id);
+    const index = productDetailsList.findIndex((item, index) => item.id === payload.id && index == payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
@@ -232,10 +233,10 @@ export const saveWorkingOrder = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { entity: orderEntity } = workingOrder;
+    const { entity } = workingOrder;
     dispatch(startLoader());
     try {
-      const workingOrder = await saveWorkingOrderEntity(token, userId, branchId, companyId, orderEntity);
+      const workingOrder = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
       if (workingOrder) {
         dispatch(setWorkingOrder(workingOrder));
       }
@@ -329,39 +330,67 @@ export const revokeWorkingOrder = createAsyncThunk(
 export const openWorkingOrder = createAsyncThunk(
   "working-order/openWorkingOrder",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+    const { session, ui } = getState() as RootState;
     const { token, companyId, branchId, company } = session;
+    const { taxTypeList } = ui;
     dispatch(startLoader());
     try {
       const workingOrder = await getWorkingOrderEntity(token, payload.id);
-      const customer = await getCustomerEntity(token, workingOrder.customerDetails.id);
-      const customerCount = await getCustomerListCount(token, companyId, "");
-      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
+      if (company?.Modalidad === 1) {
+        const customerCount = await getCustomerListCount(token, companyId, "");
+        const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
+        dispatch(setCustomerListPage(1));
+        dispatch(setCustomerListCount(customerCount));
+        dispatch(setCustomerList(customerList));
+        dispatch(setCustomerDetails(defaultCustomerDetails));
+      } else {
+        const servicePointList = await getServicePointList(token, companyId, branchId, true, "");
+        dispatch(setServicePointList(servicePointList));
+      }
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
       const vendorList = await getVendorList(token, companyId);
+      const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: ProductDetailType) => ({
+        id: item.IdProducto,
+        quantity: item.Cantidad,
+        code: item.Codigo,
+        description: item.Descripcion,
+        taxRate: item.PorcentajeIVA,
+        taxRateType: getIdFromRateValue(taxTypeList, item.PorcentajeIVA),
+        unit: "UND",
+        price: item.PrecioVenta,
+        costPrice: item.Producto.PrecioCosto,
+      }));
+      const summary = getProductSummary(productDetailsList, 0);
       dispatch(setVendorList(vendorList));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
       dispatch(
         setWorkingOrder({
-          ...workingOrder,
-          customerDetails: {
-            id: customer.id,
-            name: customer.name,
-            exonerationType: customer.exonerationType,
-            exonerationRef: customer.exonerationRef,
-            exoneratedBy: customer.exoneratedBy,
-            exonerationDate: customer.exonerationDate,
-            exonerationPercentage: customer.exonerationPercentage,
+          id: workingOrder.IdOrden,
+          consecutive: workingOrder.ConsecOrdenServicio,
+          date: convertToDateString(workingOrder.Fecha),
+          cashAdvance: workingOrder.MontoAdelanto,
+          invoiceId: 0,
+          status: "ready",
+          activityCode: company?.ActividadEconomicaEmpresa[0].CodigoActividad,
+          customerDetails: defaultCustomerDetails,
+          productDetails: defaultProductDetails,
+          productDetailsList,
+          paymentDetailsList: [defaultPaymentDetails],
+          vendorId: workingOrder.IdVendedor,
+          summary,
+          delivery: {
+            phone: "",
+            address: "",
+            description: "",
+            date: "",
+            time: "",
+            details: "",
           },
         })
       );
-      dispatch(setCustomerListCount(customerCount));
-      dispatch(setCustomerList(customerList));
       dispatch(setProductListCount(productCount));
-      dispatch(setProductDetailsList(productList));
+      dispatch(setProductList(productList));
       dispatch(setActiveSection(21));
-      dispatch(setStatus("ready"));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -372,7 +401,7 @@ export const openWorkingOrder = createAsyncThunk(
 
 export const generateInvoice = createAsyncThunk(
   "working-order/generateInvoice",
-  async (_payload: { id: number }, { getState, dispatch }) => {
+  async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId, currencyType } = session;
     const { id, activityCode, paymentDetailsList, vendorId, customerDetails, productDetailsList, summary } =

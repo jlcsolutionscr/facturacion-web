@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
@@ -8,7 +7,8 @@ import Tabs from "@mui/material/Tabs";
 
 import StepOneScreen from "./restaurant-order-steps/step-one-screen";
 import StepTwoScreen from "./restaurant-order-steps/step-two-screen";
-import { setActiveSection } from "state/ui/actions";
+import { getPermissions } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -31,17 +31,23 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-function RestaurantOrderPage({ permissions, setActiveSection }) {
+export default function RestaurantOrderPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0);
-  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
-  const handleChange = (event, newValue) => {
+
+  const permissions = useSelector(getPermissions);
+
+  const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
   };
+
+  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
+
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(9)}>
+        <IconButton aria-label="upload picture" component="span" onClick={() => dispatch(setActiveSection(9))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
@@ -54,15 +60,3 @@ function RestaurantOrderPage({ permissions, setActiveSection }) {
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    permissions: state.session.permissions,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setActiveSection }, dispatch);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RestaurantOrderPage);

@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import { XMLParser } from "fast-xml-parser";
 import { saveAs } from "file-saver";
-import { IdValueType } from "types/domain";
+import { IdDescriptionValueType } from "types/domain";
 import * as XLSX from "xlsx";
 
 type HeaderType = {
@@ -61,8 +61,16 @@ export function convertToDateTimeString(date: Date | string) {
   return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T23:59:59`;
 }
 
-export function getTaxeRateFromId(taxTypeList: IdValueType[], id: number) {
+export function getTaxeRateFromId(taxTypeList: IdDescriptionValueType[], id: number) {
   return taxTypeList.find(x => x.Id === id)?.Valor ?? 13;
+}
+
+export function getIdFromRateValue(taxTypeList: IdDescriptionValueType[], value: number) {
+  return taxTypeList.find(elm => elm.Valor === value)?.Id ?? 8;
+}
+
+export function getDescriptionFromRateId(taxTypeList: IdDescriptionValueType[], id: number) {
+  return taxTypeList.find(elm => elm.Id === id)?.Descripcion ?? "";
 }
 
 export function xmlToObject(value: string) {

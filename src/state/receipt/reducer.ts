@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { receiptInitialState } from "state/InitialState";
 import { RootState } from "state/store";
-import { defaultReceipt, defaultReceiptProduct } from "utils/defaults";
+import { defaultProductDetails, defaultReceipt } from "utils/defaults";
 
 export const receiptSlice = createSlice({
   name: "receipt",
@@ -24,7 +24,7 @@ export const receiptSlice = createSlice({
       state.entity.productDetailsList = action.payload;
     },
     resetProductDetails: state => {
-      state.entity.productDetails = defaultReceiptProduct;
+      state.entity.productDetails = defaultProductDetails;
     },
     setProductTaxDetails: (state, action) => {
       state.entity.productDetails.taxRate = action.payload.rate;

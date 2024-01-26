@@ -48,7 +48,7 @@ import { getCompany } from "state/session/reducer";
 import { setActiveSection } from "state/ui/actions";
 import { getExonerationTypeList, getIdTypeList, getTaxTypeList } from "state/ui/reducer";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
-import { formatCurrency, roundNumber } from "utils/utilities";
+import { formatCurrency, getDescriptionFromRateId, getIdFromRateValue, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -153,7 +153,7 @@ function ReceiptPage() {
   const handleClasificationRowClick = code => {
     if (code !== "") {
       const codeEntity = clasificationList.find(elm => elm.Id === code);
-      const taxRateId = codeEntity ? taxTypeList.find(elm => elm.Valor === codeEntity.Impuesto).Id : undefined;
+      const taxRateId = codeEntity ? getIdFromRateValue(taxTypeList, codeEntity.Impuesto) : undefined;
       setProductDetails("code", code);
       if (taxRateId) setProductDetails("taxTypeId", taxRateId);
     }
@@ -363,7 +363,7 @@ function ReceiptPage() {
         <Grid item xs={12} sm={7}>
           <LabelField
             id="TasaIva"
-            value={taxTypeList.find(elm => elm.Id === product.taxTypeId).Descripcion}
+            value={getDescriptionFromRateId(taxTypeList, product.taxTypeId)}
             label="Tasa del IVA"
           />
         </Grid>

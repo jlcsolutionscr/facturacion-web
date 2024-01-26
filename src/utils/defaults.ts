@@ -78,7 +78,7 @@ export const defaultPaymentDetails: PaymentDetailsType = {
   amount: 0,
 };
 
-export const defaultInvoiceProduct: ProductDetailsType = {
+export const defaultProductDetails: ProductDetailsType = {
   id: "",
   code: "",
   description: "",
@@ -88,18 +88,6 @@ export const defaultInvoiceProduct: ProductDetailsType = {
   unit: "UND",
   price: 0,
   costPrice: 0,
-  instalationPrice: 0,
-};
-
-export const defaultReceiptProduct: ProductDetailsType = {
-  id: "",
-  code: "",
-  description: "",
-  quantity: 1,
-  taxRate: 13,
-  taxRateType: 8,
-  unit: "UND",
-  price: 0,
 };
 
 export const defaultProduct: ProductType = {
@@ -135,7 +123,7 @@ export const defaultInvoice: InvoiceType = {
   date: "",
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
-  productDetails: defaultInvoiceProduct,
+  productDetails: defaultProductDetails,
   productDetailsList: [],
   paymentDetailsList: [defaultPaymentDetails],
   vendorId: 0,
@@ -162,7 +150,7 @@ export const defaultWorkingOrder: WorkingOrderType = {
   status: "on-progress",
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
-  productDetails: defaultInvoiceProduct,
+  productDetails: defaultProductDetails,
   productDetailsList: [],
   paymentDetailsList: [],
   vendorId: 0,
@@ -198,7 +186,7 @@ export const defaultReceipt: ReceiptType = {
     phone: "",
     email: "",
   },
-  productDetails: defaultReceiptProduct,
+  productDetails: defaultProductDetails,
   productDetailsList: [],
   summary: {
     taxed: 0,

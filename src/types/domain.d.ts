@@ -106,6 +106,20 @@ export type ProductType = {
   Activo: boolean;
 };
 
+export type ProductDetailType = {
+  IdProducto: number | null;
+  Codigo: string;
+  Descripcion: string;
+  PrecioCosto: number;
+  PrecioVenta: number;
+  PorcentajeIVA: number;
+  PorcDescuento: number;
+  Cantidad: number;
+  Producto: {
+    PrecioCosto: number;
+  };
+};
+
 export type CustomerType = {
   IdEmpresa: number;
   IdCliente: number;
@@ -154,8 +168,7 @@ export type ProductDetailsType = {
   taxRateType: number;
   unit: string;
   price: number;
-  costPrice?: number;
-  instalationPrice?: number;
+  costPrice: number;
 };
 
 type PaymentDetailsType = {

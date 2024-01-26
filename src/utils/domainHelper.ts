@@ -33,8 +33,8 @@ type DetalleFacturaType = {
   PrecioVenta: number;
   Excento: boolean;
   PrecioCosto: number;
-  CostoInstalacion: number;
   PorcentajeIVA: number;
+  PorcDescuento: number;
 };
 
 type DetalleOrdenServicioType = {
@@ -573,9 +573,9 @@ export async function saveInvoiceEntity(
       Cantidad: item.quantity,
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
-      PrecioCosto: item.costPrice ?? 0,
-      CostoInstalacion: 0,
+      PrecioCosto: item.costPrice,
       PorcentajeIVA: item.taxRate,
+      PorcDescuento: 0,
     };
     invoiceDetails.push(detail);
   });
@@ -699,7 +699,6 @@ export async function saveWorkingOrderEntity(
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,
-      PorcDescuento: 0,
     };
     workingOrderDetails.push(detail);
   });

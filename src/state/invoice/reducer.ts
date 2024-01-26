@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { invoiceInitialState } from "state/InitialState";
 import { RootState } from "state/store";
-import { defaultInvoice, defaultInvoiceProduct } from "utils/defaults";
+import { defaultInvoice, defaultProductDetails } from "utils/defaults";
 
 const invoiceSlice = createSlice({
   name: "invoice",
@@ -30,7 +30,7 @@ const invoiceSlice = createSlice({
       state.entity.productDetails.price = action.payload;
     },
     resetProductDetails: state => {
-      state.entity.productDetails = defaultInvoiceProduct;
+      state.entity.productDetails = defaultProductDetails;
     },
     setProductDetailsList: (state, action) => {
       state.entity.productDetailsList = action.payload;

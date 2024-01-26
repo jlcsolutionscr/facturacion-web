@@ -1,6 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,14 +7,16 @@ import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
 import Select from "components/select";
+import { getCompany } from "state/session/reducer";
+import { saveWorkingOrder } from "state/working-order/asyncActions";
 import {
-  generateInvoice,
-  generateInvoiceTicket,
-  generateWorkingOrderTicket,
-  saveWorkingOrder,
+  getActivityCode,
+  getPaymentDetailsList,
+  getSummary,
+  getWorkingOrderId,
   setActivityCode,
   setPaymentDetailsList,
-} from "state/working-order/asyncActions";
+} from "state/working-order/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -62,28 +63,26 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-function StepTwoScreen({
-  value,
-  index,
-  company,
-  summary,
-  activityCode,
-  paymentDetails,
-  workingOrderId,
-  status,
-  setActivityCode,
-  setPaymentDetailsList,
-  generateWorkingOrderTicket,
-  generateInvoice,
-  generateInvoiceTicket,
-}) {
-  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+interface StepTwoScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepTwoScreen({ value, index }: StepTwoScreenProps) {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const myRef = React.useRef<HTMLDivElement>(null);
+
+  const summary = useSelector(getSummary);
+  const workingOrderId = useSelector(getWorkingOrderId);
+  const company = useSelector(getCompany);
+  const activityCode = useSelector(getActivityCode);
+  const paymentDetails = useSelector(getPaymentDetailsList);
+
   React.useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [value]);
-  const buttonDisabled = total === 0 || status !== "ready";
+
   const paymentMethods: { id: number; description: string }[] = [
     { id: 1, description: "EFECTIVO" },
     { id: 2, description: "TARJETA" },
@@ -97,30 +96,28 @@ function StepTwoScreen({
       </MenuItem>
     );
   });
-  const handleOnPrintClick = () => {
-    if (status === "converted") {
-      generateInvoiceTicket();
-    } else {
-      generateWorkingOrderTicket(workingOrderId);
-    }
-  };
-  const activityItems = company.ActividadEconomicaEmpresa.map(item => {
-    return (
-      <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const activityItems = company
+    ? company.ActividadEconomicaEmpresa.map(item => {
+        return (
+          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+            {item.Descripcion}
+          </MenuItem>
+        );
+      })
+    : [];
+  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+  const buttonDisabled = total === 0;
+
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
-      <Grid container spacing={2} className={classes.gridContainer}>
+      <Grid container spacing={2}>
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={12} sm={7} md={6}>
               <Select
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
-                value={activityCode}
+                value={activityCode.toString()}
                 onChange={event => setActivityCode(event.target.value)}
               >
                 {activityItems}
@@ -174,14 +171,15 @@ function StepTwoScreen({
             style={{ width: "215px", textAlign: "left" }}
             id="forma-pago-select-id"
             label="Seleccione la forma de pago:"
-            value={paymentDetails[0].paymentId}
+            value={paymentDetails[0].paymentId.toString()}
             disabled={buttonDisabled}
             onChange={event =>
               setPaymentDetailsList([
                 {
                   paymentId: event.target.value,
                   description:
-                    paymentMethods.find(method => method.id === event.target.value)?.description ?? "NO ESPECIFICADO",
+                    paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                    "NO ESPECIFICADO",
                   amount: total,
                 },
               ])
@@ -191,40 +189,13 @@ function StepTwoScreen({
           </Select>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button disabled={buttonDisabled} label="Facturar" onClick={() => generateInvoice()} />
-        </Grid>
-        <Grid item xs={12} className={classes.centered}>
-          <Button disabled={status !== "converted"} label="Imprimir Factura" onClick={handleOnPrintClick} />
+          <Button
+            disabled={buttonDisabled}
+            label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
+            onClick={() => dispatch(saveWorkingOrder())}
+          />
         </Grid>
       </Grid>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    workingOrderId: state.workingOrder.workingOrderId,
-    status: state.workingOrder.status,
-    company: state.company.company,
-    summary: state.workingOrder.summary,
-    activityCode: state.workingOrder.activityCode,
-    paymentDetails: state.workingOrder.paymentDetails,
-    branchList: state.ui.branchList,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setActivityCode,
-      setPaymentDetailsList,
-      saveWorkingOrder,
-      generateWorkingOrderTicket,
-      generateInvoice,
-      generateInvoiceTicket,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen);

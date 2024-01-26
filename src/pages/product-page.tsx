@@ -28,7 +28,7 @@ import {
 import { getTaxTypeList } from "state/ui/reducer";
 import { getPriceFromTaxRate } from "utils/domainHelper";
 import { SearchIcon } from "utils/iconsHelper";
-import { roundNumber } from "utils/utilities";
+import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -76,7 +76,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     const calculatePrice = (value: number, taxId: number) => {
-      const taxRate = taxTypeList.find(elm => elm.Id === taxId)?.Valor ?? 0;
+      const taxRate = getTaxeRateFromId(taxTypeList, taxId);
       return roundNumber(getPriceFromTaxRate(value, taxRate, false), 2);
     };
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto));
@@ -125,7 +125,7 @@ export default function ProductPage() {
   };
 
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
-    const taxRate = taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0;
+    const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
     const untaxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate, false), 2);
     setUntaxPrice1(untaxPrice);
     setUntaxPrice2(untaxPrice);
@@ -140,7 +140,7 @@ export default function ProductPage() {
   };
 
   const handleUntaxPriceChange = (event: TextFieldOnChangeEventType) => {
-    const taxRate = taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Valor ?? 0;
+    const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
     const taxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate, true), 2);
     switch (event.target.id) {
       case "untaxPrice1":
@@ -195,9 +195,7 @@ export default function ProductPage() {
   const handleClasificationRowClick = (code: string) => {
     if (code !== "") {
       const codeEntity = clasificationList.find(elm => elm.Id === parseInt(code));
-      const taxRateId = codeEntity
-        ? taxTypeList.find(elm => elm.Valor === codeEntity.Impuesto)?.Id ?? undefined
-        : undefined;
+      const taxRateId = codeEntity ? getIdFromRateValue(taxTypeList, codeEntity.Impuesto) : undefined;
       dispatch(setProductAttribute({ attribute: "CodigoClasificacion", value: code }));
       if (taxRateId) dispatch(setProductAttribute({ attribute: "IdImpuesto", value: taxRateId }));
     }
@@ -274,7 +272,7 @@ export default function ProductPage() {
         <Grid item xs={12} sm={6}>
           <LabelField
             id="TasaIva"
-            value={taxTypeList.find(elm => elm.Id === product.IdImpuesto)?.Descripcion ?? ""}
+            value={getDescriptionFromRateId(taxTypeList, product.IdImpuesto)}
             label="Tasa del IVA"
           />
         </Grid>

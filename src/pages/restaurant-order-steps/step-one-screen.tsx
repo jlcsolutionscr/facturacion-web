@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { IdDescriptionType } from "types/domain";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
@@ -15,22 +15,27 @@ import TableRow from "@mui/material/TableRow";
 
 import Button from "components/button";
 import LabelField from "components/label-field";
-import ListDropdown from "components/list-dropdown";
+import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import Select from "components/select";
-import TextField from "components/text-field";
-import { filterProductList } from "state/product/asyncActions";
-import { setActiveSection } from "state/ui/reducer";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
+import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getPermissions } from "state/session/reducer";
+import { addDetails, getProduct, removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
-  addDetails,
-  getProduct,
-  removeDetails,
-  saveWorkingOrder,
+  getCustomerDetails,
+  getProductDetails,
+  getProductDetailsList,
+  getServicePointList,
+  getStatus,
+  getSummary,
+  getWorkingOrderId,
+  setCustomerDetails,
   setDescription,
   setPrice,
   setQuantity,
   setStatus,
-} from "state/working-order/asyncActions";
-import { setCustomerDetails } from "state/working-order/reducer";
+} from "state/working-order/reducer";
 import { ROWS_PER_PRODUCT } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
@@ -74,61 +79,60 @@ const useStyles = makeStyles()(theme => ({
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function StepOneScreen({
-  index,
-  value,
-  permissions,
-  workingOrderId,
-  customerName,
-  product,
-  description,
-  quantity,
-  price,
-  status,
-  productList,
-  productDetailsList,
-  summary,
-  servicePointList,
-  setCustomerDetails,
-  setStatus,
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
-  filterProductList,
-  addDetails,
-  removeDetails,
-  saveWorkingOrder,
-}) {
+interface StepOneScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
+
+  const [filter, setFilter] = React.useState("");
+  const [serviceIncluded, setServiceIncluded] = React.useState(false);
   const myRef = React.useRef<HTMLDivElement>(null);
+
+  const permissions = useSelector(getPermissions);
+  const customerDetails = useSelector(getCustomerDetails);
+  const servicePointList = useSelector(getServicePointList);
+  const workingOrderId = useSelector(getWorkingOrderId);
+  const productDetails = useSelector(getProductDetails);
+  const productList = useSelector(getProductList);
+  const productListPage = useSelector(getProductListPage);
+  const productListCount = useSelector(getProductListCount);
+  const productDetailsList = useSelector(getProductDetailsList);
+  const summary = useSelector(getSummary);
+  const status = useSelector(getStatus);
+
   React.useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [value]);
-  const [filter, setFilter] = React.useState("");
-  const [serviceIncluded, setServiceIncluded] = React.useState(false);
-  const handleCustomerNameChange = event => {
-    setCustomerDetails("Nombre", event.target.value);
-    setStatus("on-progress");
+
+  const handleCustomerNameChange = (event: TextFieldOnChangeEventType) => {
+    dispatch(setCustomerDetails({ attribute: "name", value: event.target.value }));
+    dispatch(setStatus("on-progress"));
   };
-  const handleOnFilterChange = event => {
+
+  const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterProductList({ filterText: event.target.value, type: 2, rowsPerPage: ROWS_PER_PRODUCT });
+      dispatch(filterProductList({ filterText: event.target.value, type: 2, rowsPerPage: ROWS_PER_PRODUCT }));
     }, 1000);
   };
+
   const handleItemSelected = (item: IdDescriptionType) => {
-    getProduct({ id: item.Id });
+    dispatch(getProduct({ id: item.Id, filterType: 2 }));
     setFilter("");
   };
-  const handlePriceChange = event => {
+
+  const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0;
     isPriceChangeEnabled && setPrice(event.target.value);
   };
-  const buttonEnabled = product !== null && description !== "" && quantity !== null && price !== null;
+
   const paymentItems = servicePointList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -136,18 +140,22 @@ function StepOneScreen({
       </MenuItem>
     );
   });
+
+  const { description, quantity, price } = productDetails;
+  const buttonEnabled = description !== "" && quantity > 0 && price > 0;
   const display = value !== index ? "none" : "flex";
+
   return (
     <div ref={myRef} className={classes.root} style={{ display: display }}>
       <div className={classes.container}>
         <div>
           <Grid container spacing={2}>
             {workingOrderId === 0 && (
-              <Grid item xs={12} className={classes.centered}>
+              <Grid item xs={12}>
                 <Select
                   id="punto-servicio-select-id"
                   label="Seleccione el punto de servicio:"
-                  value={customerName}
+                  value={customerDetails.name}
                   onChange={handleCustomerNameChange}
                 >
                   {paymentItems}
@@ -156,16 +164,30 @@ function StepOneScreen({
             )}
             {workingOrderId > 0 && (
               <Grid item xs={12} md={6}>
-                <LabelField label="Punto de servicio" value={customerName} />
+                <LabelField label="Punto de servicio" value={customerDetails.name} />
               </Grid>
             )}
             <Grid item xs={12}>
               <ListDropdown
+                disabled={false}
                 label="Seleccione un producto"
-                items={productList}
+                page={productListPage - 1}
+                rowsCount={productListCount}
+                rows={productList}
                 value={filter}
+                rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
+                onPageChange={pageNumber =>
+                  dispatch(
+                    getProductListByPageNumber({
+                      pageNumber: pageNumber + 1,
+                      filterText: filter,
+                      type: 2,
+                      rowsPerPage: ROWS_PER_PRODUCT,
+                    })
+                  )
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -173,28 +195,27 @@ function StepOneScreen({
                 label="Descripción"
                 id="Descripcion"
                 value={description}
-                onChange={event => setDescription(event.target.value)}
+                onChange={event => dispatch(setDescription(event.target.value))}
               />
             </Grid>
             <Grid item xs={3}>
               <TextField
                 label="Cantidad"
                 id="Cantidad"
-                value={quantity}
+                value={quantity.toString()}
                 numericFormat
-                onChange={event => setQuantity(event.target.value)}
+                onChange={event => dispatch(setQuantity(event.target.value))}
               />
             </Grid>
             <Grid item xs={4}>
-              <TextField label="Precio" value={price} numericFormat onChange={handlePriceChange} />
+              <TextField label="Precio" value={price.toString()} numericFormat onChange={handlePriceChange} />
             </Grid>
             <Grid item xs={1}>
               <IconButton
-                className={classes.outerButton}
                 color="primary"
                 disabled={!buttonEnabled}
                 component="span"
-                onClick={() => addDetails()}
+                onClick={() => dispatch(addDetails())}
               >
                 <AddCircleIcon />
               </IconButton>
@@ -229,17 +250,14 @@ function StepOneScreen({
                 <TableBody>
                   {productDetailsList.map((row, index) => (
                     <TableRow key={index}>
-                      <TableCell align="right">{row.Cantidad}</TableCell>
-                      <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
-                      <TableCell align="right">
-                        {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
-                      </TableCell>
+                      <TableCell align="right">{row.quantity}</TableCell>
+                      <TableCell>{`${row.code} - ${row.description}`}</TableCell>
+                      <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
                       <TableCell align="right">
                         <IconButton
-                          className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() => removeDetails(row.IdProducto, index)}
+                          onClick={() => dispatch(removeDetails({ id: row.id, pos: index }))}
                         >
                           <RemoveCircleIcon />
                         </IconButton>
@@ -255,47 +273,10 @@ function StepOneScreen({
           <Button
             disabled={status !== "on-progress" || summary.total === 0}
             label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
-            onClick={() => saveWorkingOrder()}
+            onClick={() => dispatch(saveWorkingOrder())}
           />
         </div>
       </div>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    permissions: state.session.permissions,
-    customerName: state.customer.customer.Nombre,
-    servicePointList: state.workingOrder.servicePointList,
-    workingOrderId: state.workingOrder.workingOrderId,
-    description: state.workingOrder.description,
-    quantity: state.workingOrder.quantity,
-    product: state.product.product,
-    price: state.workingOrder.price,
-    productList: state.product.list,
-    productDetailsList: state.workingOrder.productDetailsList,
-    summary: state.workingOrder.summary,
-    status: state.workingOrder.status,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setCustomerDetails,
-      setStatus,
-      getProduct,
-      setDescription,
-      setQuantity,
-      setPrice,
-      filterProductList,
-      addDetails,
-      removeDetails,
-      saveWorkingOrder,
-      setActiveSection,
-    },
-    dispatch
-  );
-};
-export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen);
