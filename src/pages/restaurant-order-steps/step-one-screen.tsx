@@ -141,8 +141,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
     );
   });
 
-  const { description, quantity, price } = productDetails;
-  const buttonEnabled = description !== "" && quantity > 0 && price > 0;
+  const buttonEnabled = productDetails.description !== "" && productDetails.quantity > 0 && productDetails.price > 0;
   const display = value !== index ? "none" : "flex";
 
   return (
@@ -194,7 +193,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
               <TextField
                 label="Descripción"
                 id="Descripcion"
-                value={description}
+                value={productDetails.description}
                 onChange={event => dispatch(setDescription(event.target.value))}
               />
             </Grid>
@@ -202,13 +201,18 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
               <TextField
                 label="Cantidad"
                 id="Cantidad"
-                value={quantity.toString()}
+                value={productDetails.quantity.toString()}
                 numericFormat
                 onChange={event => dispatch(setQuantity(event.target.value))}
               />
             </Grid>
             <Grid item xs={4}>
-              <TextField label="Precio" value={price.toString()} numericFormat onChange={handlePriceChange} />
+              <TextField
+                label="Precio"
+                value={productDetails.price.toString()}
+                numericFormat
+                onChange={handlePriceChange}
+              />
             </Grid>
             <Grid item xs={1}>
               <IconButton
@@ -252,7 +256,9 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
                     <TableRow key={index}>
                       <TableCell align="right">{row.quantity}</TableCell>
                       <TableCell>{`${row.code} - ${row.description}`}</TableCell>
-                      <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
+                      <TableCell align="right">
+                        {formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}
+                      </TableCell>
                       <TableCell align="right">
                         <IconButton
                           color="secondary"

@@ -1,31 +1,33 @@
+import { Switch } from "@mui/material";
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { IdDescriptionType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import ListDropdown from "components/list-dropdown";
-import Select from "components/select";
-import TextField from "components/text-field";
+import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
+import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getPermissions } from "state/session/reducer";
+import { addDetails, getProduct, removeDetails } from "state/working-order/asyncActions";
 import {
-  addDetails,
-  getProduct,
-  removeDetails,
+  getProductDetails,
+  getProductDetailsList,
+  getStatus,
   setDescription,
   setPrice,
   setQuantity,
-} from "state/working-order/asyncActions";
+} from "state/working-order/reducer";
 import { ROWS_PER_PRODUCT } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { formatCurrency, roundNumber } from "utils/utilities";
+import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -57,30 +59,24 @@ const useStyles = makeStyles()(theme => ({
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function StepTwoScreen({
-  index,
-  value,
-  permissions,
-  productListPage,
-  productListCount,
-  productList,
-  product,
-  description,
-  quantity,
-  price,
-  productDetailsList,
-  status,
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
-  filterProductList,
-  getProductListByPageNumber,
-  addDetails,
-  removeDetails,
-}) {
+interface StepTwoScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const myRef = React.useRef<HTMLDivElement>(null);
+
+  const permissions = useSelector(getPermissions);
+  const productListPage = useSelector(getProductListPage);
+  const productListCount = useSelector(getProductListCount);
+  const productList = useSelector(getProductList);
+  const productDetails = useSelector(getProductDetails);
+  const productDetailsList = useSelector(getProductDetailsList);
+  const status = useSelector(getStatus);
+
   React.useEffect(() => {
     if (value === 1) myRef.current?.scrollTo(0, 0);
   }, [value]);
@@ -89,18 +85,18 @@ function StepTwoScreen({
   const [filter, setFilter] = React.useState("");
   const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0;
 
-  const handleOnFilterChange = event => {
+  const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
     setFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT });
+      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT }));
     }, 1000);
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    getProduct({ id: item.Id });
+    dispatch(getProduct({ id: item.Id }));
     setFilter("");
   };
 
@@ -108,11 +104,11 @@ function StepTwoScreen({
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT });
+    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
 
-  const handlePriceChange = event => {
-    isPriceChangeEnabled && setPrice(event.target.value);
+  const handlePriceChange = (event: TextFieldOnChangeEventType) => {
+    isPriceChangeEnabled && dispatch(setPrice(parseStringToNumber(event.target.value)));
   };
 
   const products = productList.map(item => ({
@@ -121,26 +117,18 @@ function StepTwoScreen({
   }));
   const fieldDisabled = status === "converted";
   const buttonEnabled =
-    product !== null && description !== "" && quantity !== null && price !== null && fieldDisabled === false;
+    productDetails.description !== "" &&
+    productDetails.quantity > 0 &&
+    productDetails.price > 0 &&
+    fieldDisabled === false;
   const display = value !== index ? "none" : "flex";
+
   return (
     <div ref={myRef} className={classes.root} style={{ display: display }}>
       <div className={classes.container}>
         <div>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={3}>
-              <Select
-                className={classes.formControl}
-                id="filter-type-select-id"
-                label="Filtrar producto por:"
-                value={filterType.toString()}
-                onChange={handleFilterTypeChange}
-              >
-                <MenuItem value={1}>Código</MenuItem>
-                <MenuItem value={2}>Descripción</MenuItem>
-              </Select>
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={10} sm={10.5} md={11}>
               <ListDropdown
                 disabled={fieldDisabled}
                 label="Seleccione un producto"
@@ -148,26 +136,30 @@ function StepTwoScreen({
                 rowsCount={productListCount}
                 rows={products}
                 value={filter}
-                rowId="Id"
                 rowsPerPage={ROWS_PER_PRODUCT}
                 onItemSelected={handleItemSelected}
                 onChange={handleOnFilterChange}
                 onPageChange={pageNumber =>
-                  getProductListByPageNumber({
-                    pageNumber: pageNumber + 1,
-                    filterText: filter,
-                    type: filterType,
-                    rowsPerPage: ROWS_PER_PRODUCT,
-                  })
+                  dispatch(
+                    getProductListByPageNumber({
+                      pageNumber: pageNumber + 1,
+                      filterText: filter,
+                      type: filterType,
+                      rowsPerPage: ROWS_PER_PRODUCT,
+                    })
+                  )
                 }
               />
+            </Grid>
+            <Grid item xs={2} sm={1.5} md={1}>
+              <Switch value={filterType === 1} onChange={handleFilterTypeChange} />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 disabled={fieldDisabled}
                 label="Descripción"
                 id="Descripcion"
-                value={description}
+                value={productDetails.description}
                 onChange={event => setDescription(event.target.value)}
               />
             </Grid>
@@ -176,16 +168,16 @@ function StepTwoScreen({
                 disabled={fieldDisabled}
                 label="Cantidad"
                 id="Cantidad"
-                value={quantity}
+                value={productDetails.quantity.toString()}
                 numericFormat
-                onChange={event => setQuantity(event.target.value)}
+                onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
                 disabled={fieldDisabled}
                 label="Precio"
-                value={price}
+                value={productDetails.price.toString()}
                 numericFormat
                 onChange={handlePriceChange}
               />
@@ -196,7 +188,7 @@ function StepTwoScreen({
                 color="primary"
                 disabled={!buttonEnabled}
                 component="span"
-                onClick={() => addDetails()}
+                onClick={() => dispatch(addDetails())}
               >
                 <AddCircleIcon />
               </IconButton>
@@ -218,18 +210,17 @@ function StepTwoScreen({
                 <TableBody>
                   {productDetailsList.map((row, index) => (
                     <TableRow key={index}>
-                      <TableCell align="right">{row.Cantidad}</TableCell>
-                      <TableCell>{`${row.Codigo} - ${row.Descripcion}`}</TableCell>
+                      <TableCell>{row.quantity}</TableCell>
+                      <TableCell>{`${row.code} - ${row.description}`}</TableCell>
                       <TableCell align="right">
-                        {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
+                        {formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}
                       </TableCell>
                       <TableCell align="right">
                         <IconButton
-                          disabled={fieldDisabled}
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() => removeDetails(row.IdProducto, index)}
+                          onClick={() => dispatch(removeDetails({ id: row.id, pos: index }))}
                         >
                           <RemoveCircleIcon />
                         </IconButton>
@@ -245,36 +236,3 @@ function StepTwoScreen({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    permissions: state.session.permissions,
-    description: state.workingOrder.description,
-    quantity: state.workingOrder.quantity,
-    product: state.product.product,
-    price: state.workingOrder.price,
-    productListPage: state.product.listPage,
-    productListCount: state.product.listCount,
-    productList: state.product.list,
-    productDetailsList: state.workingOrder.productDetailsList,
-    status: state.workingOrder.status,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      getProduct,
-      setDescription,
-      setQuantity,
-      setPrice,
-      filterProductList,
-      getProductListByPageNumber,
-      addDetails,
-      removeDetails,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen);

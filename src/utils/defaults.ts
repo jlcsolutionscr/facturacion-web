@@ -46,7 +46,7 @@ export const defaultCustomerDetails: CustomerDetailsType = {
   exonerationPercentage: 0,
   priceTypeId: 1,
   differentiatedTaxRateApply: false,
-  taxRateType: 8,
+  taxRate: 13,
 };
 
 export const defaultCustomer: CustomerType = {
@@ -84,10 +84,11 @@ export const defaultProductDetails: ProductDetailsType = {
   description: "",
   quantity: 1,
   taxRate: 13,
-  taxRateType: 8,
   unit: "UND",
   price: 0,
+  pricePlusTaxes: 0,
   costPrice: 0,
+  disccountRate: 0,
 };
 
 export const defaultProduct: ProductType = {

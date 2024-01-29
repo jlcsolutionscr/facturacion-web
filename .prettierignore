@@ -1,6 +1,7 @@
 # Ignore artifacts:
 build 
 coverage
+*.yaml
 
 # Ignore all HTML files:
 *.html

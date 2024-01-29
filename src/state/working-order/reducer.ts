@@ -11,6 +11,13 @@ const workingOrderSlice = createSlice({
     setCustomerDetails: (state, action) => {
       state.entity.customerDetails = action.payload;
     },
+    setCustomerAttribute: (state, action) => {
+      state.entity.status = "on-progress";
+      state.entity.customerDetails = {
+        ...state.entity.customerDetails,
+        [action.payload.attribute]: action.payload.value,
+      };
+    },
     setProductDetails: (state, action) => {
       state.entity.productDetails = action.payload;
     },
@@ -34,6 +41,7 @@ const workingOrderSlice = createSlice({
       state.entity.summary = action.payload;
     },
     setActivityCode: (state, action) => {
+      state.entity.status = "on-progress";
       state.entity.activityCode = action.payload;
     },
     setPaymentDetailsList: (state, action) => {
@@ -78,6 +86,7 @@ const workingOrderSlice = createSlice({
 
 export const {
   setCustomerDetails,
+  setCustomerAttribute,
   setProductDetails,
   setDescription,
   setQuantity,
@@ -111,6 +120,7 @@ export const getWorkingOrder = (state: RootState) => state.workingOrder.entity;
 export const getWorkingOrderId = (state: RootState) => state.workingOrder.entity.id;
 export const getInvoiceId = (state: RootState) => state.workingOrder.entity.invoiceId;
 export const getStatus = (state: RootState) => state.workingOrder.entity.status;
+export const getCashAdvance = (state: RootState) => state.workingOrder.entity.cashAdvance;
 export const getWorkingOrderListPage = (state: RootState) => state.workingOrder.listPage;
 export const getWorkingOrderListCount = (state: RootState) => state.workingOrder.listCount;
 export const getWorkingOrderList = (state: RootState) => state.workingOrder.list;

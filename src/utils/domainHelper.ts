@@ -3,7 +3,7 @@ import {
   CompanyType,
   CustomerDetailsType,
   CustomerType,
-  IdValueType,
+  IdDescriptionValueType,
   PaymentDetailsType,
   ProductDetailsType,
   ProductType,
@@ -38,7 +38,6 @@ type DetalleFacturaType = {
 };
 
 type DetalleOrdenServicioType = {
-  IdConsecutivo: number;
   IdOrden: number;
   IdProducto: number;
   Descripcion: string;
@@ -46,6 +45,7 @@ type DetalleOrdenServicioType = {
   PrecioVenta: number;
   Excento: boolean;
   PorcentajeIVA: number;
+  PorcDescuento: number;
 };
 
 type DetalleFacturaCompraType = {
@@ -473,15 +473,13 @@ export async function getServicePointList(
 }
 
 export function getCustomerPrice(
-  company: CompanyType,
-  customer: CustomerDetailsType,
+  customerPriceType: number,
   product: ProductType,
-  taxRateTypeList: IdValueType[]
+  taxRateTypeList: IdDescriptionValueType[]
 ) {
   let customerPrice = 0;
-  let taxRateType = product.IdImpuesto;
-  let taxRate = getTaxeRateFromId(taxRateTypeList, product.IdImpuesto);
-  switch (customer.priceTypeId) {
+  const taxRate = getTaxeRateFromId(taxRateTypeList, product.IdImpuesto);
+  switch (customerPriceType) {
     case 1:
       customerPrice = product.PrecioVenta1;
       break;
@@ -500,16 +498,24 @@ export function getCustomerPrice(
     default:
       customerPrice = product.PrecioVenta1;
   }
-  customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
-  if (customer.differentiatedTaxRateApply) {
-    taxRate = getTaxeRateFromId(taxRateTypeList, customer.taxRateType);
-    taxRateType = customer.taxRateType;
-  }
-  if (company.PrecioVentaIncluyeIVA && taxRate > 0) customerPrice = customerPrice * (1 + taxRate / 100);
-  return { taxRate, taxRateType, finalPrice: roundNumber(customerPrice, 2) };
+  return { taxRate, price: customerPrice };
 }
 
-export function getProductSummary(products: ProductDetailsType[], percentage: number) {
+export function getTaxedPrice(
+  productTaxRate: number,
+  productPrice: number,
+  priceIncludedTaxes: boolean,
+  customerTaxRate: number
+) {
+  const taxRate = customerTaxRate;
+  const untaxedPrice = roundNumber(productPrice / (1 + productTaxRate / 100), 3);
+  let pricePlusTaxes = productPrice;
+  if (priceIncludedTaxes) pricePlusTaxes = untaxedPrice;
+  if (taxRate > 0) pricePlusTaxes = roundNumber(untaxedPrice * (1 + taxRate / 100), 2);
+  return { taxRate, price: untaxedPrice, pricePlusTaxes };
+}
+
+export function getProductSummary(products: ProductDetailsType[], disccountedDercentage: number) {
   let taxed = 0;
   let exonerated = 0;
   let exempt = 0;
@@ -518,20 +524,20 @@ export function getProductSummary(products: ProductDetailsType[], percentage: nu
   let total = 0;
   const totalCost = 0;
   products.forEach(item => {
-    const precioUnitario = roundNumber(item.price / (1 + item.taxRate / 100), 3);
+    const untaxPrice = item.price;
     if (item.taxRate > 0) {
-      let impuestoUnitario = (precioUnitario * item.taxRate) / 100;
-      if (percentage > 0) {
-        const gravadoParcial = precioUnitario * (1 - percentage / 100);
-        taxed += roundNumber(gravadoParcial, 2) * item.quantity;
-        exonerated += roundNumber(precioUnitario - gravadoParcial, 2) * item.quantity;
-        impuestoUnitario = (gravadoParcial * item.taxRate) / 100;
+      let taxesAmount = (untaxPrice * item.taxRate) / 100;
+      if (disccountedDercentage > 0) {
+        const disccountedPrice = untaxPrice * (1 - disccountedDercentage / 100);
+        taxed += roundNumber(disccountedPrice, 2) * item.quantity;
+        exonerated += roundNumber(untaxPrice - disccountedPrice, 2) * item.quantity;
+        taxesAmount = (disccountedPrice * item.taxRate) / 100;
       } else {
-        taxed += roundNumber(precioUnitario, 2) * item.quantity;
+        taxed += roundNumber(untaxPrice, 2) * item.quantity;
       }
-      taxes += roundNumber(impuestoUnitario, 2) * item.quantity;
+      taxes += roundNumber(taxesAmount, 2) * item.quantity;
     } else {
-      exempt += roundNumber(precioUnitario, 2) * item.quantity;
+      exempt += roundNumber(untaxPrice, 2) * item.quantity;
     }
   });
   subTotal = taxed + exonerated + exempt;
@@ -575,7 +581,7 @@ export async function saveInvoiceEntity(
       Excento: item.taxRate === 0,
       PrecioCosto: item.costPrice,
       PorcentajeIVA: item.taxRate,
-      PorcDescuento: 0,
+      PorcDescuento: item.disccountRate,
     };
     invoiceDetails.push(detail);
   });
@@ -688,9 +694,8 @@ export async function saveWorkingOrderEntity(
   order: WorkingOrderType
 ) {
   const workingOrderDetails: DetalleOrdenServicioType[] = [];
-  order.productDetailsList.forEach((item, index) => {
+  order.productDetailsList.forEach(item => {
     const detail = {
-      IdConsecutivo: index,
       IdOrden: order?.id ?? 0,
       IdProducto: parseInt(item.id),
       Codigo: item.code,
@@ -699,6 +704,7 @@ export async function saveWorkingOrderEntity(
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,
+      PorcDescuento: item.disccountRate,
     };
     workingOrderDetails.push(detail);
   });
@@ -892,7 +898,7 @@ export async function generateInvoicePDF(token: string, invoiceId: number, ref: 
   }
 }
 
-export async function generateWorkingOrderPDF(token: string, orderId: number, ref: string) {
+export async function generateWorkingOrderPDF(token: string, orderId: number, ref: number) {
   const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrden: " + orderId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
@@ -916,7 +922,7 @@ export async function saveReceiptEntity(
       Cantidad: item.quantity,
       Codigo: item.code,
       Descripcion: item.description,
-      IdImpuesto: item.taxRateType,
+      IdImpuesto: item.taxRateType ?? 13,
       PorcentajeIVA: item.taxRate,
       UnidadMedida: item.unit,
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
@@ -973,17 +979,4 @@ export async function getProductClasificationList(token: string, filterText: str
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
-}
-
-export function getPriceFromTaxRate(price: number, taxRate: number, withTaxes: boolean) {
-  function withTaxesFunc(a: number, b: number) {
-    return a * b;
-  }
-  function noTaxesFunc(a: number, b: number) {
-    return a / b;
-  }
-  const taxOperation = withTaxes ? withTaxesFunc : noTaxesFunc;
-  const rate = taxRate / 100;
-  const finalPrice = taxOperation(price, 1 + rate);
-  return finalPrice;
 }

@@ -111,13 +111,16 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
     isPriceChangeEnabled && dispatch(setPrice(parseStringToNumber(event.target.value)));
   };
 
-  const { description, quantity, price } = productDetails;
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
   const products = productList.map(item => ({
     ...item,
     Descripcion: filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion,
   }));
-  const buttonEnabled = description !== "" && quantity > 0 && price > 0 && successful === false;
+  const buttonEnabled =
+    productDetails.description !== "" &&
+    productDetails.quantity > 0 &&
+    productDetails.price > 0 &&
+    successful === false;
   const display = value !== index ? "none" : "flex";
 
   return (
@@ -156,7 +159,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                 disabled={successful}
                 label="Descripción"
                 id="Descripcion"
-                value={description}
+                value={productDetails.description}
                 onChange={event => dispatch(setDescription(event.target.value))}
               />
             </Grid>
@@ -165,7 +168,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                 disabled={successful}
                 label="Cantidad"
                 id="Cantidad"
-                value={quantity.toString()}
+                value={productDetails.quantity.toString()}
                 numericFormat
                 onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
               />
@@ -174,7 +177,7 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
               <TextField
                 disabled={successful}
                 label="Precio"
-                value={price.toString()}
+                value={productDetails.price.toString()}
                 numericFormat
                 onChange={handlePriceChange}
               />
@@ -209,7 +212,9 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
                     <TableRow key={index}>
                       <TableCell>{row.quantity}</TableCell>
                       <TableCell>{`${row.code} - ${row.description}`}</TableCell>
-                      <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
+                      <TableCell align="right">
+                        {formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}
+                      </TableCell>
                       <TableCell align="right">
                         <IconButton
                           className={classes.innerButton}

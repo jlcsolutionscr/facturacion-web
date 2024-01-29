@@ -83,7 +83,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
             onPageChange={handleOnPageChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <TextField
             required
             disabled={customer.id !== 1}
@@ -92,7 +92,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
             onChange={event =>
               dispatch(
                 setCustomerAttribute({
-                  attribute: "Nombre",
+                  attribute: "name",
                   value: event.target.value,
                 })
               )
@@ -104,6 +104,9 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <LabelField label="Correo electrónico" value={customer ? customer.email : ""} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <LabelField label="Tasa de Impuesto" value={customer ? `${customer.taxRate.toString()}%` : ""} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <LabelField label="Tipo de exoneración" value={customer ? customer.exonerationType.toString() : ""} />

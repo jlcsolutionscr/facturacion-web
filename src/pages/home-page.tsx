@@ -9,8 +9,8 @@ import ProductListPage from "pages/product-list-page";
 import RestaurantOrderListPage from "pages/restaurant-order-list-page";
 import RestaurantOrderPage from "pages/restaurant-order-page";
 //import ReceiptPage from "pages/receipt-page";
-//import WorkingOrderListPage from "pages/working-order-list-page";
-//import WorkingOrderPage from "pages/working-order-page";
+import WorkingOrderListPage from "pages/working-order-list-page";
+import WorkingOrderPage from "pages/working-order-page";
 import React from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -76,9 +76,9 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {/*activeSection === 6 && <ReceiptPage />*/}
         {activeSection === 7 && <InvoiceListPage />}
         {/*activeSection === 8 && <DocumentListPage />*/}
-        {activeSection === 9 ? company?.Modalidad === 1 ? null : <RestaurantOrderListPage /> : null}
+        {activeSection === 9 ? company?.Modalidad === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
         {/*activeSection === 20 && <ReportsPage width={width} />*/}
-        {activeSection === 21 ? company?.Modalidad === 1 ? null : <RestaurantOrderPage /> : null}
+        {activeSection === 21 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
       </div>
     </div>
   );

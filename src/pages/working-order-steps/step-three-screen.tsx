@@ -1,11 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 
 import TextField from "components/text-field";
-import { setDeliveryAttribute } from "state/working-order/asyncActions";
+import { getDeliveryDetails, getStatus, setDeliveryAttribute } from "state/working-order/reducer";
 
 const useStyles = makeStyles()(theme => ({
   container: {
@@ -16,84 +15,83 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-function StepThreeScreen({ value, index, delivery, status, setDeliveryAttribute }) {
+interface StepThreeScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepThreeScreen({ value, index }: StepThreeScreenProps) {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const myRef = React.useRef<HTMLDivElement>(null);
+
+  const delivery = useSelector(getDeliveryDetails);
+  const status = useSelector(getStatus);
+
   React.useEffect(() => {
     if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
+
   const fieldDisabled = status === "converted";
+
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2}>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={12}>
           <TextField
             disabled={fieldDisabled}
             label="Teléfono"
             id="Telefono"
             value={delivery.phone}
-            onChange={event => setDeliveryAttribute("phone", event.target.value)}
+            onChange={event => dispatch(setDeliveryAttribute({ attribute: "phone", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={12}>
           <TextField
             disabled={fieldDisabled}
             label="Dirección"
             id="Direccion"
             value={delivery.address}
-            onChange={event => setDeliveryAttribute("address", event.target.value)}
+            onChange={event => dispatch(setDeliveryAttribute({ attribute: "address", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={12}>
           <TextField
             disabled={fieldDisabled}
             label="Descripción"
             id="ThreeDescripcion"
             value={delivery.description}
-            onChange={event => setDeliveryAttribute("description", event.target.value)}
+            onChange={event => dispatch(setDeliveryAttribute({ attribute: "description", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={6} className={classes.centered}>
+        <Grid item xs={6}>
           <TextField
             disabled={fieldDisabled}
             label="Fecha de entrega"
             id="FechaDeEntrega"
             value={delivery.date}
-            onChange={event => setDeliveryAttribute("date", event.target.value)}
+            onChange={event => dispatch(setDeliveryAttribute({ attribute: "date", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={6} className={classes.centered}>
+        <Grid item xs={6}>
           <TextField
             disabled={fieldDisabled}
             label="Hora de entrega"
             id="HoraDeEntrega"
             value={delivery.time}
-            onChange={event => setDeliveryAttribute("time", event.target.value)}
+            onChange={event => dispatch(setDeliveryAttribute({ attribute: "time", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={12}>
           <TextField
             disabled={status === "converted"}
             label="Observaciones"
             id="Observaciones"
             value={delivery.details}
-            onChange={event => setDeliveryAttribute("details", event.target.value)}
+            onChange={event => dispatch(setDeliveryAttribute({ attribute: "details", value: event.target.value }))}
           />
         </Grid>
       </Grid>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    status: state.workingOrder.status,
-    delivery: state.workingOrder.delivery,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setDeliveryAttribute }, dispatch);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepThreeScreen);

@@ -19,7 +19,7 @@ import {
   sendNotification,
   setDocumentDetails,
 } from "state/document/asyncActions";
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 

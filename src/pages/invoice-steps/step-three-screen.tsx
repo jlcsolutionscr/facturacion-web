@@ -78,7 +78,6 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
   const vendorId = useSelector(getVendorId);
   const comment = useSelector(getComment);
   const successful = useSelector(getSuccessful);
-
   const vendorList = useSelector(getVendorList);
 
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
@@ -131,7 +130,7 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
       <Grid container spacing={2}>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={12}>
           <TextField
             disabled={successful}
             label="Observaciones"

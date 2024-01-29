@@ -40,6 +40,7 @@ import {
   getProductListPerPage,
   getProductSummary,
   getServicePointList,
+  getTaxedPrice,
   getVendorList,
   getWorkingOrderEntity,
   getWorkingOrderListCount,
@@ -49,7 +50,7 @@ import {
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
 import { printInvoice, printWorkingOrder } from "utils/printing";
-import { convertToDateString, getErrorMessage, getIdFromRateValue } from "utils/utilities";
+import { convertToDateString, getErrorMessage, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -89,14 +90,14 @@ export const setWorkingOrderParameters = createAsyncThunk(
 );
 
 export const getCustomerDetails = createAsyncThunk(
-  "invoice/getCustomerDetails",
+  "working-order/getCustomerDetails",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+    const { session, ui } = getState() as RootState;
     const { token } = session;
+    const { taxTypeList } = ui;
     dispatch(startLoader());
     try {
       const customer = await getCustomerEntity(token, payload.id);
-      console.log("customer", customer);
       dispatch(
         setCustomerDetails({
           id: customer.IdCliente,
@@ -109,6 +110,9 @@ export const getCustomerDetails = createAsyncThunk(
           exoneratedBy: customer.NombreInstExoneracion,
           exonerationDate: customer.FechaEmisionDoc,
           exonerationPercentage: customer.PorcentajeExoneracion,
+          priceTypeId: customer.IdTipoPrecio,
+          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
+          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
         })
       );
       dispatch(stopLoader());
@@ -121,7 +125,7 @@ export const getCustomerDetails = createAsyncThunk(
 
 export const getProduct = createAsyncThunk(
   "working-order/getProduct",
-  async (payload: { id: number; filterType: number }, { getState, dispatch }) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { session, ui, workingOrder } = getState() as RootState;
     const { token, branchId, company } = session;
     const { taxTypeList } = ui;
@@ -130,9 +134,8 @@ export const getProduct = createAsyncThunk(
       try {
         const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
-          const { finalPrice, taxRate, taxRateType } = getCustomerPrice(
-            company,
-            workingOrder.entity.customerDetails,
+          const { price, taxRate } = getCustomerPrice(
+            workingOrder.entity.customerDetails.priceTypeId,
             product,
             taxTypeList
           );
@@ -143,9 +146,8 @@ export const getProduct = createAsyncThunk(
               code: product.Codigo,
               description: product.Descripcion,
               taxRate,
-              taxRateType,
               unit: "UND",
-              price: finalPrice,
+              price,
               costPrice: product.PrecioCosto,
               instalationPrice: 0,
             })
@@ -175,18 +177,24 @@ export const addDetails = createAsyncThunk("working-order/addDetails", async (_p
     productDetails.price > 0
   ) {
     try {
-      let newProducts = [];
+      let newProducts = null;
+      const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
+        productDetails.taxRate,
+        productDetails.price,
+        company.PrecioVentaIncluyeIVA,
+        customerDetails.taxRate
+      );
       const item = {
         id: productDetails.id,
         code: productDetails.code,
         description: productDetails.description,
         quantity: productDetails.quantity,
         unit: productDetails.unit,
-        price: productDetails.price,
-        taxRate: productDetails.taxRate,
-        taxRateType: productDetails.taxRateType,
+        price,
+        pricePlusTaxes,
+        taxRate,
         costPrice: productDetails.costPrice,
-        instalationPrice: 0,
+        disccountRate: productDetails.disccountRate,
       };
       if (company?.Modalidad === 1) {
         const index = productDetailsList.findIndex(item => item.id === productDetails.id);
@@ -233,7 +241,7 @@ export const saveWorkingOrder = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { entity } = workingOrder;
+    const { entity, listPage } = workingOrder;
     dispatch(startLoader());
     try {
       const workingOrder = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
@@ -247,6 +255,7 @@ export const saveWorkingOrder = createAsyncThunk(
           type: "INFO",
         })
       );
+      dispatch(getWorkingOrderListByPageNumber({ pageNumber: listPage }));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -342,7 +351,6 @@ export const openWorkingOrder = createAsyncThunk(
         dispatch(setCustomerListPage(1));
         dispatch(setCustomerListCount(customerCount));
         dispatch(setCustomerList(customerList));
-        dispatch(setCustomerDetails(defaultCustomerDetails));
       } else {
         const servicePointList = await getServicePointList(token, companyId, branchId, true, "");
         dispatch(setServicePointList(servicePointList));
@@ -350,19 +358,31 @@ export const openWorkingOrder = createAsyncThunk(
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
       const vendorList = await getVendorList(token, companyId);
+      dispatch(setProductListCount(productCount));
+      dispatch(setProductList(productList));
+      dispatch(setVendorList(vendorList));
+      const customerDetails = {
+        id: workingOrder.IdCliente,
+        name: workingOrder.NombreCliente,
+        exonerationType: workingOrder.Cliente.IdTipoExoneracion,
+        exonerationRef: workingOrder.Cliente.NumDocExoneracion,
+        exoneratedBy: workingOrder.Cliente.NumDocExoneracion,
+        exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
+        priceTypeId: workingOrder.Cliente.IdTipoPrecio,
+        taxRate: getTaxeRateFromId(taxTypeList, workingOrder.Cliente.IdImpuesto),
+      };
       const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: ProductDetailType) => ({
         id: item.IdProducto,
         quantity: item.Cantidad,
         code: item.Codigo,
         description: item.Descripcion,
         taxRate: item.PorcentajeIVA,
-        taxRateType: getIdFromRateValue(taxTypeList, item.PorcentajeIVA),
         unit: "UND",
         price: item.PrecioVenta,
+        pricePlusTaxes: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
         costPrice: item.Producto.PrecioCosto,
       }));
-      const summary = getProductSummary(productDetailsList, 0);
-      dispatch(setVendorList(vendorList));
+      const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
       dispatch(
         setWorkingOrder({
           id: workingOrder.IdOrden,
@@ -372,24 +392,22 @@ export const openWorkingOrder = createAsyncThunk(
           invoiceId: 0,
           status: "ready",
           activityCode: company?.ActividadEconomicaEmpresa[0].CodigoActividad,
-          customerDetails: defaultCustomerDetails,
+          customerDetails,
           productDetails: defaultProductDetails,
           productDetailsList,
           paymentDetailsList: [defaultPaymentDetails],
           vendorId: workingOrder.IdVendedor,
           summary,
           delivery: {
-            phone: "",
-            address: "",
-            description: "",
-            date: "",
-            time: "",
-            details: "",
+            phone: workingOrder.Telefono,
+            address: workingOrder.Direccion,
+            description: workingOrder.Descripcion,
+            date: workingOrder.FechaEntrega,
+            time: workingOrder.HoraEntrega,
+            details: workingOrder.OtrosDetalles,
           },
         })
       );
-      dispatch(setProductListCount(productCount));
-      dispatch(setProductList(productList));
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
     } catch (error) {
@@ -463,7 +481,7 @@ export const generateInvoiceTicket = createAsyncThunk(
 
 export const generatePDF = createAsyncThunk(
   "working-order/generatePDF",
-  async (payload: { id: number; ref: string }, { getState, dispatch }) => {
+  async (payload: { id: number; ref: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());

@@ -1,6 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,15 +7,25 @@ import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
 import Select from "components/select";
+import { getCompany, getVendorList } from "state/session/reducer";
 import {
   generateInvoice,
   generateInvoiceTicket,
   generateWorkingOrderTicket,
   saveWorkingOrder,
-  setActivityCode,
-  setDeliveryAttribute,
-  setPaymentDetailsList,
 } from "state/working-order/asyncActions";
+import {
+  getActivityCode,
+  getCashAdvance,
+  getPaymentDetailsList,
+  getStatus,
+  getSummary,
+  getVendorId,
+  getWorkingOrderId,
+  setActivityCode,
+  setPaymentDetailsList,
+  setVendorId,
+} from "state/working-order/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -63,31 +72,31 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-function StepFourScreen({
-  value,
-  index,
-  company,
-  summary,
-  activityCode,
-  paymentDetails,
-  vendorId,
-  order,
-  vendorList,
-  status,
-  setActivityCode,
-  setPaymentDetailsList,
-  setDeliveryAttribute,
-  saveWorkingOrder,
-  generateWorkingOrderTicket,
-  generateInvoice,
-  generateInvoiceTicket,
-}) {
-  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+interface StepFourScreenProps {
+  index: number;
+  value: number;
+}
+
+export default function StepFourScreen({ value, index }: StepFourScreenProps) {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
   const myRef = React.useRef<HTMLDivElement>(null);
+
+  const company = useSelector(getCompany);
+  const summary = useSelector(getSummary);
+  const activityCode = useSelector(getActivityCode);
+  const paymentDetails = useSelector(getPaymentDetailsList);
+  const vendorId = useSelector(getVendorId);
+  const workingOrderId = useSelector(getWorkingOrderId);
+  const vendorList = useSelector(getVendorList);
+  const status = useSelector(getStatus);
+  const cashAdvance = useSelector(getCashAdvance);
+
   React.useEffect(() => {
     if (value === 3) myRef.current?.scrollTo(0, 0);
   }, [value]);
+
+  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
   const buttonDisabled = total === 0 || status === "ready" || status === "converted";
   const paymentMethods: { id: number; description: string }[] = [
     { id: 1, description: "EFECTIVO" },
@@ -104,18 +113,20 @@ function StepFourScreen({
   });
   const handleOnPrintClick = () => {
     if (status === "converted") {
-      generateInvoiceTicket();
+      dispatch(generateInvoiceTicket());
     } else {
-      generateWorkingOrderTicket(order.IdOrden);
+      dispatch(generateWorkingOrderTicket({ id: workingOrderId }));
     }
   };
-  const activityItems = company.ActividadEconomicaEmpresa.map(item => {
-    return (
-      <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const activityItems = company
+    ? company.ActividadEconomicaEmpresa.map(item => {
+        return (
+          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+            {item.Descripcion}
+          </MenuItem>
+        );
+      })
+    : [];
   const vendorItems = vendorList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -125,83 +136,123 @@ function StepFourScreen({
   });
   return (
     <div ref={myRef} className={classes.container} hidden={value !== index}>
-      <Grid container spacing={2} className={classes.gridContainer}>
+      <Grid container spacing={2}>
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={12} sm={7} md={6}>
+            <Grid item xs={10} sm={6} md={4}>
               <Select
+                style={{ minWidth: "100%" }}
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
-                value={activityCode}
-                onChange={event => setActivityCode(event.target.value)}
+                value={activityCode.toString()}
+                onChange={event => dispatch(setActivityCode(event.target.value))}
               >
                 {activityItems}
               </Select>
             </Grid>
           </Grid>
         )}
-        {order === null && vendorItems.length > 1 && (
+        {vendorItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={12} sm={7} md={6}>
+            <Grid item xs={10} sm={6} md={4}>
               <Select
+                style={{ minWidth: "100%" }}
                 id="id-vendedor-select-id"
                 label="Seleccione el Vendedor"
-                value={vendorId}
-                onChange={event => setDeliveryAttribute("vendorId", event.target.value)}
+                value={vendorId.toString()}
+                onChange={event => dispatch(setVendorId(event.target.value))}
               >
                 {vendorItems}
               </Select>
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-          <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN SERVICIO</InputLabel>
-          <Grid container spacing={2} className={classes.details}>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Excento</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Total</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+        <Grid item xs={12}>
+          <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
+            <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN DE SERVICIO</InputLabel>
+            <Grid container spacing={2} className={classes.details}>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Excento</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Total</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Saldo</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(total - cashAdvance)}</InputLabel>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
+        {status === "ready" && (
+          <Grid item xs={10} sm={6} md={4} className={classes.centered}>
+            <Select
+              style={{ minWidth: "100%" }}
+              id="sucursal-select-id"
+              label="Seleccione la forma de pago:"
+              value={paymentDetails[0].paymentId.toString()}
+              onChange={event =>
+                dispatch(
+                  setPaymentDetailsList([
+                    {
+                      paymentId: event.target.value,
+                      description:
+                        paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                        "NO ESPECIFICADO",
+                      amount: total,
+                    },
+                  ])
+                )
+              }
+            >
+              {paymentItems}
+            </Select>
+          </Grid>
+        )}
         {status === "on-progress" && (
           <Grid item xs={12} className={classes.centered}>
             <Button
               disabled={buttonDisabled}
-              label={order !== null ? "Actualizar" : "Agregar"}
-              onClick={() => saveWorkingOrder()}
+              label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
+              onClick={() => dispatch(saveWorkingOrder())}
             />
+          </Grid>
+        )}
+        {status === "ready" && (
+          <Grid item xs={12} className={classes.centered}>
+            <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
           </Grid>
         )}
         {(status === "ready" || status === "converted") && (
@@ -209,78 +260,7 @@ function StepFourScreen({
             <Button label={status === "ready" ? "Imprimir Orden" : "Imprimir Factura"} onClick={handleOnPrintClick} />
           </Grid>
         )}
-        {status === "ready" && (
-          <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-            <Grid container spacing={2} className={classes.details}>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Saldo</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(total - order.MontoAdelanto)}</InputLabel>
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        {status === "ready" && (
-          <Grid item xs={12} className={classes.centered}>
-            <Select
-              style={{ width: "215px", textAlign: "left" }}
-              id="forma-pago-select-id"
-              label="Seleccione la forma de pago:"
-              value={paymentDetails[0].paymentId}
-              onChange={event =>
-                setPaymentDetailsList([
-                  {
-                    paymentId: event.target.value,
-                    description:
-                      paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                      "NO ESPECIFICADO",
-                    amount: total,
-                  },
-                ])
-              }
-            >
-              {paymentItems}
-            </Select>
-          </Grid>
-        )}
-        {status === "ready" && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button label="Facturar" onClick={() => generateInvoice()} />
-          </Grid>
-        )}
       </Grid>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    order: state.workingOrder.order,
-    status: state.workingOrder.status,
-    company: state.company.company,
-    summary: state.workingOrder.summary,
-    activityCode: state.workingOrder.activityCode,
-    paymentDetails: state.workingOrder.paymentDetails,
-    vendorId: state.workingOrder.vendorId,
-    branchList: state.ui.branchList,
-    vendorList: state.session.vendorList,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setActivityCode,
-      setPaymentDetailsList,
-      setDeliveryAttribute,
-      saveWorkingOrder,
-      generateWorkingOrderTicket,
-      generateInvoice,
-      generateInvoiceTicket,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepFourScreen);

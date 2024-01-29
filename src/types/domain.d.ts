@@ -112,6 +112,7 @@ export type ProductDetailType = {
   Descripcion: string;
   PrecioCosto: number;
   PrecioVenta: number;
+  Excento: boolean;
   PorcentajeIVA: number;
   PorcDescuento: number;
   Cantidad: number;
@@ -156,7 +157,7 @@ export type CustomerDetailsType = {
   exonerationPercentage: number;
   priceTypeId: number;
   differentiatedTaxRateApply: boolean;
-  taxRateType: number;
+  taxRate: number;
 };
 
 export type ProductDetailsType = {
@@ -165,10 +166,12 @@ export type ProductDetailsType = {
   code: string;
   description: string;
   taxRate: number;
-  taxRateType: number;
+  taxRateType?: number;
   unit: string;
   price: number;
+  pricePlusTaxes: number;
   costPrice: number;
+  disccountRate: number;
 };
 
 type PaymentDetailsType = {

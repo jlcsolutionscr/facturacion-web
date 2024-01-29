@@ -97,9 +97,11 @@ export const validateProductCode = createAsyncThunk(
 );
 
 export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload, { getState, dispatch }) => {
-  const { receipt } = getState() as RootState;
+  const { receipt, session } = getState() as RootState;
+  const { company } = session;
   const { exoneration, productDetails, productDetailsList } = receipt.entity;
   if (
+    company &&
     productDetails.id !== "" &&
     productDetails.code !== "" &&
     productDetails.description !== "" &&
@@ -122,6 +124,7 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
         taxRateType: productDetails.taxRateType,
         unit: "UND",
         price: roundNumber((productDetails.price * (1 + productDetails.taxRate)) / 100, 2),
+        costPrice: 0,
       };
       const newProducts = [...productDetailsList, item];
       dispatch(setProductDetailsList(newProducts));

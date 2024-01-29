@@ -293,15 +293,14 @@ export default function CustomerPage() {
               label="Fecha exoneración"
               format="dd/MM/yyyy"
               value={new Date(customer.FechaEmisionDoc)}
-              onChange={(value: Date | null) => {
-                console.log("value", value);
+              onChange={(value: Date | null) =>
                 dispatch(
                   setCustomerAttribute({
                     attribute: "FechaEmisionDoc",
                     value: format(value !== null ? value : Date.now(), "yyyy-MM-dd") + "T23:59:59",
                   })
-                );
-              }}
+                )
+              }
             />
           </Grid>
         </LocalizationProvider>

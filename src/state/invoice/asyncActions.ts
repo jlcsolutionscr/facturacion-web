@@ -10,7 +10,6 @@ import {
   setInvoiceList,
   setInvoiceListCount,
   setInvoiceListPage,
-  setPaymentDetailsList,
   setPrice,
   setProductDetails,
   setProductDetailsList,
@@ -24,7 +23,6 @@ import { setVendorList } from "state/session/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
-import { defaultCustomerDetails, defaultPaymentDetails } from "utils/defaults";
 import {
   generateInvoicePDF,
   getCustomerEntity,
@@ -38,12 +36,13 @@ import {
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
+  getTaxedPrice,
   getVendorList,
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
 import { printInvoice } from "utils/printing";
-import { getErrorMessage } from "utils/utilities";
+import { getErrorMessage, getTaxeRateFromId } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
@@ -65,8 +64,6 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
       dispatch(resetInvoice());
-      dispatch(setCustomerDetails(defaultCustomerDetails));
-      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
       dispatch(setActiveSection(payload.id));
@@ -81,8 +78,9 @@ export const setInvoiceParameters = createAsyncThunk(
 export const getCustomerDetails = createAsyncThunk(
   "invoice/getCustomerDetails",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+    const { session, ui } = getState() as RootState;
     const { token } = session;
+    const { taxTypeList } = ui;
     dispatch(startLoader());
     try {
       const customer = await getCustomerEntity(token, payload.id);
@@ -100,7 +98,7 @@ export const getCustomerDetails = createAsyncThunk(
           exonerationPercentage: customer.PorcentajeExoneracion,
           priceTypeId: customer.IdTipoPrecio,
           differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
-          taxRateType: customer.IdImpuesto,
+          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
         })
       );
       dispatch(stopLoader());
@@ -122,12 +120,7 @@ export const getProduct = createAsyncThunk(
       try {
         const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
-          const { finalPrice, taxRate, taxRateType } = getCustomerPrice(
-            company,
-            invoice.entity.customerDetails,
-            product,
-            taxTypeList
-          );
+          const { price, taxRate } = getCustomerPrice(invoice.entity.customerDetails.priceTypeId, product, taxTypeList);
           dispatch(
             setProductDetails({
               id: product.IdProducto,
@@ -135,9 +128,8 @@ export const getProduct = createAsyncThunk(
               code: product.Codigo,
               description: product.Descripcion,
               taxRate,
-              taxRateType,
               unit: "UND",
-              price: finalPrice,
+              price,
               costPrice: product.PrecioCosto,
               instalationPrice: 0,
             })
@@ -167,18 +159,24 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
     productDetails.price > 0
   ) {
     try {
+      const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
+        productDetails.taxRate,
+        productDetails.price,
+        company.PrecioVentaIncluyeIVA,
+        customerDetails.taxRate
+      );
       let newProducts = null;
       const item = {
         id: productDetails.id,
         code: productDetails.code,
         description: productDetails.description,
         quantity: productDetails.quantity,
-        taxRate: productDetails.taxRate,
-        taxRateType: productDetails.taxRateType,
+        taxRate,
         unit: "UND",
-        price: productDetails.price,
+        price,
+        pricePlusTaxes,
         costPrice: productDetails.costPrice,
-        instalationPrice: 0,
+        disccountRate: productDetails.disccountRate,
       };
       const index = productDetailsList.findIndex(item => item.id === productDetails.id);
       if (index >= 0) {

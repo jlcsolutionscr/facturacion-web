@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
@@ -10,7 +9,7 @@ import StepFourScreen from "./working-order-steps/step-four-screen";
 import StepOneScreen from "./working-order-steps/step-one-screen";
 import StepThreeScreen from "./working-order-steps/step-three-screen";
 import StepTwoScreen from "./working-order-steps/step-two-screen";
-import { setActiveSection } from "state/ui/actions";
+import { setActiveSection } from "state/ui/reducer";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -20,9 +19,29 @@ const useStyles = makeStyles()(theme => ({
     flex: 1,
     overflow: "hidden",
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
-    color: "#FFF",
     maxWidth: "900px",
-    margin: "10px auto 0 auto",
+    margin: "15px auto",
+    "@media (max-width:960px)": {
+      margin: "10px",
+    },
+    "@media (max-width:600px)": {
+      maxWidth: "auto",
+      margin: "5px",
+    },
+    "@media (max-width:414px)": {
+      backgroundImage: `none`,
+      maxWidth: "auto",
+      margin: "0",
+    },
+  },
+  tabs: {
+    color: "#FFF",
+    "& .MuiTab-root": {
+      color: "#FFF",
+    },
+    "& .Mui-selected": {
+      color: theme.palette.mode === "dark" ? theme.palette.primary.main : theme.palette.primary.light,
+    },
   },
   backButton: {
     position: "absolute",
@@ -33,20 +52,24 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-function WorkingOrderPage({ setActiveSection }) {
+export default function WorkingOrderPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
+
   const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(9)}>
+        <IconButton aria-label="upload picture" component="span" onClick={() => dispatch(setActiveSection(9))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs centered value={value} indicatorColor="secondary" onChange={handleChange}>
+      <Tabs className={classes.tabs} centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Cliente" />
         <Tab label="Detalle" />
         <Tab label="Otros" />
@@ -59,9 +82,3 @@ function WorkingOrderPage({ setActiveSection }) {
     </div>
   );
 }
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setActiveSection }, dispatch);
-};
-
-export default connect(null, mapDispatchToProps)(WorkingOrderPage);

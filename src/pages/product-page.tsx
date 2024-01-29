@@ -26,7 +26,6 @@ import {
   setProductAttribute,
 } from "state/product/reducer";
 import { getTaxTypeList } from "state/ui/reducer";
-import { getPriceFromTaxRate } from "utils/domainHelper";
 import { SearchIcon } from "utils/iconsHelper";
 import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
@@ -53,6 +52,12 @@ const useStyles = makeStyles()(theme => ({
     padding: "7px",
   },
 }));
+
+function getPriceFromTaxRate(price: number, taxRate: number) {
+  const rate = taxRate / 100;
+  const finalPrice = price * (1 + rate);
+  return finalPrice;
+}
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
