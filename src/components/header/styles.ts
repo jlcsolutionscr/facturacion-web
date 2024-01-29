@@ -8,8 +8,7 @@ export const useStyles = makeStyles()(theme => ({
     }, ${theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "rgba(8, 65, 92, 0.9)"}, ${
       theme.palette.mode === "dark" ? "rgba(51, 51, 51, 1)" : "rgba(8, 65, 92, 1)"
     })`,
-    flex: "0 1 auto",
-    height: "130px",
+    minHeight: "140px",
   },
   banner: {
     backgroundImage: `url(${LogoDarkImage})`,

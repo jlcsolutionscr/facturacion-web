@@ -8,7 +8,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
@@ -44,16 +43,12 @@ const useStyles = makeStyles()(theme => ({
       margin: "0",
     },
   },
-  title: {
-    display: "flex",
-    justifyContent: "center",
-  },
   dataContainer: {
     display: "flex",
     overflow: "auto",
-    padding: "6px 12px 12px 12px",
+    padding: "12px 12px 12px 12px",
     "@media screen and (max-width:960px)": {
-      padding: "5px 10px 10px 10px",
+      padding: "10px 10px 10px 10px",
     },
   },
   buttonContainer: {
@@ -184,9 +179,6 @@ export default function DocumentListPage() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.title}>
-        <Typography variant="h6">Documentos electrónicos procesados</Typography>
-      </div>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
