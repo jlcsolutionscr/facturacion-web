@@ -1,4 +1,5 @@
 import CryptoJS from "crypto-js";
+import { parse } from "date-fns";
 import { XMLParser } from "fast-xml-parser";
 import { saveAs } from "file-saver";
 import { IdDescriptionValueType } from "types/domain";
@@ -48,7 +49,8 @@ export function roundNumber(number: number, places: number) {
 }
 
 export function convertToDateString(date: Date | string) {
-  if (typeof date === "string") date = new Date(date);
+  if (date === "" || date === null) return "";
+  if (typeof date === "string") date = parse(date.substring(0, 10), "yyyy-MM-dd", new Date());
   const dayFormatted = (date.getDate() < 10 ? "0" : "") + date.getDate();
   const monthFormatted = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
   return `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`;

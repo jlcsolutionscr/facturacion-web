@@ -1,5 +1,3 @@
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React from "react";
 import { connect, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -19,6 +17,7 @@ import TableRow from "@mui/material/TableRow";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
+import DatePicker from "components/data-picker";
 import LabelField from "components/label-field";
 import Select from "components/select";
 import TextField from "components/text-field";
@@ -292,7 +291,7 @@ function ReceiptPage() {
             disabled={successful}
             id="id-tipo-exoneracion-select-id"
             label="Seleccione el tipo de exoneración"
-            value={exoneration.type}
+            value={exoneration.type.toString()}
             onChange={event => setExonerationDetails("type", event.target.value)}
           >
             {exonerationTypesItems}
@@ -316,22 +315,19 @@ function ReceiptPage() {
             onChange={event => setExonerationDetails("exoneratedBy", event.target.value)}
           />
         </Grid>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Grid item xs={5} sm={3}>
-            <DatePicker
-              disabled={successful}
-              label="Fecha exoneración"
-              format="dd/MM/yyyy"
-              value={exoneration.date}
-              onChange={date => setExonerationDetails("date", date)}
-            />
-          </Grid>
-        </LocalizationProvider>
+        <Grid item xs={5} sm={3}>
+          <DatePicker
+            disabled={successful}
+            label="Fecha exoneración"
+            value={exoneration.date}
+            onChange={date => setExonerationDetails("date", date)}
+          />
+        </Grid>
         <Grid item xs={12}>
           <TextField
             disabled={successful}
             id="PorcentajeExoneracion"
-            value={exoneration.percentage}
+            value={exoneration.percentage.toString()}
             label="Porcentaje de exoneración"
             numericFormat
             onChange={event => setExonerationDetails("percentage", event.target.value)}

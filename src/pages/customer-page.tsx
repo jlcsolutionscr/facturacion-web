@@ -1,6 +1,3 @@
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import format from "date-fns/format";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Checkbox from "@mui/material/Checkbox";
@@ -9,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
+import DatePicker from "components/data-picker";
 import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
@@ -287,23 +285,14 @@ export default function CustomerPage() {
             onChange={handleChange}
           />
         </Grid>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Grid item xs={5} sm={3}>
-            <DatePicker
-              label="Fecha exoneración"
-              format="dd/MM/yyyy"
-              value={new Date(customer.FechaEmisionDoc)}
-              onChange={(value: Date | null) =>
-                dispatch(
-                  setCustomerAttribute({
-                    attribute: "FechaEmisionDoc",
-                    value: format(value !== null ? value : Date.now(), "yyyy-MM-dd") + "T23:59:59",
-                  })
-                )
-              }
-            />
-          </Grid>
-        </LocalizationProvider>
+
+        <Grid item xs={5} sm={3}>
+          <DatePicker
+            label="Fecha exoneración"
+            value={customer.FechaEmisionDoc}
+            onChange={(value: string) => dispatch(setCustomerAttribute({ attribute: "FechaEmisionDoc", value }))}
+          />
+        </Grid>
         <Grid item xs={12}>
           <TextField
             id="PorcentajeExoneracion"

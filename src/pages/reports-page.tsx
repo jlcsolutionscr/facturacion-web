@@ -1,5 +1,4 @@
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { parse } from "date-fns";
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -9,10 +8,12 @@ import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
+import DatePicker from "components/data-picker";
 import ReportLayout from "components/report-layout";
 import Select from "components/select";
-import { exportReport, generateReport, sendReportToEmail, setReportResults } from "state/company/asyncActions";
-import { setActiveSection, setMessage } from "state/ui/actions";
+import { exportReport, generateReport, sendReportToEmail } from "state/company/asyncActions";
+import { setReportResults } from "state/company/reducer";
+import { setActiveSection, setMessage } from "state/ui/reducer";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -135,26 +136,20 @@ function ReportsPage({
                 {reportItems}
               </Select>
             </Grid>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Grid item xs={5} sm={3}>
-                <DatePicker
-                  label="Fecha inicial"
-                  format="dd/MM/yyyy"
-                  value={startDate}
-                  onChange={setStartDate}
-                  animateYearScrolling
-                />
-              </Grid>
-              <Grid item xs={5} sm={9}>
-                <DatePicker
-                  label="Fecha final"
-                  format="dd/MM/yyyy"
-                  value={endDate}
-                  onChange={setEndDate}
-                  animateYearScrolling
-                />
-              </Grid>
-            </LocalizationProvider>
+            <Grid item xs={5} sm={3}>
+              <DatePicker
+                label="Fecha inicial"
+                value={startDate}
+                onChange={value => setStartDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
+              />
+            </Grid>
+            <Grid item xs={5} sm={9}>
+              <DatePicker
+                label="Fecha final"
+                value={endDate}
+                onChange={value => setEndDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
+              />
+            </Grid>
             <Grid item xs={isMobile ? 6 : 4} sm={3}>
               <Button
                 disabled={reportId === 0}
