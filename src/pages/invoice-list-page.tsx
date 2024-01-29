@@ -25,14 +25,16 @@ import { formatCurrency } from "utils/utilities";
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: "100%",
+    width: "80%",
     display: "flex",
     flexDirection: "column",
     margin: "15px 10%",
     "@media screen and (max-width:960px)": {
+      width: "90%",
       margin: "10px 5%",
     },
     "@media screen and (max-width:430px)": {
+      width: "100%",
       margin: "0",
     },
   },
