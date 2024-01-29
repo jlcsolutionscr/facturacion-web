@@ -21,14 +21,14 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     maxWidth: "900px",
     margin: "15px auto",
-    "@media (max-width:960px)": {
+    "@media screen and (max-width:960px)": {
       margin: "10px",
     },
-    "@media (max-width:600px)": {
+    "@media screen and (max-width:600px)": {
       maxWidth: "auto",
       margin: "5px",
     },
-    "@media (max-width:414px)": {
+    "@media screen and (max-width:414px)": {
       backgroundImage: `none`,
       maxWidth: "auto",
       margin: "0",

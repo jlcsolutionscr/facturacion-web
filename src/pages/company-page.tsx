@@ -33,14 +33,14 @@ const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
-    margin: "20px 10%",
+    margin: "15px 10%",
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      margin: "16px 5%",
+      margin: "10px 5%",
       padding: "16px",
     },
     "@media screen and (max-width:600px)": {
-      margin: "13px",
+      margin: "5px",
       padding: "13px",
     },
     "@media screen and (max-width:430px)": {

@@ -44,7 +44,7 @@ const useStyles = makeStyles()(theme => ({
     width: "180px",
     height: "180px",
     backgroundColor: "#00729f",
-    "@media (max-height:568px)": {
+    "@media screen and (max-height:568px)": {
       marginTop: theme.spacing(2),
     },
   },
@@ -57,10 +57,10 @@ const useStyles = makeStyles()(theme => ({
   footer: {
     marginTop: "auto",
     marginBottom: theme.spacing(6),
-    "@media (min-height:737px)": {
+    "@media screen and (min-height:737px)": {
       marginTop: theme.spacing(6),
     },
-    "@media (max-height:568px)": {
+    "@media screen and (max-height:568px)": {
       marginBottom: theme.spacing(3),
     },
   },

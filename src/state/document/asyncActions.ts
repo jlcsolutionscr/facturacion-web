@@ -56,12 +56,12 @@ export const getDocumentListByPageNumber = createAsyncThunk(
 
 export const sendNotification = createAsyncThunk(
   "document/sendNotification",
-  async (payload: { idDocument: number; emailTo: string }, { getState, dispatch }) => {
+  async (payload: { id: number; emailTo: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
-      await sendDocumentByEmail(token, payload.idDocument, payload.emailTo);
+      await sendDocumentByEmail(token, payload.id, payload.emailTo);
       dispatch(
         setMessage({
           message: "Correo enviado satisfactoriamente.",
@@ -78,12 +78,12 @@ export const sendNotification = createAsyncThunk(
 
 export const getDocumentDetails = createAsyncThunk(
   "document/sendNotification",
-  async (payload: { idDocument: number }, { getState, dispatch }) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
-      const response = await getDocumentEntity(token, payload.idDocument);
+      const response = await getDocumentEntity(token, payload.id);
       const details = xmlToObject(response.Respuesta);
       dispatch(setDocumentDetails(details.DetalleMensaje));
       dispatch(stopLoader());

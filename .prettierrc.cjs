@@ -11,6 +11,7 @@ module.exports = {
     "^@react/(.*)$",
     "^@tss-react/(.*)$",
     "^@reduxjs/(.*)$",
+    "^@mui/material$",
     "^@mui/material/(.*)$",
     "^@hookform/(.*)$",
     "^@vitejs/(.*)$",

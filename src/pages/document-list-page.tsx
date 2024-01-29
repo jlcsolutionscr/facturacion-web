@@ -1,6 +1,5 @@
-import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,16 +8,22 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
 import {
-  getDocumentDetails,
+  getDocumentDetails as getDocumentDetailsAction,
   getDocumentListByPageNumber,
-  getDocumentListFirstPage,
   sendNotification,
-  setDocumentDetails,
 } from "state/document/asyncActions";
+import {
+  getDocumentDetails,
+  getDocumentList,
+  getDocumentListCount,
+  getDocumentListPage,
+  setDocumentDetails,
+} from "state/document/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
@@ -26,24 +31,39 @@ import { formatCurrency } from "utils/utilities";
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: "100%",
+    width: "84%",
     display: "flex",
     flexDirection: "column",
-    margin: "20px 10%",
+    margin: "15px 8%",
     "@media screen and (max-width:960px)": {
-      margin: "16px 5%",
+      width: "90%",
+      margin: "10px 5%",
     },
     "@media screen and (max-width:430px)": {
+      width: "100%",
       margin: "0",
     },
   },
+  title: {
+    display: "flex",
+    justifyContent: "center",
+  },
   dataContainer: {
     display: "flex",
-    overflow: "hidden",
-    padding: "12px",
+    overflow: "auto",
+    padding: "6px 12px 12px 12px",
     "@media screen and (max-width:960px)": {
-      padding: "10px",
+      padding: "5px 10px 10px 10px",
     },
+  },
+  buttonContainer: {
+    marginLeft: "12px",
+    "@media screen and (max-width:960px)": {
+      marginLeft: "10px",
+    },
+  },
+  dialogActions: {
+    margin: "0 20px 10px 20px",
   },
   emailIcon: {
     padding: 0,
@@ -53,46 +73,47 @@ const useStyles = makeStyles()(theme => ({
     padding: 0,
     color: "gray",
   },
-  buttonContainer: {
-    margin: "0 0 20px 20px",
-    "@media screen and (max-width:960px)": {
-      margin: "0 0 10px 15px",
-    },
-    "@media screen and (max-width:600px)": {
-      margin: "0 0 10px 10px",
-    },
-    "@media screen and (max-width:430px)": {
-      margin: "0 0 5px 5px",
-    },
-  },
-  dialogActions: {
-    margin: "0 20px 10px 20px",
-  },
 }));
 
-function DocumentListPage({
-  listPage,
-  listCount,
-  list,
-  details,
-  getDocumentListByPageNumber,
-  sendNotification,
-  getDocumentDetails,
-  setDocumentDetails,
-  setActiveSection,
-}) {
+export default function DocumentListPage() {
   const { classes } = useStyles();
-  const [dialogStatus, setDialogStatus] = React.useState({
+  const dispatch = useDispatch();
+
+  const [dialogStatus, setDialogStatus] = useState({
     open: false,
     type: 1,
   });
-  const [documentId, setDocumentId] = React.useState(null);
-  const [email, setEmail] = React.useState("");
+  const [documentId, setDocumentId] = useState(0);
+  const [email, setEmail] = useState("");
+
+  const listPage = useSelector(getDocumentListPage);
+  const listCount = useSelector(getDocumentListCount);
+  const list = useSelector(getDocumentList);
+  const details = useSelector(getDocumentDetails);
+
   const handleConfirmEmailClick = () => {
     setDialogStatus({ open: false, type: 1 });
-    sendNotification(documentId, email);
+    dispatch(sendNotification({ id: documentId, emailTo: email }));
     setEmail("");
   };
+
+  const handleEmailClick = (id: number, newEmail: string) => {
+    setDocumentId(id);
+    setEmail(newEmail);
+    setDialogStatus({ open: true, type: 1 });
+  };
+
+  const handleDetailsClick = (id: number) => {
+    dispatch(getDocumentDetailsAction({ id }));
+    setDialogStatus({ open: true, type: 2 });
+  };
+
+  const handleDialogClose = () => {
+    setDialogStatus({ open: false, type: 1 });
+    if (email !== "") setEmail("");
+    if (details !== "") dispatch(setDocumentDetails(""));
+  };
+
   const dialogContent =
     dialogStatus.type === 1 ? (
       <div>
@@ -116,20 +137,7 @@ function DocumentListPage({
         </DialogActions>
       </div>
     ) : null;
-  const handleEmailClick = (id, newEmail) => {
-    setDocumentId(id);
-    setEmail(newEmail);
-    setDialogStatus({ open: true, type: 1 });
-  };
-  const handleDetailsClick = id => {
-    getDocumentDetails(id);
-    setDialogStatus({ open: true, type: 2 });
-  };
-  const handleDialogClose = () => {
-    setDialogStatus({ open: false, type: 1 });
-    if (email !== "") setEmail("");
-    if (details !== "") setDocumentDetails("");
-  };
+
   const rows = list.map(row => {
     const buttonDisabled = row.IdTipoDocumento > 3 || row.EstadoEnvio !== "aceptado";
     return {
@@ -173,12 +181,15 @@ function DocumentListPage({
     { field: "email", headerName: "" },
     { field: "details", headerName: "" },
   ];
+
   return (
     <div className={classes.root}>
+      <div className={classes.title}>
+        <Typography variant="h6">Documentos electrónicos procesados</Typography>
+      </div>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
-          minWidth={1100}
           dense
           page={listPage - 1}
           columns={columns}
@@ -186,12 +197,12 @@ function DocumentListPage({
           rowsCount={listCount}
           rowsPerPage={10}
           onPageChange={page => {
-            getDocumentListByPageNumber(page + 1);
+            dispatch(getDocumentListByPageNumber({ pageNumber: page + 1 }));
           }}
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Regresar" onClick={() => setActiveSection(0)} />
+        <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog
         onClose={handleDialogClose}
@@ -202,28 +213,3 @@ function DocumentListPage({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    listPage: state.document.listPage,
-    listCount: state.document.listCount,
-    list: state.document.list,
-    details: state.document.details,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      getDocumentListFirstPage,
-      getDocumentListByPageNumber,
-      sendNotification,
-      getDocumentDetails,
-      setDocumentDetails,
-      setActiveSection,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentListPage);

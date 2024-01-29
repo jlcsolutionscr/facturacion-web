@@ -39,18 +39,9 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   buttonContainer: {
-    display: "flex",
-    margin: "10px 0 20px 20px",
-    width: "100%",
-    height: "50px",
+    marginLeft: "12px",
     "@media screen and (max-width:960px)": {
-      margin: "10px 0 10px 15px",
-    },
-    "@media screen and (max-width:600px)": {
-      margin: "10px 0 10px 10px",
-    },
-    "@media screen and (max-width:430px)": {
-      margin: "10px 0 5px 5px",
+      marginLeft: "10px",
     },
   },
   dialogActions: {

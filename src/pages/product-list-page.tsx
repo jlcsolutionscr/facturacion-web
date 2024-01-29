@@ -22,9 +22,9 @@ const useStyles = makeStyles()(theme => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    margin: "20px 10%",
+    margin: "15px 10%",
     "@media screen and (max-width:960px)": {
-      margin: "16px 5%",
+      margin: "10px 5%",
     },
     "@media screen and (max-width:430px)": {
       margin: "0",
@@ -48,18 +48,9 @@ const useStyles = makeStyles()(theme => ({
     padding: 0,
   },
   buttonContainer: {
-    display: "flex",
-    margin: "0 0 20px 20px",
-    width: "100%",
+    marginLeft: "12px",
     "@media screen and (max-width:960px)": {
-      margin: "0 0 10px 15px",
-    },
-    "@media screen and (max-width:600px)": {
-      margin: "0 0 10px 10px",
-    },
-    "@media screen and (max-width:430px)": {
-      margin: "0 0 5px 5px",
-      justifyContent: "center",
+      marginLeft: "10px",
     },
   },
   formControl: {

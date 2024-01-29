@@ -114,7 +114,16 @@ type WorkingOrderStateType = {
 type DocumentStateType = {
   listPage: number;
   listCount: number;
-  list: object[];
+  list: {
+    IdTipoDocumento: number;
+    IdDocumento: number;
+    Consecutivo: number;
+    Fecha: string;
+    EstadoEnvio: string;
+    NombreReceptor: string;
+    MontoTotal: number;
+    CorreoNotificacion: string;
+  }[];
   details: string;
 };
 

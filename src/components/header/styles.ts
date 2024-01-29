@@ -9,14 +9,7 @@ export const useStyles = makeStyles()(theme => ({
       theme.palette.mode === "dark" ? "rgba(51, 51, 51, 1)" : "rgba(8, 65, 92, 1)"
     })`,
     flex: "0 1 auto",
-    paddingTop: "0",
-    paddingBottom: "10px",
-    "@media (max-width:960px)": {
-      paddingBottom: "0",
-    },
-    "@media (max-width:600px)": {
-      paddingBottom: "10px",
-    },
+    height: "130px",
   },
   banner: {
     backgroundImage: `url(${LogoDarkImage})`,
@@ -26,11 +19,12 @@ export const useStyles = makeStyles()(theme => ({
     backgroundPosition: "10px 0",
     top: "10px",
     left: "0",
-    height: "105px",
+    height: "145px",
     width: "100%",
-    "@media (max-width:600px)": {
+    "@media screen and (max-width:600px)": {
       backgroundSize: "75px 75px",
-      height: "75px",
+      height: "105px",
+      top: "10px",
     },
   },
   toogle: {
@@ -38,33 +32,18 @@ export const useStyles = makeStyles()(theme => ({
     top: "89px",
     right: "52px",
     zIndex: 2,
-    "@media (max-width:960px)": {
-      top: "120px",
-    },
-    "@media (max-width:600px)": {
-      top: "101px",
-    },
   },
   logout: {
     position: "absolute",
     top: "89px",
     right: "8px",
     zIndex: 2,
-    "@media (max-width:960px)": {
-      top: "120px",
-    },
-    "@media (max-width:600px)": {
-      top: "101px",
-    },
   },
   text: {
     textAlign: "left",
-    margin: "30px 0 40px 120px",
-    "@media (max-width:960px)": {
-      margin: "30px 0 0 120px",
-    },
-    "@media (max-width:600px)": {
-      margin: "20px 0 10px 90px",
+    margin: "30px 0 0 120px",
+    "@media screen and (max-width:600px)": {
+      margin: "20px 0 0 100px",
     },
   },
   h2: {
@@ -73,7 +52,7 @@ export const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(25),
     textShadow: "1px 1px 3px #FFF",
-    "@media (max-width:600px)": {
+    "@media screen and (max-width:600px)": {
       fontSize: theme.typography.pxToRem(20),
     },
   },
@@ -84,7 +63,7 @@ export const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(17),
     textShadow: "2px 2px 3px rgba(0,0,0,0.85)",
-    "@media (max-width:600px)": {
+    "@media screen and (max-width:600px)": {
       fontSize: theme.typography.pxToRem(13),
     },
   },
@@ -95,9 +74,17 @@ export const useStyles = makeStyles()(theme => ({
     textAlign: "center",
     width: "100%",
     top: "40px",
-    "@media (max-width:960px)": {
+    "@media screen and (max-width:960px)": {
+      top: "20px",
+      width: "calc(100% - 330px)",
+      marginLeft: "330px",
+    },
+    "@media screen and (max-width:600px)": {
       position: "relative",
-      top: "0px",
+      width: "100%",
+      right: "0",
+      top: "0",
+      marginLeft: "0",
     },
   },
   companyText: {
@@ -108,7 +95,7 @@ export const useStyles = makeStyles()(theme => ({
     fontWeight: 600,
     textShadow: "4px 4px 6px rgba(0,0,0,0.45)",
     marginBottom: 0,
-    "@media (max-width:600px)": {
+    "@media screen and (max-width:600px)": {
       fontSize: theme.typography.pxToRem(20),
     },
   },
