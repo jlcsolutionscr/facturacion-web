@@ -508,9 +508,8 @@ export function getTaxedPrice(
   customerTaxRate: number
 ) {
   const taxRate = customerTaxRate;
-  const untaxedPrice = roundNumber(productPrice / (1 + productTaxRate / 100), 3);
-  let pricePlusTaxes = productPrice;
-  if (priceIncludedTaxes) pricePlusTaxes = untaxedPrice;
+  const untaxedPrice = priceIncludedTaxes ? roundNumber(productPrice / (1 + productTaxRate / 100), 3) : productPrice;
+  let pricePlusTaxes = priceIncludedTaxes ? untaxedPrice : productPrice;
   if (taxRate > 0) pricePlusTaxes = roundNumber(untaxedPrice * (1 + taxRate / 100), 2);
   return { taxRate, price: untaxedPrice, pricePlusTaxes };
 }
