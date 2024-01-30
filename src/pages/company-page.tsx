@@ -37,15 +37,15 @@ const useStyles = makeStyles()(theme => ({
     padding: "20px",
     "@media screen and (max-width:960px)": {
       margin: "10px 5%",
-      padding: "16px",
+      padding: "15px",
     },
     "@media screen and (max-width:600px)": {
       margin: "5px",
-      padding: "13px",
+      padding: "10px",
     },
     "@media screen and (max-width:430px)": {
       margin: "0",
-      padding: "10px",
+      padding: "5px",
     },
   },
 }));
@@ -405,10 +405,8 @@ export default function CompanyPage() {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={5} sm={3} md={2}>
+        <Grid item xs={12} display="flex" gap={2} flexDirection="row">
           <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCompany({ certificate }))} />
-        </Grid>
-        <Grid item xs={5} sm={3} md={2}>
           <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
       </Grid>

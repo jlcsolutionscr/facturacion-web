@@ -21,8 +21,11 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:600px)": {
       padding: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      padding: "5px",
     },
   },
   label: {
@@ -302,10 +305,8 @@ export default function CustomerPage() {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={5} sm={3} md={2}>
+        <Grid item xs={12} display="flex" gap={2} flexDirection="row">
           <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCustomer())} />
-        </Grid>
-        <Grid item xs={5} sm={3} md={2}>
           <Button label="Regresar" onClick={() => dispatch(closeCustomerDialog())} />
         </Grid>
       </Grid>

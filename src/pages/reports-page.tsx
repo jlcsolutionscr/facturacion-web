@@ -18,42 +18,29 @@ import { setActiveSection, setMessage } from "state/ui/reducer";
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    overflow: "hidden",
-    margin: "15px auto auto auto",
+    overflow: "auto",
+    maxWidth: "900px",
+    margin: "15px auto",
     "@media screen and (max-width:960px)": {
-      marginTop: "10px",
+      margin: "10px",
     },
     "@media screen and (max-width:600px)": {
-      marginTop: "5px",
+      margin: "0",
     },
     "@media screen and (max-width:430px)": {
-      marginTop: "0",
+      margin: "0",
     },
   },
-  firstLayout: {
+  container: {
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      padding: "16px",
+      padding: "15px",
     },
     "@media screen and (max-width:600px)": {
-      padding: "13px",
-    },
-    "@media screen and (max-width:430px)": {
       padding: "10px",
     },
-  },
-  secondLayout: {
-    overflow: "hidden",
-    margin: "auto",
-    padding: "20px",
-    "@media screen and (max-width:960px)": {
-      padding: "16px",
-    },
-    "@media screen and (max-width:600px)": {
-      padding: "13px",
-    },
     "@media screen and (max-width:430px)": {
-      padding: "10px",
+      padding: "5px",
     },
   },
 }));
@@ -123,9 +110,9 @@ function ReportsPage({
     });
   return (
     <div className={classes.root}>
-      <Grid container>
+      <Grid container className={classes.container}>
         {viewLayout === 1 && (
-          <Grid container spacing={3} className={classes.firstLayout}>
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={12}>
               <Select
                 id="tipo-reporte-select-id"
@@ -150,25 +137,19 @@ function ReportsPage({
                 onChange={value => setEndDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
               />
             </Grid>
-            <Grid item xs={isMobile ? 6 : 4} sm={3}>
+            <Grid item xs={12} display="flex" gap={2} flexDirection="row">
               <Button
                 disabled={reportId === 0}
                 label={isMobile ? "Enviar correo" : "Generar"}
                 onClick={() => (isMobile ? processReport(3) : processReport(1))}
               />
-            </Grid>
-            {!isMobile && (
-              <Grid item xs={4} sm={3}>
-                <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />
-              </Grid>
-            )}
-            <Grid item xs={isMobile ? 5 : 4} sm={3}>
+              {!isMobile && <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />}
               <Button label="Regresar" onClick={handleBackButton} />
             </Grid>
           </Grid>
         )}
         {viewLayout === 2 && (
-          <Grid container spacing={3} className={classes.secondLayout} style={{ width: `${width}px` }}>
+          <Grid container spacing={3} style={{ width: `${width}px` }}>
             <ReportLayout
               reportName={reportName}
               summary={reportSummary}

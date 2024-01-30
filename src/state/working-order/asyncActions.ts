@@ -368,6 +368,7 @@ export const openWorkingOrder = createAsyncThunk(
         exonerationRef: workingOrder.Cliente.NumDocExoneracion,
         exoneratedBy: workingOrder.Cliente.NumDocExoneracion,
         exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
+        exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
         priceTypeId: workingOrder.Cliente.IdTipoPrecio,
         taxRate: getTaxeRateFromId(taxTypeList, workingOrder.Cliente.IdImpuesto),
       };

@@ -12,9 +12,9 @@ import InvoicePage from "pages/invoice-page";
 import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
 import ProductListPage from "pages/product-list-page";
+import ReceiptPage from "pages/receipt-page";
 import RestaurantOrderListPage from "pages/restaurant-order-list-page";
 import RestaurantOrderPage from "pages/restaurant-order-page";
-//import ReceiptPage from "pages/receipt-page";
 import WorkingOrderListPage from "pages/working-order-list-page";
 import WorkingOrderPage from "pages/working-order-page";
 //import ReportsPage from "pages/reports-page";*/
@@ -73,7 +73,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 3 && <CustomerListPage />}
         {activeSection === 4 && <ProductListPage />}
         {activeSection === 5 && <InvoicePage />}
-        {/*activeSection === 6 && <ReceiptPage />*/}
+        {activeSection === 6 && <ReceiptPage />}
         {activeSection === 7 && <InvoiceListPage />}
         {activeSection === 8 && <DocumentListPage />}
         {activeSection === 9 ? company?.Modalidad === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}

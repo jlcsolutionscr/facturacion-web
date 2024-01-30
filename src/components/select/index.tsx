@@ -6,7 +6,7 @@ import Select, { SelectProps } from "@mui/material/Select";
 export const useStyles = makeStyles()(() => ({
   container: {
     "& .MuiInputLabel-root": {
-      transform: "translate(0px, -3px) scale(0.75)",
+      transform: "translate(0px, 0px) scale(0.75)",
     },
   },
 }));

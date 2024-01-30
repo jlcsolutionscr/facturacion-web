@@ -18,9 +18,14 @@ const useStyles = makeStyles()(theme => ({
     flex: 1,
     overflow: "hidden",
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
-    color: "#FFF",
     maxWidth: "900px",
-    margin: "10px auto 0 auto",
+    margin: "15px auto",
+    "@media screen and (max-width:960px)": {
+      margin: "10px",
+    },
+    "@media screen and (max-width:600px)": {
+      margin: "1px 0 0 0",
+    },
   },
   backButton: {
     position: "absolute",

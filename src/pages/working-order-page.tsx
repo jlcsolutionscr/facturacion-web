@@ -25,13 +25,7 @@ const useStyles = makeStyles()(theme => ({
       margin: "10px",
     },
     "@media screen and (max-width:600px)": {
-      maxWidth: "auto",
-      margin: "5px",
-    },
-    "@media screen and (max-width:414px)": {
-      backgroundImage: `none`,
-      maxWidth: "auto",
-      margin: "0",
+      margin: "1px 0 0 0",
     },
   },
   tabs: {

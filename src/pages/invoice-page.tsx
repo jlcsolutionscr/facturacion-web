@@ -15,22 +15,17 @@ const useStyles = makeStyles()(theme => ({
   container: {
     display: "flex",
     flexDirection: "column",
-    flex: 1,
-    overflow: "hidden",
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     maxWidth: "900px",
+    width: "100%",
     margin: "15px auto",
     "@media screen and (max-width:960px)": {
+      width: "calc(100% - 20px)",
       margin: "10px",
     },
     "@media screen and (max-width:600px)": {
-      maxWidth: "auto",
-      margin: "5px",
-    },
-    "@media screen and (max-width:414px)": {
-      backgroundImage: `none`,
-      maxWidth: "auto",
-      margin: "0",
+      width: "100%",
+      margin: "1px 0 0 0",
     },
   },
   tabs: {

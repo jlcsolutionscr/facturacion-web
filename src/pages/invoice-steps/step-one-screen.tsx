@@ -18,8 +18,17 @@ const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
-    padding: "2%",
     backgroundColor: theme.palette.background.paper,
+    padding: "20px",
+    "@media screen and (max-width:960px)": {
+      padding: "15px",
+    },
+    "@media screen and (max-width:600px)": {
+      padding: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      padding: "5px",
+    },
   },
 }));
 

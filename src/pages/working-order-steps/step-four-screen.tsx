@@ -32,8 +32,17 @@ const useStyles = makeStyles()(theme => ({
   container: {
     flex: 1,
     overflowY: "auto",
-    padding: "2%",
     backgroundColor: theme.palette.background.paper,
+    padding: "15px 20px 20px 20px",
+    "@media screen and (max-width:960px)": {
+      padding: "15px",
+    },
+    "@media screen and (max-width:600px)": {
+      padding: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      padding: "5px",
+    },
   },
   summary: {
     flexDirection: "column",
@@ -41,8 +50,11 @@ const useStyles = makeStyles()(theme => ({
     textAlign: "center",
   },
   details: {
-    marginTop: "10px",
+    marginTop: "0",
     textAlign: "left",
+    " & .MuiGrid-item": {
+      paddingTop: "8px",
+    },
   },
   summaryTitle: {
     marginTop: "20px",

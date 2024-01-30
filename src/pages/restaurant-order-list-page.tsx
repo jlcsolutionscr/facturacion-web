@@ -17,31 +17,45 @@ import { getWorkingOrderList } from "state/working-order/reducer";
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: "100%",
-    height: "90%",
     display: "flex",
     flexDirection: "column",
-    margin: "20px 10%",
+    maxWidth: "900px",
+    width: "100%",
+    margin: "15px auto",
     "@media screen and (max-width:960px)": {
-      margin: "16px 5%",
+      width: "calc(100% - 20px)",
+      margin: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:600px)": {
+      width: "100%",
       margin: "0",
-      height: "100%",
     },
   },
   dataContainer: {
-    overflowY: "auto",
-    marginBottom: "auto",
-    padding: "12px",
+    display: "flex",
+    overflow: "hidden",
+    padding: "20px",
     "@media screen and (max-width:960px)": {
+      padding: "15px",
+    },
+    "@media screen and (max-width:600px)": {
       padding: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      padding: "5px",
     },
   },
   buttonContainer: {
-    marginLeft: "12px",
+    display: "flex",
+    marginLeft: "20px",
     "@media screen and (max-width:960px)": {
+      marginLeft: "15px",
+    },
+    "@media screen and (max-width:600px)": {
       marginLeft: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      marginLeft: "5px",
     },
   },
   dialogActions: {

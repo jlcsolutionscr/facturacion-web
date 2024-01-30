@@ -26,33 +26,49 @@ import { formatCurrency } from "utils/utilities";
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: "100%",
     display: "flex",
     flexDirection: "column",
-    margin: "20px 10%",
+    maxWidth: "900px",
+    width: "100%",
+    margin: "15px auto",
     "@media screen and (max-width:960px)": {
-      margin: "16px 5%",
+      width: "calc(100% - 20px)",
+      margin: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:600px)": {
+      width: "100%",
       margin: "0",
     },
   },
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "12px",
+    padding: "20px",
     "@media screen and (max-width:960px)": {
+      padding: "15px",
+    },
+    "@media screen and (max-width:600px)": {
       padding: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      padding: "5px",
+    },
+  },
+  buttonContainer: {
+    display: "flex",
+    marginLeft: "20px",
+    "@media screen and (max-width:960px)": {
+      marginLeft: "15px",
+    },
+    "@media screen and (max-width:600px)": {
+      marginLeft: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      marginLeft: "5px",
     },
   },
   icon: {
     padding: 0,
-  },
-  buttonContainer: {
-    marginLeft: "12px",
-    "@media screen and (max-width:960px)": {
-      marginLeft: "10px",
-    },
   },
   dialogActions: {
     margin: "0 20px 10px 20px",

@@ -37,8 +37,11 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:960px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:600px)": {
       padding: "10px",
+    },
+    "@media screen and (max-width:430px)": {
+      padding: "5px",
     },
   },
   label: {
@@ -63,6 +66,8 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 export default function ProductPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [clasificationFilter, setClasificationFilter] = useState("");
   const [untaxPrice1, setUntaxPrice1] = useState(0);
@@ -71,7 +76,6 @@ export default function ProductPage() {
   const [untaxPrice4, setUntaxPrice4] = useState(0);
   const [untaxPrice5, setUntaxPrice5] = useState(0);
 
-  const dispatch = useDispatch();
   const product = useSelector(getProduct);
   const productTypeList = useSelector(getProductTypeList);
   const categoryList = useSelector(getCategoryList);
@@ -420,10 +424,8 @@ export default function ProductPage() {
             label="Producto activo"
           />
         </Grid>
-        <Grid item xs={5} sm={3} md={2}>
+        <Grid item xs={12} display="flex" gap={2} flexDirection="row">
           <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveProduct())} />
-        </Grid>
-        <Grid item xs={5} sm={3} md={2}>
           <Button label="Regresar" onClick={() => dispatch(closeProductDialog())} />
         </Grid>
       </Grid>

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { connect, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -20,17 +19,13 @@ import DataGrid from "components/data-grid";
 import DatePicker from "components/data-picker";
 import LabelField from "components/label-field";
 import Select from "components/select";
-import TextField from "components/text-field";
+import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterClasificationList } from "state/product/asyncActions";
 import { getClasificationList } from "state/product/reducer";
 import {
   addDetails,
   removeDetails,
   saveReceipt,
-  setActivityCode,
-  setExonerationDetails,
-  setIssuerDetails,
-  setProductDetails,
   validateCustomerIdentifier,
   validateProductCode,
 } from "state/receipt/asyncActions";
@@ -42,42 +37,42 @@ import {
   getProductDetailsList,
   getSuccessful,
   getSummary,
+  setActivityCode,
+  setExonerationDetails,
+  setIssuerDetails,
+  setProductDetails,
 } from "state/receipt/reducer";
 import { getCompany } from "state/session/reducer";
-import { setActiveSection } from "state/ui/actions";
-import { getExonerationTypeList, getIdTypeList, getTaxTypeList } from "state/ui/reducer";
+import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
-import { formatCurrency, getDescriptionFromRateId, getIdFromRateValue, roundNumber } from "utils/utilities";
+import { formatCurrency, getIdFromRateValue, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflow: "auto",
-    margin: "15px auto auto auto",
-    padding: "20px",
+    maxWidth: "900px",
+    margin: "15px auto",
     "@media screen and (max-width:960px)": {
-      marginTop: "10px",
-      padding: "16px",
+      margin: "10px",
     },
     "@media screen and (max-width:600px)": {
-      marginTop: "5px",
-      padding: "13px",
+      margin: "0",
     },
     "@media screen and (max-width:430px)": {
-      marginTop: "0px",
-      padding: "10px",
+      margin: "0",
     },
   },
   container: {
     padding: "20px",
     "@media screen and (max-width:960px)": {
-      padding: "16px",
+      padding: "15px",
     },
     "@media screen and (max-width:600px)": {
-      padding: "13px",
+      padding: "10px",
     },
     "@media screen and (max-width:430px)": {
-      padding: "10px",
+      padding: "5px",
     },
   },
   bottom: {
@@ -98,8 +93,10 @@ const useStyles = makeStyles()(theme => ({
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
-function ReceiptPage() {
+export default function ReceiptPage() {
   const { classes } = useStyles();
+  const dispatch = useDispatch();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [clasificationFilter, setClasificationFilter] = useState("");
 
@@ -116,50 +113,41 @@ function ReceiptPage() {
   const activityCode = useSelector(getActivityCode);
   const successful = useSelector(getSuccessful);
 
-  const idTypeItems = idTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const exonerationTypesItems = exonerationTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const handleIdTypeChange = value => {
-    setIssuerDetails("typeId", value);
-    setIssuerDetails("id", "");
-    setIssuerDetails("name", "");
+  const handleIdTypeChange = (value: string) => {
+    dispatch(setIssuerDetails({ attribute: "typeId", value: parseInt(value) }));
+    dispatch(setIssuerDetails({ attribute: "id", value: "" }));
+    dispatch(setIssuerDetails({ attribute: "name", value: "" }));
   };
+
   const handleClasificationClick = () => {
     setDialogOpen(true);
     setClasificationFilter("");
-    filterClasificationList("");
+    dispatch(filterClasificationList({ filterText: "" }));
   };
-  const handleClasificationFilterChange = event => {
+
+  const handleClasificationFilterChange = (event: TextFieldOnChangeEventType) => {
     setClasificationFilter(event.target.value);
     if (delayTimer) {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      filterClasificationList(event.target.value);
+      dispatch(filterClasificationList({ filterText: event.target.value }));
     }, 1000);
   };
-  const handleClasificationRowClick = code => {
-    if (code !== "") {
-      const codeEntity = clasificationList.find(elm => elm.Id === code);
+
+  const handleClasificationRowClick = (id: string) => {
+    if (id !== "") {
+      const codeEntity = clasificationList.find(elm => elm.Id === parseInt(id));
       const taxRateId = codeEntity ? getIdFromRateValue(taxTypeList, codeEntity.Impuesto) : undefined;
-      setProductDetails("code", code);
-      if (taxRateId) setProductDetails("taxTypeId", taxRateId);
+      dispatch(setProductDetails({ attribute: "code", value: id }));
+      if (taxRateId) dispatch(setProductDetails({ attribute: "taxTypeId", value: taxRateId }));
     }
     setDialogOpen(false);
   };
+
   let idPlaceholder = "";
   let idMaxLength = 0;
+
   switch (issuer.typeId) {
     case 0:
       idPlaceholder = "999999999";
@@ -181,22 +169,42 @@ function ReceiptPage() {
       idPlaceholder = "999999999";
       idMaxLength = 9;
   }
+
+  const idTypeItems = idTypeList.map(item => {
+    return (
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
+      </MenuItem>
+    );
+  });
+
+  const exonerationTypesItems = exonerationTypeList.map(item => {
+    return (
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
+      </MenuItem>
+    );
+  });
+
   const rows = clasificationList.map(row => ({
     id: row.Id,
     taxRate: row.Impuesto,
     description: row.Descripcion,
   }));
+
   const columns = [
     { field: "id", headerName: "Código", hidden: true },
     { field: "taxRate", headerName: "IVA", type: "number" },
     { field: "description", headerName: "Descripcion" },
   ];
+
   const addDisabled =
     productDetail.code.length < 13 ||
     productDetail.description === "" ||
     productDetail.unit === "" ||
     productDetail.quantity === 0 ||
     productDetail.price === 0;
+
   const activityItems = company
     ? company.ActividadEconomicaEmpresa.map(item => {
         return (
@@ -206,15 +214,16 @@ function ReceiptPage() {
         );
       })
     : [];
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={2}>
+      <Grid container className={classes.container} spacing={2}>
         <Grid item xs={12} sm={6}>
           <Select
             id="codigo-actividad-select-id"
             label="Seleccione la Actividad Económica"
             value={activityCode.toString()}
-            onChange={event => setActivityCode(event.target.value)}
+            onChange={event => dispatch(setActivityCode(event.target.value))}
           >
             {activityItems}
           </Select>
@@ -224,7 +233,7 @@ function ReceiptPage() {
             disabled={successful}
             id="id-tipo-identificacion-select-id"
             label="Seleccione el tipo de Identificación"
-            value={issuer.typeId}
+            value={issuer.typeId.toString()}
             onChange={event => handleIdTypeChange(event.target.value)}
           >
             {idTypeItems}
@@ -238,7 +247,7 @@ function ReceiptPage() {
             required
             value={issuer.id}
             label="Identificación"
-            onChange={event => validateCustomerIdentifier(event.target.value)}
+            onChange={event => dispatch(validateCustomerIdentifier({ identifier: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -247,7 +256,7 @@ function ReceiptPage() {
             required
             value={issuer.name}
             label="Nombre"
-            onChange={event => setIssuerDetails("name", event.target.value)}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "name", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -256,7 +265,7 @@ function ReceiptPage() {
             required
             value={issuer.comercialName}
             label="Nombre comercial"
-            onChange={event => setIssuerDetails("comercialName", event.target.value)}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "comercialName", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -265,7 +274,7 @@ function ReceiptPage() {
             required
             value={issuer.address}
             label="Dirección"
-            onChange={event => setIssuerDetails("address", event.target.value)}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "address", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -274,7 +283,7 @@ function ReceiptPage() {
             required
             value={issuer.phone}
             label="Teléfono"
-            onChange={event => setIssuerDetails("phone", event.target.value)}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "phone", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -283,7 +292,7 @@ function ReceiptPage() {
             required
             value={issuer.email}
             label="Correo electrónico"
-            onChange={event => setIssuerDetails("email", event.target.value)}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "email", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} sm={7}>
@@ -292,7 +301,7 @@ function ReceiptPage() {
             id="id-tipo-exoneracion-select-id"
             label="Seleccione el tipo de exoneración"
             value={exoneration.type.toString()}
-            onChange={event => setExonerationDetails("type", event.target.value)}
+            onChange={event => dispatch(setExonerationDetails({ attribute: "type", value: event.target.value }))}
           >
             {exonerationTypesItems}
           </Select>
@@ -303,7 +312,7 @@ function ReceiptPage() {
             id="NumDocExoneracion"
             label="Documento de exoneración"
             value={exoneration.ref}
-            onChange={event => setExonerationDetails("ref", event.target.value)}
+            onChange={event => dispatch(setExonerationDetails({ attribute: "ref", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12}>
@@ -312,7 +321,9 @@ function ReceiptPage() {
             id="NombreInstExoneracion"
             label="Nombre de institución"
             value={exoneration.exoneratedBy}
-            onChange={event => setExonerationDetails("exoneratedBy", event.target.value)}
+            onChange={event =>
+              dispatch(setExonerationDetails({ attribute: "exoneratedBy", value: event.target.value }))
+            }
           />
         </Grid>
         <Grid item xs={5} sm={3}>
@@ -320,7 +331,7 @@ function ReceiptPage() {
             disabled={successful}
             label="Fecha exoneración"
             value={exoneration.date}
-            onChange={date => setExonerationDetails("date", date)}
+            onChange={date => dispatch(setExonerationDetails({ attribute: "date", value: date }))}
           />
         </Grid>
         <Grid item xs={12}>
@@ -330,11 +341,11 @@ function ReceiptPage() {
             value={exoneration.percentage.toString()}
             label="Porcentaje de exoneración"
             numericFormat
-            onChange={event => setExonerationDetails("percentage", event.target.value)}
+            onChange={event => dispatch(setExonerationDetails({ attribute: "percentage", value: event.target.value }))}
           />
         </Grid>
         <Grid style={{ textAlign: "center" }} item xs={12}>
-          <InputLabel className={classes.summaryTitle}>DETALLE DE FACTURA</InputLabel>
+          <InputLabel>DETALLE DE FACTURA</InputLabel>
         </Grid>
         <Grid item xs={10} sm={4}>
           <TextField
@@ -342,8 +353,8 @@ function ReceiptPage() {
             label="Código CABYS"
             id="Codigo"
             inputProps={{ maxLength: 13 }}
-            value={product.code}
-            onChange={event => validateProductCode(event.target.value)}
+            value={productDetail.code}
+            onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
           />
         </Grid>
         <Grid item sm={1}>
@@ -357,19 +368,15 @@ function ReceiptPage() {
           </IconButton>
         </Grid>
         <Grid item xs={12} sm={7}>
-          <LabelField
-            id="TasaIva"
-            value={getDescriptionFromRateId(taxTypeList, product.taxTypeId)}
-            label="Tasa del IVA"
-          />
+          <LabelField id="TasaIva" value={productDetail.taxRate.toString()} label="Tasa del IVA" />
         </Grid>
         <Grid item xs={12}>
           <TextField
             disabled={successful}
             label="Descripción"
             id="Descripcion"
-            value={product.description}
-            onChange={event => setProductDetails("description", event.target.value)}
+            value={productDetail.description}
+            onChange={event => dispatch(setProductDetails({ attribute: "description", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={3}>
@@ -377,8 +384,8 @@ function ReceiptPage() {
             disabled={successful}
             label="Unidad"
             id="Unidad"
-            value={product.unit}
-            onChange={event => setProductDetails("unit", event.target.value)}
+            value={productDetail.unit}
+            onChange={event => dispatch(setProductDetails({ attribute: "unit", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={3}>
@@ -387,8 +394,8 @@ function ReceiptPage() {
             label="Cantidad"
             id="Cantidad"
             numericFormat
-            value={product.quantity}
-            onChange={event => setProductDetails("quantity", event.target.value)}
+            value={productDetail.quantity.toString()}
+            onChange={event => dispatch(setProductDetails({ attribute: "quantity", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={4}>
@@ -396,8 +403,8 @@ function ReceiptPage() {
             disabled={successful}
             label="Precio"
             numericFormat
-            value={product.price}
-            onChange={event => setProductDetails("price", event.target.value)}
+            value={productDetail.price.toString()}
+            onChange={event => dispatch(setProductDetails({ attribute: "price", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={2}>
@@ -406,7 +413,7 @@ function ReceiptPage() {
             className={classes.outerButton}
             color="primary"
             component="span"
-            onClick={() => addDetails()}
+            onClick={() => dispatch(addDetails())}
           >
             <AddCircleIcon />
           </IconButton>
@@ -425,19 +432,17 @@ function ReceiptPage() {
             <TableBody>
               {productDetailsList.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.Codigo}</TableCell>
-                  <TableCell>{row.Descripcion}</TableCell>
-                  <TableCell align="right">{row.Cantidad}</TableCell>
-                  <TableCell align="right">
-                    {formatCurrency(roundNumber(row.Cantidad * row.PrecioVenta, 2), 2)}
-                  </TableCell>
+                  <TableCell>{row.code}</TableCell>
+                  <TableCell>{row.description}</TableCell>
+                  <TableCell align="right">{row.quantity}</TableCell>
+                  <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
                   <TableCell align="right">
                     <IconButton
                       disabled={successful}
                       className={classes.innerButton}
                       color="secondary"
                       component="span"
-                      onClick={() => removeDetails(row.IdProducto)}
+                      onClick={() => dispatch(removeDetails({ id: row.id }))}
                     >
                       <RemoveCircleIcon />
                     </IconButton>
@@ -451,7 +456,7 @@ function ReceiptPage() {
           <Button disabled={summary.total === 0 || successful} label="Guardar" onClick={() => saveReceipt()} />
         </Grid>
         <Grid item xs={5} sm={3} md={2}>
-          <Button label="Regresar" onClick={() => setActiveSection(0)} />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
       </Grid>
       <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
@@ -480,48 +485,10 @@ function ReceiptPage() {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions className={classes.dialogActions}>
+        <DialogActions>
           <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
         </DialogActions>
       </Dialog>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    idTypeList: state.ui.idTypeList,
-    clasificationList: state.product.clasificationList,
-    issuer: state.receipt.issuer,
-    exonerationTypeList: state.ui.exonerationTypeList,
-    company: state.company.company,
-    exoneration: state.receipt.exoneration,
-    product: state.receipt.product,
-    taxTypeList: state.ui.taxTypeList,
-    productDetailsList: state.receipt.productDetailsList,
-    activityCode: state.receipt.activityCode,
-    summary: state.receipt.summary,
-    successful: state.receipt.successful,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setIssuerDetails,
-      validateCustomerIdentifier,
-      validateProductCode,
-      setExonerationDetails,
-      setProductDetails,
-      filterClasificationList,
-      addDetails,
-      removeDetails,
-      setActivityCode,
-      saveReceipt,
-      setActiveSection,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReceiptPage);
