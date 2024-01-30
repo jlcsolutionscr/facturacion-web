@@ -35,15 +35,15 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "auto",
     margin: "15px 10%",
     padding: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       margin: "10px 5%",
       padding: "15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       margin: "5px",
       padding: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       margin: "0",
       padding: "5px",
     },

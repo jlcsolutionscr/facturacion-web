@@ -19,11 +19,11 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "900px",
     width: "100%",
     margin: "15px auto",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       width: "100%",
       margin: "1px 0 0 0",
     },

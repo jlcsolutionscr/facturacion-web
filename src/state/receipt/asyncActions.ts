@@ -51,7 +51,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
         dispatch(startLoader());
         const customer = await getCustomerByIdentifier(token, companyId, payload.identifier);
         if (customer) {
-          dispatch(setIssuerDetails({ attribute: "name", value: customer.name }));
+          dispatch(setIssuerDetails({ attribute: "name", value: customer.Nombre }));
         } else {
           dispatch(setIssuerDetails({ attribute: "name", value: "" }));
         }
@@ -102,7 +102,6 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
   const { exoneration, productDetails, productDetailsList } = receipt.entity;
   if (
     company &&
-    productDetails.id !== "" &&
     productDetails.code !== "" &&
     productDetails.description !== "" &&
     productDetails.quantity > 0 &&
@@ -117,14 +116,15 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
     } else {
       const item = {
         id: crypto.randomUUID(),
-        quantity: productDetails.quantity,
         code: productDetails.code,
         description: productDetails.description,
+        quantity: productDetails.quantity,
         taxRate: productDetails.taxRate,
-        taxRateType: productDetails.taxRateType,
         unit: "UND",
-        price: roundNumber((productDetails.price * (1 + productDetails.taxRate)) / 100, 2),
+        price: productDetails.price,
+        pricePlusTaxes: roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
         costPrice: 0,
+        disccountRate: 0,
       };
       const newProducts = [...productDetailsList, item];
       dispatch(setProductDetailsList(newProducts));

@@ -14,15 +14,15 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "hidden",
     margin: "20px 15% auto 15%",
     padding: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       margin: "16px 10% auto 10%",
       padding: "16px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       margin: "13px 5% auto 5%",
       padding: "13px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       margin: "10px 10px auto 10px",
       padding: "10px",
     },

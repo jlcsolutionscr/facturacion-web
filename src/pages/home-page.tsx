@@ -26,7 +26,7 @@ const useStyles = makeStyles()(() => ({
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       backgroundImage: "none",
       backgroundColor: "#FFF",
     },
@@ -40,7 +40,7 @@ const useStyles = makeStyles()(() => ({
     overflowY: "auto",
     overflowX: "hidden",
     backgroundColor: "#FFF",
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       backgroundImage: `none`,
     },
   },

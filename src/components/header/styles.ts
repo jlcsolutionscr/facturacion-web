@@ -21,7 +21,7 @@ export const useStyles = makeStyles()(theme => ({
     left: "0",
     height: "145px",
     width: "100%",
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       backgroundSize: "75px 75px",
       height: "105px",
       top: "10px",
@@ -42,7 +42,7 @@ export const useStyles = makeStyles()(theme => ({
   text: {
     textAlign: "left",
     margin: "30px 0 0 120px",
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       margin: "20px 0 0 100px",
     },
   },
@@ -52,7 +52,7 @@ export const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(25),
     textShadow: "1px 1px 3px #FFF",
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(20),
     },
   },
@@ -63,7 +63,7 @@ export const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(17),
     textShadow: "2px 2px 3px rgba(0,0,0,0.85)",
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(13),
     },
   },
@@ -74,12 +74,12 @@ export const useStyles = makeStyles()(theme => ({
     textAlign: "center",
     width: "100%",
     top: "40px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       top: "20px",
       width: "calc(100% - 330px)",
       marginLeft: "330px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       position: "relative",
       width: "100%",
       right: "0",
@@ -95,7 +95,7 @@ export const useStyles = makeStyles()(theme => ({
     fontWeight: 600,
     textShadow: "4px 4px 6px rgba(0,0,0,0.45)",
     marginBottom: 0,
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(20),
     },
   },

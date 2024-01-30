@@ -20,13 +20,13 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     padding: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       padding: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       padding: "5px",
     },
   },

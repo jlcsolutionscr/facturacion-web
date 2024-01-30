@@ -23,7 +23,7 @@ const useStyles = makeStyles()(theme => ({
     textAlign: "center",
     maxWidth: "640px",
     margin: "20px auto auto auto",
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       margin: "15px 0 auto 0",
       padding: "5px",
     },
@@ -32,10 +32,10 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "transparent",
     borderRadius: theme.shape.borderRadius,
     padding: "5px 0 5px 0",
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       minWidth: "350px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       maxWidth: "100%",
     },
   },
@@ -49,10 +49,10 @@ const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontWeight: 600,
     marginBottom: 0,
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(16),
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       fontSize: theme.typography.pxToRem(14),
     },
   },
@@ -74,11 +74,11 @@ const useStyles = makeStyles()(theme => ({
       color: "rgba(255,255,255,0.65)",
       backgroundColor: "#595959",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       marginTop: "10px",
       padding: "8px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       width: "100%",
       marginTop: "2px",
       border: "none",

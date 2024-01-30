@@ -40,7 +40,6 @@ export const useStyles = makeStyles()(theme => ({
     boxSizing: "border-box",
     alignItems: "center",
     width: "100%",
-    marginTop: "5px",
   },
   input: {
     color: theme.palette.text.primary,
@@ -49,7 +48,7 @@ export const useStyles = makeStyles()(theme => ({
     height: "1.1876em",
     margin: "0",
     display: "flex",
-    padding: "10.5px 14px",
+    padding: "9.5px 14px",
     minWidth: "0",
     background: "none",
     boxSizing: "content-box",

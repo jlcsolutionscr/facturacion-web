@@ -20,10 +20,10 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     maxWidth: "900px",
     margin: "15px auto",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       margin: "10px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       margin: "1px 0 0 0",
     },
   },

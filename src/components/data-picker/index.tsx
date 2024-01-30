@@ -17,6 +17,7 @@ export default function CustomDatePicker({ label, value, disabled, onChange }: C
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
+        sx={{ width: "100%" }}
         label={label}
         disabled={disabled}
         format="dd/MM/yyyy"

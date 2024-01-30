@@ -45,7 +45,7 @@ import {
 import { getCompany } from "state/session/reducer";
 import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
-import { formatCurrency, getIdFromRateValue, roundNumber } from "utils/utilities";
+import { formatCurrency, getIdFromRateValue, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -53,25 +53,25 @@ const useStyles = makeStyles()(theme => ({
     overflow: "auto",
     maxWidth: "900px",
     margin: "15px auto",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       margin: "10px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       margin: "0",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       margin: "0",
     },
   },
   container: {
     padding: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       padding: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       padding: "5px",
     },
   },
@@ -198,13 +198,6 @@ export default function ReceiptPage() {
     { field: "description", headerName: "Descripcion" },
   ];
 
-  const addDisabled =
-    productDetail.code.length < 13 ||
-    productDetail.description === "" ||
-    productDetail.unit === "" ||
-    productDetail.quantity === 0 ||
-    productDetail.price === 0;
-
   const activityItems = company
     ? company.ActividadEconomicaEmpresa.map(item => {
         return (
@@ -215,11 +208,28 @@ export default function ReceiptPage() {
       })
     : [];
 
+  const addDisabled =
+    productDetail.code.length < 13 ||
+    productDetail.description === "" ||
+    productDetail.unit === "" ||
+    productDetail.quantity === 0 ||
+    productDetail.price === 0;
+
+  const saveDisabled =
+    summary.total === 0 ||
+    successful ||
+    issuer.id === "" ||
+    issuer.name === "" ||
+    issuer.address === "" ||
+    issuer.phone === "" ||
+    issuer.email === "";
+
   return (
     <div className={classes.root}>
       <Grid container className={classes.container} spacing={2}>
         <Grid item xs={12} sm={6}>
           <Select
+            style={{ width: "100%" }}
             id="codigo-actividad-select-id"
             label="Seleccione la Actividad Económica"
             value={activityCode.toString()}
@@ -230,6 +240,7 @@ export default function ReceiptPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
+            style={{ width: "100%" }}
             disabled={successful}
             id="id-tipo-identificacion-select-id"
             label="Seleccione el tipo de Identificación"
@@ -239,7 +250,7 @@ export default function ReceiptPage() {
             {idTypeItems}
           </Select>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
             placeholder={idPlaceholder}
@@ -250,7 +261,7 @@ export default function ReceiptPage() {
             onChange={event => dispatch(validateCustomerIdentifier({ identifier: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
             required
@@ -259,16 +270,15 @@ export default function ReceiptPage() {
             onChange={event => dispatch(setIssuerDetails({ attribute: "name", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
-            required
             value={issuer.comercialName}
             label="Nombre comercial"
             onChange={event => dispatch(setIssuerDetails({ attribute: "comercialName", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
             required
@@ -277,7 +287,7 @@ export default function ReceiptPage() {
             onChange={event => dispatch(setIssuerDetails({ attribute: "address", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
             required
@@ -286,7 +296,7 @@ export default function ReceiptPage() {
             onChange={event => dispatch(setIssuerDetails({ attribute: "phone", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
             required
@@ -295,8 +305,9 @@ export default function ReceiptPage() {
             onChange={event => dispatch(setIssuerDetails({ attribute: "email", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={12} sm={6}>
           <Select
+            style={{ width: "100%" }}
             disabled={successful}
             id="id-tipo-exoneracion-select-id"
             label="Seleccione el tipo de exoneración"
@@ -306,7 +317,7 @@ export default function ReceiptPage() {
             {exonerationTypesItems}
           </Select>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
             id="NumDocExoneracion"
@@ -326,7 +337,7 @@ export default function ReceiptPage() {
             }
           />
         </Grid>
-        <Grid item xs={5} sm={3}>
+        <Grid item xs={6} sm={6}>
           <DatePicker
             disabled={successful}
             label="Fecha exoneración"
@@ -334,7 +345,7 @@ export default function ReceiptPage() {
             onChange={date => dispatch(setExonerationDetails({ attribute: "date", value: date }))}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6} sm={6}>
           <TextField
             disabled={successful}
             id="PorcentajeExoneracion"
@@ -347,7 +358,7 @@ export default function ReceiptPage() {
         <Grid style={{ textAlign: "center" }} item xs={12}>
           <InputLabel>DETALLE DE FACTURA</InputLabel>
         </Grid>
-        <Grid item xs={10} sm={4}>
+        <Grid item xs={6} sm={6}>
           <TextField
             disabled={successful}
             label="Código CABYS"
@@ -357,7 +368,7 @@ export default function ReceiptPage() {
             onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
           />
         </Grid>
-        <Grid item sm={1}>
+        <Grid item xs={2}>
           <IconButton
             className={classes.icon}
             aria-label="upload picture"
@@ -367,7 +378,7 @@ export default function ReceiptPage() {
             <SearchIcon />
           </IconButton>
         </Grid>
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={4}>
           <LabelField id="TasaIva" value={productDetail.taxRate.toString()} label="Tasa del IVA" />
         </Grid>
         <Grid item xs={12}>
@@ -395,7 +406,9 @@ export default function ReceiptPage() {
             id="Cantidad"
             numericFormat
             value={productDetail.quantity.toString()}
-            onChange={event => dispatch(setProductDetails({ attribute: "quantity", value: event.target.value }))}
+            onChange={event =>
+              dispatch(setProductDetails({ attribute: "quantity", value: parseStringToNumber(event.target.value) }))
+            }
           />
         </Grid>
         <Grid item xs={4}>
@@ -404,7 +417,9 @@ export default function ReceiptPage() {
             label="Precio"
             numericFormat
             value={productDetail.price.toString()}
-            onChange={event => dispatch(setProductDetails({ attribute: "price", value: event.target.value }))}
+            onChange={event =>
+              dispatch(setProductDetails({ attribute: "price", value: parseStringToNumber(event.target.value) }))
+            }
           />
         </Grid>
         <Grid item xs={2}>
@@ -435,7 +450,9 @@ export default function ReceiptPage() {
                   <TableCell>{row.code}</TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell align="right">{row.quantity}</TableCell>
-                  <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
+                  <TableCell align="right">
+                    {formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}
+                  </TableCell>
                   <TableCell align="right">
                     <IconButton
                       disabled={successful}
@@ -452,10 +469,8 @@ export default function ReceiptPage() {
             </TableBody>
           </Table>
         </div>
-        <Grid item xs={5} sm={3} md={2}>
-          <Button disabled={summary.total === 0 || successful} label="Guardar" onClick={() => saveReceipt()} />
-        </Grid>
-        <Grid item xs={5} sm={3} md={2}>
+        <Grid item xs={12} display="flex" gap={2} flexDirection="row">
+          <Button disabled={saveDisabled} label="Guardar" onClick={() => dispatch(saveReceipt())} />
           <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
       </Grid>

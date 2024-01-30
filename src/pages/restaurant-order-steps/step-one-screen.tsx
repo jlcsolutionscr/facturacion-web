@@ -46,13 +46,13 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     padding: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       padding: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       padding: "5px",
     },
   },
@@ -74,13 +74,13 @@ const useStyles = makeStyles()(theme => ({
     margin: "10px 0 0 20px",
     width: "100%",
     height: "50px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       margin: "10px 0 0 15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       margin: "10px 0 0 10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       margin: "10px 0 0 5px",
     },
   },

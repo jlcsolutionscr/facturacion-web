@@ -30,11 +30,11 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "900px",
     width: "100%",
     margin: "15px auto",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       width: "100%",
       margin: "0",
     },
@@ -43,26 +43,26 @@ const useStyles = makeStyles()(theme => ({
     display: "flex",
     overflow: "hidden",
     padding: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       padding: "15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       padding: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       padding: "5px",
     },
   },
   buttonContainer: {
     display: "flex",
     marginLeft: "20px",
-    "@media screen and (max-width:960px)": {
+    "@media screen and (max-width:959px)": {
       marginLeft: "15px",
     },
-    "@media screen and (max-width:600px)": {
+    "@media screen and (max-width:599px)": {
       marginLeft: "10px",
     },
-    "@media screen and (max-width:430px)": {
+    "@media screen and (max-width:429px)": {
       marginLeft: "5px",
     },
   },
@@ -76,7 +76,7 @@ const useStyles = makeStyles()(theme => ({
     "& .MuiPaper-root": {
       margin: "32px",
       maxHeight: "calc(100% - 64px)",
-      "@media screen and (max-width:430px)": {
+      "@media screen and (max-width:429px)": {
         margin: "5px",
         maxHeight: "calc(100% - 10px)",
       },
