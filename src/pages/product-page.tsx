@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Checkbox from "@mui/material/Checkbox";
@@ -63,13 +63,13 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 export default function ProductPage() {
   const { classes } = useStyles();
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [clasificationFilter, setClasificationFilter] = React.useState("");
-  const [untaxPrice1, setUntaxPrice1] = React.useState(0);
-  const [untaxPrice2, setUntaxPrice2] = React.useState(0);
-  const [untaxPrice3, setUntaxPrice3] = React.useState(0);
-  const [untaxPrice4, setUntaxPrice4] = React.useState(0);
-  const [untaxPrice5, setUntaxPrice5] = React.useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [clasificationFilter, setClasificationFilter] = useState("");
+  const [untaxPrice1, setUntaxPrice1] = useState(0);
+  const [untaxPrice2, setUntaxPrice2] = useState(0);
+  const [untaxPrice3, setUntaxPrice3] = useState(0);
+  const [untaxPrice4, setUntaxPrice4] = useState(0);
+  const [untaxPrice5, setUntaxPrice5] = useState(0);
 
   const dispatch = useDispatch();
   const product = useSelector(getProduct);

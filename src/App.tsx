@@ -1,6 +1,6 @@
-import RoutingPage from "pages/routing-page";
 import { Provider } from "react-redux";
 
+import RoutingPage from "pages/routing-page";
 import store from "state/store";
 
 const App = () => {

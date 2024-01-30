@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { connect, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
@@ -100,8 +100,8 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 function ReceiptPage() {
   const { classes } = useStyles();
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [clasificationFilter, setClasificationFilter] = React.useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [clasificationFilter, setClasificationFilter] = useState("");
 
   const idTypeList = useSelector(getIdTypeList);
   const issuer = useSelector(getIssuerDetails);

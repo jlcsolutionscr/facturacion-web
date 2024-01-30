@@ -1,11 +1,11 @@
-import { parse } from "date-fns";
-import React from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "tss-react/mui";
-import UAParser from "ua-parser-js";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
+import { parse } from "date-fns";
+import UAParser from "ua-parser-js";
 
 import Button from "components/button";
 import DatePicker from "components/data-picker";
@@ -73,7 +73,7 @@ function ReportsPage({
 }) {
   const { classes } = useStyles();
   const result = new UAParser().getResult();
-  React.useEffect(() => {
+  useEffect(() => {
     if (reportResults.length > 0) {
       setViewLayout(2);
     }
@@ -82,12 +82,12 @@ function ReportsPage({
   const isAccountingUser = permissions.filter(role => role.IdRole === 2).length > 0;
   const today = new Date();
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  const [reportId, setReportId] = React.useState(
+  const [reportId, setReportId] = useState(
     reportList.length > 0 ? (!isAccountingUser ? reportList[0].IdReporte : 50) : 0
   );
-  const [startDate, setStartDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [endDate, setEndDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth));
-  const [viewLayout, setViewLayout] = React.useState(1);
+  const [startDate, setStartDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth));
+  const [viewLayout, setViewLayout] = useState(1);
   const processReport = type => {
     const startDay = (startDate.getDate() < 10 ? "0" : "") + startDate.getDate();
     const startMonth = (startDate.getMonth() + 1 < 10 ? "0" : "") + (startDate.getMonth() + 1);

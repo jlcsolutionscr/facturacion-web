@@ -1,7 +1,4 @@
-import LoginImage from "assets/img/login-background.webp";
-import LoginImageJpg from "assets/img/login-background.webp";
-import LogoImage from "assets/img/login-logo.webp";
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Avatar from "@mui/material/Avatar";
@@ -14,6 +11,9 @@ import Paper from "@mui/material/Paper";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
+import LoginImage from "assets/img/login-background.webp";
+import LoginImageJpg from "assets/img/login-background.webp";
+import LogoImage from "assets/img/login-logo.webp";
 import { restoreSession, userLogin } from "state/session/asyncActions";
 import { readFromLocalStorage } from "utils/utilities";
 
@@ -87,7 +87,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
   const [id, setId] = useState("");
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const session = readFromLocalStorage();
     if (session) {
       const expiredTime = Date.now();

@@ -1,5 +1,3 @@
-import HomePage from "pages/home-page";
-import LoginPage from "pages/login-page";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -10,6 +8,8 @@ import { ThemeProvider } from "@mui/material/styles";
 
 import Loader from "components/loader";
 import useWindowSize from "hooks/use-window-size";
+import HomePage from "pages/home-page";
+import LoginPage from "pages/login-page";
 import { getAuthenticated } from "state/session/reducer";
 import { getMessage, setMessage } from "state/ui/reducer";
 import { ErrorIcon, InfoIcon } from "utils/iconsHelper";

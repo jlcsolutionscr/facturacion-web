@@ -1,4 +1,9 @@
+import React from "react";
+import { useSelector } from "react-redux";
+import { makeStyles } from "tss-react/mui";
+
 import BannerImage from "assets/img/home-background.webp";
+import Header from "components/header";
 import CompanyPage from "pages/company-page";
 import CustomerListPage from "pages/customer-list-page";
 import DocumentListPage from "pages/document-list-page";
@@ -12,11 +17,6 @@ import RestaurantOrderPage from "pages/restaurant-order-page";
 //import ReceiptPage from "pages/receipt-page";
 import WorkingOrderListPage from "pages/working-order-list-page";
 import WorkingOrderPage from "pages/working-order-page";
-import React from "react";
-import { useSelector } from "react-redux";
-import { makeStyles } from "tss-react/mui";
-
-import Header from "components/header";
 //import ReportsPage from "pages/reports-page";*/
 import { getCompany } from "state/session/reducer";
 import { getActiveSection } from "state/ui/reducer";

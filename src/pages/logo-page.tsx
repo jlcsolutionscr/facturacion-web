@@ -1,4 +1,4 @@
-import React from "react";
+import { SyntheticEvent, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
@@ -46,10 +46,10 @@ const useStyles = makeStyles()(theme => ({
 export default function LogoPage() {
   const dispatch = useDispatch();
   const { classes } = useStyles();
-  const [logo, setLogo] = React.useState("");
-  const [filename, setFilename] = React.useState("");
-  const inputFile = React.useRef<HTMLInputElement>(null);
-  const handleImageChange = (event: React.SyntheticEvent) => {
+  const [logo, setLogo] = useState("");
+  const [filename, setFilename] = useState("");
+  const inputFile = useRef<HTMLInputElement>(null);
+  const handleImageChange = (event: SyntheticEvent) => {
     event.preventDefault();
     const reader = new FileReader();
     const file = (event.target as HTMLInputElement).files?.[0];

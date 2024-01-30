@@ -1,5 +1,6 @@
-import LogoDarkImage from "assets/img/company-logo-dark.webp";
 import { makeStyles } from "tss-react/mui";
+
+import LogoDarkImage from "assets/img/company-logo-dark.webp";
 
 export const useStyles = makeStyles()(theme => ({
   header: {

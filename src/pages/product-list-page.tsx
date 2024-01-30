@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -81,8 +81,8 @@ export default function ProductListPage() {
   const isDialogOpen = useSelector(getProductDialogStatus);
 
   const { classes } = useStyles();
-  const [filter, setFilter] = React.useState("");
-  const [filterType, setFilterType] = React.useState(2);
+  const [filter, setFilter] = useState("");
+  const [filterType, setFilterType] = useState(2);
   const handleOnFilterTypeChange = () => {
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);

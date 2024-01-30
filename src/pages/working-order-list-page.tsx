@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -63,8 +63,8 @@ export default function WorkingOrderListPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
 
-  const [workingOrderId, setWorkingOrderId] = React.useState(0);
-  const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
+  const [workingOrderId, setWorkingOrderId] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState({ open: false, id: 0 });
 
   const listPage = useSelector(getWorkingOrderListPage);
   const listCount = useSelector(getWorkingOrderListCount);
