@@ -133,7 +133,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    dispatch(getProduct({ id: item.Id, filterType: 2 }));
+    dispatch(getProduct({ id: item.Id }));
     setFilter("");
   };
 

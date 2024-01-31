@@ -86,7 +86,7 @@ export default function ProductPage() {
   useEffect(() => {
     const calculatePrice = (value: number, taxId: number) => {
       const taxRate = getTaxeRateFromId(taxTypeList, taxId);
-      return roundNumber(getPriceFromTaxRate(value, taxRate, false), 2);
+      return roundNumber(getPriceFromTaxRate(value, taxRate), 2);
     };
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto));
     setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto));
@@ -135,7 +135,7 @@ export default function ProductPage() {
 
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
-    const untaxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate, false), 2);
+    const untaxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate), 2);
     setUntaxPrice1(untaxPrice);
     setUntaxPrice2(untaxPrice);
     setUntaxPrice3(untaxPrice);
@@ -150,7 +150,7 @@ export default function ProductPage() {
 
   const handleUntaxPriceChange = (event: TextFieldOnChangeEventType) => {
     const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
-    const taxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate, true), 2);
+    const taxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate), 2);
     switch (event.target.id) {
       case "untaxPrice1":
         setUntaxPrice1(parseFloat(event.target.value));
