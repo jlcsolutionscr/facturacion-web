@@ -61,5 +61,6 @@ export const getPrinter = (state: RootState) => state.session.printer;
 export const getVendorList = (state: RootState) => state.session.vendorList;
 export const getPermissions = (state: RootState) => state.session.permissions;
 export const getBranchList = (state: RootState) => state.session.branchList;
+export const getReportList = (state: RootState) => state.session.reportList;
 
 export default sessionSlice.reducer;

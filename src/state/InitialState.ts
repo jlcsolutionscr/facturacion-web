@@ -7,7 +7,6 @@ import {
   IdDescriptionTaxType,
   IdDescriptionType,
   IdDescriptionValueType,
-  IdValueType,
   InvoiceEntityType,
   InvoiceType,
   PermissionType,
@@ -50,7 +49,7 @@ type SessionStateType = {
   branchList: IdDescriptionType[];
   branchId: number;
   terminalId: number;
-  reportList: IdValueType[];
+  reportList: { IdReporte: number; NombreReporte: string }[];
   vendorList: IdDescriptionType[];
   permissions: PermissionType[];
   printer: string;

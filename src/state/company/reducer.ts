@@ -59,5 +59,6 @@ export const getCompanyLogo = (state: RootState) => state.company.logo;
 export const getCredentials = (state: RootState) => state.company.credentials;
 export const getAvailableEconomicActivityList = (state: RootState) => state.company.availableEconomicActivityList;
 export const getReportResults = (state: RootState) => state.company.reportResults;
+export const getReportSummary = (state: RootState) => state.company.reportSummary;
 
 export default companySlice.reducer;

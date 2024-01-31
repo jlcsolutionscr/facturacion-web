@@ -22,7 +22,7 @@ function DetailLayout({ reportName, summary, data, returnOnClick }: DetailLayout
     type: typeof key[1] === "number" ? "number" : "",
   }));
   const rows = data.map(row => {
-    const data = row;
+    const data: typeof row = {};
     columns.forEach(col => {
       data[col.field] = col.type === "number" ? formatCurrency(row[col.field]) : row[col.field];
     });
@@ -50,8 +50,8 @@ function DetailLayout({ reportName, summary, data, returnOnClick }: DetailLayout
           )}
         </div>
       </div>
-      <DataGrid showHeader dense columns={columns} rows={rows} rowsPerPage={9} />
-      <div style={{ margin: "10px 0 10px 0" }}>
+      <DataGrid showHeader dense columns={columns} rows={rows} rowsPerPage={10} />
+      <div style={{ margin: "10px 0 7px 0" }}>
         <Button label="Regresar" onClick={() => returnOnClick()} />
       </div>
     </div>

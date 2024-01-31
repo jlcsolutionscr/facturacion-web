@@ -233,7 +233,7 @@ export default function MenuPage() {
         <Button
           disabled={!reportingMenu}
           classes={{ root: classes.button }}
-          onClick={() => dispatch(setActiveSection({ id: 20 }))}
+          onClick={() => dispatch(setActiveSection(20))}
         >
           Menu de reportes
         </Button>

@@ -13,11 +13,11 @@ import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
 import ProductListPage from "pages/product-list-page";
 import ReceiptPage from "pages/receipt-page";
+import ReportsPage from "pages/reports-page";
 import RestaurantOrderListPage from "pages/restaurant-order-list-page";
 import RestaurantOrderPage from "pages/restaurant-order-page";
 import WorkingOrderListPage from "pages/working-order-list-page";
 import WorkingOrderPage from "pages/working-order-page";
-//import ReportsPage from "pages/reports-page";*/
 import { getCompany } from "state/session/reducer";
 import { getActiveSection } from "state/ui/reducer";
 
@@ -77,7 +77,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 7 && <InvoiceListPage />}
         {activeSection === 8 && <DocumentListPage />}
         {activeSection === 9 ? company?.Modalidad === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
-        {/*activeSection === 20 && <ReportsPage width={width} />*/}
+        {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
       </div>
     </div>

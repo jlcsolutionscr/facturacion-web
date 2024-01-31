@@ -17,7 +17,7 @@ type TableStyleType = {
   color: string;
   minWidth: number | string;
   display?: string;
-  height?: number;
+  maxHeight?: number;
 };
 
 interface TablePaginationActionsProps {
@@ -104,17 +104,19 @@ export default function DataGrid({
 }: DataGridProps) {
   const { classes } = useStyles();
   const emptyRows = rowsPerPage - rows.length;
+  console.log("emptyRows", emptyRows);
   const height = rowsPerPage * (dense ? 35 : 45) + (showHeader ? 35 : 0);
   let tableStyle: TableStyleType = {
     color: "white",
     minWidth: minWidth || "auto",
   };
-  if (height > 0) tableStyle = { ...tableStyle, display: "list-table", height: height };
+  console.log("height", height);
+  if (height > 0) tableStyle = { ...tableStyle, display: "list-table", maxHeight: height };
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableContainer className={classes.tableContainer}>
-          <Table style={tableStyle} size={dense ? "small" : "medium"}>
+        <TableContainer className={classes.tableContainer} style={tableStyle}>
+          <Table size={dense ? "small" : "medium"}>
             {showHeader && (
               <TableHead>
                 <TableRow>
@@ -133,7 +135,7 @@ export default function DataGrid({
                 </TableRow>
               </TableHead>
             )}
-            <TableBody>
+            <TableBody style={{ height: (dense ? 35 : 45) * rowsPerPage, overflowY: "auto" }}>
               {rows.map((row, rowIndex) => {
                 return (
                   <TableRow
@@ -159,7 +161,7 @@ export default function DataGrid({
                   </TableRow>
                 );
               })}
-              {page !== undefined && emptyRows > 0 && (
+              {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 35 : 45) * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
