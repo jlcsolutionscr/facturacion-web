@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { receiptInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { defaultProductDetails, defaultReceipt } from "utils/defaults";
 
@@ -48,6 +49,11 @@ export const receiptSlice = createSlice({
     resetReceipt: state => {
       state.entity = defaultReceipt;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return receiptInitialState;
+    });
   },
 });
 

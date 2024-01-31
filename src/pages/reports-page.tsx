@@ -17,30 +17,47 @@ import { setActiveSection, setMessage } from "state/ui/reducer";
 
 const useStyles = makeStyles()(theme => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
     overflow: "auto",
-    maxWidth: "900px",
-    width: "100%",
+    margin: "0 auto",
+  },
+  filterSection: {
+    backgroundColor: theme.palette.background.paper,
+    overflow: "hidden",
+    maxWidth: "400px",
     margin: "15px auto",
+    padding: "10px 20px 20px 20px",
     "@media screen and (max-width:959px)": {
-      width: "calc(100% - 20px)",
-      margin: "10px",
+      margin: "10px auto",
+      padding: "10px 15px 15px 15px",
     },
     "@media screen and (max-width:599px)": {
-      width: "100%",
-      margin: "0",
+      margin: "0 auto",
+      padding: "10px 10px 10px 10px",
+    },
+    "@media screen and (max-width:429px)": {
+      padding: "5px 5px 7px 5px",
     },
   },
-  container: {
-    overflow: "hidden",
+  layoutSection: {
+    backgroundColor: theme.palette.background.paper,
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: "960px",
+    width: "calc(100% - 40px)",
+    margin: "15px auto 0 auto",
     padding: "10px 20px 7px 20px",
     "@media screen and (max-width:959px)": {
+      width: "calc(100% - 50px)",
+      margin: "10px 10px 0 10px",
       padding: "10px 15px 7px 15px",
     },
     "@media screen and (max-width:599px)": {
+      width: "calc(100% - 20px)",
+      margin: "0",
       padding: "10px 10px 7px 10px",
     },
     "@media screen and (max-width:429px)": {
+      width: "calc(100% - 10px)",
       padding: "5px 5px 7px 5px",
     },
   },
@@ -129,8 +146,8 @@ export default function ReportsPage() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.container}>
-        {viewLayout === 1 && (
+      {viewLayout === 1 && (
+        <div className={classes.filterSection}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Select
@@ -142,14 +159,14 @@ export default function ReportsPage() {
                 {reportItems}
               </Select>
             </Grid>
-            <Grid item xs={5} sm={4} md={3}>
+            <Grid item xs={6}>
               <DatePicker
                 label="Fecha inicial"
                 value={startDate}
                 onChange={value => setStartDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
               />
             </Grid>
-            <Grid item xs={5} sm={4} md={3}>
+            <Grid item xs={6}>
               <DatePicker
                 label="Fecha final"
                 value={endDate}
@@ -166,16 +183,18 @@ export default function ReportsPage() {
               <Button label="Regresar" onClick={handleBackButton} />
             </Grid>
           </Grid>
-        )}
-        {viewLayout === 2 && (
+        </div>
+      )}
+      {viewLayout === 2 && (
+        <div className={classes.layoutSection}>
           <ReportLayout
             reportName={reportName}
             summary={reportSummary}
             data={reportResults}
             returnOnClick={() => setViewLayout(1)}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

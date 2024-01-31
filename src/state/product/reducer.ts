@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { productInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { defaultProduct } from "utils/defaults";
 
@@ -43,6 +44,11 @@ const productSlice = createSlice({
       state.isDialogOpen = false;
       state.entity = defaultProduct;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return productInitialState;
+    });
   },
 });
 

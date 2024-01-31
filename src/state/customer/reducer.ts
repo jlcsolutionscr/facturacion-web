@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { customerInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { defaultCustomer } from "utils/defaults";
 
@@ -40,6 +41,11 @@ const customerSlice = createSlice({
       state.isDialogOpen = false;
       state.entity = defaultCustomer;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return customerInitialState;
+    });
   },
 });
 

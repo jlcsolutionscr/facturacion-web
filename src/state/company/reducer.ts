@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { companyInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 
 const companySlice = createSlice({
@@ -41,6 +42,11 @@ const companySlice = createSlice({
       state.reportResults = action.payload.list;
       state.reportSummary = action.payload.summary;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return companyInitialState;
+    });
   },
 });
 

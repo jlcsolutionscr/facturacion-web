@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { documentInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 
 const documentSlice = createSlice({
@@ -19,6 +20,11 @@ const documentSlice = createSlice({
     setDocumentDetails: (state, action) => {
       state.details = action.payload;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return documentInitialState;
+    });
   },
 });
 

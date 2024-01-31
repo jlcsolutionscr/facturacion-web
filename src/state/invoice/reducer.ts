@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { invoiceInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { defaultInvoice, defaultProductDetails } from "utils/defaults";
 
@@ -66,6 +67,11 @@ const invoiceSlice = createSlice({
     resetInvoice: state => {
       state.entity = defaultInvoice;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return invoiceInitialState;
+    });
   },
 });
 

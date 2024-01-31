@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { workingOrderInitialState } from "state/InitialState";
+import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { defaultProductDetails, defaultWorkingOrder } from "utils/defaults";
 
@@ -81,6 +82,11 @@ const workingOrderSlice = createSlice({
     resetWorkingOrder: state => {
       state.entity = defaultWorkingOrder;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(logout, () => {
+      return workingOrderInitialState;
+    });
   },
 });
 
