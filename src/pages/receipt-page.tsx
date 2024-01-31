@@ -13,6 +13,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
@@ -227,6 +228,11 @@ export default function ReceiptPage() {
   return (
     <div className={classes.root}>
       <Grid container className={classes.container} spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6" textAlign="center" fontWeight="700">
+            Factura de Compra
+          </Typography>
+        </Grid>
         <Grid item xs={12} sm={6}>
           <Select
             style={{ width: "100%" }}

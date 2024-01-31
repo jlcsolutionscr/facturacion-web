@@ -11,12 +11,6 @@ type HeaderType = {
   Authorization?: string;
 };
 
-type NodeType = {
-  name: string;
-  value: string;
-  children: NodeType[];
-};
-
 export function encryptString(plainText: string) {
   const phrase = "Po78]Rba[%J=[14[*";
   const data = CryptoJS.enc.Utf8.parse(plainText);
@@ -78,29 +72,7 @@ export function getDescriptionFromRateId(taxTypeList: IdDescriptionValueType[], 
 export function xmlToObject(value: string) {
   const decodedString = atob(value);
   const parser = new XMLParser();
-  const xml = parser.parse(decodedString);
-  const result: { [key: string]: string | object } = {};
-  for (const node of xml.children) {
-    parseNode(node, result);
-  }
-  return result;
-}
-
-function parseNode(xmlNode: NodeType, result: { [key: string]: string | object }) {
-  if (xmlNode.name === "#text") {
-    const v = xmlNode.value;
-    if (v.trim()) result["#text"] = v;
-    return;
-  }
-  const newResult = {};
-  for (const node of xmlNode.children) {
-    parseNode(node, newResult);
-  }
-  if (xmlNode.value !== "") {
-    result[xmlNode.name] = xmlNode.value;
-  } else {
-    result[xmlNode.name] = newResult;
-  }
+  return parser.parse(decodedString);
 }
 
 export function ExportDataToXls(filename: string, title: string, data: { [key: string]: string | number | boolean }[]) {

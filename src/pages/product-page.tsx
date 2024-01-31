@@ -9,6 +9,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
@@ -226,6 +227,11 @@ export default function ProductPage() {
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6" textAlign="center" fontWeight="700">
+            Datos del Producto
+          </Typography>
+        </Grid>
         <Grid item xs={12}>
           <Select
             id="tipo-select-id"

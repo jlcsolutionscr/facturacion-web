@@ -23,7 +23,7 @@ import {
   getDocumentListPage,
   setDocumentDetails,
 } from "state/document/reducer";
-import { setActiveSection } from "state/ui/reducer";
+import { getIsLoaderOpen, setActiveSection } from "state/ui/reducer";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -99,6 +99,7 @@ export default function DocumentListPage() {
   const listCount = useSelector(getDocumentListCount);
   const list = useSelector(getDocumentList);
   const details = useSelector(getDocumentDetails);
+  const isLoaderOpen = useSelector(getIsLoaderOpen);
 
   const handleConfirmEmailClick = () => {
     setDialogStatus({ open: false, type: 1 });
@@ -139,7 +140,9 @@ export default function DocumentListPage() {
       <div>
         <DialogTitle>Mesaje de respuesta</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">{decodeURIComponent(escape(details))}</DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            {details !== "" ? details : "Transacción procesada satisfactoriamente!"}
+          </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
           <Button negative label="Cerrar" onClick={() => handleDialogClose()} />
@@ -210,10 +213,7 @@ export default function DocumentListPage() {
       <div className={classes.buttonContainer}>
         <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
-      <Dialog
-        onClose={handleDialogClose}
-        open={dialogStatus.open && (dialogStatus.type === 1 || (dialogStatus.type === 2 && details !== ""))}
-      >
+      <Dialog onClose={handleDialogClose} open={dialogStatus.open && !isLoaderOpen}>
         {dialogContent}
       </Dialog>
     </div>

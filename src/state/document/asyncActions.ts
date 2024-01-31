@@ -84,8 +84,8 @@ export const getDocumentDetails = createAsyncThunk(
     dispatch(startLoader());
     try {
       const response = await getDocumentEntity(token, payload.id);
-      const details = xmlToObject(response.Respuesta);
-      dispatch(setDocumentDetails(details.DetalleMensaje));
+      const { MensajeHacienda } = xmlToObject(response.Respuesta);
+      dispatch(setDocumentDetails(MensajeHacienda.DetalleMensaje));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

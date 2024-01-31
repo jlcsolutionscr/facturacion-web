@@ -142,14 +142,14 @@ export default function ReportsPage() {
                 {reportItems}
               </Select>
             </Grid>
-            <Grid item xs={5} sm={4} md={3} lg={2}>
+            <Grid item xs={5} sm={4} md={3}>
               <DatePicker
                 label="Fecha inicial"
                 value={startDate}
                 onChange={value => setStartDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
               />
             </Grid>
-            <Grid item xs={5} sm={4} md={3} lg={2}>
+            <Grid item xs={5} sm={4} md={3}>
               <DatePicker
                 label="Fecha final"
                 value={endDate}

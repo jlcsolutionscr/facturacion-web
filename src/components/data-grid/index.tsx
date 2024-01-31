@@ -104,14 +104,13 @@ export default function DataGrid({
 }: DataGridProps) {
   const { classes } = useStyles();
   const emptyRows = rowsPerPage - rows.length;
-  console.log("emptyRows", emptyRows);
   const height = rowsPerPage * (dense ? 35 : 45) + (showHeader ? 35 : 0);
   let tableStyle: TableStyleType = {
     color: "white",
     minWidth: minWidth || "auto",
   };
-  console.log("height", height);
-  if (height > 0) tableStyle = { ...tableStyle, display: "list-table", maxHeight: height };
+  if (height > 0)
+    tableStyle = { ...tableStyle, display: "list-table", ...(page === undefined && { maxHeight: height }) };
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>

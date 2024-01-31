@@ -11,6 +11,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 
 import Button from "components/button";
 import LabelField from "components/label-field";
@@ -33,18 +34,21 @@ const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
-    margin: "15px 10%",
+    maxWidth: "900px",
+    width: "100%",
+    margin: "15px auto",
     padding: "20px",
     "@media screen and (max-width:959px)": {
-      margin: "10px 5%",
+      width: "calc(100% - 20px)",
+      margin: "10px",
       padding: "15px",
     },
     "@media screen and (max-width:599px)": {
+      width: "calc(100% - 10px)",
       margin: "5px",
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      margin: "0",
       padding: "5px",
     },
   },
@@ -167,6 +171,11 @@ export default function CompanyPage() {
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6" textAlign="center" fontWeight="700">
+            Configuración de la Empresa
+          </Typography>
+        </Grid>
         <Grid item xs={12}>
           <TextField
             id="NombreEmpresa"

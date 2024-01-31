@@ -4,6 +4,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
 
 import Button from "components/button";
 import DatePicker from "components/data-picker";
@@ -146,6 +147,11 @@ export default function CustomerPage() {
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6" textAlign="center" fontWeight="700">
+            Datos del Cliente
+          </Typography>
+        </Grid>
         <Grid item xs={12} sm={6}>
           <Select
             id="IdTipoIdentificacion"
