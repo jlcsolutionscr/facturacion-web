@@ -131,7 +131,7 @@ export default function ReportsPage() {
     <div className={classes.root}>
       <div className={classes.container}>
         {viewLayout === 1 && (
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <Select
                 id="tipo-reporte-select-id"
