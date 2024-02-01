@@ -23,25 +23,28 @@ const useStyles = makeStyles()(theme => ({
     textAlign: "center",
     maxWidth: "640px",
     margin: "20px auto auto auto",
+    "@media screen and (max-width:599px)": {
+      margin: "10px auto auto auto",
+    },
     "@media screen and (max-width:429px)": {
-      margin: "15px 0 auto 0",
+      margin: "5px 0 auto 0",
       padding: "5px",
     },
   },
   branches: {
-    backgroundColor: theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "transparent",
+    backgroundColor: theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "rgba(255, 255, 255, 0.85)",
     borderRadius: theme.shape.borderRadius,
-    padding: "5px 0 5px 0",
+    transition:
+      "background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    margin: "0 auto",
+    padding: "5px 0",
+    width: "590px",
     "@media screen and (max-width:599px)": {
-      minWidth: "350px",
+      width: "400px",
     },
     "@media screen and (max-width:429px)": {
-      maxWidth: "100%",
+      width: "100%",
     },
-  },
-  formControl: {
-    maxWidth: "590px",
-    minWidth: "200px",
   },
   branchText: {
     fontFamily: '"Exo 2", sans-serif',
@@ -75,7 +78,8 @@ const useStyles = makeStyles()(theme => ({
       backgroundColor: "#595959",
     },
     "@media screen and (max-width:599px)": {
-      marginTop: "10px",
+      width: "300px",
+      marginTop: "6px",
       padding: "8px",
     },
     "@media screen and (max-width:429px)": {

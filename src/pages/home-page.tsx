@@ -36,7 +36,7 @@ const useStyles = makeStyles()(() => ({
     backgroundRepeat: "no-repeat",
     backgroundSize: `100% 100%`,
     display: "flex",
-    flex: "1 1 auto",
+    flex: "1 0 auto",
     overflowY: "auto",
     overflowX: "hidden",
     backgroundColor: "#FFF",
