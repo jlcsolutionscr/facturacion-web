@@ -1,3 +1,4 @@
+import { SyntheticEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Checkbox from "@mui/material/Checkbox";
@@ -13,12 +14,14 @@ import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { closeCustomerDialog, getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
 import { getExonerationTypeList, getIdTypeList, getTaxTypeList } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
     padding: "20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
     },
@@ -26,7 +29,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "0 5px 5px 5px",
     },
   },
   label: {
@@ -85,7 +88,7 @@ export default function CustomerPage() {
       customer.IdImpuesto === null ||
       customer.IdTipoExoneracion === null;
   }
-  const handlePaste = (e: React.SyntheticEvent) => {
+  const handlePaste = (e: SyntheticEvent) => {
     e.preventDefault();
   };
 
@@ -148,11 +151,11 @@ export default function CustomerPage() {
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center" fontWeight="700">
-            Datos del Cliente
+          <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
+            Información del Cliente
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={6}>
           <Select
             id="IdTipoIdentificacion"
             label="Tipo de identificación"
@@ -162,7 +165,7 @@ export default function CustomerPage() {
             {idTypeItems}
           </Select>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
             required
             numericFormat={customer.IdTipoIdentificacion > 1 ? false : true}
@@ -175,10 +178,10 @@ export default function CustomerPage() {
             onPaste={handlePaste}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField required id="Nombre" value={customer.Nombre} label="Nombre del cliente" onChange={handleChange} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
             id="NombreComercial"
             value={customer.NombreComercial}
@@ -189,7 +192,7 @@ export default function CustomerPage() {
         <Grid item xs={12}>
           <TextField required id="Direccion" value={customer.Direccion} label="Dirección" onChange={handleChange} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
             required
             id="Telefono"
@@ -199,10 +202,10 @@ export default function CustomerPage() {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField id="Fax" value={customer.Fax} label="Fax" numericFormat onChange={handleChange} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8} sm={9}>
           <TextField
             required
             id="CorreoElectronico"
@@ -211,7 +214,7 @@ export default function CustomerPage() {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={4} sm={3}>
           <Select
             id="IdTipoPrecio"
             label="Tipo de precio"
@@ -261,7 +264,7 @@ export default function CustomerPage() {
             {rentTypeItems}
           </Select>
         </Grid>
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={12} sm={6}>
           <Select
             id="IdTipoExoneracion"
             label="Tasa de exoneración"
@@ -278,7 +281,7 @@ export default function CustomerPage() {
             {exonerationTypesItems}
           </Select>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             id="NumDocExoneracion"
             value={customer.NumDocExoneracion}
@@ -295,14 +298,14 @@ export default function CustomerPage() {
           />
         </Grid>
 
-        <Grid item xs={5} sm={3}>
+        <Grid item xs={6}>
           <DatePicker
             label="Fecha exoneración"
             value={customer.FechaEmisionDoc}
             onChange={(value: string) => dispatch(setCustomerAttribute({ attribute: "FechaEmisionDoc", value }))}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
             id="PorcentajeExoneracion"
             value={customer.PorcentajeExoneracion.toString()}

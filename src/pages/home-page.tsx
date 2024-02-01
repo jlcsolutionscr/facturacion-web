@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles()(() => ({
     backgroundRepeat: "no-repeat",
     backgroundSize: `100% 100%`,
     display: "flex",
-    flex: "1 0 auto",
+    flex: "1 1 auto",
     overflowY: "auto",
     overflowX: "hidden",
     backgroundColor: "#FFF",
@@ -54,12 +54,12 @@ interface HomePageProps {
 
 export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePageProps) {
   const { classes } = useStyles();
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const activeSection = useSelector(getActiveSection);
   const company = useSelector(getCompany);
 
-  React.useEffect(() => {
+  useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [activeSection]);
 

@@ -1,10 +1,10 @@
-import React from "react";
+import { ChangeEvent, useState } from "react";
 import TablePagination from "@mui/material/TablePagination";
 
 import { useStyles } from "./styles";
 import { TablePaginationActions } from "components/data-grid";
 
-export type ListDropdownOnChangeEventType = React.ChangeEvent<HTMLInputElement>;
+export type ListDropdownOnChangeEventType = ChangeEvent<HTMLInputElement>;
 
 interface ListDropdownProps {
   page: number;
@@ -32,7 +32,7 @@ export default function ListDropdown({
   onItemSelected,
 }: ListDropdownProps) {
   const { classes } = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const outsideClickHandler = () => {
     removeClickOutSide();

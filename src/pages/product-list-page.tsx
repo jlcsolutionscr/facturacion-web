@@ -13,7 +13,7 @@ import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
 import { getProductDialogStatus, getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -24,6 +24,7 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "900px",
     width: "100%",
     margin: "15px auto",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",

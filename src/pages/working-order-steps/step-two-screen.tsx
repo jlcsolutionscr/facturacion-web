@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType } from "types/domain";
@@ -30,7 +30,7 @@ import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
-  root: {
+  container: {
     flex: 1,
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
@@ -42,16 +42,12 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
-  container: {
+  body: {
     display: "flex",
     flexDirection: "column",
-    overflow: "hidden",
-  },
-  formControl: {
-    minWidth: "150px",
   },
   bottom: {
     margin: "10px 0 10px 0",
@@ -71,12 +67,13 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 interface StepTwoScreenProps {
   index: number;
   value: number;
+  className?: string;
 }
 
-export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
+export default function StepTwoScreen({ index, value, className }: StepTwoScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const permissions = useSelector(getPermissions);
   const productListPage = useSelector(getProductListPage);
@@ -86,12 +83,12 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const productDetailsList = useSelector(getProductDetailsList);
   const status = useSelector(getStatus);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (value === 1) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
-  const [filterType, setFilterType] = React.useState(2);
-  const [filter, setFilter] = React.useState("");
+  const [filterType, setFilterType] = useState(2);
+  const [filter, setFilter] = useState("");
   const isPriceChangeEnabled = permissions.filter(role => [52].includes(role.IdRole)).length > 0;
 
   const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
@@ -133,8 +130,8 @@ export default function StepTwoScreen({ index, value }: StepTwoScreenProps) {
   const display = value !== index ? "none" : "flex";
 
   return (
-    <div ref={myRef} className={classes.root} style={{ display: display }}>
-      <div className={classes.container}>
+    <div ref={myRef} className={`${classes.container} ${className}`} style={{ display: display }}>
+      <div className={classes.body}>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={10} sm={10.5} md={11}>

@@ -1,5 +1,7 @@
 import { makeStyles } from "tss-react/mui";
 
+import { TRANSITION_ANIMATION } from "utils/constants";
+
 export const useStyles = makeStyles()(theme => ({
   root: {
     width: "100%",
@@ -10,10 +12,12 @@ export const useStyles = makeStyles()(theme => ({
     display: "flex",
     flexDirection: "column",
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "rgba(255, 255, 255, .87)",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
   },
   tableContainer: {
     flex: "1 1 auto",
     color: theme.palette.mode === "dark" ? "#FFF" : "#333",
+    transition: `color ${TRANSITION_ANIMATION}`,
     "& .MuiTableCell-root": {
       padding: "5px 16px",
     },

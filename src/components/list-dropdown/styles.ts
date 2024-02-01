@@ -1,9 +1,10 @@
 import { makeStyles } from "tss-react/mui";
 
+import { TRANSITION_ANIMATION } from "utils/constants";
+
 export const useStyles = makeStyles()(theme => ({
   container: {
     border: "none",
-    margin: "5px 0 0 0",
     display: "inline-flex",
     padding: "0",
     position: "relative",
@@ -20,6 +21,7 @@ export const useStyles = makeStyles()(theme => ({
   },
   label: {
     backgroundColor: theme.palette.background.paper,
+    transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
     transform: "translate(14px, -6px) scale(0.75)",
     transformOrigin: "top left",
     zIndex: "1",
@@ -56,6 +58,7 @@ export const useStyles = makeStyles()(theme => ({
     cursor: "text",
     borderRadius: theme.shape.borderRadius,
     border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.23)" : "rgba(0, 0, 0, 0.23)"}`,
+    transition: `color ${TRANSITION_ANIMATION}, border ${TRANSITION_ANIMATION}`,
   },
   inputOutline: {
     outline: "0",
@@ -66,6 +69,7 @@ export const useStyles = makeStyles()(theme => ({
   },
   labelOutline: {
     color: theme.palette.primary.main,
+    transition: `color ${TRANSITION_ANIMATION}`,
   },
   listContainer: {
     paddingTop: "10px",
@@ -74,6 +78,7 @@ export const useStyles = makeStyles()(theme => ({
     borderTop: `1px solid ${theme.palette.primary.main}`,
     borderTopLeftRadius: "0",
     borderTopRightRadius: "0",
+    transition: `border ${TRANSITION_ANIMATION}`,
   },
   item: {
     display: "flex",
@@ -89,5 +94,6 @@ export const useStyles = makeStyles()(theme => ({
     boxSizing: "content-box",
     textRendering: "auto",
     cursor: "text",
+    transition: `color ${TRANSITION_ANIMATION}`,
   },
 }));

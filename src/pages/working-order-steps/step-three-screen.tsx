@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
@@ -19,7 +19,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
 }));
@@ -27,24 +27,25 @@ const useStyles = makeStyles()(theme => ({
 interface StepThreeScreenProps {
   index: number;
   value: number;
+  className?: string;
 }
 
-export default function StepThreeScreen({ value, index }: StepThreeScreenProps) {
+export default function StepThreeScreen({ value, index, className }: StepThreeScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const delivery = useSelector(getDeliveryDetails);
   const status = useSelector(getStatus);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
   const fieldDisabled = status === "converted";
 
   return (
-    <div ref={myRef} className={classes.container} hidden={value !== index}>
+    <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField

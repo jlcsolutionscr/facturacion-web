@@ -3,20 +3,26 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectProps } from "@mui/material/Select";
 
-export const useStyles = makeStyles()(() => ({
+import { TRANSITION_ANIMATION } from "utils/constants";
+
+export const useStyles = makeStyles()(theme => ({
   container: {
-    "& .MuiInputLabel-root": {
-      transform: "translate(0px, 0px) scale(0.75)",
+    minWidth: "100%",
+    "& label": {
+      backgroundColor: theme.palette.background.paper,
+      paddingInlineStart: "5px",
+      paddingInlineEnd: "7px",
+      transition: `background-color ${TRANSITION_ANIMATION}`,
     },
   },
 }));
 
-export default function CustomSelect({ style, label, className, id, children, ...rest }: SelectProps<string>) {
+export default function CustomSelect({ label, className, id, children, ...rest }: SelectProps<string>) {
   const { classes } = useStyles();
   return (
-    <FormControl className={`${classes.container} ${className}`} style={style}>
+    <FormControl className={`${classes.container} ${className}`}>
       {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
-      <Select {...rest} variant="standard" inputProps={{ id: id }}>
+      <Select {...rest} variant="outlined" size="small" inputProps={{ id: id }}>
         {children}
       </Select>
     </FormControl>

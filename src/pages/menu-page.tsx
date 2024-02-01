@@ -15,7 +15,7 @@ import { setReceiptParameters } from "state/receipt/asyncActions";
 import { getBranchId, getBranchList, getPermissions, setBranchId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
-import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -32,13 +32,12 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   branches: {
-    backgroundColor: theme.palette.mode === "dark" ? "rgba(51, 51, 51, 0.9)" : "rgba(255, 255, 255, 0.85)",
+    backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
-    transition:
-      "background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     margin: "0 auto",
-    padding: "5px 0",
+    padding: "9px",
     width: "590px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:599px)": {
       width: "400px",
     },
@@ -52,6 +51,8 @@ const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontWeight: 600,
     marginBottom: 0,
+    color: theme.palette.text.primary,
+    transition: `color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(16),
     },
@@ -68,6 +69,7 @@ const useStyles = makeStyles()(theme => ({
     borderRadius: "25px",
     border: "1px solid #FFFFFF",
     boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
+    transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
     "&:hover": {
       color: "#FFF",
       backgroundColor: theme.palette.mode === "dark" ? "#4d4949" : "#27546c",

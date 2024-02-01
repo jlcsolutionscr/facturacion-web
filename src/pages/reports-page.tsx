@@ -14,38 +14,38 @@ import { exportReport, generateReport, sendReportToEmail } from "state/company/a
 import { getReportResults, getReportSummary, setReportResults } from "state/company/reducer";
 import { getPermissions, getReportList } from "state/session/reducer";
 import { setActiveSection, setMessage } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
     overflow: "auto",
-    margin: "0 auto",
+    width: "100%",
   },
   filterSection: {
     backgroundColor: theme.palette.background.paper,
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     overflow: "hidden",
-    maxWidth: "400px",
+    width: "400px",
     margin: "15px auto",
-    padding: "10px 20px 20px 20px",
+    padding: "20px 20px 20px 20px",
     "@media screen and (max-width:959px)": {
       margin: "10px auto",
-      padding: "10px 15px 15px 15px",
-    },
-    "@media screen and (max-width:599px)": {
-      margin: "0 auto",
-      padding: "10px 10px 10px 10px",
+      padding: "15px 15px 15px 15px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px 5px 7px 5px",
+      width: "calc(100% - 30px)",
+      margin: "0 auto",
     },
   },
   layoutSection: {
     backgroundColor: theme.palette.background.paper,
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     display: "flex",
     flexDirection: "column",
     maxWidth: "960px",
     width: "calc(100% - 40px)",
     margin: "15px auto 0 auto",
-    padding: "10px 20px 7px 20px",
+    padding: "20px 20px 7px 20px",
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 50px)",
       margin: "10px 10px 0 10px",

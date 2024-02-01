@@ -1,3 +1,4 @@
+import { MouseEvent } from "react";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -11,11 +12,10 @@ import TableRow from "@mui/material/TableRow";
 import { useStyles } from "./styles";
 import { FirstPageIcon, KeyboardArrowLeftIcon, KeyboardArrowRightIcon, LastPageIcon } from "utils/iconsHelper";
 
-type EventType = React.MouseEvent<HTMLButtonElement>;
+type EventType = MouseEvent<HTMLButtonElement>;
 
 type TableStyleType = {
   color: string;
-  minWidth: number | string;
   display?: string;
   maxHeight?: number;
 };
@@ -24,7 +24,7 @@ interface TablePaginationActionsProps {
   count: number;
   page: number;
   rowsPerPage: number;
-  onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
+  onPageChange: (event: MouseEvent<HTMLButtonElement>, newPage: number) => void;
 }
 
 export function TablePaginationActions({ count, page, rowsPerPage, onPageChange }: TablePaginationActionsProps) {
@@ -83,7 +83,6 @@ interface DataGridProps {
   rowsPerPage: number;
   rowsCount?: number;
   page?: number;
-  minWidth?: number;
   rowActionValue?: string;
   onPageChange?: (newPage: number) => void;
   rowAction?: any;
@@ -91,7 +90,6 @@ interface DataGridProps {
 
 export default function DataGrid({
   page,
-  minWidth,
   showHeader,
   dense,
   columns,
@@ -107,7 +105,6 @@ export default function DataGrid({
   const height = rowsPerPage * (dense ? 35 : 45) + (showHeader ? 35 : 0);
   let tableStyle: TableStyleType = {
     color: "white",
-    minWidth: minWidth || "auto",
   };
   if (height > 0)
     tableStyle = { ...tableStyle, display: "list-table", ...(page === undefined && { maxHeight: height }) };

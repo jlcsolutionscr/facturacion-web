@@ -13,6 +13,7 @@ import {
   setCustomerDetails,
   setDescription,
   setInvoiceId,
+  setPaymentDetailsList,
   setPrice,
   setProductDetails,
   setProductDetailsList,
@@ -79,6 +80,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(setProductList(productList));
       dispatch(resetWorkingOrder());
       dispatch(setVendorId(vendorList[0].Id));
+      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
@@ -244,9 +246,9 @@ export const saveWorkingOrder = createAsyncThunk(
     const { entity, listPage } = workingOrder;
     dispatch(startLoader());
     try {
-      const workingOrder = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
-      if (workingOrder) {
-        dispatch(setWorkingOrder(workingOrder));
+      const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
+      if (ids) {
+        dispatch(setWorkingOrder({ ...entity, id: ids.IdOrden, consecutive: ids.ConsecOrdenServicio }));
       }
       dispatch(setStatus("ready"));
       dispatch(

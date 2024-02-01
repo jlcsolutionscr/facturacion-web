@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
@@ -17,6 +17,7 @@ import {
   setActivityCode,
   setPaymentDetailsList,
 } from "state/working-order/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -25,6 +26,7 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     padding: "20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
     },
@@ -32,7 +34,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
   summary: {
@@ -41,11 +43,14 @@ const useStyles = makeStyles()(theme => ({
     textAlign: "center",
   },
   details: {
-    marginTop: "10px",
+    marginTop: "0",
     textAlign: "left",
+    " & .MuiGrid-item": {
+      paddingTop: "8px",
+    },
   },
   summaryTitle: {
-    marginTop: "20px",
+    marginTop: "0",
     fontWeight: "700",
     color: theme.palette.text.primary,
   },
@@ -60,27 +65,18 @@ const useStyles = makeStyles()(theme => ({
     margin: "auto",
     justifyContent: "center",
   },
-  left: {
-    display: "flex",
-    margin: "auto",
-    justifyContent: "flex-start",
-  },
-  right: {
-    display: "flex",
-    margin: "auto",
-    justifyContent: "flex-end",
-  },
 }));
 
 interface StepTwoScreenProps {
   index: number;
   value: number;
+  className?: string;
 }
 
-export default function StepTwoScreen({ value, index }: StepTwoScreenProps) {
+export default function StepTwoScreen({ value, index, className }: StepTwoScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const summary = useSelector(getSummary);
   const workingOrderId = useSelector(getWorkingOrderId);
@@ -88,7 +84,7 @@ export default function StepTwoScreen({ value, index }: StepTwoScreenProps) {
   const activityCode = useSelector(getActivityCode);
   const paymentDetails = useSelector(getPaymentDetailsList);
 
-  React.useEffect(() => {
+  useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [value]);
 
@@ -118,7 +114,7 @@ export default function StepTwoScreen({ value, index }: StepTwoScreenProps) {
   const buttonDisabled = total === 0;
 
   return (
-    <div ref={myRef} className={classes.container} hidden={value !== index}>
+    <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
@@ -134,50 +130,51 @@ export default function StepTwoScreen({ value, index }: StepTwoScreenProps) {
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-          <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN SERVICIO</InputLabel>
-          <Grid container spacing={2} className={classes.details}>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Excento</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
-            </Grid>
-            <Grid item xs={6}>
-              <InputLabel className={classes.summaryRow}>Total</InputLabel>
-            </Grid>
-            <Grid item xs={6} className={classes.columnRight}>
-              <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+        <Grid item xs={12}>
+          <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
+            <InputLabel className={classes.summaryTitle}>RESUMEN ORDEN DE SERVICIO</InputLabel>
+            <Grid container spacing={2} className={classes.details}>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Excento</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel className={classes.summaryRow}>Total</InputLabel>
+              </Grid>
+              <Grid item xs={6} className={classes.columnRight}>
+                <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
+        <Grid item xs={10} sm={6} md={4} className={classes.centered}>
           <Select
-            style={{ width: "215px", textAlign: "left" }}
             id="forma-pago-select-id"
             label="Seleccione la forma de pago:"
             value={paymentDetails[0].paymentId.toString()}

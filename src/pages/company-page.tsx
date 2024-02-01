@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Checkbox from "@mui/material/Checkbox";
@@ -27,6 +27,7 @@ import {
 } from "state/company/reducer";
 import { updateBarrioList, updateCantonList, updateDistritoList } from "state/ui/asyncActions";
 import { getBarrioList, getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { convertToDateString } from "utils/utilities";
 
@@ -38,6 +39,7 @@ const useStyles = makeStyles()(theme => ({
     width: "100%",
     margin: "15px auto",
     padding: "20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",
@@ -64,11 +66,11 @@ export default function CompanyPage() {
   const barrioList = useSelector(getBarrioList);
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
-  const [certificate, setCertificate] = React.useState("");
-  const [activityCode, setActivityCode] = React.useState<string>(
+  const [certificate, setCertificate] = useState("");
+  const [activityCode, setActivityCode] = useState<string>(
     economicActivityList.length > 0 ? economicActivityList[0].Id.toString() : ""
   );
-  const inputFile = React.useRef<HTMLInputElement>(null);
+  const inputFile = useRef<HTMLInputElement>(null);
   let disabled = true;
   if (company === null) return null;
   disabled =
@@ -172,7 +174,7 @@ export default function CompanyPage() {
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center" fontWeight="700">
+          <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
             Configuración de la Empresa
           </Typography>
         </Grid>
@@ -199,7 +201,6 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ minWidth: "100%" }}
             id="IdProvincia"
             label="Provincia"
             value={company.IdProvincia.toString()}
@@ -216,7 +217,6 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ minWidth: "100%" }}
             id="IdCanton"
             label="Cantón"
             value={cantonItems.length > 1 ? company.IdCanton.toString() : ""}
@@ -227,7 +227,6 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ minWidth: "100%" }}
             id="IdDistrito"
             label="Distrito"
             value={distritoItems.length > 1 ? company.IdDistrito.toString() : ""}
@@ -238,7 +237,6 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ minWidth: "100%" }}
             id="IdBarrio"
             label="Barrio"
             value={barrioItems.length > 1 ? company.IdBarrio.toString() : ""}
@@ -365,7 +363,6 @@ export default function CompanyPage() {
         </Grid>
         <Grid item xs={10} md={8}>
           <Select
-            style={{ minWidth: "100%" }}
             id="codigo-actividad-id"
             label="Seleccione la Actividad Económica"
             value={activityCode}

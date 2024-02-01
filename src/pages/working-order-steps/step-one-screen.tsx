@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType } from "types/domain";
@@ -27,7 +27,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
 }));
@@ -37,14 +37,15 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 interface StepOneScreenProps {
   index: number;
   value: number;
+  className?: string;
 }
 
-export default function StepOneScreen({ index, value }: StepOneScreenProps) {
+export default function StepOneScreen({ index, value, className }: StepOneScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
 
-  const [filterText, setFilterText] = React.useState("");
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const [filterText, setFilterText] = useState("");
+  const myRef = useRef<HTMLDivElement>(null);
 
   const customer = useSelector(getCustomerDetails);
   const customerListCount = useSelector(getCustomerListCount);
@@ -52,7 +53,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   const customerList = useSelector(getCustomerList);
   const status = useSelector(getStatus);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (value === 0) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
@@ -76,7 +77,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   };
 
   return (
-    <div ref={myRef} className={classes.container} hidden={value !== index}>
+    <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ListDropdown

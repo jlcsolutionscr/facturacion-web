@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
@@ -38,7 +38,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
   summary: {
@@ -75,12 +75,13 @@ interface StepThreeScreenProps {
   index: number;
   value: number;
   setValue: (value: number) => void;
+  className?: string;
 }
 
-export default function StepThreeScreen({ index, value, setValue }: StepThreeScreenProps) {
+export default function StepThreeScreen({ index, value, className, setValue }: StepThreeScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const invoiceId = useSelector(getInvoiceId);
   const company = useSelector(getCompany);
@@ -94,7 +95,7 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
 
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
@@ -140,7 +141,7 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
     );
   });
   return (
-    <div ref={myRef} className={classes.container} hidden={value !== index}>
+    <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -155,7 +156,6 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={10} sm={6} md={4}>
               <Select
-                style={{ minWidth: "100%" }}
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
                 value={activityCode.toString()}
@@ -170,7 +170,6 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={10} sm={6} md={4}>
               <Select
-                style={{ minWidth: "100%" }}
                 id="id-vendedor-select-id"
                 label="Seleccione el Vendedor"
                 value={vendorId.toString()}
@@ -226,9 +225,8 @@ export default function StepThreeScreen({ index, value, setValue }: StepThreeScr
         </Grid>
         <Grid item xs={10} sm={6} md={4} className={classes.centered}>
           <Select
-            style={{ minWidth: "100%" }}
             disabled={successful}
-            id="sucursal-select-id"
+            id="forma-pago-select-id"
             label="Seleccione la forma de pago:"
             value={paymentDetails[0].paymentId.toString()}
             onChange={event =>

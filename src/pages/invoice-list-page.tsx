@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -19,6 +19,7 @@ import {
 } from "state/invoice/asyncActions";
 import { getInvoiceList, getInvoiceListCount, getInvoiceListPage } from "state/invoice/reducer";
 import { setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -30,6 +31,7 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "900px",
     width: "100%",
     margin: "15px auto",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",
@@ -88,8 +90,8 @@ export default function InvoiceListPage() {
   const dispatch = useDispatch();
   const result = new UAParser().getResult();
   const { classes } = useStyles();
-  const [invoiceId, setInvoiceId] = React.useState(0);
-  const [dialogOpen, setDialogOpen] = React.useState({ open: false, id: 0 });
+  const [invoiceId, setInvoiceId] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState({ open: false, id: 0 });
 
   const listPage = useSelector(getInvoiceListPage);
   const listCount = useSelector(getInvoiceListCount);
@@ -167,7 +169,6 @@ export default function InvoiceListPage() {
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
-          minWidth={722}
           dense
           page={listPage - 1}
           columns={columns}

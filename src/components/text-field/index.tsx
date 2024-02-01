@@ -1,3 +1,4 @@
+import { SyntheticEvent } from "react";
 import TextField, { TextFieldVariants } from "@mui/material/TextField";
 
 import { useStyles } from "./styles";
@@ -18,7 +19,7 @@ interface CustomTextFieldProps {
   required?: boolean;
   inputProps?: { [key: string]: string | number | boolean };
   onChange: (event: TextFieldOnChangeEventType) => void;
-  onPaste?: (event: React.SyntheticEvent) => void;
+  onPaste?: (event: SyntheticEvent) => void;
 }
 
 export default function CustomTextField(props: CustomTextFieldProps) {

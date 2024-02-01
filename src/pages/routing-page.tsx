@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Slide from "@mui/material/Slide";
@@ -47,7 +47,7 @@ function RoutingPage() {
   const authenticated = useSelector(getAuthenticated);
   const { message, messageType } = useSelector(getMessage);
 
-  const [isDarkMode, setDarkMode] = React.useState(false);
+  const [isDarkMode, setDarkMode] = useState(false);
   const { classes } = useStyles();
   const width = size.width > 320 ? size.width : 320;
   const component = !authenticated ? (

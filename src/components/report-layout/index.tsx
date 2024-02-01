@@ -19,7 +19,7 @@ function DetailLayout({ reportName, summary, data, returnOnClick }: DetailLayout
   const columns = Object.entries(data[0]).map(key => ({
     field: key[0],
     headerName: key[0],
-    type: typeof key[1] === "number" ? "number" : "",
+    type: typeof key[1] === "number" && key[0] !== "Id" ? "number" : "",
   }));
   const rows = data.map(row => {
     const data: typeof row = {};
@@ -31,20 +31,20 @@ function DetailLayout({ reportName, summary, data, returnOnClick }: DetailLayout
 
   return (
     <div className={classes.container}>
-      <Typography className={classes.title} color="textSecondary" component="p">
+      <Typography className={classes.title} color="textPrimary" component="p">
         {reportName}
       </Typography>
       <div className={classes.headerRange}>
         <div style={{ width: "60%" }}>
           {summary && (
-            <Typography className={classes.subTitle} color="textSecondary" component="p">
+            <Typography className={classes.subTitle} color="textPrimary" component="p">
               Fecha inicio: {summary.startDate}
             </Typography>
           )}
         </div>
         <div style={{ width: "60%" }}>
           {summary && (
-            <Typography className={classes.subTitle} color="textSecondary" component="p">
+            <Typography className={classes.subTitle} color="textPrimary" component="p">
               Fecha final: {summary.endDate}
             </Typography>
           )}

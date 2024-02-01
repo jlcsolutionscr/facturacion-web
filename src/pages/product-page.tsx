@@ -27,6 +27,7 @@ import {
   setProductAttribute,
 } from "state/product/reducer";
 import { getTaxTypeList } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { SearchIcon } from "utils/iconsHelper";
 import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
@@ -35,6 +36,7 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.background.paper,
     overflowY: "auto",
     padding: "20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
     },
@@ -42,7 +44,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "0 5px 5px 5px",
     },
   },
   label: {
@@ -57,7 +59,13 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-function getPriceFromTaxRate(price: number, taxRate: number) {
+function getUntaxedPrice(price: number, taxRate: number) {
+  const rate = taxRate / 100;
+  const finalPrice = price / (1 + rate);
+  return finalPrice;
+}
+
+function getTaxedPrice(price: number, taxRate: number) {
   const rate = taxRate / 100;
   const finalPrice = price * (1 + rate);
   return finalPrice;
@@ -87,7 +95,7 @@ export default function ProductPage() {
   useEffect(() => {
     const calculatePrice = (value: number, taxId: number) => {
       const taxRate = getTaxeRateFromId(taxTypeList, taxId);
-      return roundNumber(getPriceFromTaxRate(value, taxRate), 2);
+      return roundNumber(getUntaxedPrice(value, taxRate), 2);
     };
     setUntaxPrice1(calculatePrice(product.PrecioVenta1, product.IdImpuesto));
     setUntaxPrice2(calculatePrice(product.PrecioVenta2, product.IdImpuesto));
@@ -136,7 +144,7 @@ export default function ProductPage() {
 
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
     const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
-    const untaxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate), 2);
+    const untaxPrice = roundNumber(getUntaxedPrice(parseFloat(event.target.value), taxRate), 2);
     setUntaxPrice1(untaxPrice);
     setUntaxPrice2(untaxPrice);
     setUntaxPrice3(untaxPrice);
@@ -151,7 +159,7 @@ export default function ProductPage() {
 
   const handleUntaxPriceChange = (event: TextFieldOnChangeEventType) => {
     const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
-    const taxPrice = roundNumber(getPriceFromTaxRate(parseFloat(event.target.value), taxRate), 2);
+    const taxPrice = roundNumber(getTaxedPrice(parseFloat(event.target.value), taxRate), 2);
     switch (event.target.id) {
       case "untaxPrice1":
         setUntaxPrice1(parseFloat(event.target.value));
@@ -229,10 +237,10 @@ export default function ProductPage() {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h6" textAlign="center" fontWeight="700">
-            Datos del Producto
+            Información del Producto
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <Select
             id="tipo-select-id"
             label="Seleccione el tipo de producto"
@@ -252,10 +260,10 @@ export default function ProductPage() {
             {categories}
           </Select>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField required id="Codigo" value={product.Codigo} label="Código" onChange={handleChange} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
             required
             id="CodigoProveedor"
@@ -263,6 +271,16 @@ export default function ProductPage() {
             label="Codigo proveedor"
             onChange={handleChange}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Select
+            id="id-proveedor-select-id"
+            label="Seleccione el proveedor"
+            value={product.IdProveedor.toString()}
+            onChange={event => dispatch(setProductAttribute({ attribute: "IdProveedor", value: event.target.value }))}
+          >
+            {providers}
+          </Select>
         </Grid>
         <Grid item xs={10} sm={6}>
           <TextField
@@ -284,22 +302,12 @@ export default function ProductPage() {
             <SearchIcon />
           </IconButton>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={5}>
           <LabelField
             id="TasaIva"
             value={getDescriptionFromRateId(taxTypeList, product.IdImpuesto)}
             label="Tasa del IVA"
           />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            id="id-proveedor-select-id"
-            label="Seleccione el proveedor"
-            value={product.IdProveedor.toString()}
-            onChange={event => dispatch(setProductAttribute({ attribute: "IdProveedor", value: event.target.value }))}
-          >
-            {providers}
-          </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -310,15 +318,17 @@ export default function ProductPage() {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            id="PrecioCosto"
-            value={product.PrecioCosto.toString()}
-            label="Precio costo"
-            numericFormat
-            onChange={handleChange}
-          />
+        <Grid item container xs={12} spacing={2}>
+          <Grid item xs={6}>
+            <TextField
+              required
+              id="PrecioCosto"
+              value={product.PrecioCosto.toString()}
+              label="Precio costo"
+              numericFormat
+              onChange={handleChange}
+            />
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <TextField
@@ -451,7 +461,6 @@ export default function ProductPage() {
                 rowAction={handleClasificationRowClick}
                 rowActionValue="id"
                 showHeader
-                minWidth={722}
                 dense
                 columns={columns}
                 rows={rows}

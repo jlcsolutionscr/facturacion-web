@@ -24,6 +24,7 @@ import {
   setDocumentDetails,
 } from "state/document/reducer";
 import { getIsLoaderOpen, setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -35,6 +36,7 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "1024px",
     width: "100%",
     margin: "15px auto",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",

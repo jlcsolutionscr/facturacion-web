@@ -1,3 +1,4 @@
+import { SyntheticEvent } from "react";
 import IconButton from "@mui/material/IconButton";
 
 import { useStyles } from "./styles";
@@ -11,7 +12,7 @@ interface TabProps {
 
 export default function Tab({ title, edit, close }: TabProps) {
   const { classes } = useStyles();
-  const onButtonClick = (e: React.SyntheticEvent) => {
+  const onButtonClick = (e: SyntheticEvent) => {
     e.stopPropagation();
     close();
   };

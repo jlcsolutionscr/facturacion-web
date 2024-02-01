@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
@@ -26,6 +26,7 @@ import {
   setPaymentDetailsList,
   setVendorId,
 } from "state/working-order/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -34,6 +35,7 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     padding: "15px 20px 20px 20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
     },
@@ -41,7 +43,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
   summary: {
@@ -57,7 +59,7 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   summaryTitle: {
-    marginTop: "20px",
+    marginTop: "0",
     fontWeight: "700",
     color: theme.palette.text.primary,
   },
@@ -72,27 +74,18 @@ const useStyles = makeStyles()(theme => ({
     margin: "auto",
     justifyContent: "center",
   },
-  left: {
-    display: "flex",
-    margin: "auto",
-    justifyContent: "flex-start",
-  },
-  right: {
-    display: "flex",
-    margin: "auto",
-    justifyContent: "flex-end",
-  },
 }));
 
 interface StepFourScreenProps {
   index: number;
   value: number;
+  className?: string;
 }
 
-export default function StepFourScreen({ value, index }: StepFourScreenProps) {
+export default function StepFourScreen({ value, index, className }: StepFourScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
@@ -104,7 +97,7 @@ export default function StepFourScreen({ value, index }: StepFourScreenProps) {
   const status = useSelector(getStatus);
   const cashAdvance = useSelector(getCashAdvance);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (value === 3) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
@@ -147,13 +140,12 @@ export default function StepFourScreen({ value, index }: StepFourScreenProps) {
     );
   });
   return (
-    <div ref={myRef} className={classes.container} hidden={value !== index}>
+    <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
         {activityItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={10} sm={6} md={4}>
               <Select
-                style={{ minWidth: "100%" }}
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
                 value={activityCode.toString()}
@@ -168,7 +160,6 @@ export default function StepFourScreen({ value, index }: StepFourScreenProps) {
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={10} sm={6} md={4}>
               <Select
-                style={{ minWidth: "100%" }}
                 id="id-vendedor-select-id"
                 label="Seleccione el Vendedor"
                 value={vendorId.toString()}
@@ -231,8 +222,7 @@ export default function StepFourScreen({ value, index }: StepFourScreenProps) {
         {status === "ready" && (
           <Grid item xs={10} sm={6} md={4} className={classes.centered}>
             <Select
-              style={{ minWidth: "100%" }}
-              id="sucursal-select-id"
+              id="forma-pago-select-id"
               label="Seleccione la forma de pago:"
               value={paymentDetails[0].paymentId.toString()}
               onChange={event =>

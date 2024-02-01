@@ -695,7 +695,7 @@ export async function saveWorkingOrderEntity(
   const workingOrderDetails: DetalleOrdenServicioType[] = [];
   order.productDetailsList.forEach(item => {
     const detail = {
-      IdOrden: order?.id ?? 0,
+      IdOrden: order.id,
       IdProducto: parseInt(item.id),
       Codigo: item.code,
       Descripcion: item.description,
@@ -712,7 +712,7 @@ export async function saveWorkingOrderEntity(
     IdEmpresa: companyId,
     IdSucursal: branchId,
     IdTerminal: 1,
-    IdOrden: order?.id,
+    IdOrden: order.id,
     ConsecOrdenServicio: order?.consecutive,
     IdUsuario: userId,
     IdTipoMoneda: 1,
@@ -738,11 +738,11 @@ export async function saveWorkingOrderEntity(
   };
   const data =
     "{NombreMetodo: '" +
-    (order === null ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") +
+    (order.id === 0 ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") +
     "', Entidad: " +
     JSON.stringify(workingOrder) +
     "}";
-  if (order === null) {
+  if (order.id === 0) {
     const invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
     const ids = invoiceId.split("-");
     return {

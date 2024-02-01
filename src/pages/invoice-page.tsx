@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
@@ -9,6 +9,7 @@ import StepOneScreen from "./invoice-steps/step-one-screen";
 import StepThreeScreen from "./invoice-steps/step-three-screen";
 import StepTwoScreen from "./invoice-steps/step-two-screen";
 import { setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -19,13 +20,14 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "900px",
     width: "100%",
     margin: "15px auto",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",
     },
     "@media screen and (max-width:599px)": {
       width: "100%",
-      margin: "1px 0 0 0",
+      margin: "0px",
     },
   },
   tabs: {
@@ -34,11 +36,19 @@ const useStyles = makeStyles()(theme => ({
       color: "#FFF",
     },
     "& .Mui-selected": {
-      color: theme.palette.mode === "dark" ? theme.palette.primary.main : theme.palette.primary.light,
+      color: "#90CAF9",
     },
+    "@media screen and (max-width:599px)": {
+      borderTop: "solid 2px #FFF",
+    },
+  },
+  tab: {
+    backgroundColor: theme.palette.background.paper,
+    transition: `background-color ${TRANSITION_ANIMATION}`,
   },
   backButton: {
     position: "absolute",
+    marginTop: "5px",
     zIndex: "10",
   },
   icon: {
@@ -51,7 +61,7 @@ export default function InvoicePage() {
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
 
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -67,9 +77,9 @@ export default function InvoicePage() {
         <Tab label="Detalle" />
         <Tab label="Generar" />
       </Tabs>
-      <StepOneScreen value={value} index={0} />
-      <StepTwoScreen value={value} index={1} />
-      <StepThreeScreen value={value} setValue={setValue} index={2} />
+      <StepOneScreen className={classes.tab} value={value} index={0} />
+      <StepTwoScreen className={classes.tab} value={value} index={1} />
+      <StepThreeScreen className={classes.tab} value={value} setValue={setValue} index={2} />
     </div>
   );
 }

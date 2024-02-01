@@ -175,7 +175,6 @@ export default function WorkingOrderListPage() {
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
-          minWidth={722}
           dense
           page={listPage - 1}
           columns={columns}

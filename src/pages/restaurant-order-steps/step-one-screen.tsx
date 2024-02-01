@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType } from "types/domain";
@@ -36,16 +36,17 @@ import {
   setQuantity,
   setStatus,
 } from "state/working-order/reducer";
-import { ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
-  root: {
+  container: {
     flex: 1,
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     padding: "20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
     },
@@ -53,13 +54,12 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "5px",
+      padding: "10 5px 5px 5px",
     },
   },
-  container: {
+  body: {
     display: "flex",
     flexDirection: "column",
-    overflow: "hidden",
   },
   switch: {
     color: theme.palette.text.primary,
@@ -91,15 +91,16 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 interface StepOneScreenProps {
   index: number;
   value: number;
+  className?: string;
 }
 
-export default function StepOneScreen({ index, value }: StepOneScreenProps) {
+export default function StepOneScreen({ index, value, className }: StepOneScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
 
-  const [filter, setFilter] = React.useState("");
-  const [serviceIncluded, setServiceIncluded] = React.useState(false);
-  const myRef = React.useRef<HTMLDivElement>(null);
+  const [filter, setFilter] = useState("");
+  const [serviceIncluded, setServiceIncluded] = useState(false);
+  const myRef = useRef<HTMLDivElement>(null);
 
   const permissions = useSelector(getPermissions);
   const customerDetails = useSelector(getCustomerDetails);
@@ -113,7 +114,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   const summary = useSelector(getSummary);
   const status = useSelector(getStatus);
 
-  React.useEffect(() => {
+  useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [value]);
 
@@ -154,8 +155,8 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
   const display = value !== index ? "none" : "flex";
 
   return (
-    <div ref={myRef} className={classes.root} style={{ display: display }}>
-      <div className={classes.container}>
+    <div ref={myRef} className={`${classes.container} ${className}`} style={{ display: display }}>
+      <div className={classes.body}>
         <div>
           <Grid container spacing={2}>
             {workingOrderId === 0 && (
@@ -206,7 +207,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
                 onChange={event => dispatch(setDescription(event.target.value))}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextField
                 label="Cantidad"
                 id="Cantidad"
@@ -215,7 +216,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
                 onChange={event => dispatch(setQuantity(event.target.value))}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={4} md={3}>
               <TextField
                 label="Precio"
                 value={productDetails.price.toString()}
@@ -233,7 +234,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
                 <AddCircleIcon />
               </IconButton>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={5} sm={4}>
               <FormControlLabel
                 classes={{ root: classes.switch }}
                 control={
@@ -243,7 +244,7 @@ export default function StepOneScreen({ index, value }: StepOneScreenProps) {
                     name="servIncluded"
                   />
                 }
-                label="Incluir Imp Serv"
+                label="Impuesto Serv"
               />
             </Grid>
           </Grid>

@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Button from "components/button";
 import { saveLogo } from "state/company/asyncActions";
 import { setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -14,6 +15,7 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "hidden",
     margin: "20px 15% auto 15%",
     padding: "20px",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       margin: "16px 10% auto 10%",
       padding: "16px",

@@ -1,6 +1,7 @@
 import { makeStyles } from "tss-react/mui";
 
 import LogoDarkImage from "assets/img/company-logo-dark.webp";
+import { TRANSITION_ANIMATION } from "utils/constants";
 
 export const useStyles = makeStyles()(theme => ({
   header: {
@@ -52,6 +53,7 @@ export const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontSize: theme.typography.pxToRem(25),
     textShadow: "1px 1px 3px #FFF",
+    transition: `color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(20),
     },

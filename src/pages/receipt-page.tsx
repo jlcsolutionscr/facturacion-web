@@ -45,6 +45,7 @@ import {
 } from "state/receipt/reducer";
 import { getCompany } from "state/session/reducer";
 import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 import { formatCurrency, getIdFromRateValue, parseStringToNumber, roundNumber } from "utils/utilities";
 
@@ -54,6 +55,7 @@ const useStyles = makeStyles()(theme => ({
     overflow: "auto",
     maxWidth: "900px",
     margin: "15px auto",
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       margin: "10px",
     },
@@ -229,13 +231,12 @@ export default function ReceiptPage() {
     <div className={classes.root}>
       <Grid container className={classes.container} spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center" fontWeight="700">
+          <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
             Factura de Compra
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ width: "100%" }}
             id="codigo-actividad-select-id"
             label="Seleccione la Actividad Económica"
             value={activityCode.toString()}
@@ -246,7 +247,6 @@ export default function ReceiptPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ width: "100%" }}
             disabled={successful}
             id="id-tipo-identificacion-select-id"
             label="Seleccione el tipo de Identificación"
@@ -313,7 +313,6 @@ export default function ReceiptPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
-            style={{ width: "100%" }}
             disabled={successful}
             id="id-tipo-exoneracion-select-id"
             label="Seleccione el tipo de exoneración"
@@ -496,7 +495,6 @@ export default function ReceiptPage() {
                 rowAction={handleClasificationRowClick}
                 rowActionValue="id"
                 showHeader
-                minWidth={722}
                 dense
                 columns={columns}
                 rows={rows}
