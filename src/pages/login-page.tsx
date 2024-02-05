@@ -116,7 +116,14 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
           <Avatar className={classes.avatar}>
             <img className={classes.logoImage} src={LogoImage} alt="not available" />
           </Avatar>
-          <form className={classes.form} noValidate>
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={ev => {
+              handleLoginClick();
+              ev.preventDefault();
+            }}
+          >
             <TextField
               variant="standard"
               required
@@ -148,43 +155,39 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               name="id"
               label="Identificación"
               id="id"
+              autoComplete="on"
               value={id}
               onChange={handleOnChange("id")}
-              onKeyPress={ev => {
-                if (ev.key === "Enter") {
-                  handleLoginClick();
-                  ev.preventDefault();
-                }
-              }}
             />
+            <div className={classes.footer}>
+              <Box mt={5}>
+                <Button
+                  type="submit"
+                  style={{ marginBottom: "20px" }}
+                  disabled={isSubmitButtonDisabled}
+                  variant="contained"
+                  color="secondary"
+                  fullWidth
+                  onClick={handleLoginClick}
+                >
+                  Ingresar
+                </Button>
+              </Box>
+              <Grid container>
+                <Grid item xs={12} style={{ textAlign: "center" }}>
+                  <FormControlLabel
+                    control={<Switch checked={isDarkMode} onChange={() => toggleDarkMode()} name="checkedA" />}
+                    label="Tema oscuro"
+                  />
+                </Grid>
+                <Grid item xs={12} style={{ marginTop: "5%", textAlign: "center" }}>
+                  <Link onClick={e => e.preventDefault()} variant="body2">
+                    Olvido su contraseña?
+                  </Link>
+                </Grid>
+              </Grid>
+            </div>
           </form>
-          <div className={classes.footer}>
-            <Box mt={5}>
-              <Button
-                style={{ marginBottom: "20px" }}
-                disabled={isSubmitButtonDisabled}
-                variant="contained"
-                color="secondary"
-                fullWidth
-                onClick={handleLoginClick}
-              >
-                Ingresar
-              </Button>
-            </Box>
-            <Grid container>
-              <Grid item xs={12} style={{ textAlign: "center" }}>
-                <FormControlLabel
-                  control={<Switch checked={isDarkMode} onChange={() => toggleDarkMode()} name="checkedA" />}
-                  label="Tema oscuro"
-                />
-              </Grid>
-              <Grid item xs={12} style={{ marginTop: "5%", textAlign: "center" }}>
-                <Link onClick={e => e.preventDefault()} variant="body2">
-                  Olvido su contraseña?
-                </Link>
-              </Grid>
-            </Grid>
-          </div>
         </div>
       </Grid>
       <Grid item xs={false} sm={6} md={8} className={classes.image} />
