@@ -1,6 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
@@ -18,10 +16,6 @@ import ListDropdown from "components/list-dropdown";
 import TextField from "components/text-field";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { ROWS_PER_PRODUCT } from "utils/constants";
-
-import { getProduct, setDescription, setQuantity, setPrice, addDetails, removeDetails } from "store/invoice/actions";
-
-import { filterProductList, getProductListByPageNumber } from "store/product/actions";
 
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -56,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 
 let delayTimer = null;
 
-function StepTwoScreen({
+export default function StepTwoScreen({
   index,
   value,
   permissions,
@@ -229,36 +223,3 @@ function StepTwoScreen({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    permissions: state.session.permissions,
-    description: state.invoice.description,
-    quantity: state.invoice.quantity,
-    product: state.product.product,
-    price: state.invoice.price,
-    productListPage: state.product.listPage,
-    productListCount: state.product.listCount,
-    productList: state.product.list,
-    detailsList: state.invoice.detailsList,
-    successful: state.invoice.successful,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      getProduct,
-      setDescription,
-      setQuantity,
-      setPrice,
-      filterProductList,
-      getProductListByPageNumber,
-      addDetails,
-      removeDetails,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepTwoScreen);

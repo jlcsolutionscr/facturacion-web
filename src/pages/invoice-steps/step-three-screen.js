@@ -1,17 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
-
-import {
-  setActivityCode,
-  setPaymentId,
-  setVendorId,
-  setComment,
-  saveInvoice,
-  setInvoiceParameters,
-  generateInvoiceTicket,
-} from "store/invoice/actions";
 
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
@@ -57,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function StepThreeScreen({
+export default function StepThreeScreen({
   value,
   index,
   company,
@@ -229,36 +217,3 @@ function StepThreeScreen({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    company: state.company.company,
-    invoiceId: state.invoice.invoiceId,
-    activityCode: state.invoice.activityCode,
-    paymentId: state.invoice.paymentId,
-    summary: state.invoice.summary,
-    comment: state.invoice.comment,
-    successful: state.invoice.successful,
-    branchList: state.ui.branchList,
-    vendorList: state.session.vendorList,
-    vendorId: state.invoice.vendorId,
-    error: state.invoice.error,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setActivityCode,
-      setPaymentId,
-      setVendorId,
-      setComment,
-      saveInvoice,
-      setInvoiceParameters,
-      generateInvoiceTicket,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepThreeScreen);

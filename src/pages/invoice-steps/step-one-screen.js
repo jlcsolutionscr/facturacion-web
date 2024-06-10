@@ -1,18 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
 import LabelField from "components/label-field";
 import TextField from "components/text-field";
 import ListDropdown from "components/list-dropdown";
-import {
-  getCustomer,
-  setCustomerAttribute,
-  filterCustomerList,
-  getCustomerListByPageNumber,
-} from "store/customer/actions";
+
 import { convertToDateString } from "utils/utilities";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 
@@ -27,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 let delayTimer = null;
 
-function StepOneScreen({
+export default function StepOneScreen({
   index,
   value,
   customer,
@@ -118,22 +111,3 @@ function StepOneScreen({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    customer: state.customer.customer,
-    customerListCount: state.customer.listCount,
-    customerListPage: state.customer.listPage,
-    customerList: state.customer.list,
-    successful: state.invoice.successful,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    { getCustomer, setCustomerAttribute, filterCustomerList, getCustomerListByPageNumber },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen);
