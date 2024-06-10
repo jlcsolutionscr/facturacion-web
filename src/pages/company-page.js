@@ -163,7 +163,7 @@ function CompanyPage({
         <Grid item xs={12}>
           <TextField
             id="NombreEmpresa"
-            value={company ? company.NombreEmpresa : ""}
+            value={company?.NombreEmpresa ?? ""}
             label="Nombre empresa"
             onChange={handleChange}
           />
@@ -171,7 +171,7 @@ function CompanyPage({
         <Grid item xs={12}>
           <TextField
             id="NombreComercial"
-            value={company ? company.NombreComercial : ""}
+            value={company?.NombreComercial ?? ""}
             label="Nombre comercial"
             onChange={handleChange}
           />
@@ -179,7 +179,7 @@ function CompanyPage({
         <Grid item xs={12}>
           <LabelField
             id="FechaVence"
-            value={company && company.FechaVence ? convertToDateString(company.FechaVence) : ""}
+            value={company?.FechaVence ? convertToDateString(company.FechaVence) : ""}
             label="Fecha vencimiento plan"
           />
         </Grid>
@@ -188,7 +188,7 @@ function CompanyPage({
             <InputLabel id="demo-simple-select-label">Provincia</InputLabel>
             <Select
               id="IdProvincia"
-              value={company ? company.IdProvincia : 1}
+              value={company?.IdProvincia ?? 1}
               onChange={event => handleSelectChange("IdProvincia", event.target.value)}
             >
               <MenuItem value={1}>SAN JOSE</MenuItem>
@@ -241,7 +241,7 @@ function CompanyPage({
           <TextField
             required
             id="Direccion"
-            value={company ? company.Direccion : ""}
+            value={company?.Direccion ?? ""}
             label="Dirección"
             onChange={handleChange}
           />
@@ -250,7 +250,7 @@ function CompanyPage({
           <TextField
             required
             id="Telefono1"
-            value={company ? company.Telefono1 : ""}
+            value={company?.Telefono1 ?? ""}
             label="Teléfono 1"
             numericFormat
             onChange={handleChange}
@@ -259,7 +259,7 @@ function CompanyPage({
         <Grid item xs={12}>
           <TextField
             id="Telefono2"
-            value={company ? company.Telefono2 : ""}
+            value={company?.Telefono2 ?? ""}
             label="Teléfono 2"
             numericFormat
             onChange={handleChange}
@@ -269,25 +269,25 @@ function CompanyPage({
           <TextField
             required
             id="CorreoNotificacion"
-            value={company ? company.CorreoNotificacion : ""}
+            value={company?.CorreoNotificacion ?? ""}
             label="Correo para notificaciones"
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={company ? company.RegimenSimplificado : true}
+            disabled={company?.RegimenSimplificado ?? true}
             id="UsuarioHacienda"
-            value={credentials ? credentials.UsuarioHacienda : ""}
+            value={credentials?.UsuarioHacienda ?? ""}
             label="Usuario ATV"
             onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={company ? company.RegimenSimplificado : true}
+            disabled={company?.RegimenSimplificado ?? true}
             id="ClaveHacienda"
-            value={credentials ? credentials.ClaveHacienda : ""}
+            value={credentials?.ClaveHacienda ?? ""}
             label="Clave ATV"
             onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
@@ -296,7 +296,7 @@ function CompanyPage({
           <TextField
             disabled
             id="NombreCertificado"
-            value={credentials ? credentials.NombreCertificado : ""}
+            value={credentials?.NombreCertificado ?? ""}
             label="Llave criptográfica"
             onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
@@ -312,16 +312,16 @@ function CompanyPage({
             onChange={handleCertificateChange}
           />
           <Button
-            disabled={company ? company.RegimenSimplificado : true}
+            disabled={company?.RegimenSimplificado ?? true}
             label="Cargar"
             onClick={() => inputFile.current.click()}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={company ? company.RegimenSimplificado : true}
+            disabled={company?.RegimenSimplificado ?? true}
             id="PinCertificado"
-            value={credentials ? credentials.PinCertificado : ""}
+            value={credentials?.PinCertificado ?? ""}
             label="Pin de llave criptográfica"
             onChange={event => setCredentialsAttribute(event.target.id, event.target.value)}
           />
@@ -330,7 +330,7 @@ function CompanyPage({
           <FormControlLabel
             control={
               <Checkbox
-                checked={company ? company.PrecioVentaIncluyeIVA : true}
+                checked={company?.PrecioVentaIncluyeIVA ?? true}
                 onChange={event => setCompanyAttribute("PrecioVentaIncluyeIVA", !company.PrecioVentaIncluyeIVA)}
                 name="AplicaTasaDiferenciada"
                 color="primary"

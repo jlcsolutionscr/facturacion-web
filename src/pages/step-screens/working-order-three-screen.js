@@ -1,9 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { setDeliveryAttribute } from "store/working-order/actions";
 
 import Grid from "@material-ui/core/Grid";
 
@@ -18,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function StepThreeScreen({ value, index, delivery, status, setDeliveryAttribute }) {
+export default function StepThreeScreen({ value, index, delivery, status, setDeliveryAttribute }) {
   const classes = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
@@ -86,16 +82,3 @@ function StepThreeScreen({ value, index, delivery, status, setDeliveryAttribute 
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    status: state.workingOrder.status,
-    delivery: state.workingOrder.delivery,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setDeliveryAttribute }, dispatch);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepThreeScreen);

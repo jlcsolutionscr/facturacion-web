@@ -1,4 +1,4 @@
-import { defaultSession, defaultInvoice, defaultWorkingOrder, defaultReceipt } from "utils/defaults";
+import { defaultSession, defaultInvoice, defaultWorkingOrder, defaultReceipt, defaultProforma } from "utils/defaults";
 
 export const INITIAL_STATE = {
   ui: {
@@ -46,4 +46,5 @@ export const INITIAL_STATE = {
   workingOrder: { ...defaultWorkingOrder, listPage: 1, listCount: 0, list: [], servicePointList: [] },
   receipt: defaultReceipt,
   document: { listPage: 1, listCount: 0, list: [], details: "" },
+  proforma: { ...defaultProforma, listPage: 1, listCount: 0, list: [] },
 };

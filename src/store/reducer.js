@@ -8,6 +8,7 @@ import receiptReducer from "./receipt/reducer";
 import workingOrderReducer from "./working-order/reducer";
 import documentReducer from "./document/reducer";
 import sessionReducer from "./session/reducer";
+import proformaReducer from "./proforma/reducer";
 import uiReducer from "./ui/reducer";
 
 export default combineReducers({
@@ -18,6 +19,7 @@ export default combineReducers({
   receipt: receiptReducer,
   document: documentReducer,
   workingOrder: workingOrderReducer,
+  proforma: proformaReducer,
   session: sessionReducer,
   ui: uiReducer,
 });

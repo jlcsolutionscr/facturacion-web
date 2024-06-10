@@ -18,6 +18,8 @@ import ReceiptPage from "./receipt-page";
 import WorkingOrderListPage from "./working-order-list-page";
 import RestaurantOrderListPage from "./restaurant-order-list-page";
 import WorkingOrderPage from "./working-order-page";
+import ProformaListPage from "./proforma-list-page";
+import ProformaPage from "./proforma-page";
 import RestaurantOrderPage from "./restaurant-order-page";
 import InvoiceListPage from "./invoice-list-page";
 import DocumentListPage from "./document-list-page";
@@ -83,10 +85,12 @@ function HomePage({ activeSection, mode, companyName, companyIdentifier, width, 
         {activeSection === 7 && <InvoiceListPage />}
         {activeSection === 8 && <DocumentListPage />}
         {activeSection === 9 ? mode === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
+        {activeSection === 10 && <ProformaListPage />}
         {activeSection === 20 && <ReportsPage width={width} />}
         {activeSection === 21 ? mode === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
         {activeSection === 22 && <CustomerPage />}
         {activeSection === 23 && <ProductPage />}
+        {activeSection === 24 && <ProformaPage />}
       </div>
     </div>
   );

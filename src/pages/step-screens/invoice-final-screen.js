@@ -57,13 +57,10 @@ export default function StepThreeScreen({
   successful,
   invoiceId,
   vendorList,
-  setPaymentId,
-  setVendorId,
-  setComment,
+  setProductAttribute,
   saveInvoice,
   setInvoiceParameters,
   generateInvoiceTicket,
-  setActivityCode,
   setValue,
 }) {
   const { gravado, exonerado, excento, subTotal, impuesto, total } = summary;
@@ -120,7 +117,7 @@ export default function StepThreeScreen({
             label="Observaciones"
             id="Observacion"
             value={comment}
-            onChange={event => setComment(event.target.value)}
+            onChange={event => setProductAttribute({ comment: event.target.value })}
           />
         </Grid>
         {activityItems.length > 1 && (
@@ -131,7 +128,7 @@ export default function StepThreeScreen({
                 <Select
                   id="CodigoActividad"
                   value={activityCode}
-                  onChange={event => setActivityCode(event.target.value)}
+                  onChange={event => setProductAttribute({ activityCode: event.target.value })}
                 >
                   {activityItems}
                 </Select>
@@ -144,7 +141,11 @@ export default function StepThreeScreen({
             <Grid item xs={12} sm={7} md={6}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Seleccione el Vendedor</InputLabel>
-                <Select id="VendorId" value={vendorId} onChange={event => setVendorId(event.target.value)}>
+                <Select
+                  id="VendorId"
+                  value={vendorId}
+                  onChange={event => setProductAttribute({ vendorId: event.target.value })}
+                >
                   {vendorItems}
                 </Select>
               </FormControl>
@@ -199,7 +200,7 @@ export default function StepThreeScreen({
               disabled={successful}
               id="Sucursal"
               value={paymentId}
-              onChange={event => setPaymentId(event.target.value)}
+              onChange={event => setProductAttribute({ paymentId: event.target.value })}
             >
               {paymentItems}
             </Select>

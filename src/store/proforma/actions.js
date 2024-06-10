@@ -1,10 +1,9 @@
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
-import { SET_INVOICE_ATTRIBUTES, SET_LIST_PAGE, SET_LIST_COUNT, SET_LIST, RESET_INVOICE } from "./types";
+import { SET_PROFORMA_ATTRIBUTES, SET_LIST_PAGE, SET_LIST_COUNT, SET_LIST, RESET_PROFORMA } from "./types";
 
 import { startLoader, stopLoader, setMessage, setActiveSection } from "store/ui/actions";
 
 import { setCompany } from "store/company/actions";
-import { setPrinter, setVendorList } from "store/session/actions";
 import { setCustomer, setCustomerListPage, setCustomerListCount, setCustomerList } from "store/customer/actions";
 import {
   setProduct,
@@ -21,56 +20,53 @@ import {
   getProductListCount,
   getProductListPerPage,
   getProductEntity,
-  getVendorList,
   getCustomerPrice,
   getProductSummary,
-  saveInvoiceEntity,
-  getProcessedInvoiceListCount,
-  getProcessedInvoiceListPerPage,
-  revokeInvoiceEntity,
-  generateInvoicePDF,
-  getInvoiceEntity,
+  saveProformaEntity,
+  revokeProformaEntity,
+  generateProformaPDF,
+  getProformaListCount,
+  getProformaListPerPage,
 } from "utils/domainHelper";
 
 import { defaultCustomer } from "utils/defaults";
-import { printInvoice, getDeviceFromUsb } from "utils/printing";
 import { getTaxeRateFromId } from "utils/utilities";
 
-export const setInvoiceAttributes = payload => {
+export const setProformaAttributes = payload => {
   return {
-    type: SET_INVOICE_ATTRIBUTES,
+    type: SET_PROFORMA_ATTRIBUTES,
     payload,
   };
 };
 
-export const setInvoiceListPage = page => {
+export const setProformaListPage = page => {
   return {
     type: SET_LIST_PAGE,
     payload: { page },
   };
 };
 
-export const setInvoiceListCount = count => {
+export const setProformaListCount = count => {
   return {
     type: SET_LIST_COUNT,
     payload: { count },
   };
 };
 
-export const setInvoiceList = list => {
+export const setProformaList = list => {
   return {
     type: SET_LIST,
     payload: { list },
   };
 };
 
-export const resetInvoice = () => {
+export const resetProforma = () => {
   return {
-    type: RESET_INVOICE,
+    type: RESET_PROFORMA,
   };
 };
 
-export function setInvoiceParameters(id) {
+export function setProformaParameters(id) {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session;
     const { company } = getState().company;
@@ -80,23 +76,19 @@ export function setInvoiceParameters(id) {
       const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
-      const vendorList = await getVendorList(token, companyId);
-      dispatch(setVendorList(vendorList));
       let companyEntity = company;
       if (companyEntity === null) {
         companyEntity = await getCompanyEntity(token, companyId);
         dispatch(setCompany(companyEntity));
       }
-      dispatch(resetInvoice());
+      dispatch(resetProforma());
       dispatch(setCustomer(defaultCustomer));
-      dispatch(setInvoiceAttributes({ vendorId: vendorList[0].Id }));
       dispatch(setCustomerListPage(1));
       dispatch(setCustomerListCount(customerCount));
       dispatch(setCustomerList(customerList));
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(setInvoiceAttributes({ activityCode: companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad }));
       dispatch(setActiveSection(id));
       dispatch(stopLoader());
     } catch (error) {
@@ -118,16 +110,16 @@ export function getProduct(idProduct, filterType) {
       let price = product.PrecioVenta1;
       if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList);
       dispatch(filterProductList("", filterType));
-      dispatch(setInvoiceAttributes({ description: product.Descripcion }));
-      dispatch(setInvoiceAttributes({ quantity: 1 }));
-      dispatch(setInvoiceAttributes({ price }));
+      dispatch(setProformaAttributes({ description: product.Descripcion }));
+      dispatch(setProformaAttributes({ quantity: 1 }));
+      dispatch(setProformaAttributes({ price }));
       dispatch(setProduct(product));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(stopLoader());
-      dispatch(setInvoiceAttributes({ description: "" }));
-      dispatch(setInvoiceAttributes({ quantity: 1 }));
-      dispatch(setInvoiceAttributes({ price: 0 }));
+      dispatch(setProformaAttributes({ description: "" }));
+      dispatch(setProformaAttributes({ quantity: 1 }));
+      dispatch(setProformaAttributes({ price: 0 }));
       dispatch(setMessage(error.message));
     }
   };
@@ -139,7 +131,7 @@ export function addDetails() {
     const { company } = getState().company;
     const { customer } = getState().customer;
     const { product } = getState().product;
-    const { detailsList, description, quantity, price } = getState().invoice;
+    const { detailsList, description, quantity, price } = getState().proforma;
     try {
       if (product != null && description !== "" && quantity > 0 && price > 0) {
         let newProducts = null;
@@ -169,13 +161,13 @@ export function addDetails() {
         } else {
           newProducts = [...detailsList, item];
         }
-        dispatch(setInvoiceAttributes({ details: newProducts }));
+        dispatch(setProformaAttributes({ details: newProducts }));
         const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion);
-        dispatch(setInvoiceAttributes({ summary }));
+        dispatch(setProformaAttributes({ summary }));
         dispatch(setProduct(null));
-        dispatch(setInvoiceAttributes({ description: "" }));
-        dispatch(setInvoiceAttributes({ quantity: 1 }));
-        dispatch(setInvoiceAttributes({ price: 0 }));
+        dispatch(setProformaAttributes({ description: "" }));
+        dispatch(setProformaAttributes({ quantity: 1 }));
+        dispatch(setProformaAttributes({ price: 0 }));
       }
     } catch (error) {
       const message = error.message ? error.message : error;
@@ -187,39 +179,34 @@ export function addDetails() {
 export const removeDetails = id => {
   return (dispatch, getState) => {
     const { customer } = getState().customer;
-    const { detailsList } = getState().invoice;
+    const { detailsList } = getState().proforma;
     const index = detailsList.findIndex(item => item.IdProducto === id);
     const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)];
-    dispatch(setInvoiceAttributes({ details: newProducts }));
+    dispatch(setProformaAttributes({ details: newProducts }));
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion);
-    dispatch(setInvoiceAttributes({ summary }));
+    dispatch(setProformaAttributes({ summary }));
   };
 };
 
-export const saveInvoice = () => {
+export const saveProforma = () => {
   return async (dispatch, getState) => {
     const { token, userId, branchId } = getState().session;
     const { company } = getState().company;
     const { customer } = getState().customer;
-    const { activityCode, paymentId, vendorId, detailsList, summary, comment } = getState().invoice;
+    const { detailsList, summary, comment } = getState().proforma;
     dispatch(startLoader());
     try {
-      const invoiceId = await saveInvoiceEntity(
+      const proformaId = await saveProformaEntity(
         token,
         userId,
-        detailsList,
-        activityCode,
-        paymentId,
-        vendorId,
-        0,
-        0,
         branchId,
+        detailsList,
         company,
         customer,
         summary,
         comment
       );
-      dispatch(setInvoiceAttributes({ invoiceId, successful: true }));
+      dispatch(setProformaAttributes({ proformaId, successful: true }));
       dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
       dispatch(stopLoader());
     } catch (error) {
@@ -229,19 +216,19 @@ export const saveInvoice = () => {
   };
 };
 
-export const getInvoiceListFirstPage = id => {
+export const getProformaListFirstPage = id => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session;
     dispatch(startLoader());
     try {
-      dispatch(setInvoiceListPage(1));
-      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
-      dispatch(setInvoiceListCount(recordCount));
+      dispatch(setProformaListPage(1));
+      const recordCount = await getProformaListCount(token, companyId, branchId, false);
+      dispatch(setProformaListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10);
-        dispatch(setInvoiceList(newList));
+        const newList = await getProformaListPerPage(token, companyId, branchId, false, 1, 10);
+        dispatch(setProformaList(newList));
       } else {
-        dispatch(setInvoiceList([]));
+        dispatch(setProformaList([]));
       }
       if (id) dispatch(setActiveSection(id));
       dispatch(stopLoader());
@@ -252,14 +239,14 @@ export const getInvoiceListFirstPage = id => {
   };
 };
 
-export const getInvoiceListByPageNumber = pageNumber => {
+export const getProformaListByPageNumber = pageNumber => {
   return async (dispatch, getState) => {
     const { token, companyId, branchId } = getState().session;
     dispatch(startLoader());
     try {
-      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, pageNumber, 10);
-      dispatch(setInvoiceListPage(pageNumber));
-      dispatch(setInvoiceList(newList));
+      const newList = await getProformaListPerPage(token, companyId, branchId, false, pageNumber, 10);
+      dispatch(setProformaListPage(pageNumber));
+      dispatch(setProformaList(newList));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage(error.message));
@@ -268,13 +255,15 @@ export const getInvoiceListByPageNumber = pageNumber => {
   };
 };
 
-export const revokeInvoice = idInvoice => {
+export const revokeProforma = proformaId => {
   return async (dispatch, getState) => {
     const { token, userId } = getState().session;
+    const { list } = getState().proforma;
     dispatch(startLoader());
     try {
-      await revokeInvoiceEntity(token, idInvoice, userId);
-      dispatch(getInvoiceListFirstPage(null));
+      await revokeProformaEntity(token, proformaId, userId);
+      const newList = list.filter(item => item.IdProforma !== proformaId);
+      dispatch(setProformaList(newList));
       dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
     } catch (error) {
       dispatch(setMessage(error.message));
@@ -288,28 +277,7 @@ export const generatePDF = (idInvoice, ref) => {
     const { token } = getState().session;
     dispatch(startLoader());
     try {
-      await generateInvoicePDF(token, idInvoice, ref);
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage(error.message));
-      dispatch(stopLoader());
-    }
-  };
-};
-
-export const generateInvoiceTicket = idInvoice => {
-  return async (dispatch, getState) => {
-    const { token, printer, userCode, device, branchList, branchId } = getState().session;
-    const { company } = getState().company;
-    dispatch(startLoader());
-    try {
-      const invoice = await getInvoiceEntity(token, idInvoice);
-      const branchName = branchList.find(x => x.Id === branchId).Descripcion;
-      let localPrinter = await getDeviceFromUsb(printer);
-      if (localPrinter !== printer) dispatch(setPrinter(localPrinter));
-      if (localPrinter) {
-        printInvoice(localPrinter, userCode, company, invoice, branchName, device.AnchoLinea);
-      }
+      await generateProformaPDF(token, idInvoice, ref);
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage(error.message));

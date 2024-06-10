@@ -1,22 +1,11 @@
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import {
-  SET_DESCRIPTION,
-  SET_QUANTITY,
-  SET_PRICE,
-  SET_DETAILS_LIST,
-  SET_SUMMARY,
-  SET_ACTIVITY_CODE,
-  SET_PAYMENT_ID,
-  SET_VENDOR_ID,
+  SET_ORDER_ATTRIBUTES,
   SET_DELIVERY_ATTRIBUTE,
-  SET_ORDER,
-  SET_INVOICE_ID,
-  SET_STATUS,
   SET_LIST_PAGE,
   SET_LIST_COUNT,
   SET_LIST,
   RESET_ORDER,
-  SET_SERVICE_POINT_LIST,
 } from "./types";
 
 import { startLoader, stopLoader, setMessage, setActiveSection } from "store/ui/actions";
@@ -59,52 +48,10 @@ import { defaultCustomer } from "utils/defaults";
 import { printWorkingOrder, printInvoice, getDeviceFromUsb } from "utils/printing";
 import { getTaxeRateFromId } from "utils/utilities";
 
-export const setDescription = description => {
+export const setOrderAttributes = payload => {
   return {
-    type: SET_DESCRIPTION,
-    payload: { description },
-  };
-};
-
-export const setQuantity = quantity => {
-  return {
-    type: SET_QUANTITY,
-    payload: { quantity },
-  };
-};
-
-export const setPrice = price => {
-  return {
-    type: SET_PRICE,
-    payload: { price },
-  };
-};
-
-export const setDetailsList = details => {
-  return {
-    type: SET_DETAILS_LIST,
-    payload: { details },
-  };
-};
-
-export const setSummary = summary => {
-  return {
-    type: SET_SUMMARY,
-    payload: { summary },
-  };
-};
-
-export const setPaymentId = id => {
-  return {
-    type: SET_PAYMENT_ID,
-    payload: { id },
-  };
-};
-
-export const setVendorId = id => {
-  return {
-    type: SET_VENDOR_ID,
-    payload: { id },
+    type: SET_ORDER_ATTRIBUTES,
+    payload,
   };
 };
 
@@ -112,34 +59,6 @@ export const setDeliveryAttribute = (attribute, value) => {
   return {
     type: SET_DELIVERY_ATTRIBUTE,
     payload: { attribute, value },
-  };
-};
-
-export const setWorkingOrder = order => {
-  return {
-    type: SET_ORDER,
-    payload: { order },
-  };
-};
-
-export const setInvoiceId = id => {
-  return {
-    type: SET_INVOICE_ID,
-    payload: { id },
-  };
-};
-
-export const setActivityCode = code => {
-  return {
-    type: SET_ACTIVITY_CODE,
-    payload: { code },
-  };
-};
-
-export const setStatus = status => {
-  return {
-    type: SET_STATUS,
-    payload: { status },
   };
 };
 
@@ -170,13 +89,6 @@ export const resetWorkingOrder = () => {
   };
 };
 
-export const setServicePointList = list => {
-  return {
-    type: SET_SERVICE_POINT_LIST,
-    payload: { list },
-  };
-};
-
 export function setWorkingOrderParameters() {
   return async (dispatch, getState) => {
     const { companyId, branchId, token } = getState().session;
@@ -198,17 +110,17 @@ export function setWorkingOrderParameters() {
         dispatch(setCustomerList(customerList));
       } else {
         const servicePointList = await getServicePointList(token, companyId, branchId, true, "");
-        dispatch(setServicePointList(servicePointList));
+        dispatch(setOrderAttributes({ servicePointList }));
       }
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
       dispatch(resetWorkingOrder());
-      dispatch(setVendorId(vendorList[0].Id));
+      dispatch(setOrderAttributes({ vendorId: vendorList[0].Id }));
       dispatch(setCustomer(defaultCustomer));
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad));
+      dispatch(setOrderAttributes({ activityCode: companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad }));
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
     } catch (error) {
@@ -230,16 +142,16 @@ export function getProduct(idProduct, filterType) {
       let price = product.PrecioVenta1;
       if (customer != null) price = getCustomerPrice(company, customer, product, rentTypeList);
       dispatch(filterProductList("", filterType));
-      dispatch(setDescription(product.Descripcion));
-      dispatch(setQuantity(1));
-      dispatch(setPrice(price));
+      dispatch(setOrderAttributes({ description: product.Descripcion }));
+      dispatch(setOrderAttributes({ quantity: 1 }));
+      dispatch(setOrderAttributes({ price }));
       dispatch(setProduct(product));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(stopLoader());
-      dispatch(setDescription(""));
-      dispatch(setQuantity(1));
-      dispatch(setPrice(0));
+      dispatch(setOrderAttributes({ description: "" }));
+      dispatch(setOrderAttributes({ quantity: 1 }));
+      dispatch(setOrderAttributes({ price: 0 }));
       dispatch(setMessage(error.message));
     }
   };
@@ -285,13 +197,13 @@ export function addDetails() {
         } else {
           newProducts = [...detailsList, item];
         }
-        dispatch(setDetailsList(newProducts));
+        dispatch(setOrderAttributes({ detailsList: newProducts }));
         const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion);
-        dispatch(setSummary(summary));
+        dispatch(setOrderAttributes({ summary }));
         dispatch(setProduct(null));
-        dispatch(setDescription(""));
-        dispatch(setQuantity(1));
-        dispatch(setPrice(0));
+        dispatch(setOrderAttributes({ description: "" }));
+        dispatch(setOrderAttributes({ quantity: 1 }));
+        dispatch(setOrderAttributes({ price: 0 }));
       }
     } catch (error) {
       const message = error.message ? error.message : error;
@@ -306,9 +218,9 @@ export const removeDetails = (id, pos) => {
     const { detailsList } = getState().workingOrder;
     const index = detailsList.findIndex((item, index) => item.IdProducto === id && index === pos);
     const newProducts = [...detailsList.slice(0, index), ...detailsList.slice(index + 1)];
-    dispatch(setDetailsList(newProducts));
+    dispatch(setOrderAttributes({ detailsList: newProducts }));
     const summary = getProductSummary(newProducts, customer.PorcentajeExoneracion);
-    dispatch(setSummary(summary));
+    dispatch(setOrderAttributes({ summary }));
   };
 };
 
@@ -317,12 +229,15 @@ export const saveWorkingOrder = () => {
     const { token, userId, branchId } = getState().session;
     const { company } = getState().company;
     const { customer } = getState().customer;
-    const { order, detailsList, summary, delivery, listPage, vendorId } = getState().workingOrder;
+    const { orderId, orderConsec, cashAdvance, detailsList, summary, delivery, listPage, vendorId } =
+      getState().workingOrder;
     dispatch(startLoader());
     try {
-      const workingOrder = await saveWorkingOrderEntity(
+      const workingOrderIds = await saveWorkingOrderEntity(
         token,
-        order,
+        orderId,
+        orderConsec,
+        cashAdvance,
         userId,
         detailsList,
         branchId,
@@ -337,13 +252,13 @@ export const saveWorkingOrder = () => {
         delivery.time,
         delivery.details
       );
-      if (workingOrder) {
-        dispatch(setWorkingOrder(workingOrder));
+      if (workingOrderIds) {
+        dispatch(setOrderAttributes(workingOrderIds));
         dispatch(getWorkingOrderListFirstPage(null));
       } else {
         dispatch(getWorkingOrderListByPageNumber(listPage));
       }
-      dispatch(setStatus("ready"));
+      dispatch(setOrderAttributes({ status: "ready" }));
       dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
       dispatch(stopLoader());
     } catch (error) {
@@ -432,12 +347,12 @@ export const openWorkingOrder = id => {
         companyEntity = await getCompanyEntity(token, companyId);
         dispatch(setCompany(companyEntity));
       }
-      dispatch(setActivityCode(companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad));
+      dispatch(setOrderAttributes({ activityCode: companyEntity.ActividadEconomicaEmpresa[0].CodigoActividad }));
       dispatch(
-        setWorkingOrder({
-          IdOrden: workingOrder.IdOrden,
-          ConsecOrdenServicio: workingOrder.ConsecOrdenServicio,
-          MontoAdelanto: workingOrder.MontoAdelanto,
+        setOrderAttributes({
+          orderId: workingOrder.IdOrden,
+          orderConsec: workingOrder.ConsecOrdenServicio,
+          advance: workingOrder.MontoAdelanto,
         })
       );
       dispatch(setCustomerListCount(customerCount));
@@ -465,19 +380,19 @@ export const openWorkingOrder = id => {
         CostoInstalacion: 0,
         PorcentajeIVA: detail.PorcentajeIVA,
       }));
-      dispatch(setDetailsList(details));
+      dispatch(setOrderAttributes({ details }));
       const summary = getProductSummary(details, workingOrder.PorcentajeExoneracion);
-      dispatch(setSummary(summary));
+      dispatch(setOrderAttributes({ summary }));
       dispatch(setDeliveryAttribute("phone", workingOrder.Telefono));
       dispatch(setDeliveryAttribute("address", workingOrder.Direccion));
       dispatch(setDeliveryAttribute("description", workingOrder.Descripcion));
       dispatch(setDeliveryAttribute("date", workingOrder.FechaEntrega));
       dispatch(setDeliveryAttribute("time", workingOrder.HoraEntrega));
       dispatch(setDeliveryAttribute("details", workingOrder.OtrosDetalles));
-      dispatch(setPaymentId(1));
-      dispatch(setVendorId(workingOrder.IdVendedor));
+      dispatch(setOrderAttributes({ paymentId: 1 }));
+      dispatch(setOrderAttributes({ vendorId: workingOrder.IdVendedor }));
       dispatch(setActiveSection(21));
-      dispatch(setStatus("ready"));
+      dispatch(setOrderAttributes({ status: "ready" }));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage(error.message));
@@ -491,7 +406,7 @@ export const generateInvoice = () => {
     const { token, userId, branchId } = getState().session;
     const { company } = getState().company;
     const { customer } = getState().customer;
-    const { activityCode, paymentId, vendorId, order, detailsList, summary } = getState().workingOrder;
+    const { activityCode, paymentId, vendorId, orderId, cashAdvance, detailsList, summary } = getState().workingOrder;
     dispatch(startLoader());
     try {
       const invoiceId = await saveInvoiceEntity(
@@ -501,17 +416,23 @@ export const generateInvoice = () => {
         activityCode,
         paymentId,
         vendorId,
-        order.MontoAdelanto,
-        order.IdOrden,
+        cashAdvance,
+        orderId,
         branchId,
         company,
         customer,
         summary,
         ""
       );
-      dispatch(setInvoiceId(invoiceId));
+      dispatch(
+        setOrderAttributes({
+          orderId: invoiceId.split("-")[0],
+          orderConsec: invoiceId.split("-")[1],
+          advance: 0,
+        })
+      );
       dispatch(getWorkingOrderListFirstPage(null));
-      dispatch(setStatus("converted"));
+      dispatch(setOrderAttributes({ status: "converted" }));
       dispatch(setMessage("Transacción completada satisfactoriamente", "INFO"));
     } catch (error) {
       dispatch(stopLoader());

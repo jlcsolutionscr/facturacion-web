@@ -27,11 +27,12 @@ export default function StepOneScreen({
   customerListCount,
   customerListPage,
   customerList,
-  successful,
+  customerListDisabled,
+  customerNameEditDisabled,
   filterCustomerList,
   getCustomerListByPageNumber,
   getCustomer,
-  setCustomerAttribute,
+  handleCustomerNameChange,
 }) {
   const classes = useStyles();
   const myRef = React.useRef(null);
@@ -65,7 +66,7 @@ export default function StepOneScreen({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ListDropdown
-            disabled={successful}
+            disabled={customerListDisabled}
             label="Seleccione un cliente"
             page={customerListPage - 1}
             rowsCount={customerListCount}
@@ -80,32 +81,35 @@ export default function StepOneScreen({
         <Grid item xs={12} md={6}>
           <TextField
             required
-            disabled={customer.IdCliente !== 1}
-            value={customer.Nombre}
+            disabled={customerNameEditDisabled}
+            value={customer?.Nombre ?? ""}
             label="Nombre del cliente"
-            onChange={event => setCustomerAttribute("Nombre", event.target.value)}
+            onChange={event => handleCustomerNameChange(event.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Nombre comercial" value={customer ? customer.NombreComercial : ""} />
+          <LabelField label="Nombre comercial" value={customer?.NombreComercial ?? ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Correo electrónico" value={customer ? customer.CorreoElectronico : ""} />
+          <LabelField label="Correo electrónico" value={customer?.CorreoElectronico ?? ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Tipo de exoneración" value={customer ? customer.IdTipoExoneracion : ""} />
+          <LabelField label="Tipo de exoneración" value={customer?.IdTipoExoneracion ?? ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Código del documento" value={customer ? customer.NumDocExoneracion : ""} />
+          <LabelField label="Código del documento" value={customer?.NumDocExoneracion ?? ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Nombre de la institución" value={customer ? customer.NombreInstExoneracion : ""} />
+          <LabelField label="Nombre de la institución" value={customer?.NombreInstExoneracion ?? ""} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Fecha de emisión" value={customer ? convertToDateString(customer.FechaEmisionDoc) : ""} />
+          <LabelField
+            label="Fecha de emisión"
+            value={customer?.FechaEmisionDoc ? convertToDateString(customer.FechaEmisionDoc) : ""}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
-          <LabelField label="Porcentaje de exoneración" value={customer ? customer.PorcentajeExoneracion : ""} />
+          <LabelField label="Porcentaje de exoneración" value={customer?.PorcentajeExoneracion ?? ""} />
         </Grid>
       </Grid>
     </div>

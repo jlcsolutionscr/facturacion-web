@@ -1,17 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
-
-import {
-  setActivityCode,
-  setPaymentId,
-  setDeliveryAttribute,
-  saveWorkingOrder,
-  generateWorkingOrderTicket,
-  generateInvoice,
-  generateInvoiceTicket,
-} from "store/working-order/actions";
 
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
@@ -66,21 +54,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function StepFourScreen({
+export default function StepTwoScreen({
   value,
   index,
   company,
   summary,
   activityCode,
   paymentId,
-  vendorId,
-  order,
-  vendorList,
+  workingOrderId,
   status,
-  setActivityCode,
-  setPaymentId,
-  setDeliveryAttribute,
-  saveWorkingOrder,
+  setOrderAttributes,
   generateWorkingOrderTicket,
   generateInvoice,
   generateInvoiceTicket,
@@ -89,9 +72,9 @@ function StepFourScreen({
   const classes = useStyles();
   const myRef = React.useRef(null);
   React.useEffect(() => {
-    if (value === 3) myRef.current.scrollTo(0, 0);
+    myRef.current.scrollTo(0, 0);
   }, [value]);
-  const buttonDisabled = total === 0 || status === "ready" || status === "converted";
+  const buttonDisabled = total === 0 || status !== "ready";
   let paymentMethods = [
     { Id: 1, Descripcion: "EFECTIVO" },
     { Id: 2, Descripcion: "TARJETA" },
@@ -109,19 +92,12 @@ function StepFourScreen({
     if (status === "converted") {
       generateInvoiceTicket();
     } else {
-      generateWorkingOrderTicket(order.IdOrden);
+      generateWorkingOrderTicket(workingOrderId);
     }
   };
   const activityItems = company.ActividadEconomicaEmpresa.map(item => {
     return (
       <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const vendorItems = vendorList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
       </MenuItem>
     );
@@ -137,25 +113,9 @@ function StepFourScreen({
                 <Select
                   id="CodigoActividad"
                   value={activityCode}
-                  onChange={event => setActivityCode(event.target.value)}
+                  onChange={event => setOrderAttributes({ activityCode: event.target.value })}
                 >
                   {activityItems}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        )}
-        {order === null && vendorItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={12} sm={7} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Seleccione el Vendedor</InputLabel>
-                <Select
-                  id="VendorId"
-                  value={vendorId}
-                  onChange={event => setDeliveryAttribute("vendorId", event.target.value)}
-                >
-                  {vendorItems}
                 </Select>
               </FormControl>
             </Grid>
@@ -202,79 +162,26 @@ function StepFourScreen({
             </Grid>
           </Grid>
         </Grid>
-        {status === "on-progress" && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button
+        <Grid item xs={12} className={classes.centered}>
+          <FormControl style={{ width: "215px", textAlign: "left" }}>
+            <InputLabel id="demo-simple-select-label">Seleccione la forma de pago:</InputLabel>
+            <Select
+              id="forma-Pago"
+              value={paymentId}
               disabled={buttonDisabled}
-              label={order !== null ? "Actualizar" : "Agregar"}
-              onClick={() => saveWorkingOrder()}
-            />
-          </Grid>
-        )}
-        {(status === "ready" || status === "converted") && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button label={status === "ready" ? "Imprimir Orden" : "Imprimir Factura"} onClick={handleOnPrintClick} />
-          </Grid>
-        )}
-        {status === "ready" && (
-          <Grid item xs={12} className={`${classes.summary} ${classes.centered}`}>
-            <Grid container spacing={2} className={classes.details}>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Saldo</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(total - order.MontoAdelanto)}</InputLabel>
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        {status === "ready" && (
-          <Grid item xs={12} className={classes.centered}>
-            <FormControl style={{ width: "215px", textAlign: "left" }}>
-              <InputLabel id="demo-simple-select-label">Seleccione la forma de pago:</InputLabel>
-              <Select id="forma-Pago" value={paymentId} onChange={event => setPaymentId(event.target.value)}>
-                {paymentItems}
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-        {status === "ready" && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button label="Facturar" onClick={() => generateInvoice()} />
-          </Grid>
-        )}
+              onChange={event => setOrderAttributes({ paymentId: event.target.value })}
+            >
+              {paymentItems}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} className={classes.centered}>
+          <Button disabled={buttonDisabled} label="Facturar" onClick={() => generateInvoice()} />
+        </Grid>
+        <Grid item xs={12} className={classes.centered}>
+          <Button disabled={status !== "converted"} label="Imprimir Factura" onClick={handleOnPrintClick} />
+        </Grid>
       </Grid>
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    order: state.workingOrder.order,
-    status: state.workingOrder.status,
-    company: state.company.company,
-    summary: state.workingOrder.summary,
-    activityCode: state.workingOrder.activityCode,
-    paymentId: state.workingOrder.paymentId,
-    vendorId: state.workingOrder.vendorId,
-    branchList: state.ui.branchList,
-    vendorList: state.session.vendorList,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setActivityCode,
-      setPaymentId,
-      setDeliveryAttribute,
-      saveWorkingOrder,
-      generateWorkingOrderTicket,
-      generateInvoice,
-      generateInvoiceTicket,
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StepFourScreen);

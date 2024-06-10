@@ -5,8 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { setActiveSection } from "store/ui/actions";
 
-import { filterProductList, getProductListByPageNumber } from "store/product/actions";
-
 import {
   getCustomer,
   setCustomerAttribute,
@@ -14,17 +12,16 @@ import {
   getCustomerListByPageNumber,
 } from "store/customer/actions";
 
+import { filterProductList, getProductListByPageNumber } from "store/product/actions";
+
 import {
+  saveProforma,
+  setProformaParameters,
   getProduct,
-  setOrderAttributes,
-  setDeliveryAttribute,
+  setProformaAttributes,
   addDetails,
   removeDetails,
-  saveWorkingOrder,
-  generateWorkingOrderTicket,
-  generateInvoice,
-  generateInvoiceTicket,
-} from "store/working-order/actions";
+} from "store/proforma/actions";
 
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -33,8 +30,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { BackArrowIcon } from "utils/iconsHelper";
 import StepOneScreen from "./step-screens/select-customer-screen";
 import StepTwoScreen from "./step-screens/select-products-screen";
-import StepThreeScreen from "./step-screens/working-order-three-screen";
-import StepFourScreen from "./step-screens/working-order-final-screen";
+import StepThreeScreen from "./step-screens/proforma-final-screen";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -43,9 +39,11 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     overflow: "hidden",
     backgroundColor: theme.palette.background.navbar,
-    color: theme.palette.primary.navbar,
     maxWidth: "900px",
     margin: "10px auto 0 auto",
+  },
+  tabs: {
+    color: theme.palette.primary.navbar,
   },
   backButton: {
     position: "absolute",
@@ -54,20 +52,60 @@ const useStyles = makeStyles(theme => ({
   icon: {
     color: "#FFF",
   },
+  finalStepContainer: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "2%",
+    backgroundColor: theme.palette.background.pages,
+  },
+  summary: {
+    flexDirection: "column",
+    maxWidth: "300px",
+    textAlign: "center",
+  },
+  details: {
+    marginTop: "5px",
+    textAlign: "left",
+  },
+  summaryTitle: {
+    marginTop: "0",
+    fontWeight: "700",
+    color: theme.palette.text.primary,
+  },
+  columnRight: {
+    textAlign: "right",
+  },
+  summaryRow: {
+    color: theme.palette.text.primary,
+  },
+  centered: {
+    display: "flex",
+    margin: "auto",
+    justifyContent: "center",
+  },
 }));
 
-function WorkingOrderPage({
+function InvoicePage({
   setActiveSection,
   customer,
   customerListCount,
   customerListPage,
   customerList,
-  status,
+  successful,
   filterCustomerList,
   getCustomerListByPageNumber,
   getCustomer,
-  setStatus,
   setCustomerAttribute,
+  company,
+  summary,
+  activityCode,
+  paymentId,
+  vendorId,
+  comment,
+  invoiceId,
+  vendorList,
+  saveInvoice,
+  setInvoiceParameters,
   permissions,
   productListPage,
   productListCount,
@@ -77,48 +115,39 @@ function WorkingOrderPage({
   quantity,
   price,
   detailsList,
-  delivery,
-  vendorList,
   getProduct,
+  setProformaAttributes,
   filterProductList,
   getProductListByPageNumber,
   addDetails,
   removeDetails,
-  company,
-  summary,
-  activityCode,
-  paymentId,
-  vendorId,
-  order,
-  setPaymentId,
-  setDeliveryAttribute,
-  saveWorkingOrder,
-  generateWorkingOrderTicket,
-  generateInvoice,
-  generateInvoiceTicket,
 }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
-  const handleCustomerNameChange = event => {
-    setCustomerAttribute("Nombre", event.target.value);
-    setStatus("on-progress");
+  const handleCustomerNameChange = value => {
+    setCustomerAttribute("Nombre", value);
   };
 
-  const customerListDisabled = status === "converted";
-  const customerNameEditDisabled = status === "converted" || customer.IdCliente !== 1;
+  const customerListDisabled = successful;
+  const customerNameEditDisabled = successful || customer.IdCliente !== 1;
 
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(9)}>
+        <IconButton aria-label="upload picture" component="span" onClick={() => setActiveSection(10)}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs centered value={value} indicatorColor="secondary" onChange={(_event, newValue) => setValue(newValue)}>
+      <Tabs
+        className={classes.tabs}
+        centered
+        value={value}
+        indicatorColor="secondary"
+        onChange={(_event, value) => setValue(value)}
+      >
         <Tab label="Cliente" />
         <Tab label="Detalle" />
-        <Tab label="Otros" />
         <Tab label="Generar" />
       </Tabs>
       <StepOneScreen
@@ -148,9 +177,9 @@ function WorkingOrderPage({
         quantity={quantity}
         price={price}
         detailsList={detailsList}
-        isEditDisabled={status === "converted"}
+        isEditDisabled={successful}
         getProduct={getProduct}
-        setProductAttribute={setOrderAttributes}
+        setProductAttribute={setProformaAttributes}
         filterProductList={filterProductList}
         getProductListByPageNumber={getProductListByPageNumber}
         addDetails={addDetails}
@@ -159,27 +188,19 @@ function WorkingOrderPage({
       <StepThreeScreen
         value={value}
         index={2}
-        delivery={delivery}
-        status={status}
-        setDeliveryAttribute={setDeliveryAttribute}
-      />
-      <StepFourScreen
-        value={value}
-        index={3}
         company={company}
         summary={summary}
         activityCode={activityCode}
         paymentId={paymentId}
         vendorId={vendorId}
-        order={order}
+        comment={comment}
+        successful={successful}
+        invoiceId={invoiceId}
         vendorList={vendorList}
-        status={status}
-        setOrderAttributes={setOrderAttributes}
-        setDeliveryAttribute={setDeliveryAttribute}
-        saveWorkingOrder={saveWorkingOrder}
-        generateWorkingOrderTicket={generateWorkingOrderTicket}
-        generateInvoice={generateInvoice}
-        generateInvoiceTicket={generateInvoiceTicket}
+        setProformaAttributes={setProformaAttributes}
+        saveInvoice={saveInvoice}
+        setInvoiceParameters={setInvoiceParameters}
+        setValue={setValue}
       />
     </div>
   );
@@ -191,25 +212,26 @@ const mapStateToProps = state => {
     customerListCount: state.customer.listCount,
     customerListPage: state.customer.listPage,
     customerList: state.customer.list,
-    status: state.workingOrder.status,
+    successful: state.invoice.successful,
+    company: state.company.company,
+    invoiceId: state.invoice.invoiceId,
+    activityCode: state.invoice.activityCode,
+    paymentId: state.invoice.paymentId,
+    summary: state.invoice.summary,
+    comment: state.invoice.comment,
+    branchList: state.ui.branchList,
+    vendorList: state.session.vendorList,
+    vendorId: state.invoice.vendorId,
+    error: state.invoice.error,
     permissions: state.session.permissions,
-    description: state.workingOrder.description,
-    quantity: state.workingOrder.quantity,
+    description: state.invoice.description,
+    quantity: state.invoice.quantity,
     product: state.product.product,
-    price: state.workingOrder.price,
+    price: state.invoice.price,
     productListPage: state.product.listPage,
     productListCount: state.product.listCount,
     productList: state.product.list,
-    detailsList: state.workingOrder.detailsList,
-    vendorList: state.session.vendorList,
-    delivery: state.workingOrder.delivery,
-    order: state.workingOrder.order,
-    company: state.company.company,
-    summary: state.workingOrder.summary,
-    activityCode: state.workingOrder.activityCode,
-    paymentId: state.workingOrder.paymentId,
-    vendorId: state.workingOrder.vendorId,
-    branchList: state.ui.branchList,
+    detailsList: state.invoice.detailsList,
   };
 };
 
@@ -217,24 +239,21 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setActiveSection,
-      getCustomer,
-      setCustomerAttribute,
-      filterCustomerList,
-      getCustomerListByPageNumber,
       getProduct,
+      setProformaAttributes,
       filterProductList,
       getProductListByPageNumber,
       addDetails,
       removeDetails,
-      setOrderAttributes,
-      setDeliveryAttribute,
-      saveWorkingOrder,
-      generateWorkingOrderTicket,
-      generateInvoice,
-      generateInvoiceTicket,
+      saveProforma,
+      setProformaParameters,
+      getCustomer,
+      setCustomerAttribute,
+      filterCustomerList,
+      getCustomerListByPageNumber,
     },
     dispatch
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkingOrderPage);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoicePage);

@@ -1,6 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
@@ -23,20 +21,6 @@ import ListDropdown from "components/list-dropdown";
 import Button from "components/button";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
-
-import { setActiveSection } from "store/ui/actions";
-import { setCustomerAttribute } from "store/customer/actions";
-import { filterProductList } from "store/product/actions";
-import {
-  getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
-  addDetails,
-  removeDetails,
-  setStatus,
-  saveWorkingOrder,
-} from "store/working-order/actions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 
 let delayTimer = null;
 
-function StepOneScreen({
+export default function StepOneScreen({
   index,
   value,
   permissions,
@@ -263,40 +247,3 @@ function StepOneScreen({
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    permissions: state.session.permissions,
-    customerName: state.customer.customer.Nombre,
-    servicePointList: state.workingOrder.servicePointList,
-    workingOrderId: state.workingOrder.workingOrderId,
-    description: state.workingOrder.description,
-    quantity: state.workingOrder.quantity,
-    product: state.product.product,
-    price: state.workingOrder.price,
-    productList: state.product.list,
-    detailsList: state.workingOrder.detailsList,
-    summary: state.workingOrder.summary,
-    status: state.workingOrder.status,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setCustomerAttribute,
-      setStatus,
-      getProduct,
-      setDescription,
-      setQuantity,
-      setPrice,
-      filterProductList,
-      addDetails,
-      removeDetails,
-      saveWorkingOrder,
-      setActiveSection,
-    },
-    dispatch
-  );
-};
-export default connect(mapStateToProps, mapDispatchToProps)(StepOneScreen);

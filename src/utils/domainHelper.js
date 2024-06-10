@@ -567,7 +567,9 @@ export async function getProcessedInvoiceListPerPage(token, companyId, branchId,
 
 export async function saveWorkingOrderEntity(
   token,
-  order,
+  orderId,
+  orderConsec,
+  cashAdvance,
   userId,
   detailsList,
   branchId,
@@ -585,7 +587,7 @@ export async function saveWorkingOrderEntity(
   const workingOrderDetails = [];
   detailsList.forEach(item => {
     const detail = {
-      IdOrden: order?.IdOrden,
+      IdOrden: orderId,
       IdProducto: item.IdProducto,
       Codigo: item.Codigo,
       Descripcion: item.Descripcion,
@@ -602,8 +604,9 @@ export async function saveWorkingOrderEntity(
     IdEmpresa: company.IdEmpresa,
     IdSucursal: branchId,
     IdTerminal: 1,
-    IdOrden: order?.IdOrden,
-    ConsecOrdenServicio: order?.ConsecOrdenServicio,
+    IdOrden: orderId,
+    ConsecOrdenServicio: orderConsec,
+    MontoAdelanto: cashAdvance,
     IdUsuario: userId,
     IdTipoMoneda: 1,
     IdCliente: customer.IdCliente,
@@ -621,24 +624,22 @@ export async function saveWorkingOrderEntity(
     Exonerado: summary.exonerado,
     Descuento: 0,
     Impuesto: summary.impuesto,
-    MontoAdelanto: 0,
     MontoPagado: 0,
     Nulo: false,
     DetalleOrdenServicio: workingOrderDetails,
   };
   const data =
     "{NombreMetodo: '" +
-    (order === null ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") +
+    (orderId === null ? "AgregarOrdenServicio" : "ActualizarOrdenServicio") +
     "', Entidad: " +
     JSON.stringify(workingOrder) +
     "}";
-  if (order === null) {
+  if (orderId === null) {
     let invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
     const ids = invoiceId.split("-");
     return {
-      IdOrden: ids[0],
-      ConsecOrdenServicio: ids[1],
-      MontoAdelanto: 0,
+      orderId: ids[0],
+      OrderConsec: ids[1],
     };
   } else {
     await post(APP_URL + "/ejecutar", token, data);
@@ -848,6 +849,95 @@ export async function getProductClasificationList(token, filter) {
     ", Descripcion: '" +
     filter +
     "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return [];
+  return response;
+}
+
+export async function saveProformaEntity(token, userId, detailsList, branchId, company, customer, summary, comment) {
+  const proformaDetails = [];
+  detailsList.forEach(item => {
+    const detail = {
+      IdProforma: 0,
+      IdProducto: item.IdProducto,
+      Codigo: item.Codigo,
+      Descripcion: item.Descripcion,
+      Cantidad: item.Cantidad,
+      PrecioVenta: roundNumber(item.PrecioVenta / (1 + item.PorcentajeIVA / 100), 3),
+      Excento: item.Excento,
+      PorcentajeIVA: item.PorcentajeIVA,
+      PorcDescuento: 0,
+    };
+    proformaDetails.push(detail);
+  });
+  const proformaDate = convertToDateTimeString(new Date());
+  const proforma = {
+    IdEmpresa: company.IdEmpresa,
+    IdSucursal: branchId,
+    IdProforma: 0,
+    IdUsuario: userId,
+    IdTipoMoneda: 1,
+    IdCliente: customer.IdCliente,
+    NombreCliente: customer.Nombre,
+    Fecha: proformaDate,
+    TextoAdicional: comment,
+    Telefono: "",
+    IdVendedor: 0,
+    Excento: summary.excento,
+    Gravado: summary.gravado,
+    Exonerado: summary.exonerado,
+    Descuento: 0,
+    Impuesto: summary.impuesto,
+    DetalleProforma: proformaDetails,
+  };
+  const data = "{NombreMetodo: 'AgregarProforma', Entidad: " + JSON.stringify(proforma) + "}";
+  let proformaId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return proformaId.split("-")[0];
+}
+
+export async function revokeProformaEntity(token, proformaId, idUser) {
+  const data =
+    "{NombreMetodo: 'AnularProforma', Parametros: {IdProforma: " + proformaId + ", IdUsuario: " + idUser + "}}";
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
+export async function generateProformaPDF(token, proformaId, ref) {
+  const data = "{NombreMetodo: 'ObtenerProformaPDF', Parametros: {IdProforma: " + proformaId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response.length > 0) {
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
+    const file = new Blob([byteArray], { type: "application/octet-stream" });
+    saveAs(file, `OrdenServicio-${ref}.pdf`);
+  }
+}
+
+export async function getProformaListCount(token, companyId, branchId, bolApplied) {
+  const data =
+    "{NombreMetodo: 'ObtenerTotalListaProformas', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    ", Aplicado: '" +
+    bolApplied +
+    "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return null;
+  return response;
+}
+
+export async function getProformaListPerPage(token, companyId, branchId, bolApplied, pageNumber, rowPerPage) {
+  const data =
+    "{NombreMetodo: 'ObtenerListadoProformas', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    ", NumeroPagina: " +
+    pageNumber +
+    ", Aplicado: '" +
+    bolApplied +
+    "', FilasPorPagina: " +
+    rowPerPage +
+    "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;

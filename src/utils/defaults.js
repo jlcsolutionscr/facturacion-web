@@ -27,7 +27,7 @@ export const defaultSession = {
 };
 
 export const defaultInvoice = {
-  invoiceId: 0,
+  invoiceId: null,
   activityCode: 0,
   description: "",
   quantity: 1,
@@ -35,6 +35,7 @@ export const defaultInvoice = {
   detailsList: [],
   paymentId: 1,
   vendorId: 0,
+  cashAdvance: 0,
   summary: {
     gravado: 0,
     exonerado: 0,
@@ -48,7 +49,8 @@ export const defaultInvoice = {
 };
 
 export const defaultWorkingOrder = {
-  order: null,
+  orderId: null,
+  orderConsec: null,
   activityCode: 0,
   invoiceId: 0,
   status: "on-progress",
@@ -58,6 +60,7 @@ export const defaultWorkingOrder = {
   detailsList: [],
   paymentId: 1,
   vendorId: 0,
+  cashAdvance: 0,
   summary: {
     gravado: 0,
     exonerado: 0,
@@ -112,5 +115,24 @@ export const defaultReceipt = {
     date: "01/01/2000",
     percentage: 0,
   },
+  successful: false,
+};
+
+export const defaultProforma = {
+  proformaId: null,
+  vendorId: 0,
+  description: "",
+  quantity: 1,
+  price: 0,
+  detailsList: [],
+  summary: {
+    gravado: 0,
+    exonerado: 0,
+    excento: 0,
+    subTotal: 0,
+    impuesto: 0,
+    total: 0,
+  },
+  comment: "",
   successful: false,
 };

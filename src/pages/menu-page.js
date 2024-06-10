@@ -8,6 +8,7 @@ import { getCompany } from "store/company/actions";
 import { getCustomerListFirstPage } from "store/customer/actions";
 import { getProductListFirstPage } from "store/product/actions";
 import { setInvoiceParameters, getInvoiceListFirstPage } from "store/invoice/actions";
+import { getProformaListFirstPage } from "store/proforma/actions";
 import { setReceiptParameters } from "store/receipt/actions";
 import { getDocumentListFirstPage } from "store/document/actions";
 import { getWorkingOrderListFirstPage } from "store/working-order/actions";
@@ -25,6 +26,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: "640px",
     margin: "20px auto auto auto",
+    overflow: "hidden",
+    height: "calc(100% - 20px)",
   },
   branches: {
     backgroundColor: theme.palette.background.branchPicker,
@@ -53,6 +56,10 @@ const useStyles = makeStyles(theme => ({
     "@media (max-width:414px)": {
       fontSize: theme.typography.pxToRem(14),
     },
+  },
+  buttonContainer: {
+    height: "calc(100% - 34px)",
+    overflowY: "scroll",
   },
   button: {
     marginTop: "25px",
@@ -101,6 +108,7 @@ function MenuPage({
   getProductListFirstPage,
   setInvoiceParameters,
   setReceiptParameters,
+  getProformaListFirstPage,
   getInvoiceListFirstPage,
   getDocumentListFirstPage,
   getWorkingOrderListFirstPage,
@@ -110,6 +118,7 @@ function MenuPage({
   const manageCustomers = permissions.filter(role => [1, 100].includes(role.IdRole)).length > 0;
   const manageProducts = permissions.filter(role => [1, 103].includes(role.IdRole)).length > 0;
   const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
+  const generateProforma = permissions.filter(role => [1, 200].includes(role.IdRole)).length > 0;
   const manageDocuments = permissions.filter(role => [1, 402].includes(role.IdRole)).length > 0;
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0;
   const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0;
@@ -139,75 +148,94 @@ function MenuPage({
           )}
         </div>
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button disabled={!updateCompanyInfo} classes={{ root: classes.button }} onClick={() => getCompany()}>
-          Actualizar empresa
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button disabled={!updateCompanyInfo} classes={{ root: classes.button }} onClick={() => setActiveSection(2)}>
-          Agregar logotipo
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!manageCustomers}
-          classes={{ root: classes.button }}
-          onClick={() => getCustomerListFirstPage(3, "", 8)}
-        >
-          Catálogo de clientes
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!manageProducts}
-          classes={{ root: classes.button }}
-          onClick={() => getProductListFirstPage(4, "", 2, 7)}
-        >
-          Catálogo de productos
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button disabled={!generateInvoice} classes={{ root: classes.button }} onClick={() => setInvoiceParameters(5)}>
-          Facturar
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button disabled={!generateInvoice} classes={{ root: classes.button }} onClick={() => setReceiptParameters(6)}>
-          Factura de compra
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!generateInvoice}
-          classes={{ root: classes.button }}
-          onClick={() => getInvoiceListFirstPage(7)}
-        >
-          Facturas electrónicas
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!manageDocuments}
-          classes={{ root: classes.button }}
-          onClick={() => getDocumentListFirstPage(8)}
-        >
-          Documentos electrónicos
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!generateWorkingOrder}
-          classes={{ root: classes.button }}
-          onClick={() => getWorkingOrderListFirstPage(9)}
-        >
-          Ordenes de servicio
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button disabled={!reportingMenu} classes={{ root: classes.button }} onClick={() => setActiveSection(20)}>
-          Menu de reportes
-        </Button>
+      <Grid item container xs={12} classes={{ root: classes.buttonContainer }}>
+        <Grid item xs={12} sm={6}>
+          <Button disabled={!updateCompanyInfo} classes={{ root: classes.button }} onClick={() => getCompany()}>
+            Actualizar empresa
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button disabled={!updateCompanyInfo} classes={{ root: classes.button }} onClick={() => setActiveSection(2)}>
+            Agregar logotipo
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!manageCustomers}
+            classes={{ root: classes.button }}
+            onClick={() => getCustomerListFirstPage(3, "", 8)}
+          >
+            Catálogo de clientes
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!manageProducts}
+            classes={{ root: classes.button }}
+            onClick={() => getProductListFirstPage(4, "", 2, 7)}
+          >
+            Catálogo de productos
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!generateInvoice}
+            classes={{ root: classes.button }}
+            onClick={() => setInvoiceParameters(5)}
+          >
+            Facturar
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!generateInvoice}
+            classes={{ root: classes.button }}
+            onClick={() => setReceiptParameters(6)}
+          >
+            Factura de compra
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!generateInvoice}
+            classes={{ root: classes.button }}
+            onClick={() => getInvoiceListFirstPage(7)}
+          >
+            Facturas electrónicas
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!manageDocuments}
+            classes={{ root: classes.button }}
+            onClick={() => getDocumentListFirstPage(8)}
+          >
+            Documentos electrónicos
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!generateWorkingOrder}
+            classes={{ root: classes.button }}
+            onClick={() => getWorkingOrderListFirstPage(9)}
+          >
+            Ordenes de servicio
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={!generateProforma}
+            classes={{ root: classes.button }}
+            onClick={() => getProformaListFirstPage(10)}
+          >
+            Facturas proforma
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button disabled={!reportingMenu} classes={{ root: classes.button }} onClick={() => setActiveSection(20)}>
+            Menu de reportes
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -234,6 +262,7 @@ const mapDispatchToProps = dispatch => {
       getInvoiceListFirstPage,
       getDocumentListFirstPage,
       getWorkingOrderListFirstPage,
+      getProformaListFirstPage,
     },
     dispatch
   );

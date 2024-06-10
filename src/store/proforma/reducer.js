@@ -1,12 +1,12 @@
-import { SET_INVOICE_ATTRIBUTES, SET_LIST_PAGE, SET_LIST_COUNT, SET_LIST, RESET_INVOICE } from "./types";
+import { SET_PROFORMA_ATTRIBUTES, SET_LIST_PAGE, SET_LIST_COUNT, SET_LIST, RESET_PROFORMA } from "./types";
 
-import { defaultInvoice } from "utils/defaults";
+import { defaultProforma } from "utils/defaults";
 
 import { LOGOUT } from "store/session/types";
 
 const invoiceReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case SET_INVOICE_ATTRIBUTES:
+    case SET_PROFORMA_ATTRIBUTES:
       return { ...state, ...payload };
     case SET_LIST_PAGE:
       return { ...state, listPage: payload.page };
@@ -15,11 +15,8 @@ const invoiceReducer = (state = {}, { type, payload }) => {
     case SET_LIST:
       return { ...state, list: payload.list };
     case LOGOUT:
-    case RESET_INVOICE:
-      return {
-        ...defaultInvoice,
-        activityCode: state.activityCode,
-      };
+    case RESET_PROFORMA:
+      return { ...defaultProforma, listPage: 1, listCount: 0, list: [] };
     default:
       return state;
   }

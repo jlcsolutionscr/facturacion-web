@@ -6,34 +6,32 @@ import { makeStyles } from "@material-ui/core/styles";
 import { setActiveSection } from "store/ui/actions";
 
 import {
-  setActivityCode,
-  setPaymentId,
-  setVendorId,
-  setComment,
-  saveInvoice,
-  setInvoiceParameters,
-  generateInvoiceTicket,
-} from "store/invoice/actions";
-
-import { getProduct, setDescription, setQuantity, setPrice, addDetails, removeDetails } from "store/invoice/actions";
-
-import { filterProductList, getProductListByPageNumber } from "store/product/actions";
-
-import {
   getCustomer,
   setCustomerAttribute,
   filterCustomerList,
   getCustomerListByPageNumber,
 } from "store/customer/actions";
 
+import { filterProductList, getProductListByPageNumber } from "store/product/actions";
+
+import {
+  setInvoiceAttributes,
+  saveInvoice,
+  setInvoiceParameters,
+  generateInvoiceTicket,
+  getProduct,
+  addDetails,
+  removeDetails,
+} from "store/invoice/actions";
+
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import IconButton from "@material-ui/core/IconButton";
 
 import { BackArrowIcon } from "utils/iconsHelper";
-import StepOneScreen from "./invoice-steps/step-one-screen";
-import StepTwoScreen from "./invoice-steps/step-two-screen";
-import StepThreeScreen from "./invoice-steps/step-three-screen";
+import StepOneScreen from "./step-screens/select-customer-screen";
+import StepTwoScreen from "./step-screens/select-products-screen";
+import StepThreeScreen from "./step-screens/invoice-final-screen";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -54,6 +52,37 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     color: "#FFF",
+  },
+  finalStepContainer: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "2%",
+    backgroundColor: theme.palette.background.pages,
+  },
+  summary: {
+    flexDirection: "column",
+    maxWidth: "300px",
+    textAlign: "center",
+  },
+  details: {
+    marginTop: "5px",
+    textAlign: "left",
+  },
+  summaryTitle: {
+    marginTop: "0",
+    fontWeight: "700",
+    color: theme.palette.text.primary,
+  },
+  columnRight: {
+    textAlign: "right",
+  },
+  summaryRow: {
+    color: theme.palette.text.primary,
+  },
+  centered: {
+    display: "flex",
+    margin: "auto",
+    justifyContent: "center",
   },
 }));
 
@@ -76,13 +105,9 @@ function InvoicePage({
   comment,
   invoiceId,
   vendorList,
-  setPaymentId,
-  setVendorId,
-  setComment,
   saveInvoice,
   setInvoiceParameters,
   generateInvoiceTicket,
-  setActivityCode,
   permissions,
   productListPage,
   productListCount,
@@ -93,9 +118,6 @@ function InvoicePage({
   price,
   detailsList,
   getProduct,
-  setDescription,
-  setQuantity,
-  setPrice,
   filterProductList,
   getProductListByPageNumber,
   addDetails,
@@ -104,9 +126,12 @@ function InvoicePage({
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleCustomerNameChange = value => {
+    setCustomerAttribute("Nombre", value);
   };
+
+  const customerListDisabled = successful;
+  const customerNameEditDisabled = successful || customer.IdCliente !== 1;
 
   return (
     <div className={classes.container}>
@@ -115,7 +140,13 @@ function InvoicePage({
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
-      <Tabs className={classes.tabs} centered value={value} indicatorColor="secondary" onChange={handleChange}>
+      <Tabs
+        className={classes.tabs}
+        centered
+        value={value}
+        indicatorColor="secondary"
+        onChange={(_event, value) => setValue(value)}
+      >
         <Tab label="Cliente" />
         <Tab label="Detalle" />
         <Tab label="Generar" />
@@ -127,11 +158,12 @@ function InvoicePage({
         customerList={customerList}
         customerListCount={customerListCount}
         customerListPage={customerListPage}
-        successful={successful}
+        customerListDisabled={customerListDisabled}
+        customerNameEditDisabled={customerNameEditDisabled}
         filterCustomerList={filterCustomerList}
         getCustomerListByPageNumber={getCustomerListByPageNumber}
         getCustomer={getCustomer}
-        setCustomerAttribute={setCustomerAttribute}
+        handleCustomerNameChange={handleCustomerNameChange}
       />
       <StepTwoScreen
         value={value}
@@ -146,11 +178,9 @@ function InvoicePage({
         quantity={quantity}
         price={price}
         detailsList={detailsList}
-        successful={successful}
+        isEditDisabled={successful}
         getProduct={getProduct}
-        setDescription={setDescription}
-        setQuantity={setQuantity}
-        setPrice={setPrice}
+        setProductAttribute={setInvoiceAttributes}
         filterProductList={filterProductList}
         getProductListByPageNumber={getProductListByPageNumber}
         addDetails={addDetails}
@@ -158,7 +188,6 @@ function InvoicePage({
       />
       <StepThreeScreen
         value={value}
-        setValue={setValue}
         index={2}
         company={company}
         summary={summary}
@@ -169,13 +198,11 @@ function InvoicePage({
         successful={successful}
         invoiceId={invoiceId}
         vendorList={vendorList}
-        setPaymentId={setPaymentId}
-        setVendorId={setVendorId}
-        setComment={setComment}
+        setInvoiceAttributes={setInvoiceAttributes}
         saveInvoice={saveInvoice}
         setInvoiceParameters={setInvoiceParameters}
         generateInvoiceTicket={generateInvoiceTicket}
-        setActivityCode={setActivityCode}
+        setValue={setValue}
       />
     </div>
   );
@@ -215,17 +242,11 @@ const mapDispatchToProps = dispatch => {
     {
       setActiveSection,
       getProduct,
-      setDescription,
-      setQuantity,
-      setPrice,
+      setInvoiceAttributes,
       filterProductList,
       getProductListByPageNumber,
       addDetails,
       removeDetails,
-      setActivityCode,
-      setPaymentId,
-      setVendorId,
-      setComment,
       saveInvoice,
       setInvoiceParameters,
       generateInvoiceTicket,

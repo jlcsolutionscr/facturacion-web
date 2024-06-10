@@ -29,6 +29,7 @@ import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 import { setActiveSection } from "store/ui/actions";
 import { filterClasificationList } from "store/product/actions";
 import {
+  setActivityCode,
   setIssuerDetails,
   validateCustomerIdentifier,
   validateProductCode,
@@ -36,7 +37,6 @@ import {
   setProductDetails,
   addDetails,
   removeDetails,
-  setActivityCode,
   saveReceipt,
 } from "store/receipt/actions";
 
