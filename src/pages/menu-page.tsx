@@ -32,7 +32,7 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   branches: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "transparent",
     borderRadius: theme.shape.borderRadius,
     margin: "0 auto",
     padding: "9px",
@@ -52,13 +52,16 @@ const useStyles = makeStyles()(theme => ({
     fontStyle: "italic",
     fontWeight: 600,
     marginBottom: 0,
-    color: theme.palette.text.primary,
+    color: "#000",
     transition: `color ${TRANSITION_ANIMATION}`,
+
     "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(16),
     },
     "@media screen and (max-width:429px)": {
       fontSize: theme.typography.pxToRem(14),
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.mode === "dark" ? "hsl(210, 14%, 7%)" : "rgb(255, 255, 255)",
     },
   },
   button: {

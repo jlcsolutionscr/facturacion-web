@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
+import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
 import CompanyPage from "pages/company-page";
 import CustomerListPage from "pages/customer-list-page";
@@ -26,18 +27,20 @@ const useStyles = makeStyles()(theme => ({
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
-    "@media screen and (max-width:429px)": {
-      backgroundImage: "none",
-      backgroundColor: "#FFF",
-    },
   },
   body: {
+    backgroundImage: `url(${BannerImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: `100% 100%`,
     display: "flex",
     flex: "1 1 auto",
     overflowY: "auto",
     overflowX: "hidden",
-    transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
-    backgroundColor: theme.palette.mode === "dark" ? "hsl(210, 14%, 7%)" : "rgb(255, 255, 255)",
+    transition: `backgroundColor ${TRANSITION_ANIMATION}`,
+    "@media screen and (max-width:429px)": {
+      backgroundImage: "none",
+      backgroundColor: theme.palette.mode === "dark" ? "hsl(210, 14%, 7%)" : "rgb(255, 255, 255)",
+    },
   },
 }));
 
