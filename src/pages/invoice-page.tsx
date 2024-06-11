@@ -46,13 +46,6 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   tabs: {
-    color: "#FFF",
-    "& .MuiTab-root": {
-      color: "#FFF",
-    },
-    "& .Mui-selected": {
-      color: "#90CAF9",
-    },
     "@media screen and (max-width:599px)": {
       borderTop: "solid 2px #FFF",
     },

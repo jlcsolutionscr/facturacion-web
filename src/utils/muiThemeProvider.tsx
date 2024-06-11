@@ -9,6 +9,16 @@ const baseTheme: ThemeOptions = createTheme({
         },
       },
     },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: "#FFF",
+          "&.Mui-selected": {
+            color: "#90CAF9",
+          },
+        },
+      },
+    },
     MuiSelect: {
       defaultProps: {
         variant: "standard",
