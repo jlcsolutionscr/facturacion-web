@@ -248,7 +248,7 @@ export const saveWorkingOrder = createAsyncThunk(
     try {
       const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
       if (ids) {
-        dispatch(setWorkingOrder({ ...entity, id: ids.IdOrden, consecutive: ids.ConsecOrdenServicio }));
+        dispatch(setWorkingOrder({ ...entity, id: ids.id, consecutive: ids.consecutive }));
       }
       dispatch(setStatus("ready"));
       dispatch(

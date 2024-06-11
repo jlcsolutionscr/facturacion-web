@@ -649,7 +649,11 @@ export async function saveInvoiceEntity(
   };
   const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}";
   const invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return invoiceId.split("-")[0];
+  const ids = invoiceId.split("-");
+  return {
+    id: ids[0],
+    consecutive: ids[1],
+  };
 }
 
 export async function revokeInvoiceEntity(token: string, invoiceId: number, idUser: number) {
@@ -743,7 +747,7 @@ export async function saveWorkingOrderEntity(
     Exonerado: order.summary.exonerated,
     Descuento: 0,
     Impuesto: order.summary.taxes,
-    MontoAdelanto: 0,
+    MontoAdelanto: order.cashAdvance,
     MontoPagado: 0,
     Nulo: false,
     DetalleOrdenServicio: workingOrderDetails,
@@ -755,12 +759,11 @@ export async function saveWorkingOrderEntity(
     JSON.stringify(workingOrder) +
     "}";
   if (order.id === 0) {
-    const invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-    const ids = invoiceId.split("-");
+    const workingOrderId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+    const ids = workingOrderId.split("-");
     return {
-      IdOrden: ids[0],
-      ConsecOrdenServicio: ids[1],
-      MontoAdelanto: 0,
+      id: ids[0],
+      consecutive: ids[1],
     };
   } else {
     await post(APP_URL + "/ejecutar", token, data);
@@ -992,10 +995,19 @@ export async function getProductClasificationList(token: string, filterText: str
   return response;
 }
 
-export async function saveProformaEntity(token: string, userId: number, detailsList: ProductDetailsType[],
-  summary: SummaryType, branchId: number, company: CompanyType, customer: CustomerType, comment: string) {
+export async function saveProformaEntity(
+  token: string,
+  userId: number,
+  companyId: number,
+  branchId: number,
+  vendorId: number,
+  customerDetails: CustomerDetailsType,
+  productDetailsList: ProductDetailsType[],
+  summary: SummaryType,
+  comment: string
+) {
   const proformaDetails: DetalleProformaType[] = [];
-  detailsList.forEach(item => {
+  productDetailsList.forEach(item => {
     const detail = {
       IdProforma: 0,
       IdProducto: parseInt(item.id),
@@ -1012,17 +1024,17 @@ export async function saveProformaEntity(token: string, userId: number, detailsL
   });
   const proformaDate = convertToDateTimeString(new Date());
   const proforma = {
-    IdEmpresa: company.IdEmpresa,
+    IdEmpresa: companyId,
     IdSucursal: branchId,
     IdProforma: 0,
     IdUsuario: userId,
     IdTipoMoneda: 1,
-    IdCliente: customer.IdCliente,
-    NombreCliente: customer.Nombre,
+    IdCliente: customerDetails.id,
+    NombreCliente: customerDetails.name,
     Fecha: proformaDate,
     TextoAdicional: comment,
     Telefono: "",
-    IdVendedor: 0,
+    IdVendedor: vendorId,
     Excento: summary.exempt,
     Gravado: summary.taxed,
     Exonerado: summary.exonerated,
@@ -1031,8 +1043,12 @@ export async function saveProformaEntity(token: string, userId: number, detailsL
     DetalleProforma: proformaDetails,
   };
   const data = "{NombreMetodo: 'AgregarProforma', Entidad: " + JSON.stringify(proforma) + "}";
-  let proformaId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return proformaId.split("-")[0];
+  const proformaId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  const ids = proformaId.split("-");
+  return {
+    id: ids[0],
+    consecutive: ids[1],
+  };
 }
 
 export async function revokeProformaEntity(token: string, proformaId: number, idUser: number) {
@@ -1041,7 +1057,7 @@ export async function revokeProformaEntity(token: string, proformaId: number, id
   await post(APP_URL + "/ejecutar", token, data);
 }
 
-export async function generateProformaPDF(token: string, proformaId: number, ref: string) {
+export async function generateProformaPDF(token: string, proformaId: number, ref: number) {
   const data = "{NombreMetodo: 'ObtenerProformaPDF', Parametros: {IdProforma: " + proformaId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
@@ -1065,7 +1081,14 @@ export async function getProformaListCount(token: string, companyId: number, bra
   return response;
 }
 
-export async function getProformaListPerPage(token: string, companyId: number, branchId: number, bolApplied: boolean, pageNumber: number, rowPerPage: number) {
+export async function getProformaListPerPage(
+  token: string,
+  companyId: number,
+  branchId: number,
+  bolApplied: boolean,
+  pageNumber: number,
+  rowPerPage: number
+) {
   const data =
     "{NombreMetodo: 'ObtenerListadoProformas', Parametros: {IdEmpresa: " +
     companyId +

@@ -255,3 +255,17 @@ export type ReceiptType = {
   };
   successful: boolean;
 };
+
+export type ProformaType = {
+  proformaId: number | null;
+  consecutive: number;
+  reference: string;
+  date: string;
+  customerDetails: CustomerDetailsType;
+  productDetails: ProductDetailsType;
+  productDetailsList: ProductDetailsType[];
+  vendorId: number;
+  summary: SummaryType;
+  comment: string;
+  successful: boolean;
+};

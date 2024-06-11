@@ -11,6 +11,7 @@ import {
   InvoiceType,
   PermissionType,
   ProductType,
+  ProformaType,
   ReceiptType,
   WorkingOrderType,
 } from "types/domain";
@@ -20,6 +21,7 @@ import {
   defaultCustomer,
   defaultInvoice,
   defaultProduct,
+  defaultProforma,
   defaultReceipt,
   defaultWorkingOrder,
 } from "utils/defaults";
@@ -108,6 +110,13 @@ type WorkingOrderStateType = {
   listCount: number;
   list: InvoiceEntityType[];
   servicePointList: IdDescriptionType[];
+};
+
+type ProformaStateType = {
+  entity: ProformaType;
+  listPage: number;
+  listCount: number;
+  list: InvoiceEntityType[];
 };
 
 type DocumentStateType = {
@@ -215,6 +224,13 @@ export const workingOrderInitialState: WorkingOrderStateType = {
   listCount: 0,
   list: [],
   servicePointList: [],
+};
+
+export const proformaInitialState: ProformaStateType = {
+  entity: defaultProforma,
+  listPage: 1,
+  listCount: 0,
+  list: [],
 };
 
 export const documentInitialState: DocumentStateType = {

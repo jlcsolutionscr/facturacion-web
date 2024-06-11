@@ -53,6 +53,7 @@ const invoiceSlice = createSlice({
     },
     setSuccessful: (state, action) => {
       state.entity.invoiceId = action.payload.id;
+      state.entity.consecutive = action.payload.consecutive;
       state.entity.successful = action.payload.success;
     },
     setInvoiceListPage: (state, action) => {

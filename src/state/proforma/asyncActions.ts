@@ -1,54 +1,51 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
+import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import {
-  resetInvoice,
   resetProductDetails,
-  setActivityCode,
+  resetProforma,
   setCustomerDetails,
   setDescription,
-  setInvoiceList,
-  setInvoiceListCount,
-  setInvoiceListPage,
   setPrice,
   setProductDetails,
   setProductDetailsList,
+  setProformaList,
+  setProformaListCount,
+  setProformaListPage,
   setQuantity,
   setSuccessful,
   setSummary,
   setVendorId,
-} from "state/invoice/reducer";
-import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
+} from "state/proforma/reducer";
 import { setVendorList } from "state/session/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import {
-  generateInvoicePDF,
+  generateProformaPDF,
   getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
   getCustomerPrice,
-  getInvoiceEntity,
-  getProcessedInvoiceListCount,
-  getProcessedInvoiceListPerPage,
   getProductEntity,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
+  getProformaListCount,
+  getProformaListPerPage,
   getTaxedPrice,
   getVendorList,
-  revokeInvoiceEntity,
-  saveInvoiceEntity,
+  revokeProformaEntity,
+  saveProformaEntity,
 } from "utils/domainHelper";
-import { printInvoice } from "utils/printing";
 import { getErrorMessage, getTaxeRateFromId } from "utils/utilities";
 
-export const setInvoiceParameters = createAsyncThunk(
-  "invoice/setInvoiceParameters",
+export const setProformaParameters = createAsyncThunk(
+  "proforma/setProformaParameters",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { companyId, branchId, company, token } = session;
+    const { companyId, branchId, token } = session;
     dispatch(startLoader());
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");
@@ -63,9 +60,8 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(resetInvoice());
+      dispatch(resetProforma());
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
       dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
@@ -76,7 +72,7 @@ export const setInvoiceParameters = createAsyncThunk(
 );
 
 export const getCustomerDetails = createAsyncThunk(
-  "invoice/getCustomerDetails",
+  "proforma/getCustomerDetails",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, ui } = getState() as RootState;
     const { token } = session;
@@ -110,7 +106,7 @@ export const getCustomerDetails = createAsyncThunk(
 );
 
 export const getProduct = createAsyncThunk(
-  "invoice/getProduct",
+  "proforma/getProduct",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, invoice, ui } = getState() as RootState;
     const { token, branchId, company } = session;
@@ -147,7 +143,7 @@ export const getProduct = createAsyncThunk(
   }
 );
 
-export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload, { getState, dispatch }) => {
+export const addDetails = createAsyncThunk("proforma/addDetails", async (_payload, { getState, dispatch }) => {
   const { session, invoice } = getState() as RootState;
   const { company } = session;
   const { customerDetails, productDetails, productDetailsList } = invoice.entity;
@@ -202,7 +198,7 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
 });
 
 export const removeDetails = createAsyncThunk(
-  "invoice/removeDetails",
+  "proforma/removeDetails",
   async (payload: { id: string }, { getState, dispatch }) => {
     const { invoice } = getState() as RootState;
     const { customerDetails, productDetailsList } = invoice.entity;
@@ -214,24 +210,18 @@ export const removeDetails = createAsyncThunk(
   }
 );
 
-export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_payload, { getState, dispatch }) => {
-  const { session, invoice } = getState() as RootState;
-  const { token, userId, branchId, companyId, currencyType } = session;
-  const { activityCode, paymentDetailsList, vendorId, customerDetails, productDetailsList, summary, comment } =
-    invoice.entity;
+export const saveProforma = createAsyncThunk("proforma/saveProforma", async (_payload, { getState, dispatch }) => {
+  const { session, proforma } = getState() as RootState;
+  const { token, userId, branchId, companyId } = session;
+  const { vendorId, customerDetails, productDetailsList, summary, comment } = proforma.entity;
   dispatch(startLoader());
   try {
-    const ids = await saveInvoiceEntity(
+    const ids = await saveProformaEntity(
       token,
       userId,
       companyId,
       branchId,
-      activityCode,
-      paymentDetailsList,
-      0,
-      currencyType,
       vendorId,
-      0,
       customerDetails,
       productDetailsList,
       summary,
@@ -251,21 +241,21 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
   }
 });
 
-export const getInvoiceListFirstPage = createAsyncThunk(
-  "invoice/getInvoiceListFirstPage",
+export const getProformaListFirstPage = createAsyncThunk(
+  "proforma/getProformaListFirstPage",
   async (payload: { id: number | null }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      dispatch(setInvoiceListPage(1));
-      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
-      dispatch(setInvoiceListCount(recordCount));
+      dispatch(setProformaListPage(1));
+      const recordCount = await getProformaListCount(token, companyId, branchId, false);
+      dispatch(setProformaListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10);
-        dispatch(setInvoiceList(newList));
+        const newList = await getProformaListPerPage(token, companyId, branchId, false, 1, 10);
+        dispatch(setProformaList(newList));
       } else {
-        dispatch(setInvoiceList([]));
+        dispatch(setProformaList([]));
       }
       if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
@@ -276,16 +266,16 @@ export const getInvoiceListFirstPage = createAsyncThunk(
   }
 );
 
-export const getInvoiceListByPageNumber = createAsyncThunk(
-  "invoice/getInvoiceListByPageNumber",
+export const getProformaListByPageNumber = createAsyncThunk(
+  "proforma/getProformaListByPageNumber",
   async (payload: { pageNumber: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, payload.pageNumber, 10);
-      dispatch(setInvoiceListPage(payload.pageNumber));
-      dispatch(setInvoiceList(newList));
+      const newList = await getProformaListPerPage(token, companyId, branchId, false, payload.pageNumber, 10);
+      dispatch(setProformaListPage(payload.pageNumber));
+      dispatch(setProformaList(newList));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -294,15 +284,15 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
   }
 );
 
-export const revokeInvoice = createAsyncThunk(
-  "invoice/revokeInvoice",
+export const revokeProforma = createAsyncThunk(
+  "proforma/revokeProforma",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, userId } = session;
     dispatch(startLoader());
     try {
-      await revokeInvoiceEntity(token, payload.id, userId);
-      dispatch(getInvoiceListFirstPage({ id: null }));
+      await revokeProformaEntity(token, payload.id, userId);
+      dispatch(getProformaListFirstPage({ id: null }));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",
@@ -317,33 +307,13 @@ export const revokeInvoice = createAsyncThunk(
 );
 
 export const generatePDF = createAsyncThunk(
-  "invoice/generatePDF",
+  "proforma/generatePDF",
   async (payload: { id: number; ref: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
-      await generateInvoicePDF(token, payload.id, payload.ref);
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const generateInvoiceTicket = createAsyncThunk(
-  "invoice/generateInvoiceTicket",
-  async (payload: { id: number; ref?: string }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { token, userCode, device, branchList, branchId, company } = session;
-    dispatch(startLoader());
-    try {
-      const invoice = await getInvoiceEntity(token, payload.id);
-      const branchName = branchList.find(x => x.Id === branchId)?.Descripcion ?? "SIN DESCRIPCION";
-      if (company !== null) {
-        printInvoice(userCode, company, invoice, branchName, device?.lineWidth ?? 80);
-      }
+      await generateProformaPDF(token, payload.id, payload.ref);
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

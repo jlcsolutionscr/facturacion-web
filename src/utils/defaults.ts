@@ -6,6 +6,7 @@ import {
   PaymentDetailsType,
   ProductDetailsType,
   ProductType,
+  ProformaType,
   ReceiptType,
   WorkingOrderType,
 } from "types/domain";
@@ -206,5 +207,28 @@ export const defaultReceipt: ReceiptType = {
     date: "2000-01-01T23:59:59",
     percentage: 0,
   },
+  successful: false,
+};
+
+export const defaultProforma: ProformaType = {
+  proformaId: 0,
+  consecutive: 0,
+  reference: "",
+  date: "",
+  customerDetails: defaultCustomerDetails,
+  productDetails: defaultProductDetails,
+  productDetailsList: [],
+  vendorId: 0,
+  summary: {
+    taxed: 0,
+    exonerated: 0,
+    exempt: 0,
+    subTotal: 0,
+    taxes: 0,
+    total: 0,
+    totalCost: 0,
+    cashAmount: 0,
+  },
+  comment: "",
   successful: false,
 };
