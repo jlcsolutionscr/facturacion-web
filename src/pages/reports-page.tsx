@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import { parse } from "date-fns";
+import { lastDayOfMonth, parse } from "date-fns";
 import UAParser from "ua-parser-js";
 
 import Button from "components/button";
@@ -79,8 +79,9 @@ export default function ReportsPage() {
   const isAccountingUser = permissions.filter(role => role.IdRole === 2).length > 0;
 
   useEffect(() => {
-    setStartDate(new Date(today.getFullYear(), today.getMonth(), 1));
-    setEndDate(new Date(today.getFullYear(), today.getMonth(), lastDayOfMonth));
+    const today = new Date();
+    setStartDate(today);
+    setEndDate(lastDayOfMonth(today));
     return () => {
       setViewLayout(1);
     };
@@ -123,6 +124,13 @@ export default function ReportsPage() {
     }
   };
 
+  const handleStartDateChange = (value: string) => {
+    const startDate = parse(value.substring(0, 10), "yyyy-MM-dd", new Date());
+    const endDate = lastDayOfMonth(startDate);
+    setStartDate(startDate);
+    setEndDate(endDate);
+  };
+
   const handleBackButton = () => {
     dispatch(setActiveSection(0));
     dispatch(setReportResults({ list: [], summary: null }));
@@ -138,8 +146,6 @@ export default function ReportsPage() {
       );
     });
 
-  const today = new Date();
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const result = new UAParser().getResult();
   const isMobile = !!result.device.type;
   const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte : "";
@@ -160,11 +166,7 @@ export default function ReportsPage() {
               </Select>
             </Grid>
             <Grid item xs={6}>
-              <DatePicker
-                label="Fecha inicial"
-                value={startDate}
-                onChange={value => setStartDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
-              />
+              <DatePicker label="Fecha inicial" value={startDate} onChange={value => handleStartDateChange(value)} />
             </Grid>
             <Grid item xs={6}>
               <DatePicker
