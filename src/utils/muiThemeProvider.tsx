@@ -28,7 +28,7 @@ const darkTheme = createTheme({
       main: "#F50057",
     },
     background: {
-      paper: "#424242",
+      paper: "hsl(210, 14%, 7%)",
     },
   },
 });

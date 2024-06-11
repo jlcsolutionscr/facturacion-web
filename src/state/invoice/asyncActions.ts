@@ -65,7 +65,7 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setProductList(productList));
       dispatch(resetInvoice());
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
+      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {

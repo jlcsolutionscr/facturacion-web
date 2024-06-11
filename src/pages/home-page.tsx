@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
-import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
 import CompanyPage from "pages/company-page";
 import CustomerListPage from "pages/customer-list-page";
@@ -20,8 +19,9 @@ import WorkingOrderListPage from "pages/working-order-list-page";
 import WorkingOrderPage from "pages/working-order-page";
 import { getCompany } from "state/session/reducer";
 import { getActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 
-const useStyles = makeStyles()(() => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -32,17 +32,12 @@ const useStyles = makeStyles()(() => ({
     },
   },
   body: {
-    backgroundImage: `url(${BannerImage})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: `100% 100%`,
     display: "flex",
     flex: "1 1 auto",
     overflowY: "auto",
     overflowX: "hidden",
-    backgroundColor: "#FFF",
-    "@media screen and (max-width:429px)": {
-      backgroundImage: `none`,
-    },
+    transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
+    backgroundColor: theme.palette.mode === "dark" ? "hsl(210, 14%, 7%)" : "rgb(255, 255, 255)",
   },
 }));
 

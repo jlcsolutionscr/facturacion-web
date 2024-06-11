@@ -81,7 +81,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(resetWorkingOrder());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setPaymentDetailsList([defaultPaymentDetails]));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0].CodigoActividad));
+      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(setActiveSection(21));
       dispatch(stopLoader());
     } catch (error) {
