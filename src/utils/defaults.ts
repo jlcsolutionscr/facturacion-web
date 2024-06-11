@@ -75,7 +75,7 @@ export const defaultCustomer: CustomerType = {
   IdTipoExoneracion: 1,
   NombreInstExoneracion: "",
   NumDocExoneracion: "",
-  FechaEmisionDoc: "",
+  FechaEmisionDoc: "2000-01-01T23:59:59",
   PorcentajeExoneracion: 0,
   PermiteCredito: false,
 };
@@ -100,7 +100,7 @@ export const defaultProductDetails: ProductDetailsType = {
 };
 
 export const defaultProduct: ProductType = {
-  IdProducto: null,
+  IdProducto: 0,
   IdEmpresa: 0,
   Tipo: 1,
   IdLinea: 0,

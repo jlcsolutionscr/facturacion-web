@@ -226,10 +226,11 @@ export const validateProductCode = createAsyncThunk(
 
 export const saveProduct = createAsyncThunk("product/saveProduct", async (_payload, { getState, dispatch }) => {
   const { product, session } = getState() as RootState;
-  const { token } = session;
-  const { entity: productEntity } = product;
+  const { token, companyId } = session;
+  const { entity } = product;
   dispatch(startLoader());
   try {
+    const productEntity = { ...entity, IdEmpresa: companyId };
     await saveProductEntity(token, productEntity);
     dispatch(
       setMessage({

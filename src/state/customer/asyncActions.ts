@@ -98,7 +98,7 @@ export const openCustomer = createAsyncThunk(
           IdTipoExoneracion: 1,
           NumDocExoneracion: "",
           NombreInstExoneracion: "",
-          FechaEmisionDoc: "01/01/2000",
+          FechaEmisionDoc: "2000-01-01T23:59:59",
           PorcentajeExoneracion: 0,
         };
       }

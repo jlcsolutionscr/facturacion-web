@@ -14,7 +14,7 @@ interface CustomDatePickerProps {
 }
 
 export default function CustomDatePicker({ label, value, disabled, onChange }: CustomDatePickerProps) {
-  const dateValue = typeof value === "string" ? parse(value.substring(0, 10), "dd/MM/yyyy", new Date()) : value;
+  const dateValue = typeof value === "string" ? parse(value.substring(0, 10), "yyyy-MM-dd", new Date()) : value;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker

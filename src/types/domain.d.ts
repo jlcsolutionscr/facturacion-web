@@ -82,7 +82,7 @@ export type CredentialType = {
 
 export type ProductType = {
   IdEmpresa: number;
-  IdProducto: number | null;
+  IdProducto: number;
   Tipo: number;
   IdLinea: number;
   Codigo: string;
@@ -107,7 +107,7 @@ export type ProductType = {
 };
 
 export type ProductDetailType = {
-  IdProducto: number | null;
+  IdProducto: number;
   Codigo: string;
   Descripcion: string;
   PrecioCosto: number;

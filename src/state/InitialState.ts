@@ -177,8 +177,8 @@ export const companyInitialState: CompanyStateType = {
   credentialsChanged: false,
   reportResults: [],
   reportSummary: {
-    startDate: "01/01/2000",
-    endDate: "01/01/2000",
+    startDate: "2000-01-01T23:59:59",
+    endDate: "2000-01-01T23:59:59",
   },
 };
 
