@@ -249,6 +249,7 @@ export default function CustomerPage() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
+            readOnly={!customer.AplicaTasaDiferenciada}
             id="IdImpuesto"
             label="Tasa de IVA diferenciada"
             value={customer.IdImpuesto.toString()}

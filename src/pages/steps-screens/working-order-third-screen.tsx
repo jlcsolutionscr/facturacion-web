@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { DeliveryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 
 import TextField from "components/text-field";
@@ -27,16 +28,15 @@ const useStyles = makeStyles()(theme => ({
 interface StepThreeScreenProps {
   index: number;
   value: number;
+  delivery: DeliveryType;
+  status: string;
   className?: string;
 }
 
-export default function StepThreeScreen({ value, index, className }: StepThreeScreenProps) {
+export default function StepThreeScreen({ value, index, delivery, status, className }: StepThreeScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
-
-  const delivery = useSelector(getDeliveryDetails);
-  const status = useSelector(getStatus);
 
   useEffect(() => {
     if (value === 2) myRef.current?.scrollTo(0, 0);

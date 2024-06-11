@@ -5,8 +5,8 @@ import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import StepOneScreen from "./restaurant-order-steps/step-one-screen";
-import StepTwoScreen from "./restaurant-order-steps/step-two-screen";
+import StepTwoScreen from "./steps-screens/restaurant-final-screen";
+import StepOneScreen from "./steps-screens/restaurant-first-screen";
 import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";

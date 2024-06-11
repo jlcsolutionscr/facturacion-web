@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { CompanyType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -74,24 +75,37 @@ const useStyles = makeStyles()(theme => ({
 interface StepThreeScreenProps {
   index: number;
   value: number;
+  invoiceId: number | null;
+  company: CompanyType | null;
+  summary: SummaryType;
+  activityCode: number;
+  paymentDetails: PaymentDetailsType[];
+  vendorId: number;
+  comment: string;
+  vendorList: IdDescriptionType[];
+  successful: boolean;
   setValue: (value: number) => void;
   className?: string;
 }
 
-export default function StepThreeScreen({ index, value, className, setValue }: StepThreeScreenProps) {
+export default function StepThreeScreen({
+  index,
+  value,
+  invoiceId,
+  company,
+  summary,
+  activityCode,
+  paymentDetails,
+  vendorId,
+  comment,
+  vendorList,
+  successful,
+  setValue,
+  className,
+}: StepThreeScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
-
-  const invoiceId = useSelector(getInvoiceId);
-  const company = useSelector(getCompany);
-  const summary = useSelector(getSummary);
-  const activityCode = useSelector(getActivityCode);
-  const paymentDetails = useSelector(getPaymentDetailsList);
-  const vendorId = useSelector(getVendorId);
-  const comment = useSelector(getComment);
-  const successful = useSelector(getSuccessful);
-  const vendorList = useSelector(getVendorList);
 
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
 

@@ -1,31 +1,20 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { CompanyType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
 import Select from "components/select";
-import { getCompany, getVendorList } from "state/session/reducer";
 import {
   generateInvoice,
   generateInvoiceTicket,
   generateWorkingOrderTicket,
   saveWorkingOrder,
 } from "state/working-order/asyncActions";
-import {
-  getActivityCode,
-  getCashAdvance,
-  getPaymentDetailsList,
-  getStatus,
-  getSummary,
-  getVendorId,
-  getWorkingOrderId,
-  setActivityCode,
-  setPaymentDetailsList,
-  setVendorId,
-} from "state/working-order/reducer";
+import { setActivityCode, setPaymentDetailsList, setVendorId } from "state/working-order/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
@@ -79,23 +68,35 @@ const useStyles = makeStyles()(theme => ({
 interface StepFourScreenProps {
   index: number;
   value: number;
+  company: CompanyType | null;
+  summary: SummaryType;
+  activityCode: number;
+  paymentDetails: PaymentDetailsType[];
+  vendorId: number;
+  workingOrderId: number;
+  vendorList: IdDescriptionType[];
+  cashAdvance: number;
+  status: string;
   className?: string;
 }
 
-export default function StepFourScreen({ value, index, className }: StepFourScreenProps) {
+export default function StepFourScreen({
+  value,
+  index,
+  company,
+  summary,
+  activityCode,
+  paymentDetails,
+  vendorId,
+  workingOrderId,
+  vendorList,
+  cashAdvance,
+  status,
+  className,
+}: StepFourScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
-
-  const company = useSelector(getCompany);
-  const summary = useSelector(getSummary);
-  const activityCode = useSelector(getActivityCode);
-  const paymentDetails = useSelector(getPaymentDetailsList);
-  const vendorId = useSelector(getVendorId);
-  const workingOrderId = useSelector(getWorkingOrderId);
-  const vendorList = useSelector(getVendorList);
-  const status = useSelector(getStatus);
-  const cashAdvance = useSelector(getCashAdvance);
 
   useEffect(() => {
     if (value === 3) myRef.current?.scrollTo(0, 0);

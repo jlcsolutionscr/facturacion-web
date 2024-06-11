@@ -191,6 +191,15 @@ export type SummaryType = {
   cashAmount: number;
 };
 
+export type DeliveryType = {
+  phone: string;
+  address: string;
+  description: string;
+  date: string;
+  time: string;
+  details: string;
+};
+
 export type InvoiceType = {
   invoiceId: number | null;
   consecutive: number;
@@ -221,14 +230,7 @@ export type WorkingOrderType = {
   cashAdvance: number;
   vendorId: number;
   summary: SummaryType;
-  delivery: {
-    phone: string;
-    address: string;
-    description: string;
-    date: string;
-    time: string;
-    details: string;
-  };
+  delivery: DeliveryType;
 };
 
 export type ReceiptType = {

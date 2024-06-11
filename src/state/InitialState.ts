@@ -18,6 +18,7 @@ import {
 
 import {
   defaultCompany,
+  defaultCredentials,
   defaultCustomer,
   defaultInvoice,
   defaultProduct,
@@ -170,12 +171,7 @@ export const sessionInitialState: SessionStateType = {
 export const companyInitialState: CompanyStateType = {
   entity: defaultCompany,
   availableEconomicActivityList: [],
-  credentials: {
-    UsuarioHacienda: "",
-    ClaveHacienda: "",
-    NombreCertificado: "",
-    PinCertificado: "",
-  },
+  credentials: defaultCredentials,
   logo: "",
   credentialsNew: true,
   credentialsChanged: false,

@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { IdDescriptionType } from "types/domain";
+import { CustomerDetailsType, IdDescriptionType } from "types/domain";
 import Grid from "@mui/material/Grid";
 
 import LabelField from "components/label-field";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField from "components/text-field";
 import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
-import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/invoice/asyncActions";
-import { getCustomerDetails, getSuccessful, setCustomerAttribute } from "state/invoice/reducer";
+import { setCustomerAttribute } from "state/invoice/reducer";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { convertToDateString } from "utils/utilities";
 
@@ -36,19 +35,27 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 interface StepOneScreenProps {
   index: number;
   value: number;
+  customer: CustomerDetailsType;
+  customerListCount: number;
+  customerListPage: number;
+  customerList: IdDescriptionType[];
+  listDisabled: boolean;
   className?: string;
 }
 
-export default function StepOneScreen({ index, value, className }: StepOneScreenProps) {
+export default function StepOneScreen({
+  index,
+  value,
+  customer,
+  customerListCount,
+  customerListPage,
+  customerList,
+  listDisabled,
+  className,
+}: StepOneScreenProps) {
   const { classes } = useStyles();
   const myRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-
-  const customer = useSelector(getCustomerDetails);
-  const customerListCount = useSelector(getCustomerListCount);
-  const customerListPage = useSelector(getCustomerListPage);
-  const customerList = useSelector(getCustomerList);
-  const successful = useSelector(getSuccessful);
 
   useEffect(() => {
     if (value === 0) myRef.current?.scrollTo(0, 0);
@@ -80,7 +87,7 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ListDropdown
-            disabled={successful}
+            disabled={listDisabled}
             label="Seleccione un cliente"
             page={customerListPage - 1}
             rowsCount={customerListCount}

@@ -20,6 +20,7 @@ import {
   startLoader,
   stopLoader,
 } from "state/ui/reducer";
+import { defaultCredentials } from "utils/defaults";
 import {
   getBarrioList,
   getCantonList,
@@ -52,7 +53,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito);
     const availableEconomicActivityList = await getEconomicActivityList(token, company.Identificacion);
     dispatch(setCompany(company));
-    dispatch(setCredentials(credentials));
+    dispatch(setCredentials(credentials !== null ? credentials : defaultCredentials));
     dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
     dispatch(setCantonList(cantonList));
     dispatch(setDistritoList(distritoList));

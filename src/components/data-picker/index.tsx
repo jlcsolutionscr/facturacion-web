@@ -14,6 +14,7 @@ interface CustomDatePickerProps {
 }
 
 export default function CustomDatePicker({ label, value, disabled, onChange }: CustomDatePickerProps) {
+  const dateValue = typeof value === "string" ? parse(value.substring(0, 10), "dd/MM/yyyy", new Date()) : value;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
@@ -21,7 +22,7 @@ export default function CustomDatePicker({ label, value, disabled, onChange }: C
         label={label}
         disabled={disabled}
         format="dd/MM/yyyy"
-        value={typeof value === "string" ? parse(value.substring(0, 10), "yyyy-MM-dd", new Date()) : value}
+        value={dateValue}
         slotProps={{ textField: { size: "small" } }}
         onChange={(value: Date | null) =>
           onChange(format(value !== null ? value : Date.now(), "yyyy-MM-dd") + "T23:59:59")

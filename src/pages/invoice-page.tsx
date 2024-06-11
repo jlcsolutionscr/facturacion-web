@@ -1,13 +1,28 @@
 import { SyntheticEvent, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import StepOneScreen from "./invoice-steps/step-one-screen";
-import StepThreeScreen from "./invoice-steps/step-three-screen";
-import StepTwoScreen from "./invoice-steps/step-two-screen";
+import StepOneScreen from "./steps-screens/customer-details-screen";
+import StepThreeScreen from "./steps-screens/invoice-final-screen";
+import StepTwoScreen from "./steps-screens/product-details-screen";
+import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
+import {
+  getActivityCode,
+  getComment,
+  getCustomerDetails,
+  getInvoiceId,
+  getPaymentDetailsList,
+  getProductDetails,
+  getProductDetailsList,
+  getSuccessful,
+  getSummary,
+  getVendorId,
+} from "state/invoice/reducer";
+import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
@@ -61,6 +76,26 @@ export default function InvoicePage() {
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
 
+  const customer = useSelector(getCustomerDetails);
+  const customerListCount = useSelector(getCustomerListCount);
+  const customerListPage = useSelector(getCustomerListPage);
+  const customerList = useSelector(getCustomerList);
+  const permissions = useSelector(getPermissions);
+  const productListPage = useSelector(getProductListPage);
+  const productListCount = useSelector(getProductListCount);
+  const productDetails = useSelector(getProductDetails);
+  const productList = useSelector(getProductList);
+  const productDetailsList = useSelector(getProductDetailsList);
+  const invoiceId = useSelector(getInvoiceId);
+  const company = useSelector(getCompany);
+  const summary = useSelector(getSummary);
+  const activityCode = useSelector(getActivityCode);
+  const paymentDetails = useSelector(getPaymentDetailsList);
+  const vendorId = useSelector(getVendorId);
+  const comment = useSelector(getComment);
+  const successful = useSelector(getSuccessful);
+  const vendorList = useSelector(getVendorList);
+
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -77,9 +112,43 @@ export default function InvoicePage() {
         <Tab label="Detalle" />
         <Tab label="Generar" />
       </Tabs>
-      <StepOneScreen className={classes.tab} value={value} index={0} />
-      <StepTwoScreen className={classes.tab} value={value} index={1} />
-      <StepThreeScreen className={classes.tab} value={value} setValue={setValue} index={2} />
+      <StepOneScreen
+        className={classes.tab}
+        value={value}
+        index={0}
+        customer={customer}
+        customerListCount={customerListCount}
+        customerListPage={customerListPage}
+        customerList={customerList}
+        listDisabled={successful}
+      />
+      <StepTwoScreen
+        className={classes.tab}
+        value={value}
+        index={1}
+        permissions={permissions}
+        productListPage={productListPage}
+        productListCount={productListCount}
+        productList={productList}
+        productDetails={productDetails}
+        productDetailsList={productDetailsList}
+        stepDisabled={successful}
+      />
+      <StepThreeScreen
+        className={classes.tab}
+        value={value}
+        invoiceId={invoiceId}
+        company={company}
+        summary={summary}
+        activityCode={activityCode}
+        paymentDetails={paymentDetails}
+        vendorId={vendorId}
+        comment={comment}
+        vendorList={vendorList}
+        successful={successful}
+        setValue={setValue}
+        index={2}
+      />
     </div>
   );
 }

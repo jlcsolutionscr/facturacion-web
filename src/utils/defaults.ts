@@ -34,6 +34,13 @@ export const defaultCompany: CompanyType = {
   PrecioVentaIncluyeIVA: false,
 };
 
+export const defaultCredentials = {
+  UsuarioHacienda: "",
+  ClaveHacienda: "",
+  NombreCertificado: "",
+  PinCertificado: "",
+};
+
 export const defaultCustomerDetails: CustomerDetailsType = {
   id: 1,
   name: "CLIENTE DE CONTADO",

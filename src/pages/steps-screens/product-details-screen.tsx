@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { IdDescriptionType } from "types/domain";
+import { CodeDescriptionType, IdDescriptionType, PermissionType, ProductDetailsType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
@@ -14,17 +14,8 @@ import TableRow from "@mui/material/TableRow";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { addDetails, getProduct, removeDetails } from "state/invoice/asyncActions";
-import {
-  getProductDetails,
-  getProductDetailsList,
-  getSuccessful,
-  setDescription,
-  setPrice,
-  setQuantity,
-} from "state/invoice/reducer";
+import { setDescription, setPrice, setQuantity } from "state/invoice/reducer";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
-import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { getPermissions } from "state/session/reducer";
 import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
@@ -68,24 +59,34 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 interface StepTwoScreenProps {
   index: number;
   value: number;
+  permissions: PermissionType[];
+  productListPage: number;
+  productListCount: number;
+  productList: CodeDescriptionType[];
+  productDetails: ProductDetailsType;
+  productDetailsList: ProductDetailsType[];
+  stepDisabled: boolean;
   className?: string;
 }
 
-export default function StepTwoScreen({ index, value, className }: StepTwoScreenProps) {
+export default function StepTwoScreen({
+  index,
+  value,
+  permissions,
+  productListPage,
+  productListCount,
+  productList,
+  productDetails,
+  productDetailsList,
+  stepDisabled,
+  className,
+}: StepTwoScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
 
   const [filterType, setFilterType] = useState(2);
   const [filter, setFilter] = useState("");
   const myRef = useRef<HTMLDivElement>(null);
-
-  const permissions = useSelector(getPermissions);
-  const productListPage = useSelector(getProductListPage);
-  const productListCount = useSelector(getProductListCount);
-  const productDetails = useSelector(getProductDetails);
-  const productList = useSelector(getProductList);
-  const productDetailsList = useSelector(getProductDetailsList);
-  const successful = useSelector(getSuccessful);
 
   useEffect(() => {
     if (value === 1) myRef.current?.scrollTo(0, 0);
@@ -126,7 +127,7 @@ export default function StepTwoScreen({ index, value, className }: StepTwoScreen
     productDetails.description !== "" &&
     productDetails.quantity > 0 &&
     productDetails.price > 0 &&
-    successful === false;
+    stepDisabled === false;
   const display = value !== index ? "none" : "flex";
 
   return (
@@ -136,7 +137,7 @@ export default function StepTwoScreen({ index, value, className }: StepTwoScreen
           <Grid container spacing={2}>
             <Grid item xs={10} sm={10.5} md={11}>
               <ListDropdown
-                disabled={successful}
+                disabled={stepDisabled}
                 label="Seleccione un producto"
                 page={productListPage - 1}
                 rowsCount={productListCount}
@@ -162,7 +163,7 @@ export default function StepTwoScreen({ index, value, className }: StepTwoScreen
             </Grid>
             <Grid item xs={12}>
               <TextField
-                disabled={successful}
+                disabled={stepDisabled}
                 label="Descripción"
                 id="Descripcion"
                 value={productDetails.description}
@@ -171,7 +172,7 @@ export default function StepTwoScreen({ index, value, className }: StepTwoScreen
             </Grid>
             <Grid item xs={3}>
               <TextField
-                disabled={successful}
+                disabled={stepDisabled}
                 label="Cantidad"
                 id="Cantidad"
                 value={productDetails.quantity.toString()}
@@ -181,7 +182,7 @@ export default function StepTwoScreen({ index, value, className }: StepTwoScreen
             </Grid>
             <Grid item xs={6}>
               <TextField
-                disabled={successful}
+                disabled={stepDisabled}
                 label="Precio"
                 value={productDetails.price.toString()}
                 numericFormat
