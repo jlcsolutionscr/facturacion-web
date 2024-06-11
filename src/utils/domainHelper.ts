@@ -59,6 +59,18 @@ type DetalleFacturaCompraType = {
   PrecioVenta: number;
 };
 
+type DetalleProformaType = {
+  IdProforma: number;
+  IdProducto: number;
+  Descripcion: string;
+  Cantidad: number;
+  PrecioVenta: number;
+  Excento: boolean;
+  PrecioCosto: number;
+  PorcentajeIVA: number;
+  PorcDescuento: number;
+};
+
 export async function requestUserLogin(user: string, password: string, id: string) {
   const ecryptedPass = encryptString(password);
   const endpoint =
@@ -975,6 +987,97 @@ export async function getProductClasificationList(token: string, filterText: str
     ", Descripcion: '" +
     filterText +
     "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return [];
+  return response;
+}
+
+export async function saveProformaEntity(token: string, userId: number, detailsList: ProductDetailsType[],
+  summary: SummaryType, branchId: number, company: CompanyType, customer: CustomerType, comment: string) {
+  const proformaDetails: DetalleProformaType[] = [];
+  detailsList.forEach(item => {
+    const detail = {
+      IdProforma: 0,
+      IdProducto: parseInt(item.id),
+      Codigo: item.code,
+      Descripcion: item.description,
+      Cantidad: item.quantity,
+      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
+      PrecioCosto: item.costPrice,
+      Excento: item.taxRate === 0,
+      PorcentajeIVA: item.taxRate,
+      PorcDescuento: 0,
+    };
+    proformaDetails.push(detail);
+  });
+  const proformaDate = convertToDateTimeString(new Date());
+  const proforma = {
+    IdEmpresa: company.IdEmpresa,
+    IdSucursal: branchId,
+    IdProforma: 0,
+    IdUsuario: userId,
+    IdTipoMoneda: 1,
+    IdCliente: customer.IdCliente,
+    NombreCliente: customer.Nombre,
+    Fecha: proformaDate,
+    TextoAdicional: comment,
+    Telefono: "",
+    IdVendedor: 0,
+    Excento: summary.exempt,
+    Gravado: summary.taxed,
+    Exonerado: summary.exonerated,
+    Descuento: 0,
+    Impuesto: summary.taxes,
+    DetalleProforma: proformaDetails,
+  };
+  const data = "{NombreMetodo: 'AgregarProforma', Entidad: " + JSON.stringify(proforma) + "}";
+  let proformaId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return proformaId.split("-")[0];
+}
+
+export async function revokeProformaEntity(token: string, proformaId: number, idUser: number) {
+  const data =
+    "{NombreMetodo: 'AnularProforma', Parametros: {IdProforma: " + proformaId + ", IdUsuario: " + idUser + "}}";
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
+export async function generateProformaPDF(token: string, proformaId: number, ref: string) {
+  const data = "{NombreMetodo: 'ObtenerProformaPDF', Parametros: {IdProforma: " + proformaId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response.length > 0) {
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
+    const file = new Blob([byteArray], { type: "application/octet-stream" });
+    saveAs(file, `OrdenServicio-${ref}.pdf`);
+  }
+}
+
+export async function getProformaListCount(token: string, companyId: number, branchId: number, bolApplied: boolean) {
+  const data =
+    "{NombreMetodo: 'ObtenerTotalListaProformas', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    ", Aplicado: '" +
+    bolApplied +
+    "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return null;
+  return response;
+}
+
+export async function getProformaListPerPage(token: string, companyId: number, branchId: number, bolApplied: boolean, pageNumber: number, rowPerPage: number) {
+  const data =
+    "{NombreMetodo: 'ObtenerListadoProformas', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    ", NumeroPagina: " +
+    pageNumber +
+    ", Aplicado: '" +
+    bolApplied +
+    "', FilasPorPagina: " +
+    rowPerPage +
+    "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
