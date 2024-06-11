@@ -34,7 +34,7 @@ const useStyles = makeStyles()(theme => ({
       padding: "10px",
     },
     "@media screen and (max-width:429px)": {
-      padding: "10 5px 5px 5px",
+      padding: "10px 5px 5px 5px",
     },
   },
   body: {
@@ -133,75 +133,73 @@ export default function StepTwoScreen({
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} style={{ display: display }}>
       <div className={classes.body}>
-        <div>
-          <Grid container spacing={2}>
-            <Grid item xs={10} sm={10.5} md={11}>
-              <ListDropdown
-                disabled={stepDisabled}
-                label="Seleccione un producto"
-                page={productListPage - 1}
-                rowsCount={productListCount}
-                rows={products}
-                value={filter}
-                rowsPerPage={ROWS_PER_PRODUCT}
-                onItemSelected={handleItemSelected}
-                onChange={handleOnFilterChange}
-                onPageChange={pageNumber =>
-                  dispatch(
-                    getProductListByPageNumber({
-                      pageNumber: pageNumber + 1,
-                      filterText: filter,
-                      type: filterType,
-                      rowsPerPage: ROWS_PER_PRODUCT,
-                    })
-                  )
-                }
-              />
-            </Grid>
-            <Grid item xs={2} sm={1.5} md={1}>
-              <Switch value={filterType === 1} onChange={handleFilterTypeChange} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                disabled={stepDisabled}
-                label="Descripción"
-                id="Descripcion"
-                value={productDetails.description}
-                onChange={event => dispatch(setDescription(event.target.value))}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                disabled={stepDisabled}
-                label="Cantidad"
-                id="Cantidad"
-                value={productDetails.quantity.toString()}
-                numericFormat
-                onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                disabled={stepDisabled}
-                label="Precio"
-                value={productDetails.price.toString()}
-                numericFormat
-                onChange={handlePriceChange}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <IconButton
-                className={classes.outerButton}
-                color="primary"
-                disabled={!buttonEnabled}
-                component="span"
-                onClick={() => dispatch(addDetails())}
-              >
-                <AddCircleIcon />
-              </IconButton>
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={10} sm={10.5} md={11}>
+            <ListDropdown
+              disabled={stepDisabled}
+              label="Seleccione un producto"
+              page={productListPage - 1}
+              rowsCount={productListCount}
+              rows={products}
+              value={filter}
+              rowsPerPage={ROWS_PER_PRODUCT}
+              onItemSelected={handleItemSelected}
+              onChange={handleOnFilterChange}
+              onPageChange={pageNumber =>
+                dispatch(
+                  getProductListByPageNumber({
+                    pageNumber: pageNumber + 1,
+                    filterText: filter,
+                    type: filterType,
+                    rowsPerPage: ROWS_PER_PRODUCT,
+                  })
+                )
+              }
+            />
           </Grid>
-        </div>
+          <Grid item xs={2} sm={1.5} md={1}>
+            <Switch value={filterType === 1} onChange={handleFilterTypeChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              disabled={stepDisabled}
+              label="Descripción"
+              id="Descripcion"
+              value={productDetails.description}
+              onChange={event => dispatch(setDescription(event.target.value))}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              disabled={stepDisabled}
+              label="Cantidad"
+              id="Cantidad"
+              value={productDetails.quantity.toString()}
+              numericFormat
+              onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              disabled={stepDisabled}
+              label="Precio"
+              value={productDetails.price.toString()}
+              numericFormat
+              onChange={handlePriceChange}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton
+              className={classes.outerButton}
+              color="primary"
+              disabled={!buttonEnabled}
+              component="span"
+              onClick={() => dispatch(addDetails())}
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
         <div className={classes.bottom}>
           <Grid container spacing={2} style={{ overflowY: "auto" }}>
             <Grid item xs={12}>

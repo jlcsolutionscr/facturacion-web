@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { DeliveryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 
 import TextField from "components/text-field";
-import { getDeliveryDetails, getStatus, setDeliveryAttribute } from "state/working-order/reducer";
+import { setDeliveryAttribute } from "state/working-order/reducer";
 
 const useStyles = makeStyles()(theme => ({
   container: {

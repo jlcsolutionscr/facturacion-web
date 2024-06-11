@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { CompanyType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
@@ -10,20 +10,7 @@ import Button from "components/button";
 import Select from "components/select";
 import TextField from "components/text-field";
 import { generateInvoiceTicket, saveInvoice, setInvoiceParameters } from "state/invoice/asyncActions";
-import {
-  getActivityCode,
-  getComment,
-  getInvoiceId,
-  getPaymentDetailsList,
-  getSuccessful,
-  getSummary,
-  getVendorId,
-  setActivityCode,
-  setComment,
-  setPaymentDetailsList,
-  setVendorId,
-} from "state/invoice/reducer";
-import { getCompany, getVendorList } from "state/session/reducer";
+import { setActivityCode, setComment, setPaymentDetailsList, setVendorId } from "state/invoice/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
