@@ -1,4 +1,4 @@
-import { ProductDetailType } from "types/domain";
+import { DetalleProductoType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
@@ -290,7 +290,7 @@ export const openWorkingOrder = createAsyncThunk(
         priceTypeId: workingOrder.Cliente.IdTipoPrecio,
         taxRate: getTaxeRateFromId(taxTypeList, workingOrder.Cliente.IdImpuesto),
       };
-      const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: ProductDetailType) => ({
+      const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
         id: item.IdProducto,
         quantity: item.Cantidad,
         code: item.Codigo,

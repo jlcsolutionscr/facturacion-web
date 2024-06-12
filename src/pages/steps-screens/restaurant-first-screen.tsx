@@ -40,7 +40,7 @@ import {
   setQuantity,
   setStatus,
 } from "state/working-order/reducer";
-import { FORM_TYPE, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, ORDER_STATUS, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 

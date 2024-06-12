@@ -3,6 +3,8 @@ import {
   CompanyType,
   CustomerDetailsType,
   CustomerType,
+  DetallePagoType,
+  DetalleProductoType,
   IdDescriptionValueType,
   InvoiceType,
   PaymentDetailsType,
