@@ -9,10 +9,13 @@ import StepOneScreen from "./steps-screens/customer-details-screen";
 import StepTwoScreen from "./steps-screens/product-details-screen";
 import StepFourScreen from "./steps-screens/working-order-final-screen";
 import StepThreeScreen from "./steps-screens/working-order-third-screen";
+import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
+import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
+import { addDetails, removeDetails } from "state/working-order/asyncActions";
 import {
   getActivityCode,
   getCashAdvance,
@@ -26,8 +29,10 @@ import {
   getSummary,
   getVendorId,
   getWorkingOrderId,
+  setCustomerAttribute,
+  setProductDetails,
 } from "state/working-order/reducer";
-import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -127,6 +132,8 @@ export default function WorkingOrderPage() {
         customerListPage={customerListPage}
         customerList={customerList}
         listDisabled={status === ORDER_STATUS.CONVERTED}
+        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.ORDER }))}
+        setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
       <StepTwoScreen
         className={classes.tab}
@@ -139,6 +146,12 @@ export default function WorkingOrderPage() {
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         stepDisabled={status === ORDER_STATUS.CONVERTED}
+        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.ORDER }))}
+        setProductDetails={(attribute: string, value: number | string) =>
+          dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
+        }
+        addDetails={() => dispatch(addDetails())}
+        removeDetails={(id: string, pos: number) => dispatch(removeDetails({ id, pos }))}
       />
       <StepThreeScreen className={classes.tab} value={value} index={2} delivery={delivery} status={status} />
       <StepFourScreen

@@ -55,6 +55,7 @@ export const setProformaParameters = createAsyncThunk(
       dispatch(resetProforma());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
+      dispatch(setActiveSection(22));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());

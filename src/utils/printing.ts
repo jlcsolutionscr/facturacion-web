@@ -152,18 +152,18 @@ export const printInvoice = async (
 ) => {
   const lines: LineType[] = [];
   lines.concat(createHeader(invoice.date, userCode, branchName, company, lineWidth));
-  if (invoice.reference) {
+  if (invoice.comment) {
     lines.push({
       text: invoice.customerDetails.id === 1 ? "TIQUETE ELECTRONICO" : "FACTURA ELECTRONICA",
       style: Style.Bold,
       align: Align.Center,
     });
     lines.push({
-      text: invoice.reference.substring(0, 25),
+      text: invoice.comment.substring(0, 25),
       align: Align.Center,
     });
     lines.push({
-      text: invoice.reference.substring(0, 25),
+      text: invoice.comment.substring(0, 25),
       align: Align.Center,
     });
   }

@@ -66,7 +66,7 @@ interface StepTwoScreenProps {
   stepDisabled: boolean;
   getProductDetails: (id: number) => void;
   addDetails: () => void;
-  removeDetails: (id: string) => void;
+  removeDetails: (id: string, pos: number) => void;
   setProductDetails: (attribute: string, value: number | string) => void;
   className?: string;
 }
@@ -231,7 +231,7 @@ export default function StepTwoScreen({
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() => removeDetails(row.id)}
+                          onClick={() => removeDetails(row.id, index)}
                         >
                           <RemoveCircleIcon />
                         </IconButton>

@@ -130,7 +130,6 @@ export const defaultProduct: ProductType = {
 export const defaultInvoice: InvoiceType = {
   invoiceId: 0,
   consecutive: 0,
-  reference: "",
   date: "",
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
@@ -150,6 +149,7 @@ export const defaultInvoice: InvoiceType = {
   },
   comment: "",
   successful: false,
+  cashAdvance: 0,
 };
 
 export const defaultWorkingOrder: WorkingOrderType = {
@@ -222,7 +222,6 @@ export const defaultReceipt: ReceiptType = {
 export const defaultProforma: ProformaType = {
   proformaId: 0,
   consecutive: 0,
-  reference: "",
   date: "",
   customerDetails: defaultCustomerDetails,
   productDetails: defaultProductDetails,

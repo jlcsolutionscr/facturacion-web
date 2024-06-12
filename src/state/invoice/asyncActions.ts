@@ -254,12 +254,14 @@ export const generatePDF = createAsyncThunk(
 
 export const generateInvoiceTicket = createAsyncThunk(
   "invoice/generateInvoiceTicket",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+  async (payload: { id: number; ref?: string }, { getState, dispatch }) => {
+    const { session, ui } = getState() as RootState;
     const { token, userCode, device, branchList, branchId, company } = session;
+    const { taxTypeList } = ui;
     dispatch(startLoader());
     try {
-      const invoice = await getInvoiceEntity(token, payload.id);
+      const invoiceEntity = await getInvoiceEntity(token, payload.id);
+      const invoice = parseInvoiceEntity(invoiceEntity, taxTypeList);
       const branchName = branchList.find(x => x.Id === branchId)?.Descripcion ?? "SIN DESCRIPCION";
       if (company !== null) {
         printInvoice(userCode, company, invoice, branchName, device?.lineWidth ?? 80);

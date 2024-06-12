@@ -310,7 +310,7 @@ export const openWorkingOrder = createAsyncThunk(
           cashAdvance: workingOrder.MontoAdelanto,
           invoiceId: 0,
           status: ORDER_STATUS.READY,
-          activityCode: company?.ActividadEconomicaEmpresa[0].CodigoActividad,
+          activityCode: workingOrder.CodigoActividad,
           customerDetails,
           productDetails: defaultProductDetails,
           productDetailsList,

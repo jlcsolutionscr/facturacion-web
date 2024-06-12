@@ -106,7 +106,7 @@ export type ProductType = {
   Activo: boolean;
 };
 
-export type ProductDetailType = {
+export type DetalleProductoType = {
   IdProducto: number;
   Codigo: string;
   Descripcion: string;
@@ -119,6 +119,18 @@ export type ProductDetailType = {
   Producto: {
     PrecioCosto: number;
   };
+};
+
+export type DetallePagoType = {
+  IdConsecutivo: number;
+  IdFactura: number;
+  IdFormaPago: number;
+  IdTipoMoneda: number;
+  IdCuentaBanco: number;
+  TipoTarjeta: string;
+  NroMovimiento: string;
+  MontoLocal: number;
+  TipoDeCambio: number;
 };
 
 export type CustomerType = {
@@ -203,7 +215,6 @@ export type DeliveryType = {
 export type InvoiceType = {
   invoiceId: number | null;
   consecutive: number;
-  reference: string;
   date: string;
   activityCode: number;
   customerDetails: CustomerDetailsType;
@@ -213,6 +224,7 @@ export type InvoiceType = {
   vendorId: number;
   summary: SummaryType;
   comment: string;
+  cashAdvance: number;
   successful: boolean;
 };
 
@@ -261,7 +273,6 @@ export type ReceiptType = {
 export type ProformaType = {
   proformaId: number | null;
   consecutive: number;
-  reference: string;
   date: string;
   customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;

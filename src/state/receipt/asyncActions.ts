@@ -150,11 +150,11 @@ export const removeDetails = createAsyncThunk(
 
 export const saveReceipt = createAsyncThunk("receipt/saveReceipt", async (_payload, { getState, dispatch }) => {
   const { session, receipt } = getState() as RootState;
-  const { token, userId, branchId, company } = session;
-  if (company) {
+  const { token, userId, branchId, companyId } = session;
+  if (companyId) {
     dispatch(startLoader());
     try {
-      await saveReceiptEntity(token, userId, branchId, company, receipt.entity);
+      await saveReceiptEntity(token, userId, branchId, companyId, receipt.entity);
       dispatch(setSuccessful());
       dispatch(
         setMessage({
