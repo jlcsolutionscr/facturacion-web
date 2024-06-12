@@ -1,17 +1,16 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { CompanyType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
+import { IdDescriptionType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import Button from "components/button";
 import Select from "components/select";
-import { generateInvoiceTicket } from "state/invoice/asyncActions";
-import { generateInvoice, generateWorkingOrderTicket, saveWorkingOrder } from "state/working-order/asyncActions";
-import { setActivityCode, setPaymentDetailsList, setVendorId } from "state/working-order/reducer";
-import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
+import TextField from "components/text-field";
+import { saveProforma, setProformaParameters } from "state/proforma/asyncActions";
+import { setComment, setVendorId } from "state/proforma/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -20,7 +19,6 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     padding: "15px 20px 20px 20px",
-    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
     },
@@ -61,76 +59,40 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface StepFourScreenProps {
+interface StepThreeScreenProps {
   index: number;
   value: number;
-  company: CompanyType | null;
   summary: SummaryType;
-  activityCode: number;
-  paymentDetails: PaymentDetailsType[];
   vendorId: number;
-  workingOrderId: number;
+  comment: string;
   vendorList: IdDescriptionType[];
-  cashAdvance: number;
-  status: string;
-  invoiceId: number;
+  successful: boolean;
+  setValue: (value: number) => void;
   className?: string;
 }
 
-export default function StepFourScreen({
-  value,
+export default function StepThreeScreen({
   index,
-  company,
+  value,
   summary,
-  activityCode,
-  paymentDetails,
   vendorId,
-  workingOrderId,
+  comment,
   vendorList,
-  cashAdvance,
-  status,
-  invoiceId,
+  successful,
+  setValue,
   className,
-}: StepFourScreenProps) {
+}: StepThreeScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (value === 3) myRef.current?.scrollTo(0, 0);
+    if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
-  const buttonDisabled = total === 0 || status === ORDER_STATUS.READY || status === ORDER_STATUS.CONVERTED;
-  const paymentMethods: { id: number; description: string }[] = [
-    { id: 1, description: "EFECTIVO" },
-    { id: 2, description: "TARJETA" },
-    { id: 3, description: "CHEQUE" },
-    { id: 4, description: "TRANSFERENCIA" },
-  ];
-  const paymentItems = paymentMethods.map(item => {
-    return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
-      </MenuItem>
-    );
-  });
-  const handleOnPrintClick = () => {
-    if (status === ORDER_STATUS.CONVERTED) {
-      dispatch(generateInvoiceTicket({ id: invoiceId }));
-    } else {
-      dispatch(generateWorkingOrderTicket({ id: workingOrderId }));
-    }
-  };
-  const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map(item => {
-        return (
-          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-            {item.Descripcion}
-          </MenuItem>
-        );
-      })
-    : [];
+  const buttonDisabled = total === 0;
+
   const vendorItems = vendorList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -138,23 +100,28 @@ export default function StepFourScreen({
       </MenuItem>
     );
   });
+
+  const handleOnPress = () => {
+    if (!successful) {
+      dispatch(saveProforma());
+    } else {
+      dispatch(setProformaParameters());
+      setValue(0);
+    }
+  };
+
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
-        {activityItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="codigo-actividad-select-id"
-                label="Seleccione la Actividad Económica"
-                value={activityCode.toString()}
-                onChange={event => dispatch(setActivityCode(event.target.value))}
-              >
-                {activityItems}
-              </Select>
-            </Grid>
-          </Grid>
-        )}
+        <Grid item xs={12}>
+          <TextField
+            disabled={successful}
+            label="Observaciones"
+            id="Observacion"
+            value={comment}
+            onChange={event => dispatch(setComment(event.target.value))}
+          />
+        </Grid>
         {vendorItems.length > 1 && (
           <Grid item xs={12} className={classes.centered}>
             <Grid item xs={10} sm={6} md={4}>
@@ -171,7 +138,7 @@ export default function StepFourScreen({
         )}
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
-            <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN DE SERVICIO</InputLabel>
+            <InputLabel className={classes.summaryTitle}>RESUMEN DE PROFORMA</InputLabel>
             <Grid container spacing={2} className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
@@ -209,61 +176,12 @@ export default function StepFourScreen({
               <Grid item xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
               </Grid>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Saldo</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(total - cashAdvance)}</InputLabel>
-              </Grid>
             </Grid>
           </Grid>
         </Grid>
-        {status === ORDER_STATUS.READY && (
-          <Grid item xs={10} sm={6} md={4} className={classes.centered}>
-            <Select
-              id="forma-pago-select-id"
-              label="Seleccione la forma de pago:"
-              value={paymentDetails[0].paymentId.toString()}
-              onChange={event =>
-                dispatch(
-                  setPaymentDetailsList([
-                    {
-                      paymentId: event.target.value,
-                      description:
-                        paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                        "NO ESPECIFICADO",
-                      amount: total,
-                    },
-                  ])
-                )
-              }
-            >
-              {paymentItems}
-            </Select>
-          </Grid>
-        )}
-        {status === ORDER_STATUS.ON_PROGRESS && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button
-              disabled={buttonDisabled}
-              label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
-              onClick={() => dispatch(saveWorkingOrder())}
-            />
-          </Grid>
-        )}
-        {status === ORDER_STATUS.READY && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
-          </Grid>
-        )}
-        {(status === ORDER_STATUS.READY || status === ORDER_STATUS.CONVERTED) && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button
-              label={status === ORDER_STATUS.READY ? "Imprimir Orden" : "Imprimir Factura"}
-              onClick={handleOnPrintClick}
-            />
-          </Grid>
-        )}
+        <Grid item xs={12} className={classes.centered}>
+          <Button disabled={buttonDisabled} label={successful ? "Nueva proforma" : "Agregar"} onClick={handleOnPress} />
+        </Grid>
       </Grid>
     </div>
   );

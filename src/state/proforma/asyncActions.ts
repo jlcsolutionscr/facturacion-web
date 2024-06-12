@@ -5,15 +5,10 @@ import { setProductList, setProductListCount, setProductListPage } from "state/p
 import {
   resetProductDetails,
   resetProforma,
-  setCustomerDetails,
-  setDescription,
-  setPrice,
-  setProductDetails,
   setProductDetailsList,
   setProformaList,
   setProformaListCount,
   setProformaListPage,
-  setQuantity,
   setSuccessful,
   setSummary,
   setVendorId,
@@ -24,11 +19,8 @@ import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import {
   generateProformaPDF,
-  getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
-  getCustomerPrice,
-  getProductEntity,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
@@ -39,11 +31,11 @@ import {
   revokeProformaEntity,
   saveProformaEntity,
 } from "utils/domainHelper";
-import { getErrorMessage, getTaxeRateFromId } from "utils/utilities";
+import { getErrorMessage } from "utils/utilities";
 
 export const setProformaParameters = createAsyncThunk(
   "proforma/setProformaParameters",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
@@ -62,83 +54,10 @@ export const setProformaParameters = createAsyncThunk(
       dispatch(setProductList(productList));
       dispatch(resetProforma());
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
-    }
-  }
-);
-
-export const getCustomerDetails = createAsyncThunk(
-  "proforma/getCustomerDetails",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, ui } = getState() as RootState;
-    const { token } = session;
-    const { taxTypeList } = ui;
-    dispatch(startLoader());
-    try {
-      const customer = await getCustomerEntity(token, payload.id);
-      dispatch(
-        setCustomerDetails({
-          id: customer.IdCliente,
-          name: customer.Nombre,
-          comercialName: customer.NombreComercial,
-          email: customer.CorreoElectronico,
-          phoneNumber: customer.Telefono,
-          exonerationType: customer.IdTipoExoneracion,
-          exonerationRef: customer.NumDocExoneracion,
-          exoneratedBy: customer.NombreInstExoneracion,
-          exonerationDate: customer.FechaEmisionDoc,
-          exonerationPercentage: customer.PorcentajeExoneracion,
-          priceTypeId: customer.IdTipoPrecio,
-          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
-          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
-        })
-      );
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const getProduct = createAsyncThunk(
-  "proforma/getProduct",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, invoice, ui } = getState() as RootState;
-    const { token, branchId, company } = session;
-    const { taxTypeList } = ui;
-    if (company) {
-      dispatch(startLoader());
-      try {
-        const product = await getProductEntity(token, payload.id, branchId);
-        if (product) {
-          const { price, taxRate } = getCustomerPrice(invoice.entity.customerDetails.priceTypeId, product, taxTypeList);
-          dispatch(
-            setProductDetails({
-              id: product.IdProducto,
-              quantity: 1,
-              code: product.Codigo,
-              description: product.Descripcion,
-              taxRate,
-              unit: "UND",
-              price,
-              costPrice: product.PrecioCosto,
-              instalationPrice: 0,
-            })
-          );
-        }
-        dispatch(stopLoader());
-      } catch (error) {
-        dispatch(stopLoader());
-        dispatch(setDescription(""));
-        dispatch(setQuantity(1));
-        dispatch(setPrice(0));
-        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      }
     }
   }
 );

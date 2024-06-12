@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 
 import TextField from "components/text-field";
 import { setDeliveryAttribute } from "state/working-order/reducer";
+import { ORDER_STATUS } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   container: {
@@ -42,7 +43,7 @@ export default function StepThreeScreen({ value, index, delivery, status, classN
     if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
-  const fieldDisabled = status === "converted";
+  const fieldDisabled = status === ORDER_STATUS.CONVERTED;
 
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
@@ -94,7 +95,7 @@ export default function StepThreeScreen({ value, index, delivery, status, classN
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={status === "converted"}
+            disabled={status === ORDER_STATUS.CONVERTED}
             label="Observaciones"
             id="Observaciones"
             value={delivery.details}

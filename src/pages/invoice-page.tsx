@@ -8,7 +8,9 @@ import Tabs from "@mui/material/Tabs";
 import StepOneScreen from "./steps-screens/customer-details-screen";
 import StepThreeScreen from "./steps-screens/invoice-final-screen";
 import StepTwoScreen from "./steps-screens/product-details-screen";
+import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
+import { addDetails, removeDetails } from "state/invoice/asyncActions";
 import {
   getActivityCode,
   getComment,
@@ -20,11 +22,14 @@ import {
   getSuccessful,
   getSummary,
   getVendorId,
+  setCustomerAttribute,
+  setProductDetails,
 } from "state/invoice/reducer";
+import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -114,6 +119,8 @@ export default function InvoicePage() {
         customerListPage={customerListPage}
         customerList={customerList}
         listDisabled={successful}
+        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
+        setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
       <StepTwoScreen
         className={classes.tab}
@@ -126,6 +133,12 @@ export default function InvoicePage() {
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         stepDisabled={successful}
+        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
+        setProductDetails={(attribute: string, value: number | string) =>
+          dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
+        }
+        addDetails={() => dispatch(addDetails())}
+        removeDetails={(id: string) => dispatch(removeDetails({ id }))}
       />
       <StepThreeScreen
         className={classes.tab}

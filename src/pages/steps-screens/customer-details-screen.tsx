@@ -8,8 +8,6 @@ import LabelField from "components/label-field";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField from "components/text-field";
 import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
-import { getCustomerDetails as getCustomerDetailsAction } from "state/invoice/asyncActions";
-import { setCustomerAttribute } from "state/invoice/reducer";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { convertToDateString } from "utils/utilities";
 
@@ -40,6 +38,8 @@ interface StepOneScreenProps {
   customerListPage: number;
   customerList: IdDescriptionType[];
   listDisabled: boolean;
+  getCustomerDetails: (id: number) => void;
+  setCustomerName: (value: string) => void;
   className?: string;
 }
 
@@ -51,6 +51,8 @@ export default function StepOneScreen({
   customerListPage,
   customerList,
   listDisabled,
+  getCustomerDetails,
+  setCustomerName,
   className,
 }: StepOneScreenProps) {
   const { classes } = useStyles();
@@ -78,7 +80,7 @@ export default function StepOneScreen({
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    dispatch(getCustomerDetailsAction({ id: item.Id }));
+    getCustomerDetails(item.Id);
     setFilterText("");
   };
 
@@ -105,14 +107,7 @@ export default function StepOneScreen({
             disabled={customer.id !== 1}
             value={customer.name}
             label="Nombre del cliente"
-            onChange={event =>
-              dispatch(
-                setCustomerAttribute({
-                  attribute: "name",
-                  value: event.target.value,
-                })
-              )
-            }
+            onChange={event => setCustomerName(event.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={6}>

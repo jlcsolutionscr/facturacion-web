@@ -11,6 +11,8 @@ import {
   WorkingOrderType,
 } from "types/domain";
 
+import { ORDER_STATUS } from "./constants";
+
 export const defaultCompany: CompanyType = {
   IdEmpresa: 0,
   IdTipoIdentificacion: 0,
@@ -156,7 +158,7 @@ export const defaultWorkingOrder: WorkingOrderType = {
   date: "",
   cashAdvance: 0,
   invoiceId: 0,
-  status: "on-progress",
+  status: ORDER_STATUS.ON_PROGRESS,
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
   productDetails: defaultProductDetails,

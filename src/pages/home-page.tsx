@@ -12,7 +12,8 @@ import InvoicePage from "pages/invoice-page";
 import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
 import ProductListPage from "pages/product-list-page";
-import ProformaListPage from "pages/product-list-page";
+import ProformaListPage from "pages/proforma-list-page";
+import ProformaPage from "pages/proforma-page";
 import ReceiptPage from "pages/receipt-page";
 import ReportsPage from "pages/reports-page";
 import RestaurantOrderListPage from "pages/restaurant-order-list-page";
@@ -79,6 +80,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 10 && <ProformaListPage />}
         {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
+        {activeSection === 22 && <ProformaPage />}
       </div>
     </div>
   );

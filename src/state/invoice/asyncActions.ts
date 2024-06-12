@@ -5,15 +5,10 @@ import {
   resetInvoice,
   resetProductDetails,
   setActivityCode,
-  setCustomerDetails,
-  setDescription,
   setInvoiceList,
   setInvoiceListCount,
   setInvoiceListPage,
-  setPrice,
-  setProductDetails,
   setProductDetailsList,
-  setQuantity,
   setSuccessful,
   setSummary,
   setVendorId,
@@ -25,14 +20,11 @@ import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import {
   generateInvoicePDF,
-  getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
-  getCustomerPrice,
   getInvoiceEntity,
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
-  getProductEntity,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
@@ -42,7 +34,7 @@ import {
   saveInvoiceEntity,
 } from "utils/domainHelper";
 import { printInvoice } from "utils/printing";
-import { getErrorMessage, getTaxeRateFromId } from "utils/utilities";
+import { getErrorMessage } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
@@ -71,78 +63,6 @@ export const setInvoiceParameters = createAsyncThunk(
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
-    }
-  }
-);
-
-export const getCustomerDetails = createAsyncThunk(
-  "invoice/getCustomerDetails",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, ui } = getState() as RootState;
-    const { token } = session;
-    const { taxTypeList } = ui;
-    dispatch(startLoader());
-    try {
-      const customer = await getCustomerEntity(token, payload.id);
-      dispatch(
-        setCustomerDetails({
-          id: customer.IdCliente,
-          name: customer.Nombre,
-          comercialName: customer.NombreComercial,
-          email: customer.CorreoElectronico,
-          phoneNumber: customer.Telefono,
-          exonerationType: customer.IdTipoExoneracion,
-          exonerationRef: customer.NumDocExoneracion,
-          exoneratedBy: customer.NombreInstExoneracion,
-          exonerationDate: customer.FechaEmisionDoc,
-          exonerationPercentage: customer.PorcentajeExoneracion,
-          priceTypeId: customer.IdTipoPrecio,
-          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
-          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
-        })
-      );
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const getProduct = createAsyncThunk(
-  "invoice/getProduct",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, invoice, ui } = getState() as RootState;
-    const { token, branchId, company } = session;
-    const { taxTypeList } = ui;
-    if (company) {
-      dispatch(startLoader());
-      try {
-        const product = await getProductEntity(token, payload.id, branchId);
-        if (product) {
-          const { price, taxRate } = getCustomerPrice(invoice.entity.customerDetails.priceTypeId, product, taxTypeList);
-          dispatch(
-            setProductDetails({
-              id: product.IdProducto,
-              quantity: 1,
-              code: product.Codigo,
-              description: product.Descripcion,
-              taxRate,
-              unit: "UND",
-              price,
-              costPrice: product.PrecioCosto,
-              instalationPrice: 0,
-            })
-          );
-        }
-        dispatch(stopLoader());
-      } catch (error) {
-        dispatch(stopLoader());
-        dispatch(setDescription(""));
-        dispatch(setQuantity(1));
-        dispatch(setPrice(0));
-        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      }
     }
   }
 );
@@ -334,7 +254,7 @@ export const generatePDF = createAsyncThunk(
 
 export const generateInvoiceTicket = createAsyncThunk(
   "invoice/generateInvoiceTicket",
-  async (payload: { id: number; ref?: string }, { getState, dispatch }) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, userCode, device, branchList, branchId, company } = session;
     dispatch(startLoader());

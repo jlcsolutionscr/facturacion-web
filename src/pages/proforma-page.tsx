@@ -7,27 +7,22 @@ import Tabs from "@mui/material/Tabs";
 
 import StepOneScreen from "./steps-screens/customer-details-screen";
 import StepTwoScreen from "./steps-screens/product-details-screen";
-import StepFourScreen from "./steps-screens/working-order-final-screen";
-import StepThreeScreen from "./steps-screens/working-order-third-screen";
+import StepThreeScreen from "./steps-screens/proforma-final-screen";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
 import {
-  getActivityCode,
-  getCashAdvance,
+  getComment,
   getCustomerDetails,
-  getDeliveryDetails,
-  getInvoiceId,
-  getPaymentDetailsList,
   getProductDetails,
   getProductDetailsList,
-  getStatus,
+  getProformaId,
+  getSuccessful,
   getSummary,
   getVendorId,
-  getWorkingOrderId,
-} from "state/working-order/reducer";
-import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
+} from "state/proforma/reducer";
+import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -49,13 +44,6 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   tabs: {
-    color: "#FFF",
-    "& .MuiTab-root": {
-      color: "#FFF",
-    },
-    "& .Mui-selected": {
-      color: "#90CAF9",
-    },
     "@media screen and (max-width:599px)": {
       borderTop: "solid 2px #FFF",
     },
@@ -74,7 +62,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function WorkingOrderPage() {
+export default function ProformaPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
@@ -89,17 +77,11 @@ export default function WorkingOrderPage() {
   const productDetails = useSelector(getProductDetails);
   const productList = useSelector(getProductList);
   const productDetailsList = useSelector(getProductDetailsList);
-  const delivery = useSelector(getDeliveryDetails);
-  const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
-  const activityCode = useSelector(getActivityCode);
-  const paymentDetails = useSelector(getPaymentDetailsList);
   const vendorId = useSelector(getVendorId);
-  const workingOrderId = useSelector(getWorkingOrderId);
+  const comment = useSelector(getComment);
+  const successful = useSelector(getSuccessful);
   const vendorList = useSelector(getVendorList);
-  const cashAdvance = useSelector(getCashAdvance);
-  const status = useSelector(getStatus);
-  const invoiceId = useSelector(getInvoiceId);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -108,14 +90,13 @@ export default function WorkingOrderPage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => dispatch(setActiveSection(9))}>
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(0))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
       <Tabs className={classes.tabs} centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Cliente" />
         <Tab label="Detalle" />
-        <Tab label="Otros" />
         <Tab label="Generar" />
       </Tabs>
       <StepOneScreen
@@ -126,7 +107,7 @@ export default function WorkingOrderPage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={status === ORDER_STATUS.CONVERTED}
+        listDisabled={successful}
       />
       <StepTwoScreen
         className={classes.tab}
@@ -138,23 +119,18 @@ export default function WorkingOrderPage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={status === ORDER_STATUS.CONVERTED}
+        stepDisabled={successful}
       />
-      <StepThreeScreen className={classes.tab} value={value} index={2} delivery={delivery} status={status} />
-      <StepFourScreen
+      <StepThreeScreen
         className={classes.tab}
         value={value}
-        index={3}
-        company={company}
         summary={summary}
-        activityCode={activityCode}
-        paymentDetails={paymentDetails}
         vendorId={vendorId}
-        workingOrderId={workingOrderId}
+        comment={comment}
         vendorList={vendorList}
-        cashAdvance={cashAdvance}
-        status={status}
-        invoiceId={invoiceId}
+        successful={successful}
+        setValue={setValue}
+        index={2}
       />
     </div>
   );

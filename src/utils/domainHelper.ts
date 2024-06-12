@@ -103,6 +103,7 @@ export async function getCompanyEntity(token: string, companyId: number) {
     RegimenSimplificado: response.RegimenSimplificado,
     ActividadEconomicaEmpresa: response.ActividadEconomicaEmpresa,
     PrecioVentaIncluyeIVA: response.PrecioVentaIncluyeIVA,
+    PermiteFacturar: response.PermiteFacturar,
   };
 }
 

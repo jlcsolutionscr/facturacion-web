@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { setProductDetails as setInvoiceProduct } from "state/invoice/reducer";
 import {
   openProductDialog,
   setCategoryList,
@@ -10,10 +11,14 @@ import {
   setProductListPage,
   setProviderList,
 } from "state/product/reducer";
+import { setProductDetails as setProformaProduct } from "state/proforma/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { defaultProduct } from "utils/defaults";
+import { setProductDetails as setWorkingOrderProduct } from "state/working-order/reducer";
+import { FORM_TYPE } from "utils/constants";
+import { defaultProduct, defaultProductDetails } from "utils/defaults";
 import {
+  getCustomerPrice,
   getProductCategoryList,
   getProductClasification,
   getProductClasificationList,
@@ -244,3 +249,45 @@ export const saveProduct = createAsyncThunk("product/saveProduct", async (_paylo
     dispatch(stopLoader());
   }
 });
+
+export const getProductDetails = createAsyncThunk(
+  "product/getProductDetails",
+  async (payload: { id: number; type: string }, { getState, dispatch }) => {
+    const { session, invoice, ui } = getState() as RootState;
+    const { token, branchId, company } = session;
+    const { taxTypeList } = ui;
+    if (company) {
+      dispatch(startLoader());
+      const action =
+        payload.type === FORM_TYPE.INVOICE
+          ? setInvoiceProduct
+          : payload.type === FORM_TYPE.PROFORMA
+          ? setProformaProduct
+          : setWorkingOrderProduct;
+      try {
+        const product = await getProductEntity(token, payload.id, branchId);
+        if (product) {
+          const { price, taxRate } = getCustomerPrice(invoice.entity.customerDetails.priceTypeId, product, taxTypeList);
+          dispatch(
+            action({
+              id: product.IdProducto,
+              quantity: 1,
+              code: product.Codigo,
+              description: product.Descripcion,
+              taxRate,
+              unit: "UND",
+              price,
+              costPrice: product.PrecioCosto,
+              instalationPrice: 0,
+            })
+          );
+        }
+        dispatch(stopLoader());
+      } catch (error) {
+        dispatch(stopLoader());
+        dispatch(action(defaultProductDetails));
+        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      }
+    }
+  }
+);

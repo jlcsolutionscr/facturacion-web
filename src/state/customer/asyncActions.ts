@@ -10,8 +10,13 @@ import {
   setCustomerListCount,
   setCustomerListPage,
 } from "state/customer/reducer";
+import { setCustomerDetails as setInvoiceCustomer } from "state/invoice/reducer";
+import { setCustomerDetails as setProformaCustomer } from "state/proforma/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
+import { setCustomerDetails as setWorkingOrderCustomer } from "state/working-order/reducer";
+import { FORM_TYPE } from "utils/constants";
+import { defaultCustomerDetails } from "utils/defaults";
 import {
   getCustomerByIdentifier,
   getCustomerEntity,
@@ -19,7 +24,7 @@ import {
   getCustomerListPerPage,
   saveCustomerEntity,
 } from "utils/domainHelper";
-import { getErrorMessage } from "utils/utilities";
+import { getErrorMessage, getTaxeRateFromId } from "utils/utilities";
 
 export const getCustomerListFirstPage = createAsyncThunk(
   "customer/getCustomerListFirstPage",
@@ -198,6 +203,47 @@ export const filterCustomerList = createAsyncThunk(
       }
       dispatch(stopLoader());
     } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getCustomerDetails = createAsyncThunk(
+  "customer/getCustomerDetails",
+  async (payload: { id: number; type: string }, { getState, dispatch }) => {
+    const { session, ui } = getState() as RootState;
+    const { token } = session;
+    const { taxTypeList } = ui;
+    dispatch(startLoader());
+    const action =
+      payload.type === FORM_TYPE.INVOICE
+        ? setInvoiceCustomer
+        : payload.type === FORM_TYPE.PROFORMA
+        ? setProformaCustomer
+        : setWorkingOrderCustomer;
+    try {
+      const customer = await getCustomerEntity(token, payload.id);
+      dispatch(
+        action({
+          id: customer.IdCliente,
+          name: customer.Nombre,
+          comercialName: customer.NombreComercial,
+          email: customer.CorreoElectronico,
+          phoneNumber: customer.Telefono,
+          exonerationType: customer.IdTipoExoneracion,
+          exonerationRef: customer.NumDocExoneracion,
+          exoneratedBy: customer.NombreInstExoneracion,
+          exonerationDate: customer.FechaEmisionDoc,
+          exonerationPercentage: customer.PorcentajeExoneracion,
+          priceTypeId: customer.IdTipoPrecio,
+          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
+          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
+        })
+      );
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(action(defaultCustomerDetails));
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }

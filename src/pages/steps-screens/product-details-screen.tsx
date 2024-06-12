@@ -13,8 +13,6 @@ import TableRow from "@mui/material/TableRow";
 
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
-import { addDetails, getProduct, removeDetails } from "state/invoice/asyncActions";
-import { setDescription, setPrice, setQuantity } from "state/invoice/reducer";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
 import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
@@ -66,6 +64,10 @@ interface StepTwoScreenProps {
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
   stepDisabled: boolean;
+  getProductDetails: (id: number) => void;
+  addDetails: () => void;
+  removeDetails: (id: string) => void;
+  setProductDetails: (attribute: string, value: number | string) => void;
   className?: string;
 }
 
@@ -79,6 +81,10 @@ export default function StepTwoScreen({
   productDetails,
   productDetailsList,
   stepDisabled,
+  getProductDetails,
+  addDetails,
+  removeDetails,
+  setProductDetails,
   className,
 }: StepTwoScreenProps) {
   const { classes } = useStyles();
@@ -103,7 +109,7 @@ export default function StepTwoScreen({
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    dispatch(getProduct({ id: item.Id }));
+    getProductDetails(item.Id);
     setFilter("");
   };
 
@@ -115,7 +121,7 @@ export default function StepTwoScreen({
   };
 
   const handlePriceChange = (event: TextFieldOnChangeEventType) => {
-    isPriceChangeEnabled && dispatch(setPrice(parseStringToNumber(event.target.value)));
+    isPriceChangeEnabled && setProductDetails("price", parseStringToNumber(event.target.value));
   };
 
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
@@ -166,7 +172,7 @@ export default function StepTwoScreen({
               label="Descripción"
               id="Descripcion"
               value={productDetails.description}
-              onChange={event => dispatch(setDescription(event.target.value))}
+              onChange={event => setProductDetails("description", event.target.value)}
             />
           </Grid>
           <Grid item xs={3}>
@@ -176,7 +182,7 @@ export default function StepTwoScreen({
               id="Cantidad"
               value={productDetails.quantity.toString()}
               numericFormat
-              onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
+              onChange={event => setProductDetails("quantity", parseStringToNumber(event.target.value))}
             />
           </Grid>
           <Grid item xs={6}>
@@ -194,7 +200,7 @@ export default function StepTwoScreen({
               color="primary"
               disabled={!buttonEnabled}
               component="span"
-              onClick={() => dispatch(addDetails())}
+              onClick={() => addDetails()}
             >
               <AddCircleIcon />
             </IconButton>
@@ -225,7 +231,7 @@ export default function StepTwoScreen({
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() => dispatch(removeDetails({ id: row.id }))}
+                          onClick={() => removeDetails(row.id)}
                         >
                           <RemoveCircleIcon />
                         </IconButton>

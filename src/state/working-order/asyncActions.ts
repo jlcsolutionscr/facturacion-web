@@ -11,13 +11,9 @@ import {
   resetWorkingOrder,
   setActivityCode,
   setCustomerDetails,
-  setDescription,
   setInvoiceId,
   setPaymentDetailsList,
-  setPrice,
-  setProductDetails,
   setProductDetailsList,
-  setQuantity,
   setServicePointList,
   setStatus,
   setSummary,
@@ -27,16 +23,12 @@ import {
   setWorkingOrderListCount,
   setWorkingOrderListPage,
 } from "state/working-order/reducer";
-import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
+import { ORDER_STATUS, ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
 import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
-  getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
-  getCustomerPrice,
-  getInvoiceEntity,
-  getProductEntity,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
@@ -50,7 +42,7 @@ import {
   saveInvoiceEntity,
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
-import { printInvoice, printWorkingOrder } from "utils/printing";
+import { printWorkingOrder } from "utils/printing";
 import { convertToDateString, getErrorMessage, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
 export const setWorkingOrderParameters = createAsyncThunk(
@@ -87,82 +79,6 @@ export const setWorkingOrderParameters = createAsyncThunk(
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
-    }
-  }
-);
-
-export const getCustomerDetails = createAsyncThunk(
-  "working-order/getCustomerDetails",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, ui } = getState() as RootState;
-    const { token } = session;
-    const { taxTypeList } = ui;
-    dispatch(startLoader());
-    try {
-      const customer = await getCustomerEntity(token, payload.id);
-      dispatch(
-        setCustomerDetails({
-          id: customer.IdCliente,
-          name: customer.Nombre,
-          comercialName: customer.NombreComercial,
-          email: customer.CorreoElectronico,
-          phoneNumber: customer.Telefono,
-          exonerationType: customer.IdTipoExoneracion,
-          exonerationRef: customer.NumDocExoneracion,
-          exoneratedBy: customer.NombreInstExoneracion,
-          exonerationDate: customer.FechaEmisionDoc,
-          exonerationPercentage: customer.PorcentajeExoneracion,
-          priceTypeId: customer.IdTipoPrecio,
-          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
-          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
-        })
-      );
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const getProduct = createAsyncThunk(
-  "working-order/getProduct",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, ui, workingOrder } = getState() as RootState;
-    const { token, branchId, company } = session;
-    const { taxTypeList } = ui;
-    if (company) {
-      dispatch(startLoader());
-      try {
-        const product = await getProductEntity(token, payload.id, branchId);
-        if (product) {
-          const { price, taxRate } = getCustomerPrice(
-            workingOrder.entity.customerDetails.priceTypeId,
-            product,
-            taxTypeList
-          );
-          dispatch(
-            setProductDetails({
-              id: product.IdProducto,
-              quantity: 1,
-              code: product.Codigo,
-              description: product.Descripcion,
-              taxRate,
-              unit: "UND",
-              price,
-              costPrice: product.PrecioCosto,
-              instalationPrice: 0,
-            })
-          );
-        }
-        dispatch(stopLoader());
-      } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-        dispatch(stopLoader());
-        dispatch(setDescription(""));
-        dispatch(setQuantity(1));
-        dispatch(setPrice(0));
-      }
     }
   }
 );
@@ -250,7 +166,7 @@ export const saveWorkingOrder = createAsyncThunk(
       if (ids) {
         dispatch(setWorkingOrder({ ...entity, id: ids.id, consecutive: ids.consecutive }));
       }
-      dispatch(setStatus("ready"));
+      dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",
@@ -393,7 +309,7 @@ export const openWorkingOrder = createAsyncThunk(
           date: convertToDateString(workingOrder.Fecha),
           cashAdvance: workingOrder.MontoAdelanto,
           invoiceId: 0,
-          status: "ready",
+          status: ORDER_STATUS.READY,
           activityCode: company?.ActividadEconomicaEmpresa[0].CodigoActividad,
           customerDetails,
           productDetails: defaultProductDetails,
@@ -447,34 +363,13 @@ export const generateInvoice = createAsyncThunk(
       );
       dispatch(setInvoiceId(invoiceId));
       dispatch(getWorkingOrderListFirstPage({ id: null }));
-      dispatch(setStatus("converted"));
+      dispatch(setStatus(ORDER_STATUS.CONVERTED));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",
           type: "INFO",
         })
       );
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const generateInvoiceTicket = createAsyncThunk(
-  "working-order/generateInvoiceTicket",
-  async (_payload, { getState, dispatch }) => {
-    const { session, workingOrder } = getState() as RootState;
-    const { token, userCode, device, branchList, branchId, company } = session;
-    const { invoiceId } = workingOrder.entity;
-    dispatch(startLoader());
-    try {
-      const invoice = await getInvoiceEntity(token, invoiceId);
-      const branchName = branchList.find(x => x.Id === branchId)?.Descripcion ?? "SUCURSAL PRINCIPAL";
-      if (company !== null) {
-        printInvoice(userCode, company, invoice, branchName, device?.lineWidth ?? 80);
-      }
-      dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());

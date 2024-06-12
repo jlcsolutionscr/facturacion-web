@@ -18,10 +18,14 @@ import LabelField from "components/label-field";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
-import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
+import {
+  filterProductList,
+  getProductDetails as getProductDetailsAction,
+  getProductListByPageNumber,
+} from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { getPermissions } from "state/session/reducer";
-import { addDetails, getProduct, removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
+import { addDetails, removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
   getCustomerDetails,
   getProductDetails,
@@ -36,7 +40,7 @@ import {
   setQuantity,
   setStatus,
 } from "state/working-order/reducer";
-import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -120,7 +124,7 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
 
   const handleCustomerNameChange = (event: TextFieldOnChangeEventType) => {
     dispatch(setCustomerDetails({ attribute: "name", value: event.target.value }));
-    dispatch(setStatus("on-progress"));
+    dispatch(setStatus(ORDER_STATUS.ON_PROGRESS));
   };
 
   const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
@@ -134,7 +138,7 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    dispatch(getProduct({ id: item.Id }));
+    dispatch(getProductDetailsAction({ id: item.Id, type: FORM_TYPE.ORDER }));
     setFilter("");
   };
 
@@ -287,7 +291,7 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
         </div>
         <div className={classes.buttonContainer}>
           <Button
-            disabled={status !== "on-progress" || summary.total === 0}
+            disabled={status !== ORDER_STATUS.ON_PROGRESS || summary.total === 0}
             label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
             onClick={() => dispatch(saveWorkingOrder())}
           />

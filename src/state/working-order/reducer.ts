@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { workingOrderInitialState } from "state/InitialState";
 import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
+import { ORDER_STATUS } from "utils/constants";
 import { defaultProductDetails, defaultWorkingOrder } from "utils/defaults";
 
 const workingOrderSlice = createSlice({
@@ -13,7 +14,7 @@ const workingOrderSlice = createSlice({
       state.entity.customerDetails = action.payload;
     },
     setCustomerAttribute: (state, action) => {
-      state.entity.status = "on-progress";
+      state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.customerDetails = {
         ...state.entity.customerDetails,
         [action.payload.attribute]: action.payload.value,
@@ -35,14 +36,14 @@ const workingOrderSlice = createSlice({
       state.entity.productDetails = defaultProductDetails;
     },
     setProductDetailsList: (state, action) => {
-      state.entity.status = "on-progress";
+      state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.productDetailsList = action.payload;
     },
     setSummary: (state, action) => {
       state.entity.summary = action.payload;
     },
     setActivityCode: (state, action) => {
-      state.entity.status = "on-progress";
+      state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.activityCode = action.payload;
     },
     setPaymentDetailsList: (state, action) => {
@@ -52,7 +53,7 @@ const workingOrderSlice = createSlice({
       state.entity.vendorId = action.payload;
     },
     setDeliveryAttribute: (state, action) => {
-      state.entity.status = "on-progress";
+      state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.delivery = {
         ...state.entity.delivery,
         [action.payload.attribute]: action.payload.value,
