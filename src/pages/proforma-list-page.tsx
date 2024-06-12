@@ -166,8 +166,8 @@ export default function ProformaListPage() {
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Nueva Proforma" onClick={() => setProformaParameters({ id: 24 })} />
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => setActiveSection(0)} />
+        <Button label="Nueva Proforma" onClick={() => dispatch(setProformaParameters())} />
+        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
         <DialogTitle>Anular proforma</DialogTitle>

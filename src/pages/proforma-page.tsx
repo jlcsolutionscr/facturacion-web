@@ -8,21 +8,25 @@ import Tabs from "@mui/material/Tabs";
 import StepOneScreen from "./steps-screens/customer-details-screen";
 import StepTwoScreen from "./steps-screens/product-details-screen";
 import StepThreeScreen from "./steps-screens/proforma-final-screen";
+import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
+import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { addDetails, removeDetails } from "state/proforma/asyncActions";
 import {
   getComment,
   getCustomerDetails,
   getProductDetails,
   getProductDetailsList,
-  getProformaId,
   getSuccessful,
   getSummary,
   getVendorId,
+  setCustomerAttribute,
+  setProductDetails,
 } from "state/proforma/reducer";
-import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
+import { getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -90,7 +94,7 @@ export default function ProformaPage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(0))}>
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(10))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
@@ -108,6 +112,8 @@ export default function ProformaPage() {
         customerListPage={customerListPage}
         customerList={customerList}
         listDisabled={successful}
+        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
+        setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
       <StepTwoScreen
         className={classes.tab}
@@ -120,6 +126,12 @@ export default function ProformaPage() {
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         stepDisabled={successful}
+        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
+        setProductDetails={(attribute: string, value: number | string) =>
+          dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
+        }
+        addDetails={() => dispatch(addDetails())}
+        removeDetails={(id: string) => dispatch(removeDetails({ id }))}
       />
       <StepThreeScreen
         className={classes.tab}
