@@ -3,7 +3,10 @@ import {
   CompanyType,
   CustomerDetailsType,
   CustomerType,
+  DetallePagoType,
+  DetalleProductoType,
   IdDescriptionValueType,
+  InvoiceType,
   PaymentDetailsType,
   ProductDetailsType,
   ProductType,
@@ -13,6 +16,7 @@ import {
 } from "types/domain";
 
 import {
+  convertToDateString,
   convertToDateTimeString,
   encryptString,
   getTaxeRateFromId,
@@ -21,6 +25,7 @@ import {
   postWithResponse,
   roundNumber,
 } from "./utilities";
+import { defaultCustomerDetails, defaultProductDetails } from "./defaults";
 
 const SERVICE_URL = import.meta.env.VITE_APP_SERVER_URL;
 const APP_URL = `${SERVICE_URL}/puntoventa`;
@@ -926,7 +931,7 @@ export async function saveReceiptEntity(
   token: string,
   userId: number,
   branchId: number,
-  company: CompanyType,
+  companyId: number,
   receipt: ReceiptType
 ) {
   const receiptDetails: DetalleFacturaCompraType[] = [];
@@ -945,7 +950,7 @@ export async function saveReceiptEntity(
   });
   const receiptDate = convertToDateTimeString(new Date());
   const newReceipt = {
-    IdEmpresa: company.IdEmpresa,
+    IdEmpresa: companyId,
     CodigoActividad: receipt.activityCode,
     IdSucursal: branchId,
     IdTerminal: 1,
@@ -1104,4 +1109,51 @@ export async function getProformaListPerPage(
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
+}
+
+export function parseInvoiceEntity(entity: any, taxTypeList: IdDescriptionValueType[]) {
+  const customerDetails = {
+    id: entity.IdCliente,
+    name: entity.NombreCliente,
+    exonerationType: entity.Cliente.IdTipoExoneracion,
+    exonerationRef: entity.Cliente.NumDocExoneracion,
+    exoneratedBy: entity.Cliente.NumDocExoneracion,
+    exonerationPercentage: entity.Cliente.PorcentajeExoneracion,
+    exonerationDate: entity.Cliente.FechaEmisionDoc,
+    priceTypeId: entity.Cliente.IdTipoPrecio,
+    taxRate: getTaxeRateFromId(taxTypeList, entity.Cliente.IdImpuesto),
+  };
+  const productDetailsList = entity.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
+    id: item.IdProducto,
+    quantity: item.Cantidad,
+    code: item.Codigo,
+    description: item.Descripcion,
+    taxRate: item.PorcentajeIVA,
+    unit: "UND",
+    price: item.PrecioVenta,
+    pricePlusTaxes: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
+    costPrice: item.Producto.PrecioCosto,
+  }));
+  const paymentDetailsList = entity.DesglosePagoFactura.map((item: DetallePagoType) => ({
+    paymentId: item.IdFormaPago,
+    description: "",
+    amount: item.MontoLocal
+  }));
+  const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
+  const invoice: InvoiceType = {
+    invoiceId: entity.IdFactura,
+    consecutive: entity.ConsecOrdenServicio,
+    date: convertToDateString(entity.Fecha),
+    cashAdvance: entity.MontoAdelanto,
+    activityCode: entity.CodigoActividad,
+    customerDetails: defaultCustomerDetails,
+    productDetails: defaultProductDetails,
+    productDetailsList,
+    paymentDetailsList: paymentDetailsList,
+    vendorId: entity.IdVendedor,
+    comment: entity.TextoAdicional,
+    successful: true,
+    summary: { ...summary, cashAmount: 0},
+  };
+  return invoice;
 }
