@@ -21,10 +21,10 @@
 }
 
 .loaderText {
-  color:#FFF;
+  color: #fff;
   text-align: left;
   z-index: 1550;
-  font-family: 'RussoOne';
+  font-family: "Russo One";
   font-size: 36px;
   font-weight: 500;
   float: left;
@@ -41,7 +41,7 @@
   margin-right: 4px;
   width: 10px;
   height: 10px;
-  background-color: #FFF;
+  background-color: #fff;
   border-radius: 100%;
   display: inline-block;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
@@ -69,9 +69,12 @@
 }
 
 @keyframes sk-bouncedelay {
-  0%, 80%, 100% { 
+  0%,
+  80%,
+  100% {
     transform: scale(0);
-  } 40% { 
-    transform: scale(1.0);
+  }
+  40% {
+    transform: scale(1);
   }
 }
