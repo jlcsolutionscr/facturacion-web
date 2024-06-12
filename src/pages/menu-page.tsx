@@ -11,6 +11,7 @@ import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";
 import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asyncActions";
 import { getProductListFirstPage } from "state/product/asyncActions";
+import { getProformaListFirstPage } from "state/proforma/asyncActions";
 import { setReceiptParameters } from "state/receipt/asyncActions";
 import { getBranchId, getBranchList, getPermissions, setBranchId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
@@ -37,7 +38,6 @@ const useStyles = makeStyles()(theme => ({
     margin: "0 auto",
     padding: "9px",
     width: "590px",
-    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:599px)": {
       width: "400px",
     },
@@ -53,15 +53,14 @@ const useStyles = makeStyles()(theme => ({
     fontWeight: 600,
     marginBottom: 0,
     color: "#000",
+    backgroundColor: "transparent",
     transition: `color ${TRANSITION_ANIMATION}`,
-
     "@media screen and (max-width:599px)": {
       fontSize: theme.typography.pxToRem(16),
     },
     "@media screen and (max-width:429px)": {
       fontSize: theme.typography.pxToRem(14),
       color: theme.palette.text.primary,
-      backgroundColor: theme.palette.mode === "dark" ? "hsl(210, 14%, 7%)" : "rgb(255, 255, 255)",
     },
   },
   button: {
@@ -116,6 +115,7 @@ export default function MenuPage() {
   const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
   const manageDocuments = permissions.filter(role => [1, 402].includes(role.IdRole)).length > 0;
   const reportingMenu = permissions.filter(role => [1, 2, 57].includes(role.IdRole)).length > 0;
+  const generateProforma = permissions.filter(role => [1, 200].includes(role.IdRole)).length > 0;
   const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0;
   const switchBrand = permissions.filter(role => [1, 2, 48].includes(role.IdRole)).length > 0;
   const branchItems = branchList.map(item => {
@@ -127,42 +127,36 @@ export default function MenuPage() {
   });
   return (
     <Grid className={classes.root} container>
-      <Grid item xs={12} alignItems="center">
-        <div className={classes.branches}>
-          {branchList.length > 1 && switchBrand ? (
-            <Select
-              id="sucursal-select-id"
-              label="Seleccione la sucursal:"
-              value={branchId.toString()}
-              onChange={event => dispatch(setBranchId(event.target.value))}
-            >
-              {branchItems}
-            </Select>
-          ) : (
-            <Typography className={classes.branchText} align="center" paragraph>
-              {`Sucursal: ${branchList.find(branch => branch.Id === branchId)?.Descripcion}`}
-            </Typography>
-          )}
-        </div>
+      <Grid item xs={12} alignItems="center" className={classes.branches}>
+        {branchList.length > 1 && switchBrand ? (
+          <Select
+            id="sucursal-select-id"
+            label="Seleccione la sucursal:"
+            value={branchId.toString()}
+            onChange={event => dispatch(setBranchId(event.target.value))}
+          >
+            {branchItems}
+          </Select>
+        ) : (
+          <Typography className={classes.branchText} align="center" paragraph>
+            {`Sucursal: ${branchList.find(branch => branch.Id === branchId)?.Descripcion}`}
+          </Typography>
+        )}
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button disabled={!updateCompanyInfo} classes={{ root: classes.button }} onClick={() => dispatch(getCompany())}>
+        <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getCompany())}>
           Actualizar empresa
         </Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!updateCompanyInfo}
-          classes={{ root: classes.button }}
-          onClick={() => dispatch(setActiveSection(2))}
-        >
+        <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(setActiveSection(2))}>
           Agregar logotipo
         </Button>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Button
           disabled={!manageCustomers}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() =>
             dispatch(
               getCustomerListFirstPage({
@@ -179,7 +173,7 @@ export default function MenuPage() {
       <Grid item xs={12} sm={6}>
         <Button
           disabled={!manageProducts}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() =>
             dispatch(
               getProductListFirstPage({
@@ -197,7 +191,7 @@ export default function MenuPage() {
       <Grid item xs={12} sm={6}>
         <Button
           disabled={!generateInvoice}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() => dispatch(setInvoiceParameters({ id: 5 }))}
         >
           Facturar
@@ -206,7 +200,7 @@ export default function MenuPage() {
       <Grid item xs={12} sm={6}>
         <Button
           disabled={!generateInvoice}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() => dispatch(setReceiptParameters({ id: 6 }))}
         >
           Factura de compra
@@ -215,7 +209,7 @@ export default function MenuPage() {
       <Grid item xs={12} sm={6}>
         <Button
           disabled={!generateInvoice}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() => dispatch(getInvoiceListFirstPage({ id: 7 }))}
         >
           Facturas electrónicas
@@ -224,7 +218,7 @@ export default function MenuPage() {
       <Grid item xs={12} sm={6}>
         <Button
           disabled={!manageDocuments}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() => dispatch(getDocumentListFirstPage({ id: 8 }))}
         >
           Documentos electrónicos
@@ -232,19 +226,24 @@ export default function MenuPage() {
       </Grid>
       <Grid item xs={12} sm={6}>
         <Button
+          disabled={!generateProforma}
+          className={classes.button}
+          onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}
+        >
+          Factura proforma
+        </Button>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Button
           disabled={!generateWorkingOrder}
-          classes={{ root: classes.button }}
+          className={classes.button}
           onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 9 }))}
         >
           Ordenes de servicio
         </Button>
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          disabled={!reportingMenu}
-          classes={{ root: classes.button }}
-          onClick={() => dispatch(setActiveSection(20))}
-        >
+      <Grid item xs={12} alignItems="center">
+        <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
           Menu de reportes
         </Button>
       </Grid>

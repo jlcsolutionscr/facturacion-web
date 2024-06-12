@@ -12,6 +12,7 @@ import InvoicePage from "pages/invoice-page";
 import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
 import ProductListPage from "pages/product-list-page";
+import ProformaListPage from "pages/product-list-page";
 import ReceiptPage from "pages/receipt-page";
 import ReportsPage from "pages/reports-page";
 import RestaurantOrderListPage from "pages/restaurant-order-list-page";
@@ -36,7 +37,7 @@ const useStyles = makeStyles()(theme => ({
     flex: "1 1 auto",
     overflowY: "auto",
     overflowX: "hidden",
-    transition: `backgroundColor ${TRANSITION_ANIMATION}`,
+    transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:429px)": {
       backgroundImage: "none",
       backgroundColor: theme.palette.mode === "dark" ? "hsl(210, 14%, 7%)" : "rgb(255, 255, 255)",
@@ -75,6 +76,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 7 && <InvoiceListPage />}
         {activeSection === 8 && <DocumentListPage />}
         {activeSection === 9 ? company?.Modalidad === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
+        {activeSection === 10 && <ProformaListPage />}
         {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
       </div>
