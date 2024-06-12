@@ -12,7 +12,7 @@ import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/a
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { addDetails, removeDetails } from "state/proforma/asyncActions";
+import { addDetails, getProformaListFirstPage, removeDetails } from "state/proforma/asyncActions";
 import {
   getComment,
   getCustomerDetails,
@@ -91,10 +91,15 @@ export default function ProformaPage() {
     setValue(newValue);
   };
 
+  const handleBackAction = () => {
+    dispatch(setActiveSection(10));
+    dispatch(getProformaListFirstPage({ id: 10 }));
+  };
+
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(10))}>
+        <IconButton aria-label="close" component="span" onClick={() => handleBackAction()}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

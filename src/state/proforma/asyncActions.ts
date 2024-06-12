@@ -64,9 +64,9 @@ export const setProformaParameters = createAsyncThunk(
 );
 
 export const addDetails = createAsyncThunk("proforma/addDetails", async (_payload, { getState, dispatch }) => {
-  const { session, invoice } = getState() as RootState;
+  const { session, proforma } = getState() as RootState;
   const { company } = session;
-  const { customerDetails, productDetails, productDetailsList } = invoice.entity;
+  const { customerDetails, productDetails, productDetailsList } = proforma.entity;
   if (
     company &&
     productDetails.id !== "" &&
@@ -120,8 +120,8 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
 export const removeDetails = createAsyncThunk(
   "proforma/removeDetails",
   async (payload: { id: string }, { getState, dispatch }) => {
-    const { invoice } = getState() as RootState;
-    const { customerDetails, productDetailsList } = invoice.entity;
+    const { proforma } = getState() as RootState;
+    const { customerDetails, productDetailsList } = proforma.entity;
     const index = productDetailsList.findIndex(item => item.id === payload.id);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
