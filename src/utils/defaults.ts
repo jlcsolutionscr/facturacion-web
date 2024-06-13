@@ -34,7 +34,7 @@ export const defaultCompany: CompanyType = {
   RegimenSimplificado: false,
   ActividadEconomicaEmpresa: [],
   PrecioVentaIncluyeIVA: false,
-  Usuario: null,
+  Usuario: { Token: "" },
 };
 
 export const defaultCredentials = {
