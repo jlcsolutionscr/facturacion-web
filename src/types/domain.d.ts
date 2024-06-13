@@ -71,7 +71,7 @@ export type CompanyType = {
   Modalidad: number;
   TipoContrato: number;
   ActividadEconomicaEmpresa: EconomicActivityType[];
-  Usuario: { Token: string };
+  Usuario: { Token: string } | null;
 };
 
 export type CredentialType = {

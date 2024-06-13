@@ -34,6 +34,7 @@ export const defaultCompany: CompanyType = {
   RegimenSimplificado: false,
   ActividadEconomicaEmpresa: [],
   PrecioVentaIncluyeIVA: false,
+  Usuario: null,
 };
 
 export const defaultCredentials = {
