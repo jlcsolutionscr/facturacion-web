@@ -79,12 +79,13 @@ export const openCustomer = createAsyncThunk(
   "customer/openCustomer",
   async (payload: { idCustomer?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, companyId } = session;
+    const { token, companyId, vendorList } = session;
     dispatch(startLoader());
     try {
       let customer;
       if (payload.idCustomer) {
         customer = await getCustomerEntity(token, payload.idCustomer);
+        if (!customer.IdVendedor) customer.IdVendedor = vendorList[0].Id;
       } else {
         customer = {
           IdCliente: 0,
@@ -95,6 +96,7 @@ export const openCustomer = createAsyncThunk(
           NombreComercial: "",
           Direccion: "",
           Telefono: "",
+          Celular: "",
           Fax: "",
           CorreoElectronico: "",
           IdTipoPrecio: 1,
@@ -105,6 +107,7 @@ export const openCustomer = createAsyncThunk(
           NombreInstExoneracion: "",
           FechaEmisionDoc: "2000-01-01T23:59:59",
           PorcentajeExoneracion: 0,
+          IdVendedor: vendorList[0].Id,
         };
       }
       dispatch(openCustomerDialog(customer));

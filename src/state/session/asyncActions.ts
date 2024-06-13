@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setPriceTypeList } from "state/customer/reducer";
 import { setProductTypeList } from "state/product/reducer";
-import { login, logout } from "state/session/reducer";
+import { login, logout, setVendorList } from "state/session/reducer";
 import {
   setExonerationTypeList,
   setIdTypeList,
@@ -12,7 +12,7 @@ import {
   startLoader,
   stopLoader,
 } from "state/ui/reducer";
-import { requestUserLogin } from "utils/domainHelper";
+import { getVendorList, requestUserLogin } from "utils/domainHelper";
 import { cleanLocalStorage, getErrorMessage, writeToLocalStorage } from "utils/utilities";
 
 type SessionCompanyType = CompanyType & {
@@ -28,7 +28,9 @@ export const userLogin = createAsyncThunk(
   async (payload: { username: string; password: string; id: string }, { dispatch }) => {
     dispatch(startLoader());
     try {
-      const company: SessionCompanyType = await requestUserLogin(payload.username, payload.password, payload.id);
+      const company = await requestUserLogin(payload.username, payload.password, payload.id);
+      const vendorList = await getVendorList(company.Usuario.Token, company.IdEmpresa);
+      dispatch(setVendorList(vendorList));
       dispatch(login(company));
       dispatch(setIdTypeList(company.ListadoTipoIdentificacion));
       dispatch(setTaxTypeList(company.ListadoTipoImpuesto));
@@ -61,6 +63,8 @@ export const restoreSession = createAsyncThunk(
   async (payload: SessionCompanyType, { dispatch }) => {
     dispatch(startLoader());
     try {
+      const vendorList = await getVendorList(payload.Usuario.Token, payload.IdEmpresa);
+      dispatch(setVendorList(vendorList));
       dispatch(login(payload));
       dispatch(setIdTypeList(payload.ListadoTipoIdentificacion));
       dispatch(setTaxTypeList(payload.ListadoTipoImpuesto));

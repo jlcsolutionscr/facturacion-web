@@ -13,7 +13,6 @@ import {
   setSummary,
   setVendorId,
 } from "state/proforma/reducer";
-import { setVendorList } from "state/session/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
@@ -27,7 +26,6 @@ import {
   getProformaListCount,
   getProformaListPerPage,
   getTaxedPrice,
-  getVendorList,
   revokeProformaEntity,
   saveProformaEntity,
 } from "utils/domainHelper";
@@ -37,15 +35,13 @@ export const setProformaParameters = createAsyncThunk(
   "proforma/setProformaParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { companyId, branchId, token } = session;
+    const { companyId, branchId, token, vendorList } = session;
     dispatch(startLoader());
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");
       const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
-      const vendorList = await getVendorList(token, companyId);
-      dispatch(setVendorList(vendorList));
       dispatch(setCustomerListPage(1));
       dispatch(setCustomerListCount(customerCount));
       dispatch(setCustomerList(customerList));

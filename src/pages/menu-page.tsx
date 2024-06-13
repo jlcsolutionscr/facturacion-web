@@ -23,13 +23,16 @@ const useStyles = makeStyles()(theme => ({
     display: "flex",
     textAlign: "center",
     maxWidth: "640px",
-    margin: "20px auto auto auto",
+    height: "calc(100% - 30px)",
+    margin: "20px auto 10px auto",
     overflow: "hidden",
     "@media screen and (max-width:599px)": {
-      margin: "10px auto auto auto",
+      height: "calc(100% - 20px)",
+      margin: "10px auto 10px auto",
     },
     "@media screen and (max-width:429px)": {
-      margin: "5px 0 auto 0",
+      height: "calc(100% - 5px)",
+      margin: "5px 0 0 0",
       padding: "5px",
     },
   },
@@ -65,8 +68,9 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   buttonContainer: {
-    height: "calc(100% - 30px)",
+    height: "calc(100% - 42px)",
     overflowY: "auto",
+    scrollbarWidth: "thin",
   },
   button: {
     marginTop: "25px",

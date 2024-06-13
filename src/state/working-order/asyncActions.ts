@@ -3,7 +3,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
 import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
-import { setVendorList } from "state/session/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
@@ -34,7 +33,6 @@ import {
   getProductSummary,
   getServicePointList,
   getTaxedPrice,
-  getVendorList,
   getWorkingOrderEntity,
   getWorkingOrderListCount,
   getWorkingOrderListPerPage,
@@ -49,7 +47,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { companyId, branchId, company, token } = session;
+    const { companyId, branchId, company, token, vendorList } = session;
     dispatch(startLoader());
     try {
       if (company?.Modalidad === 1) {
@@ -65,8 +63,6 @@ export const setWorkingOrderParameters = createAsyncThunk(
       }
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
-      const vendorList = await getVendorList(token, companyId);
-      dispatch(setVendorList(vendorList));
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
@@ -275,10 +271,8 @@ export const openWorkingOrder = createAsyncThunk(
       }
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
-      const vendorList = await getVendorList(token, companyId);
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(setVendorList(vendorList));
       const customerDetails = {
         id: workingOrder.IdCliente,
         name: workingOrder.NombreCliente,

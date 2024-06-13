@@ -203,6 +203,16 @@ export default function CustomerPage() {
           />
         </Grid>
         <Grid item xs={6}>
+          <TextField
+            required
+            id="Celular"
+            value={customer.Celular}
+            label="Celular"
+            numericFormat
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
           <TextField id="Fax" value={customer.Fax} label="Fax" numericFormat onChange={handleChange} />
         </Grid>
         <Grid item xs={8} sm={9}>
