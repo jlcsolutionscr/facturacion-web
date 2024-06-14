@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { Box } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -18,7 +19,6 @@ import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterClasificationList, saveProduct, validateProductCode } from "state/product/asyncActions";
 import {
-  closeProductDialog,
   getCategoryList,
   getClasificationList,
   getProduct,
@@ -26,7 +26,7 @@ import {
   getProviderList,
   setProductAttribute,
 } from "state/product/reducer";
-import { getTaxTypeList } from "state/ui/reducer";
+import { getIsLoaderOpen, getTaxTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { SearchIcon } from "utils/iconsHelper";
 import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
@@ -34,25 +34,33 @@ import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundN
 const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    overflowY: "auto",
-    padding: "20px",
+    overflowY: "hidden",
+    maxWidth: "900px",
+    width: "100%",
+    margin: "15px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
-      padding: "15px",
+      width: "calc(100% - 20px)",
+      margin: "10px",
     },
     "@media screen and (max-width:599px)": {
-      padding: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      padding: "0 5px 5px 5px",
+      width: "calc(100% - 10px)",
+      margin: "5px",
     },
   },
-  label: {
-    color: theme.palette.text.primary,
+  header: {
+    height: "45px",
+    alignContent: "center",
   },
-  dataContainer: {
-    display: "flex",
-    overflow: "hidden",
+  content: {
+    overflowY: "scroll",
+    maxHeight: "calc(100% - 105px)",
+    padding: "5px",
+    scrollbarWidth: "thin",
+  },
+  footer: {
+    height: "50px",
+    alignContent: "center",
   },
   icon: {
     padding: "7px",
@@ -91,6 +99,7 @@ export default function ProductPage() {
   const providerList = useSelector(getProviderList);
   const clasificationList = useSelector(getClasificationList);
   const taxTypeList = useSelector(getTaxTypeList);
+  const isLoading = useSelector(getIsLoaderOpen);
 
   useEffect(() => {
     const calculatePrice = (value: number, taxId: number) => {
@@ -233,218 +242,228 @@ export default function ProductPage() {
   ];
 
   return (
-    <div className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center" fontWeight="700">
-            Información del Producto
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            id="tipo-select-id"
-            label="Seleccione el tipo de producto"
-            value={product.Tipo.toString()}
-            onChange={event => dispatch(setProductAttribute({ attribute: "Tipo", value: event.target.value }))}
-          >
-            {productTypes}
-          </Select>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            id="id-linea-select-id"
-            label="Seleccione la línea del producto"
-            value={product.IdLinea.toString()}
-            onChange={event => dispatch(setProductAttribute({ attribute: "IdLinea", value: event.target.value }))}
-          >
-            {categories}
-          </Select>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField required id="Codigo" value={product.Codigo} label="Código" onChange={handleChange} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            required
-            id="CodigoProveedor"
-            value={product.CodigoProveedor}
-            label="Codigo proveedor"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Select
-            id="id-proveedor-select-id"
-            label="Seleccione el proveedor"
-            value={product.IdProveedor.toString()}
-            onChange={event => dispatch(setProductAttribute({ attribute: "IdProveedor", value: event.target.value }))}
-          >
-            {providers}
-          </Select>
-        </Grid>
-        <Grid item xs={10} sm={6}>
-          <TextField
-            required
-            id="CodigoClasificacion"
-            value={product.CodigoClasificacion}
-            label="Codigo CABYS"
-            inputProps={{ maxLength: 13 }}
-            onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={2} sm={1}>
-          <IconButton
-            className={classes.icon}
-            aria-label="upload picture"
-            component="span"
-            onClick={handleClasificationClick}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Grid>
-        <Grid item xs={12} sm={5}>
-          <LabelField
-            id="TasaIva"
-            value={getDescriptionFromRateId(taxTypeList, product.IdImpuesto)}
-            label="Tasa del IVA"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            id="Descripcion"
-            value={product.Descripcion}
-            label="Descripción"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item container xs={12} spacing={2}>
-          <Grid item xs={6}>
-            <TextField
-              required
-              id="PrecioCosto"
-              value={product.PrecioCosto.toString()}
-              label="Precio costo"
-              numericFormat
-              onChange={handleChange}
-            />
-          </Grid>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="untaxPrice1"
-            value={untaxPrice1.toString()}
-            label="Precio sin impuesto"
-            numericFormat
-            onChange={handleUntaxPriceChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            required
-            id="PrecioVenta1"
-            value={product.PrecioVenta1.toString()}
-            label="Precio de venta 1"
-            numericFormat
-            onChange={handlePriceChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="untaxPrice2"
-            value={untaxPrice2.toString()}
-            label="Precio sin impuesto"
-            numericFormat
-            onChange={handleUntaxPriceChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="PrecioVenta2"
-            value={product.PrecioVenta2.toString()}
-            label="Precio de venta 2"
-            numericFormat
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="untaxPrice3"
-            value={untaxPrice3.toString()}
-            label="Precio sin impuesto"
-            numericFormat
-            onChange={handleUntaxPriceChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="PrecioVenta3"
-            value={product.PrecioVenta3.toString()}
-            label="Precio de venta3"
-            numericFormat
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="untaxPrice4"
-            value={untaxPrice4.toString()}
-            label="Precio sin impuesto"
-            numericFormat
-            onChange={handleUntaxPriceChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="PrecioVenta4"
-            value={product.PrecioVenta4.toString()}
-            label="Precio de venta 4"
-            numericFormat
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="untaxPrice5"
-            value={untaxPrice5.toString()}
-            label="Precio sin impuesto"
-            numericFormat
-            onChange={handleUntaxPriceChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="PrecioVenta5"
-            value={product.PrecioVenta5.toString()}
-            label="Precio de venta 5"
-            numericFormat
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField id="Observacion" value={product.Observacion} label="Observación" onChange={handleChange} />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            componentsProps={{
-              typography: { variant: "body1", color: "text.primary" },
-            }}
-            control={
-              <Checkbox
-                checked={product.Activo}
-                onChange={() => dispatch(setProductAttribute({ attribute: "Activo", value: !product.Activo }))}
-                name="AplicaTasaDiferenciada"
-                color="primary"
+    <Box className={classes.root}>
+      <Box className={classes.header}>
+        <Typography variant="h6" textAlign="center" fontWeight="700">
+          Información del Producto
+        </Typography>
+      </Box>
+      <Box className={classes.content}>
+        {!isLoading && (
+          <Grid container spacing={{ xs: 1, sm: 2 }}>
+            <Grid item xs={12} sm={6}>
+              <Select
+                id="tipo-select-id"
+                label="Seleccione el tipo de producto"
+                value={product.Tipo.toString()}
+                onChange={event => dispatch(setProductAttribute({ attribute: "Tipo", value: event.target.value }))}
+              >
+                {productTypes}
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Select
+                id="id-linea-select-id"
+                label="Seleccione la línea del producto"
+                value={product.IdLinea.toString()}
+                onChange={event => dispatch(setProductAttribute({ attribute: "IdLinea", value: event.target.value }))}
+              >
+                {categories}
+              </Select>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField required id="Codigo" value={product.Codigo} label="Código" onChange={handleChange} />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                id="CodigoProveedor"
+                value={product.CodigoProveedor}
+                label="Codigo proveedor"
+                onChange={handleChange}
               />
-            }
-            label="Producto activo"
-          />
-        </Grid>
-        <Grid item xs={12} display="flex" gap={2} flexDirection="row">
-          <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveProduct())} />
-          <Button label="Regresar" onClick={() => dispatch(closeProductDialog())} />
-        </Grid>
-      </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Select
+                id="id-proveedor-select-id"
+                label="Seleccione el proveedor"
+                value={product.IdProveedor.toString()}
+                onChange={event =>
+                  dispatch(setProductAttribute({ attribute: "IdProveedor", value: event.target.value }))
+                }
+              >
+                {providers}
+              </Select>
+            </Grid>
+            <Grid item xs={10} sm={6}>
+              <TextField
+                required
+                id="CodigoClasificacion"
+                value={product.CodigoClasificacion}
+                label="Codigo CABYS"
+                inputProps={{ maxLength: 13 }}
+                onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
+              />
+            </Grid>
+            <Grid item xs={2} sm={1}>
+              <IconButton
+                className={classes.icon}
+                aria-label="upload picture"
+                component="span"
+                onClick={handleClasificationClick}
+              >
+                <SearchIcon />
+              </IconButton>
+            </Grid>
+            <Grid item xs={12} sm={5}>
+              <LabelField
+                id="TasaIva"
+                value={getDescriptionFromRateId(taxTypeList, product.IdImpuesto)}
+                label="Tasa del IVA"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                id="Descripcion"
+                value={product.Descripcion}
+                label="Descripción"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item container xs={12} spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  required
+                  id="PrecioCosto"
+                  value={product.PrecioCosto.toString()}
+                  label="Precio costo"
+                  numericFormat
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="untaxPrice1"
+                value={untaxPrice1.toString()}
+                label="Precio sin impuesto"
+                numericFormat
+                onChange={handleUntaxPriceChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                id="PrecioVenta1"
+                value={product.PrecioVenta1.toString()}
+                label="Precio de venta 1"
+                numericFormat
+                onChange={handlePriceChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="untaxPrice2"
+                value={untaxPrice2.toString()}
+                label="Precio sin impuesto"
+                numericFormat
+                onChange={handleUntaxPriceChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="PrecioVenta2"
+                value={product.PrecioVenta2.toString()}
+                label="Precio de venta 2"
+                numericFormat
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="untaxPrice3"
+                value={untaxPrice3.toString()}
+                label="Precio sin impuesto"
+                numericFormat
+                onChange={handleUntaxPriceChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="PrecioVenta3"
+                value={product.PrecioVenta3.toString()}
+                label="Precio de venta3"
+                numericFormat
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="untaxPrice4"
+                value={untaxPrice4.toString()}
+                label="Precio sin impuesto"
+                numericFormat
+                onChange={handleUntaxPriceChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="PrecioVenta4"
+                value={product.PrecioVenta4.toString()}
+                label="Precio de venta 4"
+                numericFormat
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="untaxPrice5"
+                value={untaxPrice5.toString()}
+                label="Precio sin impuesto"
+                numericFormat
+                onChange={handleUntaxPriceChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="PrecioVenta5"
+                value={product.PrecioVenta5.toString()}
+                label="Precio de venta 5"
+                numericFormat
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField id="Observacion" value={product.Observacion} label="Observación" onChange={handleChange} />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                componentsProps={{
+                  typography: { variant: "body1", color: "text.primary" },
+                }}
+                control={
+                  <Checkbox
+                    checked={product.Activo}
+                    onChange={() => dispatch(setProductAttribute({ attribute: "Activo", value: !product.Activo }))}
+                    name="AplicaTasaDiferenciada"
+                    color="primary"
+                  />
+                }
+                label="Producto activo"
+              />
+            </Grid>
+          </Grid>
+        )}
+      </Box>
+      <Box className={classes.footer}>
+        {!isLoading && (
+          <Grid container justifyContent="center" gap={1}>
+            <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveProduct())} />
+            <Button label="Regresar" onClick={() => dispatch(setActiveSection(4))} />
+          </Grid>
+        )}
+      </Box>
       <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
         <DialogContent>
           <Grid container spacing={2}>
@@ -474,6 +493,6 @@ export default function ProductPage() {
           <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }

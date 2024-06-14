@@ -6,12 +6,14 @@ import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
 import CompanyPage from "pages/company-page";
 import CustomerListPage from "pages/customer-list-page";
+import CustomerPage from "pages/customer-page";
 import DocumentListPage from "pages/document-list-page";
 import InvoiceListPage from "pages/invoice-list-page";
 import InvoicePage from "pages/invoice-page";
 import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
 import ProductListPage from "pages/product-list-page";
+import ProductPage from "pages/product-page";
 import ProformaListPage from "pages/proforma-list-page";
 import ProformaPage from "pages/proforma-page";
 import ReceiptPage from "pages/receipt-page";
@@ -38,6 +40,7 @@ const useStyles = makeStyles()(theme => ({
     flex: "1 1 auto",
     overflowY: "auto",
     overflowX: "hidden",
+    scrollbarWidth: "thin",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:429px)": {
       backgroundImage: "none",
@@ -78,9 +81,11 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 8 && <DocumentListPage />}
         {activeSection === 9 ? company?.Modalidad === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
         {activeSection === 10 && <ProformaListPage />}
+        {activeSection === 11 && <CustomerPage />}
+        {activeSection === 12 && <ProductPage />}
+        {activeSection === 13 && <ProformaPage />}
+        {activeSection === 14 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
         {activeSection === 20 && <ReportsPage />}
-        {activeSection === 21 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
-        {activeSection === 22 && <ProformaPage />}
       </div>
     </div>
   );

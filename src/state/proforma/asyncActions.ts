@@ -37,6 +37,7 @@ export const setProformaParameters = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, token, vendorList } = session;
     dispatch(startLoader());
+    dispatch(setActiveSection(13));
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");
       const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
@@ -51,7 +52,6 @@ export const setProformaParameters = createAsyncThunk(
       dispatch(resetProforma());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
-      dispatch(setActiveSection(22));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
@@ -163,6 +163,7 @@ export const getProformaListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
+    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setProformaListPage(1));
       const recordCount = await getProformaListCount(token, companyId, branchId, false);
@@ -173,7 +174,6 @@ export const getProformaListFirstPage = createAsyncThunk(
       } else {
         dispatch(setProformaList([]));
       }
-      if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

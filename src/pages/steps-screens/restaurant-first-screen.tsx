@@ -254,7 +254,7 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
           </Grid>
         </div>
         <div className={classes.bottom}>
-          <Grid container spacing={2} style={{ overflowY: "auto" }}>
+          <Grid container style={{ overflowY: "auto" }}>
             <Grid item xs={12}>
               <Table size="small">
                 <TableHead>

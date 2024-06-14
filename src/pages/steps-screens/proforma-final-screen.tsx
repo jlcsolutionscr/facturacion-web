@@ -9,8 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "components/button";
 import Select from "components/select";
 import TextField from "components/text-field";
-import { saveProforma, setProformaParameters } from "state/proforma/asyncActions";
-import { setComment, setVendorId } from "state/proforma/reducer";
+import { saveProforma } from "state/proforma/asyncActions";
+import { resetProforma, setComment, setVendorId } from "state/proforma/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -105,7 +105,7 @@ export default function StepThreeScreen({
     if (!successful) {
       dispatch(saveProforma());
     } else {
-      dispatch(setProformaParameters());
+      dispatch(resetProforma());
       setValue(0);
     }
   };
@@ -139,7 +139,7 @@ export default function StepThreeScreen({
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
             <InputLabel className={classes.summaryTitle}>RESUMEN DE PROFORMA</InputLabel>
-            <Grid container spacing={2} className={classes.details}>
+            <Grid container className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
               </Grid>

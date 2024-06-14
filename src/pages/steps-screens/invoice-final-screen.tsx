@@ -9,8 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "components/button";
 import Select from "components/select";
 import TextField from "components/text-field";
-import { generateInvoiceTicket, saveInvoice, setInvoiceParameters } from "state/invoice/asyncActions";
-import { setActivityCode, setComment, setPaymentDetailsList, setVendorId } from "state/invoice/reducer";
+import { generateInvoiceTicket, saveInvoice } from "state/invoice/asyncActions";
+import { resetInvoice, setActivityCode, setComment, setPaymentDetailsList, setVendorId } from "state/invoice/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -118,7 +118,7 @@ export default function StepThreeScreen({
     if (!successful) {
       dispatch(saveInvoice());
     } else {
-      dispatch(setInvoiceParameters({ id: 5 }));
+      dispatch(resetInvoice());
       setValue(0);
     }
   };
@@ -184,7 +184,7 @@ export default function StepThreeScreen({
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
             <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
-            <Grid container spacing={2} className={classes.details}>
+            <Grid container className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
               </Grid>

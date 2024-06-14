@@ -49,6 +49,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, company, token, vendorList } = session;
     dispatch(startLoader());
+    dispatch(setActiveSection(14));
     try {
       if (company?.Modalidad === 1) {
         const customerCount = await getCustomerListCount(token, companyId, "");
@@ -70,7 +71,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      dispatch(setActiveSection(21));
+
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -184,6 +185,7 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId, company } = session;
     dispatch(startLoader());
+    if (payload.id !== null) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setWorkingOrderListPage(1));
       const recordCount = await getWorkingOrderListCount(token, companyId, branchId, false);
@@ -201,7 +203,6 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
       } else {
         dispatch(setWorkingOrderList([]));
       }
-      if (payload.id !== null) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -257,6 +258,7 @@ export const openWorkingOrder = createAsyncThunk(
     const { token, companyId, branchId, company } = session;
     const { taxTypeList } = ui;
     dispatch(startLoader());
+    dispatch(setActiveSection(14));
     try {
       const workingOrder = await getWorkingOrderEntity(token, payload.id);
       if (company?.Modalidad === 1) {
@@ -321,7 +323,6 @@ export const openWorkingOrder = createAsyncThunk(
           },
         })
       );
-      dispatch(setActiveSection(21));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

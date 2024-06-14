@@ -81,7 +81,7 @@ export default function RestaurantOrderPage() {
         <Tab label="Generar" disabled={!generateInvoice} />
       </Tabs>
       <StepOneScreen className={classes.tab} value={value} index={0} />
-      <StepTwoScreen className={classes.tab} value={value} index={1} />
+      <StepTwoScreen className={classes.tab} value={value} index={1} setValue={setValue} />
     </div>
   );
 }

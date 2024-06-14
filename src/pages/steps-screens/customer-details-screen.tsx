@@ -104,7 +104,7 @@ export default function StepOneScreen({
         <Grid item xs={12}>
           <TextField
             required
-            disabled={customer.id !== 1}
+            readOnly={customer.id !== 1}
             value={customer.name}
             label="Nombre del cliente"
             onChange={event => setCustomerName(event.target.value)}

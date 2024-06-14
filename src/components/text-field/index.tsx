@@ -15,6 +15,7 @@ interface CustomTextFieldProps {
   numericFormat?: boolean;
   autoComplete?: string;
   variant?: TextFieldVariants;
+  readOnly?: boolean;
   disabled?: boolean;
   required?: boolean;
   inputProps?: { [key: string]: string | number | boolean };
@@ -24,7 +25,7 @@ interface CustomTextFieldProps {
 
 export default function CustomTextField(props: CustomTextFieldProps) {
   const { classes } = useStyles();
-  const { onChange, numericFormat, variant, ...restProps } = props;
+  const { onChange, numericFormat, variant, readOnly, ...restProps } = props;
   const handleChange = (event: { target: { value: string } }) => {
     let value = event.target.value;
     if (numericFormat) value = event.target.value.replace(/[^0-9.]/g, "");
@@ -35,6 +36,9 @@ export default function CustomTextField(props: CustomTextFieldProps) {
   return (
     <TextField
       {...restProps}
+      InputProps={{
+        readOnly: readOnly ?? false,
+      }}
       className={classes.input}
       size="small"
       fullWidth

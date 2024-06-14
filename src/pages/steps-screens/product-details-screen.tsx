@@ -12,7 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import TextField from "components/text-field";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
 import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
@@ -120,10 +120,7 @@ export default function StepTwoScreen({
     dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
 
-  const handlePriceChange = (event: TextFieldOnChangeEventType) => {
-    isPriceChangeEnabled && setProductDetails("price", parseStringToNumber(event.target.value));
-  };
-
+  const isDescriptionChangeEnabled = permissions.filter(role => [1, 50].includes(role.IdRole)).length > 0;
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
   const products = productList.map(item => ({
     ...item,
@@ -168,7 +165,7 @@ export default function StepTwoScreen({
           </Grid>
           <Grid item xs={12}>
             <TextField
-              disabled={stepDisabled}
+              disabled={stepDisabled || !isDescriptionChangeEnabled}
               label="Descripción"
               id="Descripcion"
               value={productDetails.description}
@@ -187,11 +184,11 @@ export default function StepTwoScreen({
           </Grid>
           <Grid item xs={6}>
             <TextField
-              disabled={stepDisabled}
+              disabled={stepDisabled || !isPriceChangeEnabled}
               label="Precio"
               value={productDetails.price.toString()}
               numericFormat
-              onChange={handlePriceChange}
+              onChange={event => setProductDetails("price", parseStringToNumber(event.target.value))}
             />
           </Grid>
           <Grid item xs={2}>
@@ -207,7 +204,7 @@ export default function StepTwoScreen({
           </Grid>
         </Grid>
         <div className={classes.bottom}>
-          <Grid container spacing={2} style={{ overflowY: "auto" }}>
+          <Grid container style={{ overflowY: "auto" }}>
             <Grid item xs={12}>
               <Table size="small">
                 <TableHead>

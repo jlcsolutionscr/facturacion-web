@@ -2,9 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setProductDetails as setInvoiceProduct } from "state/invoice/reducer";
 import {
-  openProductDialog,
   setCategoryList,
   setClasificationList,
+  setProduct,
   setProductAttribute,
   setProductList,
   setProductListCount,
@@ -44,6 +44,7 @@ export const getProductListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
+    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setProductListPage(1));
       const recordCount = await getProductListCount(
@@ -70,7 +71,6 @@ export const getProductListFirstPage = createAsyncThunk(
       } else {
         dispatch(setProductList([]));
       }
-      if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -120,18 +120,22 @@ export const openProduct = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
+    dispatch(setActiveSection(12));
     try {
-      let list = await getProductCategoryList(token, companyId);
-      dispatch(setCategoryList(list));
-      list = await getProductProviderList(token, companyId);
-      dispatch(setProviderList(list));
-      let product;
+      const categoryList = await getProductCategoryList(token, companyId);
+      dispatch(setCategoryList(categoryList));
+      const providerlist = await getProductProviderList(token, companyId);
+      dispatch(setProviderList(providerlist));
+      let product = {
+        ...defaultProduct,
+        IdEmpresa: companyId,
+        IdLinea: categoryList[0].Id,
+        IdProveedor: providerlist[0].Id,
+      };
       if (payload.id) {
         product = await getProductEntity(token, payload.id, branchId);
-      } else {
-        product = defaultProduct;
       }
-      dispatch(openProductDialog(product));
+      dispatch(setProduct(product));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

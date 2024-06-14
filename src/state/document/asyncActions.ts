@@ -17,6 +17,7 @@ export const getDocumentListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
+    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setDocumentPage(1));
       const recordCount = await getDocumentListCount(token, companyId, branchId);
@@ -27,7 +28,6 @@ export const getDocumentListFirstPage = createAsyncThunk(
       } else {
         dispatch(setDocumentList([]));
       }
-      if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

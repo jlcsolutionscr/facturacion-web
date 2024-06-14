@@ -18,10 +18,6 @@ const customerSlice = createSlice({
     setCustomerList: (state, action) => {
       state.list = action.payload;
     },
-    openCustomerDialog: (state, action) => {
-      state.isDialogOpen = true;
-      state.entity = action.payload;
-    },
     setCustomer: (state, action) => {
       state.entity = action.payload;
     },
@@ -37,10 +33,6 @@ const customerSlice = createSlice({
         [action.payload.attribute]: action.payload.value,
       };
     },
-    closeCustomerDialog: state => {
-      state.isDialogOpen = false;
-      state.entity = defaultCustomer;
-    },
   },
   extraReducers: builder => {
     builder.addCase(logout, () => {
@@ -53,12 +45,10 @@ export const {
   setCustomerListPage,
   setCustomerListCount,
   setCustomerList,
-  openCustomerDialog,
   setCustomer,
   resetCustomer,
   setPriceTypeList,
   setCustomerAttribute,
-  closeCustomerDialog,
 } = customerSlice.actions;
 
 export const getCustomerListPage = (state: RootState) => state.customer.listPage;

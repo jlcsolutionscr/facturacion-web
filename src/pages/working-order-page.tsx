@@ -15,7 +15,7 @@ import { getProductDetails as getProductDetailsAction } from "state/product/asyn
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { addDetails, getWorkingOrderListFirstPage, removeDetails } from "state/working-order/asyncActions";
+import { addDetails, removeDetails } from "state/working-order/asyncActions";
 import {
   getActivityCode,
   getCashAdvance,
@@ -112,7 +112,6 @@ export default function WorkingOrderPage() {
 
   const handleBackAction = () => {
     dispatch(setActiveSection(9));
-    dispatch(getWorkingOrderListFirstPage({ id: 9 }));
   };
 
   return (
@@ -173,6 +172,7 @@ export default function WorkingOrderPage() {
         cashAdvance={cashAdvance}
         status={status}
         invoiceId={invoiceId}
+        setValue={setValue}
       />
     </div>
   );

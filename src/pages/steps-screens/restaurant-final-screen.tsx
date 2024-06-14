@@ -14,6 +14,7 @@ import {
   getPaymentDetailsList,
   getSummary,
   getWorkingOrderId,
+  resetWorkingOrder,
   setActivityCode,
   setPaymentDetailsList,
 } from "state/working-order/reducer";
@@ -70,10 +71,11 @@ const useStyles = makeStyles()(theme => ({
 interface StepTwoScreenProps {
   index: number;
   value: number;
+  setValue: (id: number) => void;
   className?: string;
 }
 
-export default function StepTwoScreen({ value, index, className }: StepTwoScreenProps) {
+export default function StepTwoScreen({ value, index, setValue, className }: StepTwoScreenProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
@@ -113,6 +115,11 @@ export default function StepTwoScreen({ value, index, className }: StepTwoScreen
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
   const buttonDisabled = total === 0;
 
+  const handleNewRecord = () => {
+    dispatch(resetWorkingOrder());
+    setValue(0);
+  };
+
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
@@ -133,7 +140,7 @@ export default function StepTwoScreen({ value, index, className }: StepTwoScreen
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
             <InputLabel className={classes.summaryTitle}>RESUMEN ORDEN DE SERVICIO</InputLabel>
-            <Grid container spacing={2} className={classes.details}>
+            <Grid container className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
               </Grid>
@@ -194,12 +201,17 @@ export default function StepTwoScreen({ value, index, className }: StepTwoScreen
             {paymentItems}
           </Select>
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
-          <Button
-            disabled={buttonDisabled}
-            label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
-            onClick={() => dispatch(saveWorkingOrder())}
-          />
+        <Grid item container gap={2} justifyContent="center">
+          <Grid item>
+            <Button
+              disabled={buttonDisabled}
+              label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
+              onClick={() => dispatch(saveWorkingOrder())}
+            />
+          </Grid>
+          <Grid item>
+            <Button label="Nueva Orden" onClick={handleNewRecord} />
+          </Grid>
         </Grid>
       </Grid>
     </div>

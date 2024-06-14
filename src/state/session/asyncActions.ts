@@ -5,6 +5,7 @@ import { setPriceTypeList } from "state/customer/reducer";
 import { setProductTypeList } from "state/product/reducer";
 import { login, logout, setVendorList } from "state/session/reducer";
 import {
+  setActiveSection,
   setExonerationTypeList,
   setIdTypeList,
   setMessage,
@@ -38,6 +39,7 @@ export const userLogin = createAsyncThunk(
       dispatch(setPriceTypeList(company.ListadoTipoPrecio));
       dispatch(setProductTypeList(company.ListadoTipoProducto));
       writeToLocalStorage(payload.username, company);
+      dispatch(setActiveSection(0));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -71,6 +73,7 @@ export const restoreSession = createAsyncThunk(
       dispatch(setExonerationTypeList(payload.ListadoTipoExoneracion));
       dispatch(setPriceTypeList(payload.ListadoTipoPrecio));
       dispatch(setProductTypeList(payload.ListadoTipoProducto));
+      dispatch(setActiveSection(0));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

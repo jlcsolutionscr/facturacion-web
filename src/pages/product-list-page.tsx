@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import Dialog from "@mui/material/Dialog";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
-import ProductPage from "./product-page";
 import Button from "components/button";
 import DataGrid from "components/data-grid";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
-import { getProductDialogStatus, getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
@@ -62,7 +60,7 @@ const useStyles = makeStyles()(theme => ({
   },
   buttonContainer: {
     display: "flex",
-    marginLeft: "20px",
+    justifyContent: "center",
     "@media screen and (max-width:959px)": {
       marginLeft: "15px",
     },
@@ -101,7 +99,6 @@ export default function ProductListPage() {
   const listPage = useSelector(getProductListPage);
   const listCount = useSelector(getProductListCount);
   const list = useSelector(getProductList);
-  const isDialogOpen = useSelector(getProductDialogStatus);
 
   const { classes } = useStyles();
   const [filter, setFilter] = useState("");
@@ -181,9 +178,6 @@ export default function ProductListPage() {
         <Button label="Agregar" onClick={() => dispatch(openProduct({ id: undefined }))} />
         <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
-      <Dialog className={classes.dialog} maxWidth="md" open={isDialogOpen}>
-        <ProductPage />
-      </Dialog>
     </div>
   );
 }

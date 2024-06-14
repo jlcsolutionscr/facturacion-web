@@ -41,6 +41,7 @@ export const setInvoiceParameters = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, company, token, vendorList } = session;
     dispatch(startLoader());
+    dispatch(setActiveSection(payload.id));
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");
       const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
@@ -55,7 +56,6 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(resetInvoice());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -174,6 +174,7 @@ export const getInvoiceListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
+    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setInvoiceListPage(1));
       const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
@@ -184,7 +185,6 @@ export const getInvoiceListFirstPage = createAsyncThunk(
       } else {
         dispatch(setInvoiceList([]));
       }
-      if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

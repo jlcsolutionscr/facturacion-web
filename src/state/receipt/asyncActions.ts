@@ -27,10 +27,10 @@ export const setReceiptParameters = createAsyncThunk(
     const { session } = getState() as RootState;
     const { company } = session;
     dispatch(startLoader());
+    dispatch(setActiveSection(payload.id));
     try {
       dispatch(resetReceipt());
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

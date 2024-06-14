@@ -69,7 +69,7 @@ export default function ReportsPage() {
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [reportId, setReportId] = useState(0);
+  const [reportId, setReportId] = useState(1);
   const [viewLayout, setViewLayout] = useState(1);
 
   const permissions = useSelector(getPermissions);
@@ -85,14 +85,7 @@ export default function ReportsPage() {
     return () => {
       setViewLayout(1);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (reportList.length > 0) {
-      setReportId(!isAccountingUser ? reportList[0].IdReporte : 50);
-    }
-  }, [isAccountingUser, reportList]);
 
   useEffect(() => {
     if (reportResults.length > 0) {

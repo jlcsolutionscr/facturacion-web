@@ -10,7 +10,7 @@ import Button from "components/button";
 import Select from "components/select";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { generateInvoice, generateWorkingOrderTicket, saveWorkingOrder } from "state/working-order/asyncActions";
-import { setActivityCode, setPaymentDetailsList, setVendorId } from "state/working-order/reducer";
+import { resetWorkingOrder, setActivityCode, setPaymentDetailsList, setVendorId } from "state/working-order/reducer";
 import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
@@ -74,6 +74,7 @@ interface StepFourScreenProps {
   cashAdvance: number;
   status: string;
   invoiceId: number;
+  setValue: (id: number) => void;
   className?: string;
 }
 
@@ -90,6 +91,7 @@ export default function StepFourScreen({
   cashAdvance,
   status,
   invoiceId,
+  setValue,
   className,
 }: StepFourScreenProps) {
   const { classes } = useStyles();
@@ -115,6 +117,7 @@ export default function StepFourScreen({
       </MenuItem>
     );
   });
+
   const handleOnPrintClick = () => {
     if (status === ORDER_STATUS.CONVERTED) {
       dispatch(generateInvoiceTicket({ id: invoiceId }));
@@ -122,6 +125,12 @@ export default function StepFourScreen({
       dispatch(generateWorkingOrderTicket({ id: workingOrderId }));
     }
   };
+
+  const handleNewRecord = () => {
+    dispatch(resetWorkingOrder());
+    setValue(0);
+  };
+
   const activityItems = company
     ? company.ActividadEconomicaEmpresa.map(item => {
         return (
@@ -172,7 +181,7 @@ export default function StepFourScreen({
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
             <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN DE SERVICIO</InputLabel>
-            <Grid container spacing={2} className={classes.details}>
+            <Grid container className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
               </Grid>
@@ -242,20 +251,23 @@ export default function StepFourScreen({
             </Select>
           </Grid>
         )}
-        {status === ORDER_STATUS.ON_PROGRESS && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button
-              disabled={buttonDisabled}
-              label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
-              onClick={() => dispatch(saveWorkingOrder())}
-            />
+        <Grid item container gap={2} justifyContent="center">
+          {status === ORDER_STATUS.ON_PROGRESS && (
+            <Grid item>
+              <Button
+                disabled={buttonDisabled}
+                label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
+                onClick={() => dispatch(saveWorkingOrder())}
+              />
+            </Grid>
+          )}
+          <Grid item>
+            <Button label="Nueva Orden" onClick={handleNewRecord} />
           </Grid>
-        )}
-        {status === ORDER_STATUS.READY && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
-          </Grid>
-        )}
+        </Grid>
+        <Grid item xs={12} className={classes.centered}>
+          {status === ORDER_STATUS.READY && <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />}
+        </Grid>
         {(status === ORDER_STATUS.READY || status === ORDER_STATUS.CONVERTED) && (
           <Grid item xs={12} className={classes.centered}>
             <Button

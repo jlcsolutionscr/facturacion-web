@@ -2,7 +2,6 @@ import { CustomerType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
-  openCustomerDialog,
   resetCustomer,
   setCustomer,
   setCustomerAttribute,
@@ -16,7 +15,7 @@ import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { setCustomerDetails as setWorkingOrderCustomer } from "state/working-order/reducer";
 import { FORM_TYPE } from "utils/constants";
-import { defaultCustomerDetails } from "utils/defaults";
+import { defaultCustomer, defaultCustomerDetails } from "utils/defaults";
 import {
   getCustomerByIdentifier,
   getCustomerEntity,
@@ -31,6 +30,7 @@ export const getCustomerListFirstPage = createAsyncThunk(
   async (payload: { id: number; filterText: string; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
+    if (payload.id) dispatch(setActiveSection(payload.id));
     dispatch(startLoader());
     try {
       dispatch(setCustomerListPage(1));
@@ -42,7 +42,6 @@ export const getCustomerListFirstPage = createAsyncThunk(
       } else {
         dispatch(setCustomerList([]));
       }
-      if (payload.id) dispatch(setActiveSection(payload.id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -79,38 +78,16 @@ export const openCustomer = createAsyncThunk(
   "customer/openCustomer",
   async (payload: { idCustomer?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, companyId, vendorList } = session;
+    const { token, vendorList, companyId } = session;
     dispatch(startLoader());
+    dispatch(setActiveSection(11));
     try {
-      let customer;
+      let customer = { ...defaultCustomer, IdEmpresa: companyId };
       if (payload.idCustomer) {
         customer = await getCustomerEntity(token, payload.idCustomer);
         if (!customer.IdVendedor) customer.IdVendedor = vendorList[0].Id;
-      } else {
-        customer = {
-          IdCliente: 0,
-          IdEmpresa: companyId,
-          IdTipoIdentificacion: 0,
-          Identificacion: "",
-          Nombre: "",
-          NombreComercial: "",
-          Direccion: "",
-          Telefono: "",
-          Celular: "",
-          Fax: "",
-          CorreoElectronico: "",
-          IdTipoPrecio: 1,
-          AplicaTasaDiferenciada: false,
-          IdImpuesto: 8,
-          IdTipoExoneracion: 1,
-          NumDocExoneracion: "",
-          NombreInstExoneracion: "",
-          FechaEmisionDoc: "2000-01-01T23:59:59",
-          PorcentajeExoneracion: 0,
-          IdVendedor: vendorList[0].Id,
-        };
       }
-      dispatch(openCustomerDialog(customer));
+      dispatch(setCustomer(customer));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
