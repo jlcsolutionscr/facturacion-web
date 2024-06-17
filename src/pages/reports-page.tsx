@@ -63,13 +63,16 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
+const result = new UAParser().getResult();
+const isMobile = !!result.device.type;
+
 export default function ReportsPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [reportId, setReportId] = useState(1);
+  const [reportId, setReportId] = useState(0);
   const [viewLayout, setViewLayout] = useState(1);
 
   const permissions = useSelector(getPermissions);
@@ -82,10 +85,10 @@ export default function ReportsPage() {
     const today = new Date();
     setStartDate(today);
     setEndDate(lastDayOfMonth(today));
-    return () => {
-      setViewLayout(1);
-    };
-  }, []);
+    if (reportList.length && reportId === 0) {
+      setReportId(reportList[0].IdReporte);
+    }
+  }, [reportId, reportList]);
 
   useEffect(() => {
     if (reportResults.length > 0) {
@@ -139,8 +142,6 @@ export default function ReportsPage() {
       );
     });
 
-  const result = new UAParser().getResult();
-  const isMobile = !!result.device.type;
   const reportName = reportId > 0 ? reportList.filter(item => item.IdReporte === reportId)[0].NombreReporte : "";
 
   return (
@@ -168,13 +169,15 @@ export default function ReportsPage() {
                 onChange={value => setEndDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
               />
             </Grid>
-            <Grid item xs={12} display="flex" gap={2} flexDirection="row">
+            <Grid item xs={12} sm={8} container gap={2} justifyContent="center">
               <Button
                 disabled={reportId === 0}
                 label={isMobile ? "Enviar correo" : "Generar"}
                 onClick={() => (isMobile ? processReport(3) : processReport(1))}
               />
               {!isMobile && <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />}
+            </Grid>
+            <Grid item xs={12} sm={4} container gap={2} justifyContent="center">
               <Button label="Regresar" onClick={handleBackButton} />
             </Grid>
           </Grid>

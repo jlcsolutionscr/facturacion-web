@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
 import BannerImage from "assets/img/home-background.webp";
@@ -23,7 +23,7 @@ import RestaurantOrderPage from "pages/restaurant-order-page";
 import WorkingOrderListPage from "pages/working-order-list-page";
 import WorkingOrderPage from "pages/working-order-page";
 import { getCompany } from "state/session/reducer";
-import { getActiveSection } from "state/ui/reducer";
+import { getActiveSection, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
@@ -58,9 +58,16 @@ interface HomePageProps {
 export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePageProps) {
   const { classes } = useStyles();
   const myRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   const activeSection = useSelector(getActiveSection);
   const company = useSelector(getCompany);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setActiveSection(0));
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);

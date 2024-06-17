@@ -22,32 +22,27 @@ const useStyles = makeStyles()(theme => ({
   root: {
     display: "flex",
     textAlign: "center",
-    maxWidth: "640px",
-    height: "calc(100% - 30px)",
-    margin: "20px auto 10px auto",
+    height: "100%",
+    margin: "0",
+    padding: "0 5px 5px 5px",
     overflow: "hidden",
-    "@media screen and (max-width:599px)": {
-      height: "calc(100% - 20px)",
-      margin: "10px auto 10px auto",
-    },
-    "@media screen and (max-width:429px)": {
-      height: "calc(100% - 5px)",
-      margin: "5px 0 0 0",
-      padding: "5px",
+    "@media screen and (min-width:430px)": {
+      padding: "0",
     },
   },
   branches: {
     backgroundColor: "transparent",
     borderRadius: theme.shape.borderRadius,
     margin: "0 auto",
-    padding: "9px",
-    width: "590px",
-    "@media screen and (max-width:599px)": {
-      width: "400px",
+    height: "35px",
+    alignContent: "center",
+    padding: "0",
+    width: "100%",
+    "@media screen and (min-width:430px)": {
+      height: "38px",
     },
-    "@media screen and (max-width:429px)": {
-      padding: "0 0 5px 0",
-      width: "100%",
+    "@media screen and (min-width:600px)": {
+      height: "75px",
     },
   },
   branchText: {
@@ -68,44 +63,54 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   buttonContainer: {
-    height: "calc(100% - 42px)",
+    height: "calc(100% - 35px)",
     overflowY: "auto",
     scrollbarWidth: "thin",
+    maxWidth: "600px",
+    marginInline: "auto",
+    "@media screen and (min-width:430px)": {
+      height: "calc(100% - 38px)",
+      marginBottom: "10px",
+    },
+    "@media screen and (min-width:600px)": {
+      height: "calc(100% - 75px)",
+      marginBottom: "0",
+    },
   },
   button: {
-    marginTop: "25px",
-    width: "270px",
-    padding: "13px",
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     color: "rgba(255,255,255,0.85)",
-    borderRadius: "25px",
-    border: "1px solid #FFFFFF",
-    boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
-    transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
+    width: "100%",
+    marginBottom: "2px",
+    border: "none",
+    borderRadius: "2px",
+    boxShadow: "none",
+    padding: "10px 0",
     "&:hover": {
       color: "#FFF",
       backgroundColor: theme.palette.mode === "dark" ? "#4d4949" : "#27546c",
-      boxShadow: "4px 4px 6px rgba(0,0,0,0.55)",
+      boxShadow: "none",
     },
     "&:disabled": {
       color: "rgba(255,255,255,0.65)",
       backgroundColor: "#595959",
     },
-    "@media screen and (max-width:599px)": {
-      width: "300px",
-      marginTop: "6px",
+    "@media screen and (min-width:430px)": {
+      width: "280px",
       padding: "8px",
-    },
-    "@media screen and (max-width:429px)": {
-      width: "100%",
-      marginTop: "2px",
-      border: "none",
-      borderRadius: "2px",
-      boxShadow: "none",
-      padding: "10px 0",
+      borderRadius: "25px",
+      border: "1px solid #FFFFFF",
+      marginBottom: "8px",
+      boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
+      transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
       "&:hover": {
-        boxShadow: "none",
+        boxShadow: "4px 4px 6px rgba(0,0,0,0.55)",
       },
+    },
+    "@media screen and (min-width:600px)": {
+      width: "270px",
+      padding: "13px",
+      marginBottom: "12px",
     },
   },
 }));
@@ -152,116 +157,118 @@ export default function MenuPage() {
           </Typography>
         )}
       </Grid>
-      <Grid container item xs={12} className={classes.buttonContainer}>
-        <Grid item xs={12} sm={6}>
-          <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getCompany())}>
-            Actualizar empresa
-          </Button>
+      <div className={classes.buttonContainer}>
+        <Grid container item xs={12}>
+          <Grid item xs={12} sm={6}>
+            <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getCompany())}>
+              Actualizar empresa
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!updateCompanyInfo}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(2))}
+            >
+              Agregar logotipo
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!manageCustomers}
+              className={classes.button}
+              onClick={() =>
+                dispatch(
+                  getCustomerListFirstPage({
+                    id: 3,
+                    filterText: "",
+                    rowsPerPage: ROWS_PER_CUSTOMER,
+                  })
+                )
+              }
+            >
+              Catálogo de clientes
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!manageProducts}
+              className={classes.button}
+              onClick={() =>
+                dispatch(
+                  getProductListFirstPage({
+                    id: 4,
+                    filterText: "",
+                    type: 2,
+                    rowsPerPage: ROWS_PER_PRODUCT,
+                  })
+                )
+              }
+            >
+              Catálogo de productos
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!generateInvoice}
+              className={classes.button}
+              onClick={() => dispatch(setInvoiceParameters({ id: 5 }))}
+            >
+              Facturar
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!generateInvoice}
+              className={classes.button}
+              onClick={() => dispatch(setReceiptParameters({ id: 6 }))}
+            >
+              Factura de compra
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!generateInvoice}
+              className={classes.button}
+              onClick={() => dispatch(getInvoiceListFirstPage({ id: 7 }))}
+            >
+              Facturas electrónicas
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!manageDocuments}
+              className={classes.button}
+              onClick={() => dispatch(getDocumentListFirstPage({ id: 8 }))}
+            >
+              Documentos electrónicos
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!generateProforma}
+              className={classes.button}
+              onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}
+            >
+              Factura proforma
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              disabled={!generateWorkingOrder}
+              className={classes.button}
+              onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 9 }))}
+            >
+              Ordenes de servicio
+            </Button>
+          </Grid>
+          <Grid item xs={12} alignItems="center">
+            <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
+              Menu de reportes
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!updateCompanyInfo}
-            className={classes.button}
-            onClick={() => dispatch(setActiveSection(2))}
-          >
-            Agregar logotipo
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!manageCustomers}
-            className={classes.button}
-            onClick={() =>
-              dispatch(
-                getCustomerListFirstPage({
-                  id: 3,
-                  filterText: "",
-                  rowsPerPage: ROWS_PER_CUSTOMER,
-                })
-              )
-            }
-          >
-            Catálogo de clientes
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!manageProducts}
-            className={classes.button}
-            onClick={() =>
-              dispatch(
-                getProductListFirstPage({
-                  id: 4,
-                  filterText: "",
-                  type: 2,
-                  rowsPerPage: ROWS_PER_PRODUCT,
-                })
-              )
-            }
-          >
-            Catálogo de productos
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!generateInvoice}
-            className={classes.button}
-            onClick={() => dispatch(setInvoiceParameters({ id: 5 }))}
-          >
-            Facturar
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!generateInvoice}
-            className={classes.button}
-            onClick={() => dispatch(setReceiptParameters({ id: 6 }))}
-          >
-            Factura de compra
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!generateInvoice}
-            className={classes.button}
-            onClick={() => dispatch(getInvoiceListFirstPage({ id: 7 }))}
-          >
-            Facturas electrónicas
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!manageDocuments}
-            className={classes.button}
-            onClick={() => dispatch(getDocumentListFirstPage({ id: 8 }))}
-          >
-            Documentos electrónicos
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!generateProforma}
-            className={classes.button}
-            onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}
-          >
-            Factura proforma
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            disabled={!generateWorkingOrder}
-            className={classes.button}
-            onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 9 }))}
-          >
-            Ordenes de servicio
-          </Button>
-        </Grid>
-        <Grid item xs={12} alignItems="center">
-          <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
-            Menu de reportes
-          </Button>
-        </Grid>
-      </Grid>
+      </div>
     </Grid>
   );
 }
