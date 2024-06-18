@@ -51,7 +51,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
     const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito);
-    const availableEconomicActivityList = await getEconomicActivityList(token, company.Identificacion);
+    const availableEconomicActivityList = await getEconomicActivityList(company.Identificacion);
     dispatch(setCompany(company));
     dispatch(setCredentials(credentials !== null ? credentials : defaultCredentials));
     dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
@@ -172,7 +172,7 @@ export const addActivity = createAsyncThunk(
     if (!activity) {
       dispatch(
         setMessage({
-          message: "La actividad económica seleccionada no está asignada",
+          message: "La actividad económica seleccionada no está existe",
           type: "INFO",
         })
       );

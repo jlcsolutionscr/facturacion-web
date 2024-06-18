@@ -28,6 +28,7 @@ import {
 } from "./utilities";
 
 const SERVICE_URL = import.meta.env.VITE_APP_SERVER_URL;
+const HACIENDA_SERVER_URL = import.meta.env.VITE_HACIENDA_SERVER_URL;
 const APP_URL = `${SERVICE_URL}/puntoventa`;
 
 type DetalleFacturaType = {
@@ -253,11 +254,28 @@ export async function getBarrioList(token: string, provinceId: number, cantonId:
   return response;
 }
 
-export async function getEconomicActivityList(token: string, id: number) {
-  const data = "{NombreMetodo: 'ObtenerListadoActividadEconomica', Parametros: {Identificacion: '" + id + "'}}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return [];
-  return response;
+export async function getEconomicActivityList(id: number) {
+  const response = await fetch(HACIENDA_SERVER_URL + "?identificacion=" + id);
+  if (!response.ok) {
+    let error = "";
+    try {
+      error = await response.json();
+    } catch {
+      error = "Error al obtener los datos de las actividades económicas de contribuyente.";
+    }
+    throw new Error(error);
+  } else {
+    const data = await response.json();
+    if (data) {
+      const actividadesList = data.actividades.map((actividad: { codigo: string; descripcion: string }) => ({
+        Id: parseInt(actividad.codigo),
+        Descripcion: actividad.descripcion,
+      }));
+      return actividadesList;
+    } else {
+      return [];
+    }
+  }
 }
 
 export async function getBranchList(token: string, companyId: number) {
@@ -505,6 +523,7 @@ export async function getServicePointList(
 export function getCustomerPrice(
   customerPriceType: number,
   product: ProductType,
+  priceIncludedTaxes: boolean,
   taxRateTypeList: IdDescriptionValueType[]
 ) {
   let customerPrice = 0;
@@ -527,6 +546,10 @@ export function getCustomerPrice(
       break;
     default:
       customerPrice = product.PrecioVenta1;
+  }
+  if (!priceIncludedTaxes) {
+    const taxPercentage = 1 + taxRate / 100;
+    customerPrice = roundNumber(customerPrice / taxPercentage, 2);
   }
   return { taxRate, price: customerPrice };
 }

@@ -275,7 +275,12 @@ export const getProductDetails = createAsyncThunk(
       try {
         const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
-          const { price, taxRate } = getCustomerPrice(invoice.entity.customerDetails.priceTypeId, product, taxTypeList);
+          const { price, taxRate } = getCustomerPrice(
+            invoice.entity.customerDetails.priceTypeId,
+            product,
+            company.PrecioVentaIncluyeIVA,
+            taxTypeList
+          );
           dispatch(
             action({
               id: product.IdProducto,
