@@ -10,8 +10,13 @@ import IconButton from "@mui/material/IconButton";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
-import { generatePDF, getProformaListByPageNumber, revokeProforma } from "state/proforma/asyncActions";
-import { getProformaList, getProformaListCount, getProformaListPage, resetProforma } from "state/proforma/reducer";
+import {
+  generatePDF,
+  getProformaListByPageNumber,
+  revokeProforma,
+  setProformaParameters,
+} from "state/proforma/asyncActions";
+import { getProformaList, getProformaListCount, getProformaListPage } from "state/proforma/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon } from "utils/iconsHelper";
@@ -161,7 +166,7 @@ export default function ProformaListPage() {
         />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Nueva Proforma" onClick={() => dispatch(resetProforma())} />
+        <Button label="Nueva Proforma" onClick={() => dispatch(setProformaParameters())} />
         <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
