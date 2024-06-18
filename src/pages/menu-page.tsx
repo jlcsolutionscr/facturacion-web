@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
 import Select from "components/select";
-import { getCompany } from "state/company/asyncActions";
+import { getCompany, getLogo } from "state/company/asyncActions";
 import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";
 import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asyncActions";
@@ -165,12 +165,8 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Button
-              disabled={!updateCompanyInfo}
-              className={classes.button}
-              onClick={() => dispatch(setActiveSection(2))}
-            >
-              Agregar logotipo
+            <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getLogo())}>
+              Actualizar logotipo
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
