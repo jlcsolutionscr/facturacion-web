@@ -27,7 +27,7 @@ import {
   setCredentialsAttribute,
 } from "state/company/reducer";
 import { updateBarrioList, updateCantonList, updateDistritoList } from "state/ui/asyncActions";
-import { getBarrioList, getCantonList, getDistritoList, getIsLoaderOpen, setActiveSection } from "state/ui/reducer";
+import { getBarrioList, getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { convertToDateString } from "utils/utilities";

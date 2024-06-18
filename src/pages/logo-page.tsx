@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 
 import Button from "components/button";
-import { getLogo, saveLogo } from "state/company/asyncActions";
+import { saveLogo } from "state/company/asyncActions";
 import { getCompanyLogo } from "state/company/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
@@ -57,7 +57,7 @@ export default function LogoPage() {
 
   useEffect(() => {
     if (companyLogo !== "") setLogo(companyLogo);
-  }, []);
+  }, [companyLogo]);
 
   const handleImageChange = (event: SyntheticEvent) => {
     event.preventDefault();

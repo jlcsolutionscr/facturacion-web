@@ -23,7 +23,7 @@ import {
   getDocumentListPage,
   setDocumentDetails,
 } from "state/document/reducer";
-import { getIsLoaderOpen, setActiveSection } from "state/ui/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { EmailIcon, InfoIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
@@ -101,7 +101,6 @@ export default function DocumentListPage() {
   const listCount = useSelector(getDocumentListCount);
   const list = useSelector(getDocumentList);
   const details = useSelector(getDocumentDetails);
-  const isLoaderOpen = useSelector(getIsLoaderOpen);
 
   const handleConfirmEmailClick = () => {
     setDialogStatus({ open: false, type: 1 });
@@ -215,7 +214,7 @@ export default function DocumentListPage() {
       <div className={classes.buttonContainer}>
         <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
-      <Dialog onClose={handleDialogClose} open={dialogStatus.open && !isLoaderOpen}>
+      <Dialog onClose={handleDialogClose} open={dialogStatus.open}>
         {dialogContent}
       </Dialog>
     </div>

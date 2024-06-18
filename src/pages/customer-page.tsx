@@ -14,13 +14,7 @@ import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
-import {
-  getExonerationTypeList,
-  getIdTypeList,
-  getIsLoaderOpen,
-  getTaxTypeList,
-  setActiveSection,
-} from "state/ui/reducer";
+import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
@@ -46,7 +40,7 @@ const useStyles = makeStyles()(theme => ({
   },
   content: {
     overflowY: "scroll",
-    maxHeight: "calc(100% - 105px)",
+    height: "calc(100% - 105px)",
     padding: "5px",
     scrollbarWidth: "thin",
   },
@@ -64,7 +58,6 @@ export default function CustomerPage() {
   const taxTypeList = useSelector(getTaxTypeList);
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const customer = useSelector(getCustomer);
-  const isLoading = useSelector(getIsLoaderOpen);
 
   const idTypeItems = idTypeList.map(item => {
     return (
@@ -175,194 +168,190 @@ export default function CustomerPage() {
         </Typography>
       </Box>
       <Box className={classes.content}>
-        {!isLoading && (
-          <Grid container spacing={{ xs: 1, sm: 2 }}>
-            <Grid item xs={6}>
-              <Select
-                id="IdTipoIdentificacion"
-                label="Tipo de identificación"
-                value={customer.IdTipoIdentificacion.toString()}
-                onChange={event => handleIdTypeChange(event.target.value)}
-              >
-                {idTypeItems}
-              </Select>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                numericFormat={customer.IdTipoIdentificacion > 1 ? false : true}
-                id="Identificacion"
-                value={customer.Identificacion}
-                label="Identificación"
-                placeholder={idPlaceholder}
-                inputProps={{ maxLength: idMaxLength }}
-                onChange={handleChange}
-                onPaste={handlePaste}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                required
-                id="Nombre"
-                value={customer.Nombre}
-                label="Nombre del cliente"
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                id="NombreComercial"
-                value={customer.NombreComercial}
-                label="Nombre Comercial"
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField required id="Direccion" value={customer.Direccion} label="Dirección" onChange={handleChange} />
-            </Grid>
-            <Grid item xs={6} sm={4}>
-              <TextField
-                required
-                id="Telefono"
-                value={customer.Telefono}
-                label="Teléfono"
-                numericFormat
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={6} sm={4}>
-              <TextField
-                required
-                id="Celular"
-                value={customer.Celular}
-                label="Celular"
-                numericFormat
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={6} sm={4}>
-              <TextField id="Fax" value={customer.Fax} label="Fax" numericFormat onChange={handleChange} />
-            </Grid>
-            <Grid item xs={12} sm={9}>
-              <TextField
-                required
-                id="CorreoElectronico"
-                value={customer.CorreoElectronico}
-                label="Correo electrónico"
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Select
-                id="IdTipoPrecio"
-                label="Tipo de precio"
-                value={customer.IdTipoPrecio.toString()}
-                onChange={event =>
-                  dispatch(
-                    setCustomerAttribute({
-                      attribute: "IdTipoPrecio",
-                      value: event.target.value,
-                    })
-                  )
-                }
-              >
-                {priceTypeItems}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControlLabel
-                componentsProps={{
-                  typography: { variant: "body1", color: "text.primary" },
-                }}
-                control={
-                  <Checkbox
-                    checked={customer.AplicaTasaDiferenciada}
-                    onChange={handleCheckboxChange}
-                    name="AplicaTasaDiferenciada"
-                    color="primary"
-                  />
-                }
-                label="Aplica tasa diferenciada"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Select
-                readOnly={!customer.AplicaTasaDiferenciada}
-                id="IdImpuesto"
-                label="Tasa de IVA diferenciada"
-                value={customer.IdImpuesto.toString()}
-                onChange={event =>
-                  dispatch(
-                    setCustomerAttribute({
-                      attribute: "IdImpuesto",
-                      value: event.target.value,
-                    })
-                  )
-                }
-              >
-                {rentTypeItems}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Select
-                id="IdTipoExoneracion"
-                label="Tasa de exoneración"
-                value={customer.IdTipoExoneracion.toString()}
-                onChange={event =>
-                  dispatch(
-                    setCustomerAttribute({
-                      attribute: "IdTipoExoneracion",
-                      value: event.target.value,
-                    })
-                  )
-                }
-              >
-                {exonerationTypesItems}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="NumDocExoneracion"
-                value={customer.NumDocExoneracion}
-                label="Documento de exoneración"
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="NombreInstExoneracion"
-                value={customer.NombreInstExoneracion}
-                label="Nombre de institución"
-                onChange={handleChange}
-              />
-            </Grid>
-
-            <Grid item xs={6}>
-              <DatePicker
-                label="Fecha exoneración"
-                value={customer.FechaEmisionDoc}
-                onChange={(value: string) => dispatch(setCustomerAttribute({ attribute: "FechaEmisionDoc", value }))}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="PorcentajeExoneracion"
-                value={customer.PorcentajeExoneracion.toString()}
-                label="Porcentaje de exoneración"
-                numericFormat
-                onChange={handleChange}
-              />
-            </Grid>
+        <Grid container spacing={{ xs: 1, sm: 2 }}>
+          <Grid item xs={6}>
+            <Select
+              id="IdTipoIdentificacion"
+              label="Tipo de identificación"
+              value={customer.IdTipoIdentificacion.toString()}
+              onChange={event => handleIdTypeChange(event.target.value)}
+            >
+              {idTypeItems}
+            </Select>
           </Grid>
-        )}
+          <Grid item xs={6}>
+            <TextField
+              required
+              numericFormat={customer.IdTipoIdentificacion > 1 ? false : true}
+              id="Identificacion"
+              value={customer.Identificacion}
+              label="Identificación"
+              placeholder={idPlaceholder}
+              inputProps={{ maxLength: idMaxLength }}
+              onChange={handleChange}
+              onPaste={handlePaste}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              required
+              id="Nombre"
+              value={customer.Nombre}
+              label="Nombre del cliente"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              id="NombreComercial"
+              value={customer.NombreComercial}
+              label="Nombre Comercial"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField required id="Direccion" value={customer.Direccion} label="Dirección" onChange={handleChange} />
+          </Grid>
+          <Grid item xs={6} sm={4}>
+            <TextField
+              required
+              id="Telefono"
+              value={customer.Telefono}
+              label="Teléfono"
+              numericFormat
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={6} sm={4}>
+            <TextField
+              required
+              id="Celular"
+              value={customer.Celular}
+              label="Celular"
+              numericFormat
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={6} sm={4}>
+            <TextField id="Fax" value={customer.Fax} label="Fax" numericFormat onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12} sm={9}>
+            <TextField
+              required
+              id="CorreoElectronico"
+              value={customer.CorreoElectronico}
+              label="Correo electrónico"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Select
+              id="IdTipoPrecio"
+              label="Tipo de precio"
+              value={customer.IdTipoPrecio.toString()}
+              onChange={event =>
+                dispatch(
+                  setCustomerAttribute({
+                    attribute: "IdTipoPrecio",
+                    value: event.target.value,
+                  })
+                )
+              }
+            >
+              {priceTypeItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              componentsProps={{
+                typography: { variant: "body1", color: "text.primary" },
+              }}
+              control={
+                <Checkbox
+                  checked={customer.AplicaTasaDiferenciada}
+                  onChange={handleCheckboxChange}
+                  name="AplicaTasaDiferenciada"
+                  color="primary"
+                />
+              }
+              label="Aplica tasa diferenciada"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              readOnly={!customer.AplicaTasaDiferenciada}
+              id="IdImpuesto"
+              label="Tasa de IVA diferenciada"
+              value={customer.IdImpuesto.toString()}
+              onChange={event =>
+                dispatch(
+                  setCustomerAttribute({
+                    attribute: "IdImpuesto",
+                    value: event.target.value,
+                  })
+                )
+              }
+            >
+              {rentTypeItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              id="IdTipoExoneracion"
+              label="Tasa de exoneración"
+              value={customer.IdTipoExoneracion.toString()}
+              onChange={event =>
+                dispatch(
+                  setCustomerAttribute({
+                    attribute: "IdTipoExoneracion",
+                    value: event.target.value,
+                  })
+                )
+              }
+            >
+              {exonerationTypesItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="NumDocExoneracion"
+              value={customer.NumDocExoneracion}
+              label="Documento de exoneración"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="NombreInstExoneracion"
+              value={customer.NombreInstExoneracion}
+              label="Nombre de institución"
+              onChange={handleChange}
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <DatePicker
+              label="Fecha exoneración"
+              value={customer.FechaEmisionDoc}
+              onChange={(value: string) => dispatch(setCustomerAttribute({ attribute: "FechaEmisionDoc", value }))}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="PorcentajeExoneracion"
+              value={customer.PorcentajeExoneracion.toString()}
+              label="Porcentaje de exoneración"
+              numericFormat
+              onChange={handleChange}
+            />
+          </Grid>
+        </Grid>
       </Box>
       <Box className={classes.footer}>
-        {!isLoading && (
-          <Grid container justifyContent="center" gap={1}>
-            <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCustomer())} />
-            <Button label="Regresar" onClick={() => dispatch(setActiveSection(3))} />
-          </Grid>
-        )}
+        <Grid container justifyContent="center" gap={1}>
+          <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCustomer())} />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(3))} />
+        </Grid>
       </Box>
     </Box>
   );

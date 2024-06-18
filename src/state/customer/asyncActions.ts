@@ -83,11 +83,12 @@ export const openCustomer = createAsyncThunk(
     dispatch(setActiveSection(11));
     try {
       let customer = { ...defaultCustomer, IdEmpresa: companyId };
+      dispatch(setCustomer(customer));
       if (payload.idCustomer) {
         customer = await getCustomerEntity(token, payload.idCustomer);
         if (!customer.IdVendedor) customer.IdVendedor = vendorList[0].Id;
+        dispatch(setCustomer(customer));
       }
-      dispatch(setCustomer(customer));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

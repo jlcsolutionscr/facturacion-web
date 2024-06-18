@@ -122,13 +122,17 @@ export const openProduct = createAsyncThunk(
     dispatch(startLoader());
     dispatch(setActiveSection(12));
     try {
+      let product = {
+        ...defaultProduct,
+        IdEmpresa: companyId,
+      };
+      dispatch(setProduct(product));
       const categoryList = await getProductCategoryList(token, companyId);
       dispatch(setCategoryList(categoryList));
       const providerlist = await getProductProviderList(token, companyId);
       dispatch(setProviderList(providerlist));
-      let product = {
-        ...defaultProduct,
-        IdEmpresa: companyId,
+      product = {
+        ...product,
         IdLinea: categoryList[0].Id,
         IdProveedor: providerlist[0].Id,
       };

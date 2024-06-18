@@ -34,6 +34,19 @@ export const defaultCompany: CompanyType = {
   RegimenSimplificado: false,
   ActividadEconomicaEmpresa: [],
   PrecioVentaIncluyeIVA: false,
+  CantidadDisponible: 0,
+  LineasPorFactura: 16,
+  Contabiliza: false,
+  AutoCompletaProducto: false,
+  PermiteFacturar: true,
+  RecepcionGastos: true,
+  AsignaVendedorPorDefecto: false,
+  IngresaPagoCliente: false,
+  MontoRedondeoDescuento: 0,
+  LeyendaFactura: "",
+  LeyendaProforma: "",
+  LeyendaApartado: "",
+  LeyendaOrdenServicio: "",
   Usuario: { Token: "" },
 };
 
@@ -62,8 +75,8 @@ export const defaultCustomerDetails: CustomerDetailsType = {
 
 export const defaultCustomer: CustomerType = {
   IdEmpresa: 0,
-  IdCliente: 1,
-  IdTipoIdentificacion: 1,
+  IdCliente: 0,
+  IdTipoIdentificacion: 0,
   Identificacion: "",
   Nombre: "",
   NombreComercial: "",
