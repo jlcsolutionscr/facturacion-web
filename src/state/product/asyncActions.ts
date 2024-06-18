@@ -205,15 +205,14 @@ export const validateProductCode = createAsyncThunk(
   "product/validateProductCode",
   async (payload: { code: string }, { getState, dispatch }) => {
     const { session, ui } = getState() as RootState;
-    const { token } = session;
     const { taxTypeList } = ui;
     try {
-      dispatch(setProductAttribute({ attribute: "code", value: payload.code }));
+      dispatch(setProductAttribute({ attribute: "CodigoClasificacion", value: payload.code }));
       if (payload.code.length === 13) {
         dispatch(startLoader());
-        const clasification = await getProductClasification(token, payload.code);
-        if (clasification != null) {
-          const taxTypeId = taxTypeList?.find(elm => elm.Valor === clasification?.value);
+        const codeEntity = await getProductClasification(session.token, payload.code);
+        if (codeEntity) {
+          const taxTypeId = taxTypeList?.find(elm => elm.Valor === codeEntity.value);
           dispatch(
             setProductAttribute({
               attribute: "IdImpuesto",

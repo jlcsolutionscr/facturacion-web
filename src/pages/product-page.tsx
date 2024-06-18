@@ -220,7 +220,7 @@ export default function ProductPage() {
 
   const handleClasificationRowClick = (code: string) => {
     if (code !== "") {
-      const codeEntity = clasificationList.find(elm => elm.Id === parseInt(code));
+      const codeEntity = clasificationList.find(elm => elm.Id === code);
       const taxRateId = codeEntity ? getIdFromRateValue(taxTypeList, codeEntity.Impuesto) : undefined;
       dispatch(setProductAttribute({ attribute: "CodigoClasificacion", value: code }));
       if (taxRateId) dispatch(setProductAttribute({ attribute: "IdImpuesto", value: taxRateId }));

@@ -2,8 +2,6 @@ import { SyntheticEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { Box } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
@@ -14,7 +12,7 @@ import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
-import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
+import { getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
@@ -55,7 +53,6 @@ export default function CustomerPage() {
   const dispatch = useDispatch();
   const idTypeList = useSelector(getIdTypeList);
   const priceTypeList = useSelector(getPriceTypeList);
-  const taxTypeList = useSelector(getTaxTypeList);
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const customer = useSelector(getCustomer);
 
@@ -66,15 +63,6 @@ export default function CustomerPage() {
       </MenuItem>
     );
   });
-  const rentTypeItems = taxTypeList
-    .filter(item => item.Id > 1)
-    .map(item => {
-      return (
-        <MenuItem key={item.Id} value={item.Id}>
-          {item.Descripcion}
-        </MenuItem>
-      );
-    });
   const priceTypeItems = priceTypeList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
@@ -98,7 +86,6 @@ export default function CustomerPage() {
       customer.Telefono === "" ||
       customer.CorreoElectronico === "" ||
       customer.IdTipoPrecio === null ||
-      customer.IdImpuesto === null ||
       customer.IdTipoExoneracion === null;
   }
   const handlePaste = (e: SyntheticEvent) => {
@@ -125,16 +112,6 @@ export default function CustomerPage() {
     dispatch(setCustomerAttribute({ attribute: "IdTipoIdentificacion", value }));
     dispatch(setCustomerAttribute({ attribute: "Identificacion", value: "" }));
     dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
-  };
-
-  const handleCheckboxChange = () => {
-    dispatch(
-      setCustomerAttribute({
-        attribute: "AplicaTasaDiferenciada",
-        value: !customer.AplicaTasaDiferenciada,
-      })
-    );
-    if (customer.AplicaTasaDiferenciada) dispatch(setCustomerAttribute({ attribute: "IdImpuesto", value: 8 }));
   };
 
   let idPlaceholder = "";
@@ -259,40 +236,6 @@ export default function CustomerPage() {
               }
             >
               {priceTypeItems}
-            </Select>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControlLabel
-              componentsProps={{
-                typography: { variant: "body1", color: "text.primary" },
-              }}
-              control={
-                <Checkbox
-                  checked={customer.AplicaTasaDiferenciada}
-                  onChange={handleCheckboxChange}
-                  name="AplicaTasaDiferenciada"
-                  color="primary"
-                />
-              }
-              label="Aplica tasa diferenciada"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Select
-              readOnly={!customer.AplicaTasaDiferenciada}
-              id="IdImpuesto"
-              label="Tasa de IVA diferenciada"
-              value={customer.IdImpuesto.toString()}
-              onChange={event =>
-                dispatch(
-                  setCustomerAttribute({
-                    attribute: "IdImpuesto",
-                    value: event.target.value,
-                  })
-                )
-              }
-            >
-              {rentTypeItems}
             </Select>
           </Grid>
           <Grid item xs={12} sm={6}>

@@ -74,8 +74,7 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
       const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
         productDetails.taxRate,
         productDetails.price,
-        company.PrecioVentaIncluyeIVA,
-        customerDetails.taxRate
+        company.PrecioVentaIncluyeIVA
       );
       let newProducts = null;
       const item = {

@@ -337,18 +337,14 @@ async function printLines(lines: LineType[], lineWidth: number) {
     filters: [],
   });
   const connection = new WebUSB(device);
-  try {
-    await connection.open();
-    const model = new Model("TM-T20");
-    const printer = new Printer(model, connection);
-    printer.columns = lineWidth;
-    lines.forEach(line => {
-      printer.writeln(line.text, line.style, line.align);
-    });
-    printer.feed(4);
-    printer.buzzer();
-    printer.cutter();
-  } catch (ex) {
-    console.error(ex);
-  }
+  await connection.open();
+  const model = new Model("TM-T20");
+  const printer = new Printer(model, connection);
+  printer.columns = lineWidth;
+  lines.forEach(line => {
+    printer.writeln(line.text, line.style, line.align);
+  });
+  printer.feed(4);
+  printer.buzzer();
+  printer.cutter();
 }

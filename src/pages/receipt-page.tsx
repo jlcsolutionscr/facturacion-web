@@ -44,10 +44,10 @@ import {
   setProductDetails,
 } from "state/receipt/reducer";
 import { getCompany } from "state/session/reducer";
-import { getExonerationTypeList, getIdTypeList, getTaxTypeList, setActiveSection } from "state/ui/reducer";
+import { getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
-import { formatCurrency, getIdFromRateValue, parseStringToNumber, roundNumber } from "utils/utilities";
+import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -108,7 +108,6 @@ export default function ReceiptPage() {
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const clasificationList = useSelector(getClasificationList);
   const exoneration = useSelector(getExonerationDetails);
-  const taxTypeList = useSelector(getTaxTypeList);
   const company = useSelector(getCompany);
   const productDetail = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
@@ -140,10 +139,12 @@ export default function ReceiptPage() {
 
   const handleClasificationRowClick = (id: string) => {
     if (id !== "") {
-      const codeEntity = clasificationList.find(elm => elm.Id === parseInt(id));
-      const taxRateId = codeEntity ? getIdFromRateValue(taxTypeList, codeEntity.Impuesto) : undefined;
       dispatch(setProductDetails({ attribute: "code", value: id }));
-      if (taxRateId) dispatch(setProductDetails({ attribute: "taxTypeId", value: taxRateId }));
+      const codeEntity = clasificationList.find(elm => elm.Id === id);
+      if (codeEntity) {
+        dispatch(setProductDetails({ attribute: "taxRate", value: codeEntity.Impuesto }));
+        dispatch(setProductDetails({ attribute: "description", value: codeEntity.Descripcion }));
+      }
     }
     setDialogOpen(false);
   };

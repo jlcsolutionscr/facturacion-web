@@ -45,7 +45,6 @@ export const userLogin = createAsyncThunk(
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(logout());
       dispatch(stopLoader());
-      console.error("Exeption authenticating session", error);
     }
   }
 );
@@ -56,7 +55,6 @@ export const userLogout = createAsyncThunk("session/userLogout", async (_payload
     dispatch(logout());
   } catch (error) {
     dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-    console.error("Exeption on logout session", error);
   }
 });
 
@@ -79,7 +77,6 @@ export const restoreSession = createAsyncThunk(
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(logout());
       dispatch(stopLoader());
-      console.error("Exeption authenticating session", error);
     }
   }
 );

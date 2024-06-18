@@ -19,7 +19,7 @@ export type IdDescriptionValueType = {
 };
 
 export type IdDescriptionTaxType = {
-  Id: number;
+  Id: string;
   Descripcion: string;
   Impuesto: number;
 };

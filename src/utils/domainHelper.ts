@@ -462,7 +462,7 @@ export async function getProductClasification(token: string, code: string) {
   const data = "{NombreMetodo: 'ObtenerClasificacionProducto', Parametros: {Codigo: '" + code + "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (!response) return null;
-  return { id: response.Id, value: response.Impuesto };
+  return { id: response.Id, value: response.Impuesto, description: response.Descripcion };
 }
 
 export async function saveProductEntity(token: string, product: ProductType) {
@@ -554,20 +554,15 @@ export function getCustomerPrice(
   return { taxRate, price: customerPrice };
 }
 
-export function getTaxedPrice(
-  productTaxRate: number,
-  productPrice: number,
-  priceIncludedTaxes: boolean,
-  customerTaxRate: number
-) {
-  const taxRate = customerTaxRate;
+export function getTaxedPrice(productTaxRate: number, productPrice: number, priceIncludedTaxes: boolean) {
+  const taxRate = productTaxRate;
   const untaxedPrice = priceIncludedTaxes ? roundNumber(productPrice / (1 + productTaxRate / 100), 3) : productPrice;
   let pricePlusTaxes = priceIncludedTaxes ? untaxedPrice : productPrice;
   if (taxRate > 0) pricePlusTaxes = roundNumber(untaxedPrice * (1 + taxRate / 100), 2);
   return { taxRate, price: untaxedPrice, pricePlusTaxes };
 }
 
-export function getProductSummary(products: ProductDetailsType[], disccountedDercentage: number) {
+export function getProductSummary(products: ProductDetailsType[], disccountedPercentage: number) {
   let taxed = 0;
   let exonerated = 0;
   let exempt = 0;
@@ -579,8 +574,8 @@ export function getProductSummary(products: ProductDetailsType[], disccountedDer
     const untaxPrice = item.price;
     if (item.taxRate > 0) {
       let taxesAmount = (untaxPrice * item.taxRate) / 100;
-      if (disccountedDercentage > 0) {
-        const disccountedPrice = untaxPrice * (1 - disccountedDercentage / 100);
+      if (disccountedPercentage > 0) {
+        const disccountedPrice = untaxPrice * (1 - disccountedPercentage / 100);
         taxed += roundNumber(disccountedPrice, 2) * item.quantity;
         exonerated += roundNumber(untaxPrice - disccountedPrice, 2) * item.quantity;
         taxesAmount = (disccountedPrice * item.taxRate) / 100;

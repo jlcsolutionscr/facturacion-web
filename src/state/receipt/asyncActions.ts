@@ -7,7 +7,6 @@ import {
   setIssuerDetails,
   setProductDetails,
   setProductDetailsList,
-  setProductTaxDetails,
   setSuccessful,
   setSummary,
 } from "state/receipt/reducer";
@@ -68,24 +67,23 @@ export const validateCustomerIdentifier = createAsyncThunk(
 export const validateProductCode = createAsyncThunk(
   "receipt/validateProductCode",
   async (payload: { code: string }, { getState, dispatch }) => {
-    const { session, ui } = getState() as RootState;
-    const { token } = session;
-    const { taxTypeList } = ui;
+    const { session } = getState() as RootState;
     try {
       dispatch(setProductDetails({ attribute: "code", value: payload.code }));
       if (payload.code.length === 13) {
         dispatch(startLoader());
-        const clasification = await getProductClasification(token, payload.code);
-        if (clasification != null) {
-          const taxType = taxTypeList?.find(elm => elm.Valor === clasification?.value);
-          dispatch(setProductTaxDetails({ rate: taxType?.Valor, type: taxType?.Id }));
+        const codeEntity = await getProductClasification(session.token, payload.code);
+        if (codeEntity) {
+          dispatch(setProductDetails({ attribute: "taxRate", value: codeEntity.value }));
+          dispatch(setProductDetails({ attribute: "description", value: codeEntity.description }));
         } else {
           dispatch(
             setMessage(
               "El código CABYS ingresado no se encuentra registrado en el sistema. Por favor verifique su información. . ."
             )
           );
-          dispatch(setProductDetails({ attribute: "taxTypeId", value: 8 }));
+          dispatch(setProductDetails({ attribute: "taxRate", value: 13 }));
+          dispatch(setProductDetails({ attribute: "description", value: "" }));
         }
         dispatch(stopLoader());
       }

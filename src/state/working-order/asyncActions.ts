@@ -96,8 +96,7 @@ export const addDetails = createAsyncThunk("working-order/addDetails", async (_p
       const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
         productDetails.taxRate,
         productDetails.price,
-        company.PrecioVentaIncluyeIVA,
-        customerDetails.taxRate
+        company.PrecioVentaIncluyeIVA
       );
       const item = {
         id: productDetails.id,

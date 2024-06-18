@@ -79,8 +79,7 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
       const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
         productDetails.taxRate,
         productDetails.price,
-        company.PrecioVentaIncluyeIVA,
-        customerDetails.taxRate
+        company.PrecioVentaIncluyeIVA
       );
       let newProducts = null;
       const item = {
