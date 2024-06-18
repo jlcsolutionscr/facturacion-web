@@ -1099,7 +1099,7 @@ export async function generateProformaPDF(token: string, proformaId: number, ref
   if (response.length > 0) {
     const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
     const file = new Blob([byteArray], { type: "application/octet-stream" });
-    saveAs(file, `OrdenServicio-${ref}.pdf`);
+    saveAs(file, `proforma-${ref}.pdf`);
   }
 }
 
