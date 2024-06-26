@@ -127,6 +127,7 @@ export default function StepTwoScreen({
     Descripcion: filterType === 1 ? `${item.Codigo} - ${item.Descripcion}` : item.Descripcion,
   }));
   const buttonEnabled =
+    productDetails.id !== "" &&
     productDetails.description !== "" &&
     productDetails.quantity > 0 &&
     productDetails.price > 0 &&
