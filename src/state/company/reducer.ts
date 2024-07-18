@@ -15,12 +15,13 @@ const companySlice = createSlice({
       state.logo = action.payload;
     },
     setCredentials: (state, action) => {
+      const { credentials, newCredentials } = action.payload;
       state.credentialsChanged = false;
-      state.credentialsNew = !action.payload;
-      state.credentials.UsuarioHacienda = action.payload.UsuarioHacienda;
-      state.credentials.ClaveHacienda = action.payload.ClaveHacienda;
-      state.credentials.NombreCertificado = action.payload.NombreCertificado;
-      state.credentials.PinCertificado = action.payload.PinCertificado;
+      state.newCredentials = newCredentials;
+      state.credentials.UsuarioHacienda = credentials.UsuarioHacienda;
+      state.credentials.ClaveHacienda = credentials.ClaveHacienda;
+      state.credentials.NombreCertificado = credentials.NombreCertificado;
+      state.credentials.PinCertificado = credentials.PinCertificado;
     },
     setAvailableEconomicActivityList: (state, action) => {
       state.availableEconomicActivityList = action.payload;

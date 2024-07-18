@@ -53,7 +53,12 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito);
     const availableEconomicActivityList = await getEconomicActivityList(company.Identificacion);
     dispatch(setCompany(company));
-    dispatch(setCredentials(credentials !== null ? credentials : defaultCredentials));
+    dispatch(
+      setCredentials({
+        credentials: credentials !== null ? credentials : defaultCredentials,
+        newCredentials: credentials === null,
+      })
+    );
     dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
     dispatch(setCantonList(cantonList));
     dispatch(setDistritoList(distritoList));
@@ -70,7 +75,7 @@ export const saveCompany = createAsyncThunk(
   async (payload: { certificate: string }, { getState, dispatch }) => {
     const { session, company } = getState() as RootState;
     const { token } = session;
-    const { entity: companyEntity, credentials, credentialsNew, credentialsChanged } = company;
+    const { entity: companyEntity, credentials, newCredentials, credentialsChanged } = company;
     dispatch(startLoader());
     try {
       if (!companyEntity?.RegimenSimplificado) {
@@ -88,7 +93,7 @@ export const saveCompany = createAsyncThunk(
       }
       await saveCompanyEntity(token, companyEntity);
       if (!companyEntity?.RegimenSimplificado && credentialsChanged) {
-        if (credentialsNew)
+        if (newCredentials)
           await saveCredentialsEntity(
             token,
             companyEntity.IdEmpresa,

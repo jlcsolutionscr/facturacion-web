@@ -64,7 +64,7 @@ type CompanyStateType = {
   availableEconomicActivityList: IdDescriptionType[];
   credentials: CredentialType;
   logo: string;
-  credentialsNew: boolean;
+  newCredentials: boolean;
   credentialsChanged: boolean;
   reportResults: object[];
   reportSummary: {
@@ -173,7 +173,7 @@ export const companyInitialState: CompanyStateType = {
   availableEconomicActivityList: [],
   credentials: defaultCredentials,
   logo: "",
-  credentialsNew: true,
+  newCredentials: true,
   credentialsChanged: false,
   reportResults: [],
   reportSummary: {
