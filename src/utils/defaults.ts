@@ -69,8 +69,6 @@ export const defaultCustomerDetails: CustomerDetailsType = {
   exonerationDate: "2000-01-01T23:59:59",
   exonerationPercentage: 0,
   priceTypeId: 1,
-  differentiatedTaxRateApply: false,
-  taxRate: 13,
 };
 
 export const defaultCustomer: CustomerType = {
@@ -85,10 +83,7 @@ export const defaultCustomer: CustomerType = {
   Celular: "",
   Fax: "",
   CorreoElectronico: "",
-  IdVendedor: 0,
   IdTipoPrecio: 1,
-  AplicaTasaDiferenciada: false,
-  IdImpuesto: 8,
   IdTipoExoneracion: 1,
   NombreInstExoneracion: "",
   NumDocExoneracion: "",
@@ -126,7 +121,6 @@ export const defaultProduct: ProductType = {
   CodigoClasificacion: "",
   Imagen: "",
   IdImpuesto: 8,
-  IdProveedor: 0,
   Descripcion: "",
   PrecioCosto: 0,
   PrecioVenta1: 0,

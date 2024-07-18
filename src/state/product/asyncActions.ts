@@ -134,7 +134,6 @@ export const openProduct = createAsyncThunk(
       product = {
         ...product,
         IdLinea: categoryList[0].Id,
-        IdProveedor: providerlist[0].Id,
       };
       if (payload.id) {
         product = await getProductEntity(token, payload.id, branchId);

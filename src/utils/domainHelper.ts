@@ -562,7 +562,7 @@ export function getTaxedPrice(productTaxRate: number, productPrice: number, pric
   return { taxRate, price: untaxedPrice, pricePlusTaxes };
 }
 
-export function getProductSummary(products: ProductDetailsType[], disccountedPercentage: number) {
+export function getProductSummary(products: ProductDetailsType[], exonerationPercentage: number) {
   let taxed = 0;
   let exonerated = 0;
   let exempt = 0;
@@ -571,20 +571,23 @@ export function getProductSummary(products: ProductDetailsType[], disccountedPer
   let total = 0;
   const totalCost = 0;
   products.forEach(item => {
-    const untaxPrice = item.price;
+    const subtotal = item.price * item.quantity;
     if (item.taxRate > 0) {
-      let taxesAmount = (untaxPrice * item.taxRate) / 100;
-      if (disccountedPercentage > 0) {
-        const disccountedPrice = untaxPrice * (1 - disccountedPercentage / 100);
-        taxed += roundNumber(disccountedPrice, 2) * item.quantity;
-        exonerated += roundNumber(untaxPrice - disccountedPrice, 2) * item.quantity;
-        taxesAmount = (disccountedPrice * item.taxRate) / 100;
+      let taxesAmount = (subtotal * item.taxRate) / 100;
+      if (exonerationPercentage > 0) {
+        const taxedRate = Math.max(item.taxRate - exonerationPercentage, 0);
+        const exoneratedRate = item.taxRate - taxedRate;
+        const taxedAmount = roundNumber((subtotal * taxedRate * 100) / item.taxRate / 100, 2);
+        const exoneratedAmount = roundNumber((subtotal * exoneratedRate * 100) / item.taxRate / 100, 2);
+        taxesAmount = roundNumber((taxedAmount * item.taxRate) / 100, 2);
+        taxed += taxedAmount;
+        exonerated += exoneratedAmount;
       } else {
-        taxed += roundNumber(untaxPrice, 2) * item.quantity;
+        taxed += roundNumber((subtotal * item.taxRate) / 100, 2);
       }
-      taxes += roundNumber(taxesAmount, 2) * item.quantity;
+      taxes += taxesAmount;
     } else {
-      exempt += roundNumber(untaxPrice, 2) * item.quantity;
+      exempt += subtotal;
     }
   });
   subTotal = taxed + exonerated + exempt;

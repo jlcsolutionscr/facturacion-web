@@ -23,7 +23,6 @@ import {
   getClasificationList,
   getProduct,
   getProductTypeList,
-  getProviderList,
   setProductAttribute,
 } from "state/product/reducer";
 import { getTaxTypeList, setActiveSection } from "state/ui/reducer";
@@ -96,7 +95,6 @@ export default function ProductPage() {
   const product = useSelector(getProduct);
   const productTypeList = useSelector(getProductTypeList);
   const categoryList = useSelector(getCategoryList);
-  const providerList = useSelector(getProviderList);
   const clasificationList = useSelector(getClasificationList);
   const taxTypeList = useSelector(getTaxTypeList);
 
@@ -121,14 +119,6 @@ export default function ProductPage() {
   });
 
   const categories = categoryList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-
-  const providers = providerList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -281,16 +271,6 @@ export default function ProductPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Select
-              id="id-proveedor-select-id"
-              label="Seleccione el proveedor"
-              value={product.IdProveedor.toString()}
-              onChange={event => dispatch(setProductAttribute({ attribute: "IdProveedor", value: event.target.value }))}
-            >
-              {providers}
-            </Select>
-          </Grid>
           <Grid item xs={10} sm={6}>
             <TextField
               required
@@ -442,7 +422,7 @@ export default function ProductPage() {
                 <Checkbox
                   checked={product.Activo}
                   onChange={() => dispatch(setProductAttribute({ attribute: "Activo", value: !product.Activo }))}
-                  name="AplicaTasaDiferenciada"
+                  name="ProductoActivoChk"
                   color="primary"
                 />
               }

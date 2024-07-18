@@ -117,9 +117,6 @@ export default function StepOneScreen({
           <LabelField label="Correo electrónico" value={customer ? customer.email : ""} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <LabelField label="Tasa de Impuesto" value={customer ? `${customer.taxRate.toString()}%` : ""} />
-        </Grid>
-        <Grid item xs={12} sm={6}>
           <LabelField label="Tipo de exoneración" value={customer ? customer.exonerationType.toString() : ""} />
         </Grid>
         <Grid item xs={12} sm={6}>

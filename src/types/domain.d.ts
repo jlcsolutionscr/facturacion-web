@@ -102,7 +102,6 @@ export type ProductType = {
   Codigo: string;
   CodigoProveedor: string;
   CodigoClasificacion: string;
-  IdProveedor: number;
   Descripcion: string;
   PrecioCosto: number;
   PrecioVenta1: number;
@@ -159,10 +158,7 @@ export type CustomerType = {
   Celular: string;
   Fax: string;
   CorreoElectronico: string;
-  IdVendedor: number;
   IdTipoPrecio: number;
-  AplicaTasaDiferenciada: boolean;
-  IdImpuesto: number;
   IdTipoExoneracion: number;
   NumDocExoneracion: string;
   NombreInstExoneracion: string;
@@ -183,8 +179,6 @@ export type CustomerDetailsType = {
   exonerationDate: string;
   exonerationPercentage: number;
   priceTypeId: number;
-  differentiatedTaxRateApply: boolean;
-  taxRate: number;
 };
 
 export type ProductDetailsType = {

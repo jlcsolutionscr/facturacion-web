@@ -23,7 +23,7 @@ import {
   getCustomerListPerPage,
   saveCustomerEntity,
 } from "utils/domainHelper";
-import { getErrorMessage, getTaxeRateFromId } from "utils/utilities";
+import { getErrorMessage } from "utils/utilities";
 
 export const getCustomerListFirstPage = createAsyncThunk(
   "customer/getCustomerListFirstPage",
@@ -78,7 +78,7 @@ export const openCustomer = createAsyncThunk(
   "customer/openCustomer",
   async (payload: { idCustomer?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, vendorList, companyId } = session;
+    const { token, companyId } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(11));
     try {
@@ -86,7 +86,6 @@ export const openCustomer = createAsyncThunk(
       dispatch(setCustomer(customer));
       if (payload.idCustomer) {
         customer = await getCustomerEntity(token, payload.idCustomer);
-        if (!customer.IdVendedor) customer.IdVendedor = vendorList[0].Id;
         dispatch(setCustomer(customer));
       }
       dispatch(stopLoader());
@@ -193,9 +192,8 @@ export const filterCustomerList = createAsyncThunk(
 export const getCustomerDetails = createAsyncThunk(
   "customer/getCustomerDetails",
   async (payload: { id: number; type: string }, { getState, dispatch }) => {
-    const { session, ui } = getState() as RootState;
+    const { session } = getState() as RootState;
     const { token } = session;
-    const { taxTypeList } = ui;
     dispatch(startLoader());
     const action =
       payload.type === FORM_TYPE.INVOICE
@@ -218,8 +216,6 @@ export const getCustomerDetails = createAsyncThunk(
           exonerationDate: customer.FechaEmisionDoc,
           exonerationPercentage: customer.PorcentajeExoneracion,
           priceTypeId: customer.IdTipoPrecio,
-          differentiatedTaxRateApply: customer.AplicaTasaDiferenciada,
-          taxRate: getTaxeRateFromId(taxTypeList, customer.IdImpuesto),
         })
       );
       dispatch(stopLoader());
