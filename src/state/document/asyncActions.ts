@@ -17,6 +17,7 @@ export const getDocumentListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
+    dispatch(setDocumentList([]));
     if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setDocumentPage(1));

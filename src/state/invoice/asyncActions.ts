@@ -42,6 +42,7 @@ export const setInvoiceParameters = createAsyncThunk(
     const { companyId, branchId, company, token, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(payload.id));
+    dispatch(resetInvoice());
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");
       const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
@@ -53,7 +54,6 @@ export const setInvoiceParameters = createAsyncThunk(
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(resetInvoice());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(stopLoader());

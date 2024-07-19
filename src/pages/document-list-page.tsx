@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -102,6 +102,10 @@ export default function DocumentListPage() {
   const list = useSelector(getDocumentList);
   const details = useSelector(getDocumentDetails);
 
+  useEffect(() => {
+    if (details !== null) setDialogStatus({ open: true, type: 2 });
+  }, [details]);
+
   const handleConfirmEmailClick = () => {
     setDialogStatus({ open: false, type: 1 });
     dispatch(sendNotification({ id: documentId, emailTo: email }));
@@ -116,13 +120,12 @@ export default function DocumentListPage() {
 
   const handleDetailsClick = (id: number) => {
     dispatch(getDocumentDetailsAction({ id }));
-    setDialogStatus({ open: true, type: 2 });
   };
 
   const handleDialogClose = () => {
-    setDialogStatus({ open: false, type: 1 });
     if (email !== "") setEmail("");
-    if (details !== "") dispatch(setDocumentDetails(""));
+    if (details !== "") dispatch(setDocumentDetails(null));
+    setDialogStatus({ open: false, type: dialogStatus.type });
   };
 
   const dialogContent =
@@ -130,10 +133,16 @@ export default function DocumentListPage() {
       <div>
         <DialogTitle>Enviar documento electrónico</DialogTitle>
         <DialogContent>
-          <TextField value={email} label="Dirección electrónica" onChange={e => setEmail(e.target.value)} />
+          <TextField
+            sx={{ marginTop: "5px", width: "22rem" }}
+            fullWidth
+            value={email}
+            label="Dirección electrónica"
+            onChange={e => setEmail(e.target.value)}
+          />
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button negative label="Cancelar" onClick={() => setEmail("")} />
+          <Button negative label="Cancelar" onClick={handleDialogClose} />
           <Button label="Enviar" autoFocus onClick={handleConfirmEmailClick} />
         </DialogActions>
       </div>
@@ -146,7 +155,7 @@ export default function DocumentListPage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button negative label="Cerrar" onClick={() => handleDialogClose()} />
+          <Button negative label="Cerrar" onClick={handleDialogClose} />
         </DialogActions>
       </div>
     ) : null;
