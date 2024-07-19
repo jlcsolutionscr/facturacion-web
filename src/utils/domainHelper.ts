@@ -977,7 +977,7 @@ export async function saveReceiptEntity(
       IdImpuesto: item.taxRateType ?? 13,
       PorcentajeIVA: item.taxRate,
       UnidadMedida: item.unit,
-      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
+      PrecioVenta: item.price,
     };
     receiptDetails.push(detail);
   });

@@ -18,7 +18,7 @@ import {
   getProductSummary,
   saveReceiptEntity,
 } from "utils/domainHelper";
-import { getErrorMessage, roundNumber } from "utils/utilities";
+import { getErrorMessage, getIdFromRateValue, roundNumber } from "utils/utilities";
 
 export const setReceiptParameters = createAsyncThunk(
   "receipt/setReceiptParameters",
@@ -95,8 +95,9 @@ export const validateProductCode = createAsyncThunk(
 );
 
 export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload, { getState, dispatch }) => {
-  const { receipt, session } = getState() as RootState;
+  const { receipt, session, ui } = getState() as RootState;
   const { company } = session;
+  const { taxTypeList } = ui;
   const { exoneration, productDetails, productDetailsList } = receipt.entity;
   if (
     company &&
@@ -118,6 +119,7 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
         description: productDetails.description,
         quantity: productDetails.quantity,
         taxRate: productDetails.taxRate,
+        taxRateType: getIdFromRateValue(taxTypeList, productDetails.taxRate),
         unit: "UND",
         price: productDetails.price,
         pricePlusTaxes: roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
