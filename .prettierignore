@@ -1,5 +1,6 @@
 # Ignore artifacts:
-build 
+build
+dist
 coverage
 *.yaml
 
