@@ -686,11 +686,10 @@ export async function saveInvoiceEntity(
     DesglosePagoFactura: invoicePayments,
   };
   const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}";
-  const invoiceId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  const ids = invoiceId.split("-");
+  const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return {
-    id: ids[0],
-    consecutive: ids[1],
+    id: references.Id,
+    consecutive: references.Consec,
   };
 }
 
@@ -797,11 +796,10 @@ export async function saveWorkingOrderEntity(
     JSON.stringify(workingOrder) +
     "}";
   if (order.id === 0) {
-    const workingOrderId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-    const ids = workingOrderId.split("-");
+    const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
     return {
-      id: ids[0],
-      consecutive: ids[1],
+      id: references.Id,
+      consecutive: references.Consec,
     };
   } else {
     await post(APP_URL + "/ejecutar", token, data);
@@ -977,7 +975,7 @@ export async function saveReceiptEntity(
       IdImpuesto: item.taxRateType ?? 13,
       PorcentajeIVA: item.taxRate,
       UnidadMedida: item.unit,
-      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
+      PrecioVenta: item.price,
     };
     receiptDetails.push(detail);
   });
@@ -1017,8 +1015,8 @@ export async function saveReceiptEntity(
     DetalleFacturaCompra: receiptDetails,
   };
   const data = "{NombreMetodo: 'AgregarFacturaCompra', Entidad: " + JSON.stringify(newReceipt) + "}";
-  const receiptId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return receiptId;
+  const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return references.Id;
 }
 
 export async function getProductClasificationList(token: string, filterText: string) {
@@ -1081,11 +1079,10 @@ export async function saveProformaEntity(
     DetalleProforma: proformaDetails,
   };
   const data = "{NombreMetodo: 'AgregarProforma', Entidad: " + JSON.stringify(proforma) + "}";
-  const proformaId = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  const ids = proformaId.split("-");
+  const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   return {
-    id: ids[0],
-    consecutive: ids[1],
+    id: references.Id,
+    consecutive: references.Consec,
   };
 }
 
