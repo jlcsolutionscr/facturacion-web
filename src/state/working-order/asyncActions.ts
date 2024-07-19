@@ -50,6 +50,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
     const { companyId, branchId, company, token, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(14));
+    dispatch(resetWorkingOrder());
     try {
       if (company?.Modalidad === 1) {
         const customerCount = await getCustomerListCount(token, companyId, "");
@@ -67,7 +68,6 @@ export const setWorkingOrderParameters = createAsyncThunk(
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(resetWorkingOrder());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));

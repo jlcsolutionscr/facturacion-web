@@ -133,7 +133,7 @@ type DocumentStateType = {
     MontoTotal: number;
     CorreoNotificacion: string;
   }[];
-  details: string;
+  details: string | null;
 };
 
 export const uiInitialState: UIStateType = {
@@ -233,5 +233,5 @@ export const documentInitialState: DocumentStateType = {
   listPage: 1,
   listCount: 0,
   list: [],
-  details: "",
+  details: null,
 };

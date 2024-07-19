@@ -38,6 +38,7 @@ export const setProformaParameters = createAsyncThunk(
     const { companyId, branchId, token, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(13));
+    dispatch(resetProforma());
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");
       const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
@@ -49,7 +50,6 @@ export const setProformaParameters = createAsyncThunk(
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      dispatch(resetProforma());
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
     } catch (error) {
