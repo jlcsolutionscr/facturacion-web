@@ -119,6 +119,7 @@ export default function StepThreeScreen({
       dispatch(saveInvoice());
     } else {
       dispatch(resetInvoice());
+      dispatch(setVendorId(vendorList[0].Id));
       setValue(0);
     }
   };
