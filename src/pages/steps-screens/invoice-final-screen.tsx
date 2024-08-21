@@ -120,6 +120,7 @@ export default function StepThreeScreen({
     } else {
       dispatch(resetInvoice());
       dispatch(setVendorId(vendorList[0].Id));
+      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       setValue(0);
     }
   };
