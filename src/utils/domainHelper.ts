@@ -903,10 +903,20 @@ export async function getDocumentEntity(token: string, idDocument: number) {
   return response;
 }
 
-export async function sendDocumentByEmail(token: string, idDocument: number, emailTo: string) {
+export async function sendDocumentEmail(token: string, idDocument: number, emailTo: string) {
   const data =
     "{NombreMetodo: 'EnviarNotificacionDocumentoElectronico', Parametros: {IdDocumento: " +
     idDocument +
+    ", CorreoReceptor: '" +
+    emailTo +
+    "'}}";
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
+export async function sendProformaEmail(token: string, id: number, emailTo: string) {
+  const data =
+    "{NombreMetodo: 'GenerarNotificacionProforma', Parametros: {IdProforma: " +
+    id +
     ", CorreoReceptor: '" +
     emailTo +
     "'}}";

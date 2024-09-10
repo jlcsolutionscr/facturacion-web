@@ -28,6 +28,7 @@ import {
   getTaxedPrice,
   revokeProformaEntity,
   saveProformaEntity,
+  sendProformaEmail,
 } from "utils/domainHelper";
 import { getErrorMessage } from "utils/utilities";
 
@@ -155,6 +156,28 @@ export const saveProforma = createAsyncThunk("proforma/saveProforma", async (_pa
     dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
   }
 });
+
+export const sendEmail = createAsyncThunk(
+  "proforma/sendEmail",
+  async (payload: { id: number; emailTo: string }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token } = session;
+    dispatch(startLoader());
+    try {
+      await sendProformaEmail(token, payload.id, payload.emailTo);
+      dispatch(
+        setMessage({
+          message: "Correo enviado satisfactoriamente.",
+          type: "INFO",
+        })
+      );
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
 
 export const getProformaListFirstPage = createAsyncThunk(
   "proforma/getProformaListFirstPage",

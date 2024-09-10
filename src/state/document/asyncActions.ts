@@ -3,12 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setDocumentCount, setDocumentDetails, setDocumentList, setDocumentPage } from "state/document/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import {
-  getDocumentEntity,
-  getDocumentListCount,
-  getDocumentListPerPage,
-  sendDocumentByEmail,
-} from "utils/domainHelper";
+import { getDocumentEntity, getDocumentListCount, getDocumentListPerPage, sendDocumentEmail } from "utils/domainHelper";
 import { getErrorMessage, xmlToObject } from "utils/utilities";
 
 export const getDocumentListFirstPage = createAsyncThunk(
@@ -62,7 +57,7 @@ export const sendNotification = createAsyncThunk(
     const { token } = session;
     dispatch(startLoader());
     try {
-      await sendDocumentByEmail(token, payload.id, payload.emailTo);
+      await sendDocumentEmail(token, payload.id, payload.emailTo);
       dispatch(
         setMessage({
           message: "Correo enviado satisfactoriamente.",

@@ -120,7 +120,6 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
         quantity: productDetails.quantity,
         taxRateType: getIdFromRateValue(taxTypeList, productDetails.taxRate),
         taxRate: productDetails.taxRate,
-        taxRateType: getIdFromRateValue(taxTypeList, productDetails.taxRate),
         unit: "UND",
         price: productDetails.price,
         pricePlusTaxes: roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
