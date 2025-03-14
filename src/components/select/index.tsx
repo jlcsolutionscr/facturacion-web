@@ -5,7 +5,7 @@ import Select, { SelectProps } from "@mui/material/Select";
 
 export const useStyles = makeStyles()(() => ({
   container: {
-    minWidth: "100%",
+    width: "100%",
   },
 }));
 

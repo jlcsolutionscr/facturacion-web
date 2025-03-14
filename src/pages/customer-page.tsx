@@ -12,7 +12,7 @@ import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
-import { getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
+import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
@@ -54,6 +54,7 @@ export default function CustomerPage() {
   const idTypeList = useSelector(getIdTypeList);
   const priceTypeList = useSelector(getPriceTypeList);
   const exonerationTypeList = useSelector(getExonerationTypeList);
+  const exonerationNameList = useSelector(getExonerationNameList);
   const customer = useSelector(getCustomer);
 
   const idTypeItems = idTypeList.map(item => {
@@ -70,7 +71,14 @@ export default function CustomerPage() {
       </MenuItem>
     );
   });
-  const exonerationTypesItems = exonerationTypeList.map(item => {
+  const exonerationTypeItems = exonerationTypeList.map(item => {
+    return (
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
+      </MenuItem>
+    );
+  });
+  const exonerationNamesItems = exonerationNameList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -252,7 +260,24 @@ export default function CustomerPage() {
                 )
               }
             >
-              {exonerationTypesItems}
+              {exonerationTypeItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              id="IdNombreInstExoneracion"
+              label="Nombre de institución"
+              value={customer.IdNombreInstExoneracion.toString()}
+              onChange={event =>
+                dispatch(
+                  setCustomerAttribute({
+                    attribute: "IdNombreInstExoneracion",
+                    value: event.target.value,
+                  })
+                )
+              }
+            >
+              {exonerationNamesItems}
             </Select>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -263,15 +288,22 @@ export default function CustomerPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6} sm={3}>
             <TextField
-              id="NombreInstExoneracion"
-              value={customer.NombreInstExoneracion}
-              label="Nombre de institución"
+              id="ArticuloExoneracion"
+              value={customer.ArticuloExoneracion}
+              label="Artículo"
               onChange={handleChange}
             />
           </Grid>
-
+          <Grid item xs={6} sm={3}>
+            <TextField
+              id="IncisoExoneracion"
+              value={customer.IncisoExoneracion}
+              label="Inciso"
+              onChange={handleChange}
+            />
+          </Grid>
           <Grid item xs={6}>
             <DatePicker
               label="Fecha exoneración"

@@ -31,7 +31,7 @@ const useStyles = makeStyles()(theme => ({
   },
   summary: {
     flexDirection: "column",
-    maxWidth: "300px",
+    maxWidth: "330px",
     textAlign: "center",
   },
   details: {
@@ -155,108 +155,110 @@ export default function StepThreeScreen({
             onChange={event => dispatch(setComment(event.target.value))}
           />
         </Grid>
-        {activityItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="codigo-actividad-select-id"
-                label="Seleccione la Actividad Económica"
-                value={activityCode.toString()}
-                onChange={event => dispatch(setActivityCode(event.target.value))}
-              >
-                {activityItems}
-              </Select>
-            </Grid>
-          </Grid>
-        )}
-        {vendorItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="id-vendedor-select-id"
-                label="Seleccione el Vendedor"
-                value={vendorId.toString()}
-                onChange={event => dispatch(setVendorId(event.target.value))}
-              >
-                {vendorItems}
-              </Select>
-            </Grid>
-          </Grid>
-        )}
-        <Grid item xs={12}>
-          <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
-            <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
-            <Grid container className={classes.details}>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Excento</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel className={classes.summaryRow}>Total</InputLabel>
-              </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
-                <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={10} sm={6} md={4} className={classes.centered}>
-          <Select
-            disabled={successful}
-            id="forma-pago-select-id"
-            label="Seleccione la forma de pago:"
-            value={paymentDetails[0].paymentId.toString()}
-            onChange={event =>
-              dispatch(
-                setPaymentDetailsList([
-                  {
-                    paymentId: event.target.value,
-                    description:
-                      paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                      "NO ESPECIFICADO",
-                    amount: total,
-                  },
-                ])
-              )
-            }
-          >
-            {paymentItems}
-          </Select>
-        </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button disabled={buttonDisabled} label={successful ? "Nueva factura" : "Agregar"} onClick={handleOnPress} />
-        </Grid>
-        {successful && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
+          <Grid container item xs={10} sm={6} md={6} lg={4} gap={1}>
+            {activityItems.length > 1 && (
+              <Grid item xs={12}>
+                <Select
+                  id="codigo-actividad-select-id"
+                  label="Seleccione la Actividad Económica"
+                  value={activityCode.toString()}
+                  onChange={event => dispatch(setActivityCode(event.target.value))}
+                >
+                  {activityItems}
+                </Select>
+              </Grid>
+            )}
+            {vendorItems.length > 1 && (
+              <Grid item xs={12}>
+                <Select
+                  id="id-vendedor-select-id"
+                  label="Seleccione el Vendedor"
+                  value={vendorId.toString()}
+                  onChange={event => dispatch(setVendorId(event.target.value))}
+                >
+                  {vendorItems}
+                </Select>
+              </Grid>
+            )}
+            <Grid item xs={12} className={`${classes.centered} ${classes.summary}`}>
+              <InputLabel className={classes.summaryTitle}>RESUMEN DE FACTURA</InputLabel>
+              <Grid container className={classes.details}>
+                <Grid item xs={6}>
+                  <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
+                </Grid>
+                <Grid item xs={6} className={classes.columnRight}>
+                  <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
+                </Grid>
+                <Grid item xs={6}>
+                  <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
+                </Grid>
+                <Grid item xs={6} className={classes.columnRight}>
+                  <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
+                </Grid>
+                <Grid item xs={6}>
+                  <InputLabel className={classes.summaryRow}>Excento</InputLabel>
+                </Grid>
+                <Grid item xs={6} className={classes.columnRight}>
+                  <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
+                </Grid>
+                <Grid item xs={6}>
+                  <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
+                </Grid>
+                <Grid item xs={6} className={classes.columnRight}>
+                  <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
+                </Grid>
+                <Grid item xs={6}>
+                  <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
+                </Grid>
+                <Grid item xs={6} className={classes.columnRight}>
+                  <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
+                </Grid>
+                <Grid item xs={6}>
+                  <InputLabel className={classes.summaryRow}>Total</InputLabel>
+                </Grid>
+                <Grid item xs={6} className={classes.columnRight}>
+                  <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Select
+                disabled={successful}
+                id="forma-pago-select-id"
+                label="Seleccione la forma de pago:"
+                value={paymentDetails[0].paymentId.toString()}
+                onChange={event =>
+                  dispatch(
+                    setPaymentDetailsList([
+                      {
+                        paymentId: event.target.value,
+                        description:
+                          paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                          "NO ESPECIFICADO",
+                        amount: total,
+                      },
+                    ])
+                  )
+                }
+              >
+                {paymentItems}
+              </Select>
+            </Grid>
+            <Grid item xs={12} className={classes.centered}>
+              <Button
+                disabled={buttonDisabled}
+                label={successful ? "Nueva factura" : "Agregar"}
+                onClick={handleOnPress}
+              />
+            </Grid>
+            {successful && (
+              <Grid item xs={12} className={classes.centered}>
+                <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
+              </Grid>
+            )}
           </Grid>
-        )}
+        </Grid>
       </Grid>
     </div>
   );

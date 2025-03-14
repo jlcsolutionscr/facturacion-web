@@ -279,7 +279,7 @@ export const openWorkingOrder = createAsyncThunk(
         name: workingOrder.NombreCliente,
         exonerationType: workingOrder.Cliente.IdTipoExoneracion,
         exonerationRef: workingOrder.Cliente.NumDocExoneracion,
-        exoneratedBy: workingOrder.Cliente.NumDocExoneracion,
+        exoneratedById: workingOrder.Cliente.IdNombreInstExoneracion,
         exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
         exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
         priceTypeId: workingOrder.Cliente.IdTipoPrecio,

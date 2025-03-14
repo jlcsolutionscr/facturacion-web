@@ -37,6 +37,7 @@ type UIStateType = {
   taxTypeList: IdDescriptionValueType[];
   idTypeList: IdDescriptionValueType[];
   exonerationTypeList: IdDescriptionValueType[];
+  exonerationNameList: IdDescriptionValueType[];
   message: string;
   messageType: string;
 };
@@ -146,6 +147,7 @@ export const uiInitialState: UIStateType = {
   taxTypeList: [],
   idTypeList: [],
   exonerationTypeList: [],
+  exonerationNameList: [],
   message: "",
   messageType: "ERROR",
 };

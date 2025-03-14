@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { CustomerDetailsType, IdDescriptionType } from "types/domain";
 import Grid from "@mui/material/Grid";
@@ -8,6 +8,7 @@ import LabelField from "components/label-field";
 import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
 import TextField from "components/text-field";
 import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
+import { getExonerationNameList, getExonerationTypeList } from "state/ui/reducer";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { convertToDateString } from "utils/utilities";
 
@@ -58,6 +59,8 @@ export default function StepOneScreen({
   const { classes } = useStyles();
   const myRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
+  const exonerationTypeList = useSelector(getExonerationTypeList);
+  const exonerationNameList = useSelector(getExonerationNameList);
 
   useEffect(() => {
     if (value === 0) myRef.current?.scrollTo(0, 0);
@@ -117,13 +120,35 @@ export default function StepOneScreen({
           <LabelField label="Correo electrónico" value={customer ? customer.email : ""} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <LabelField label="Tipo de exoneración" value={customer ? customer.exonerationType.toString() : ""} />
+          <LabelField
+            label="Tipo de exoneración"
+            value={
+              customer
+                ? exonerationTypeList.filter(item => item.Id === customer.exonerationType)[0]?.Descripcion ??
+                  "Tipo no encontrado"
+                : ""
+            }
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <LabelField
+            label="Nombre de la institución"
+            value={
+              customer
+                ? exonerationNameList.filter(item => item.Id === customer.exoneratedById)[0]?.Descripcion ??
+                  "Institución no encontrada"
+                : ""
+            }
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <LabelField label="Código del documento" value={customer ? customer.exonerationRef : ""} />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <LabelField label="Nombre de la institución" value={customer ? customer.exoneratedBy : ""} />
+        <Grid item xs={6} sm={3}>
+          <LabelField label="Artículo" value={customer ? customer.exonerationRef2 : ""} />
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <LabelField label="Inciso" value={customer ? customer.exonerationRef3 : ""} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <LabelField label="Fecha de emisión" value={convertToDateString(customer.exonerationDate)} />

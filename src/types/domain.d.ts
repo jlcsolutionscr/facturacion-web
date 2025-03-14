@@ -161,7 +161,9 @@ export type CustomerType = {
   IdTipoPrecio: number;
   IdTipoExoneracion: number;
   NumDocExoneracion: string;
-  NombreInstExoneracion: string;
+  ArticuloExoneracion: string;
+  IncisoExoneracion: string;
+  IdNombreInstExoneracion: number;
   FechaEmisionDoc: string;
   PorcentajeExoneracion: number;
   PermiteCredito: boolean;
@@ -175,7 +177,9 @@ export type CustomerDetailsType = {
   phoneNumber: string;
   exonerationType: number;
   exonerationRef: string;
-  exoneratedBy: string;
+  exonerationRef2: string;
+  exonerationRef3: string;
+  exoneratedById: number;
   exonerationDate: string;
   exonerationPercentage: number;
   priceTypeId: number;
@@ -272,7 +276,9 @@ export type ReceiptType = {
   exoneration: {
     type: number;
     ref: string;
-    exoneratedBy: string;
+    ref2: string;
+    ref3: string;
+    exoneratedById: number;
     date: string;
     percentage: number;
   };

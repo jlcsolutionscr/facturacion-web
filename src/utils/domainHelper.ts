@@ -478,13 +478,6 @@ export async function saveProductEntity(token: string, product: ProductType) {
   return response;
 }
 
-export async function getExonerationTypeList(token: string) {
-  const data = "{NombreMetodo: 'ObtenerListadoTipoExoneracion'}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return [];
-  return response;
-}
-
 export async function getPaymentBankId(token: string, companyId: number, paymentMethod: number) {
   let data;
   if (paymentMethod === 1 || paymentMethod === 2) {
@@ -674,7 +667,9 @@ export async function saveInvoiceEntity(
     MontoAdelanto: cashAdvance,
     IdTipoExoneracion: customerDetails.exonerationType,
     NumDocExoneracion: customerDetails.exonerationRef,
-    NombreInstExoneracion: customerDetails.exoneratedBy,
+    ArticuloExoneracion: customerDetails.exonerationRef2,
+    IncisoExoneracion: customerDetails.exonerationRef3,
+    IdNombreInstExoneracion: customerDetails.exoneratedById,
     FechaEmisionDoc: convertToDateTimeString(customerDetails.exonerationDate),
     PorcentajeExoneracion: customerDetails.exonerationPercentage,
     IdCxC: 0,
@@ -1013,7 +1008,9 @@ export async function saveReceiptEntity(
     CorreoElectronicoEmisor: receipt.issuer.email,
     IdTipoExoneracion: receipt.exoneration.type,
     NumDocExoneracion: receipt.exoneration.ref,
-    NombreInstExoneracion: receipt.exoneration.exoneratedBy,
+    ArticuloExoneracion: receipt.exoneration.ref2,
+    IncisoExoneracion: receipt.exoneration.ref3,
+    IdNombreInstExoneracion: receipt.exoneration.exoneratedById,
     FechaEmisionDoc: convertToDateTimeString(receipt.exoneration.date),
     PorcentajeExoneracion: receipt.exoneration.percentage,
     TextoAdicional: "",
@@ -1157,7 +1154,9 @@ export function parseInvoiceEntity(entity: any, taxTypeList: IdDescriptionValueT
     name: entity.NombreCliente,
     exonerationType: entity.Cliente.IdTipoExoneracion,
     exonerationRef: entity.Cliente.NumDocExoneracion,
-    exoneratedBy: entity.Cliente.NumDocExoneracion,
+    exonerationRef2: entity.Cliente.ArticuloExoneracion,
+    exonerationRef3: entity.Cliente.IncisoExoneracion,
+    exoneratedById: entity.Cliente.IdNombreInstExoneracion,
     exonerationPercentage: entity.Cliente.PorcentajeExoneracion,
     exonerationDate: entity.Cliente.FechaEmisionDoc,
     priceTypeId: entity.Cliente.IdTipoPrecio,

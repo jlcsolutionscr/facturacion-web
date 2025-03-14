@@ -44,7 +44,7 @@ import {
   setProductDetails,
 } from "state/receipt/reducer";
 import { getCompany } from "state/session/reducer";
-import { getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
+import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
 import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
@@ -106,6 +106,7 @@ export default function ReceiptPage() {
   const idTypeList = useSelector(getIdTypeList);
   const issuer = useSelector(getIssuerDetails);
   const exonerationTypeList = useSelector(getExonerationTypeList);
+  const exonerationNameList = useSelector(getExonerationNameList);
   const clasificationList = useSelector(getClasificationList);
   const exoneration = useSelector(getExonerationDetails);
   const company = useSelector(getCompany);
@@ -182,7 +183,15 @@ export default function ReceiptPage() {
     );
   });
 
-  const exonerationTypesItems = exonerationTypeList.map(item => {
+  const exonerationTypeItems = exonerationTypeList.map(item => {
+    return (
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
+      </MenuItem>
+    );
+  });
+
+  const exonerationNameItems = exonerationNameList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -320,7 +329,20 @@ export default function ReceiptPage() {
             value={exoneration.type.toString()}
             onChange={event => dispatch(setExonerationDetails({ attribute: "type", value: event.target.value }))}
           >
-            {exonerationTypesItems}
+            {exonerationTypeItems}
+          </Select>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Select
+            disabled={successful}
+            id="id-tipo-institucion-select-id"
+            label="Seleccione la institución"
+            value={exoneration.exoneratedById.toString()}
+            onChange={event =>
+              dispatch(setExonerationDetails({ attribute: "exoneratedById", value: event.target.value }))
+            }
+          >
+            {exonerationNameItems}
           </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -332,15 +354,22 @@ export default function ReceiptPage() {
             onChange={event => dispatch(setExonerationDetails({ attribute: "ref", value: event.target.value }))}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             disabled={successful}
-            id="NombreInstExoneracion"
-            label="Nombre de institución"
-            value={exoneration.exoneratedBy}
-            onChange={event =>
-              dispatch(setExonerationDetails({ attribute: "exoneratedBy", value: event.target.value }))
-            }
+            id="ArticuloExoneracion"
+            label="Artículo"
+            value={exoneration.ref2}
+            onChange={event => dispatch(setExonerationDetails({ attribute: "ref2", value: event.target.value }))}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            disabled={successful}
+            id="IncisoExoneracion"
+            label="Inciso"
+            value={exoneration.ref3}
+            onChange={event => dispatch(setExonerationDetails({ attribute: "ref3", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={6} sm={6}>

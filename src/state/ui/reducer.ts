@@ -37,6 +37,9 @@ const uiSlice = createSlice({
     setExonerationTypeList: (state, action) => {
       state.exonerationTypeList = action.payload;
     },
+    setExonerationNameList: (state, action) => {
+      state.exonerationNameList = action.payload;
+    },
     setIdTypeList: (state, action) => {
       state.idTypeList = action.payload;
     },
@@ -53,6 +56,7 @@ export const {
   setBarrioList,
   setTaxTypeList,
   setExonerationTypeList,
+  setExonerationNameList,
   setIdTypeList,
 } = uiSlice.actions;
 
@@ -70,6 +74,7 @@ export const getDistritoList = (state: RootState) => state.ui.distritoList;
 export const getBarrioList = (state: RootState) => state.ui.barrioList;
 export const getTaxTypeList = (state: RootState) => state.ui.taxTypeList;
 export const getExonerationTypeList = (state: RootState) => state.ui.exonerationTypeList;
+export const getExonerationNameList = (state: RootState) => state.ui.exonerationNameList;
 export const getIdTypeList = (state: RootState) => state.ui.idTypeList;
 
 export default uiSlice.reducer;

@@ -6,6 +6,7 @@ import { setProductTypeList } from "state/product/reducer";
 import { login, logout, setVendorList } from "state/session/reducer";
 import {
   setActiveSection,
+  setExonerationNameList,
   setExonerationTypeList,
   setIdTypeList,
   setMessage,
@@ -20,6 +21,7 @@ type SessionCompanyType = CompanyType & {
   ListadoTipoIdentificacion: IdDescriptionType[];
   ListadoTipoImpuesto: IdDescriptionType[];
   ListadoTipoExoneracion: IdDescriptionType[];
+  ListadoNombreInstExoneracion: IdDescriptionType[];
   ListadoTipoPrecio: IdDescriptionType[];
   ListadoTipoProducto: IdDescriptionType[];
 };
@@ -36,6 +38,7 @@ export const userLogin = createAsyncThunk(
       dispatch(setIdTypeList(company.ListadoTipoIdentificacion));
       dispatch(setTaxTypeList(company.ListadoTipoImpuesto));
       dispatch(setExonerationTypeList(company.ListadoTipoExoneracion));
+      dispatch(setExonerationNameList(company.ListadoNombreInstExoneracion));
       dispatch(setPriceTypeList(company.ListadoTipoPrecio));
       dispatch(setProductTypeList(company.ListadoTipoProducto));
       writeToLocalStorage(payload.username, company);
@@ -69,6 +72,7 @@ export const restoreSession = createAsyncThunk(
       dispatch(setIdTypeList(payload.ListadoTipoIdentificacion));
       dispatch(setTaxTypeList(payload.ListadoTipoImpuesto));
       dispatch(setExonerationTypeList(payload.ListadoTipoExoneracion));
+      dispatch(setExonerationNameList(payload.ListadoNombreInstExoneracion));
       dispatch(setPriceTypeList(payload.ListadoTipoPrecio));
       dispatch(setProductTypeList(payload.ListadoTipoProducto));
       dispatch(setActiveSection(0));
