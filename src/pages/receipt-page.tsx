@@ -32,6 +32,7 @@ import {
 } from "state/receipt/asyncActions";
 import {
   getActivityCode,
+  getCurrency,
   getExonerationDetails,
   getIssuerDetails,
   getProductDetails,
@@ -39,6 +40,7 @@ import {
   getSuccessful,
   getSummary,
   setActivityCode,
+  setCurrency,
   setExonerationDetails,
   setIssuerDetails,
   setProductDetails,
@@ -113,6 +115,7 @@ export default function ReceiptPage() {
   const productDetailsList = useSelector(getProductDetailsList);
   const summary = useSelector(getSummary);
   const activityCode = useSelector(getActivityCode);
+  const currency = useSelector(getCurrency);
   const successful = useSelector(getSuccessful);
 
   const handleIdTypeChange = (value: string) => {
@@ -244,6 +247,18 @@ export default function ReceiptPage() {
             onChange={event => dispatch(setActivityCode(event.target.value))}
           >
             {activityItems}
+          </Select>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Select
+            disabled={successful}
+            id="id-currency_type-select-id"
+            label="Seleccione la moneda de la transacción"
+            value={currency.toString()}
+            onChange={event => dispatch(setCurrency(event.target.value))}
+          >
+            <MenuItem value={1}>COLONES</MenuItem>
+            <MenuItem value={2}>DOLARES</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12} sm={6}>

@@ -52,6 +52,9 @@ const workingOrderSlice = createSlice({
     setVendorId: (state, action) => {
       state.entity.vendorId = action.payload;
     },
+    setCurrency: (state, action) => {
+      state.entity.currency = action.payload;
+    },
     setDeliveryAttribute: (state, action) => {
       state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.delivery = {
@@ -104,6 +107,7 @@ export const {
   setActivityCode,
   setPaymentDetailsList,
   setVendorId,
+  setCurrency,
   setDeliveryAttribute,
   setWorkingOrder,
   setInvoiceId,
@@ -122,6 +126,7 @@ export const getSummary = (state: RootState) => state.workingOrder.entity.summar
 export const getActivityCode = (state: RootState) => state.workingOrder.entity.activityCode;
 export const getPaymentDetailsList = (state: RootState) => state.workingOrder.entity.paymentDetailsList;
 export const getVendorId = (state: RootState) => state.workingOrder.entity.vendorId;
+export const getCurrency = (state: RootState) => state.workingOrder.entity.currency;
 export const getDeliveryDetails = (state: RootState) => state.workingOrder.entity.delivery;
 export const getWorkingOrder = (state: RootState) => state.workingOrder.entity;
 export const getWorkingOrderId = (state: RootState) => state.workingOrder.entity.id;

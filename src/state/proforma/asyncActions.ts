@@ -129,20 +129,9 @@ export const removeDetails = createAsyncThunk(
 export const saveProforma = createAsyncThunk("proforma/saveProforma", async (_payload, { getState, dispatch }) => {
   const { session, proforma } = getState() as RootState;
   const { token, userId, branchId, companyId } = session;
-  const { vendorId, customerDetails, productDetailsList, summary, comment } = proforma.entity;
   dispatch(startLoader());
   try {
-    const ids = await saveProformaEntity(
-      token,
-      userId,
-      companyId,
-      branchId,
-      vendorId,
-      customerDetails,
-      productDetailsList,
-      summary,
-      comment
-    );
+    const ids = await saveProformaEntity(token, userId, companyId, branchId, proforma.entity);
     dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));
     dispatch(
       setMessage({

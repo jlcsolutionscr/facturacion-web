@@ -279,7 +279,7 @@ export const openWorkingOrder = createAsyncThunk(
         name: workingOrder.NombreCliente,
         exonerationType: workingOrder.Cliente.IdTipoExoneracion,
         exonerationRef: workingOrder.Cliente.NumDocExoneracion,
-        exoneratedBy: workingOrder.Cliente.NumDocExoneracion,
+        exoneratedBy: workingOrder.Cliente.NombreInstExoneracion,
         exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
         exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
         priceTypeId: workingOrder.Cliente.IdTipoPrecio,
@@ -311,6 +311,7 @@ export const openWorkingOrder = createAsyncThunk(
           productDetailsList,
           paymentDetailsList: [defaultPaymentDetails],
           vendorId: workingOrder.IdVendedor,
+          currency: workingOrder.IdTipoMoneda,
           summary,
           delivery: {
             phone: workingOrder.Telefono,
@@ -334,8 +335,8 @@ export const generateInvoice = createAsyncThunk(
   "working-order/generateInvoice",
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
-    const { token, userId, branchId, companyId, currencyType } = session;
-    const { id, activityCode, paymentDetailsList, vendorId, customerDetails, productDetailsList, summary } =
+    const { token, userId, branchId, companyId } = session;
+    const { id, activityCode, paymentDetailsList, vendorId, currency, customerDetails, productDetailsList, summary } =
       workingOrder.entity;
     dispatch(startLoader());
     try {
@@ -347,7 +348,7 @@ export const generateInvoice = createAsyncThunk(
         activityCode,
         paymentDetailsList,
         0,
-        currencyType,
+        currency,
         vendorId,
         id,
         customerDetails,

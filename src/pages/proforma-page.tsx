@@ -15,6 +15,7 @@ import { getProductList, getProductListCount, getProductListPage } from "state/p
 import { addDetails, getProformaListFirstPage, removeDetails } from "state/proforma/asyncActions";
 import {
   getComment,
+  getCurrency,
   getCustomerDetails,
   getProductDetails,
   getProductDetailsList,
@@ -83,6 +84,7 @@ export default function ProformaPage() {
   const productDetailsList = useSelector(getProductDetailsList);
   const summary = useSelector(getSummary);
   const vendorId = useSelector(getVendorId);
+  const currency = useSelector(getCurrency);
   const comment = useSelector(getComment);
   const successful = useSelector(getSuccessful);
   const vendorList = useSelector(getVendorList);
@@ -143,6 +145,7 @@ export default function ProformaPage() {
         value={value}
         summary={summary}
         vendorId={vendorId}
+        currency={currency}
         comment={comment}
         vendorList={vendorList}
         successful={successful}

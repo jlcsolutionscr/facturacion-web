@@ -132,9 +132,18 @@ export const removeDetails = createAsyncThunk(
 
 export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_payload, { getState, dispatch }) => {
   const { session, invoice } = getState() as RootState;
-  const { token, userId, branchId, companyId, currencyType } = session;
-  const { activityCode, paymentDetailsList, vendorId, customerDetails, productDetailsList, summary, comment } =
-    invoice.entity;
+  const { token, userId, branchId, companyId } = session;
+  const {
+    activityCode,
+    paymentDetailsList,
+    vendorId,
+    customerDetails,
+    productDetailsList,
+    summary,
+    comment,
+    currency,
+  } = invoice.entity;
+
   dispatch(startLoader());
   try {
     const ids = await saveInvoiceEntity(
@@ -145,7 +154,7 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
       activityCode,
       paymentDetailsList,
       0,
-      currencyType,
+      currency,
       vendorId,
       0,
       customerDetails,

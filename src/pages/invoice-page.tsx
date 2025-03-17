@@ -14,6 +14,7 @@ import { addDetails, removeDetails } from "state/invoice/asyncActions";
 import {
   getActivityCode,
   getComment,
+  getCurrency,
   getCustomerDetails,
   getInvoiceId,
   getPaymentDetailsList,
@@ -91,6 +92,7 @@ export default function InvoicePage() {
   const paymentDetails = useSelector(getPaymentDetailsList);
   const vendorId = useSelector(getVendorId);
   const comment = useSelector(getComment);
+  const currency = useSelector(getCurrency);
   const successful = useSelector(getSuccessful);
   const vendorList = useSelector(getVendorList);
 
@@ -149,6 +151,7 @@ export default function InvoicePage() {
         activityCode={activityCode}
         paymentDetails={paymentDetails}
         vendorId={vendorId}
+        currency={currency}
         comment={comment}
         vendorList={vendorList}
         successful={successful}
