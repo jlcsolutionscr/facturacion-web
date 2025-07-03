@@ -97,7 +97,6 @@ export async function getCompanyEntity(token: string, companyId: number) {
     IdProvincia: response.IdProvincia,
     IdCanton: response.IdCanton,
     IdDistrito: response.IdDistrito,
-    IdBarrio: response.IdBarrio,
     IdTipoMoneda: response.IdTipoMoneda,
     Direccion: response.Direccion,
     Telefono1: response.Telefono1,
@@ -234,20 +233,6 @@ export async function getDistritoList(token: string, provinceId: number, cantonI
     provinceId +
     ", IdCanton: " +
     cantonId +
-    "}}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return [];
-  return response;
-}
-
-export async function getBarrioList(token: string, provinceId: number, cantonId: number, districtId: number) {
-  const data =
-    "{NombreMetodo: 'ObtenerListadoBarrios', Parametros: {IdProvincia: " +
-    provinceId +
-    ", IdCanton: " +
-    cantonId +
-    ", IdDistrito: " +
-    districtId +
     "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
@@ -1003,7 +988,6 @@ export async function saveReceiptEntity(
     IdProvinciaEmisor: 1,
     IdCantonEmisor: 1,
     IdDistritoEmisor: 1,
-    IdBarrioEmisor: 1,
     DireccionEmisor: receipt.issuer.address,
     CorreoElectronicoEmisor: receipt.issuer.email,
     IdTipoExoneracion: receipt.exoneration.type,

@@ -33,7 +33,6 @@ type UIStateType = {
   activeSection: number;
   cantonList: IdDescriptionType[];
   distritoList: IdDescriptionType[];
-  barrioList: IdDescriptionType[];
   taxTypeList: IdDescriptionValueType[];
   idTypeList: IdDescriptionValueType[];
   exonerationTypeList: IdDescriptionValueType[];
@@ -143,7 +142,6 @@ export const uiInitialState: UIStateType = {
   activeSection: 0,
   cantonList: [],
   distritoList: [],
-  barrioList: [],
   taxTypeList: [],
   idTypeList: [],
   exonerationTypeList: [],

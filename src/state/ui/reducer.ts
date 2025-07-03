@@ -28,9 +28,6 @@ const uiSlice = createSlice({
     setDistritoList: (state, action) => {
       state.distritoList = action.payload;
     },
-    setBarrioList: (state, action) => {
-      state.barrioList = action.payload;
-    },
     setTaxTypeList: (state, action) => {
       state.taxTypeList = action.payload;
     },
@@ -53,7 +50,6 @@ export const {
   setMessage,
   setCantonList,
   setDistritoList,
-  setBarrioList,
   setTaxTypeList,
   setExonerationTypeList,
   setExonerationNameList,
@@ -71,7 +67,6 @@ export const getMessage = createSelector(
 );
 export const getCantonList = (state: RootState) => state.ui.cantonList;
 export const getDistritoList = (state: RootState) => state.ui.distritoList;
-export const getBarrioList = (state: RootState) => state.ui.barrioList;
 export const getTaxTypeList = (state: RootState) => state.ui.taxTypeList;
 export const getExonerationTypeList = (state: RootState) => state.ui.exonerationTypeList;
 export const getExonerationNameList = (state: RootState) => state.ui.exonerationNameList;

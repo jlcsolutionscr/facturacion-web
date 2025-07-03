@@ -26,8 +26,8 @@ import {
   setCompanyAttribute,
   setCredentialsAttribute,
 } from "state/company/reducer";
-import { updateBarrioList, updateCantonList, updateDistritoList } from "state/ui/asyncActions";
-import { getBarrioList, getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
+import { updateCantonList, updateDistritoList } from "state/ui/asyncActions";
+import { getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { convertToDateString } from "utils/utilities";
@@ -76,7 +76,6 @@ export default function CompanyPage() {
   const credentials = useSelector(getCredentials);
   const cantonList = useSelector(getCantonList);
   const distritoList = useSelector(getDistritoList);
-  const barrioList = useSelector(getBarrioList);
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   useEffect(() => {
@@ -115,24 +114,12 @@ export default function CompanyPage() {
       dispatch(setCompanyAttribute({ attribute: "IdProvincia", value: value }));
       dispatch(setCompanyAttribute({ attribute: "IdCanton", value: 1 }));
       dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 }));
-      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else if (id === "IdCanton") {
       dispatch(updateDistritoList({ id: company.IdProvincia, subId: value }));
       dispatch(setCompanyAttribute({ attribute: "IdCanton", value: value }));
       dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 }));
-      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
     } else if (id === "IdDistrito") {
-      dispatch(
-        updateBarrioList({
-          id: company.IdProvincia,
-          subId: company.IdCanton,
-          subSubId: value,
-        })
-      );
       dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: value }));
-      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: 1 }));
-    } else {
-      dispatch(setCompanyAttribute({ attribute: "IdBarrio", value: value }));
     }
   };
 
@@ -159,14 +146,6 @@ export default function CompanyPage() {
   });
 
   const distritoItems = distritoList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-
-  const barrioItems = barrioList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -209,14 +188,7 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
-            <LabelField
-              id="FechaVence"
-              value={company?.FechaVence ? convertToDateString(company.FechaVence) : ""}
-              label="Fecha vencimiento plan"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Select
               id="IdProvincia"
               label="Provincia"
@@ -232,7 +204,7 @@ export default function CompanyPage() {
               <MenuItem value={7}>LIMON</MenuItem>
             </Select>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Select
               id="IdCanton"
               label="Cantón"
@@ -242,7 +214,7 @@ export default function CompanyPage() {
               {cantonItems}
             </Select>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Select
               id="IdDistrito"
               label="Distrito"
@@ -252,20 +224,10 @@ export default function CompanyPage() {
               {distritoItems}
             </Select>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Select
-              id="IdBarrio"
-              label="Barrio"
-              value={barrioItems.length > 1 ? company.IdBarrio.toString() : ""}
-              onChange={event => handleSelectChange("IdBarrio", parseInt(event.target.value))}
-            >
-              {barrioItems}
-            </Select>
-          </Grid>
           <Grid item xs={12}>
             <TextField required id="Direccion" value={company.Direccion} label="Dirección" onChange={handleChange} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <TextField
               required
               id="Telefono1"
@@ -275,13 +237,20 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <TextField
               id="Telefono2"
               value={company.Telefono2}
               label="Teléfono 2"
               numericFormat
               onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LabelField
+              id="FechaVence"
+              value={company?.FechaVence ? convertToDateString(company.FechaVence) : ""}
+              label="Fecha vencimiento plan"
             />
           </Grid>
           <Grid item xs={12}>

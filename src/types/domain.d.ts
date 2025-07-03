@@ -59,7 +59,6 @@ export type CompanyType = {
   IdProvincia: number;
   IdCanton: number;
   IdDistrito: number;
-  IdBarrio: number;
   IdTipoMoneda: number;
   Direccion: string;
   Telefono1: string;

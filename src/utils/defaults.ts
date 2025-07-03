@@ -22,7 +22,6 @@ export const defaultCompany: CompanyType = {
   IdProvincia: 1,
   IdCanton: 1,
   IdDistrito: 1,
-  IdBarrio: 1,
   Direccion: "",
   Telefono1: "",
   Telefono2: "",

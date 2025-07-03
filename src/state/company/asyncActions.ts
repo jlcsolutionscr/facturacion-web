@@ -13,7 +13,6 @@ import { setCompany as setSessionCompany } from "state/session/reducer";
 import { RootState } from "state/store";
 import {
   setActiveSection,
-  setBarrioList,
   setCantonList,
   setDistritoList,
   setMessage,
@@ -22,7 +21,6 @@ import {
 } from "state/ui/reducer";
 import { defaultCredentials } from "utils/defaults";
 import {
-  getBarrioList,
   getCantonList,
   getCompanyEntity,
   getCompanyLogo,
@@ -50,7 +48,6 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const credentials = await getCredentialsEntity(token, company.IdEmpresa);
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
-    const barrioList = await getBarrioList(token, company.IdProvincia, company.IdCanton, company.IdDistrito);
     const availableEconomicActivityList = await getEconomicActivityList(company.Identificacion);
     dispatch(setCompany(company));
     dispatch(
@@ -62,7 +59,6 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
     dispatch(setCantonList(cantonList));
     dispatch(setDistritoList(distritoList));
-    dispatch(setBarrioList(barrioList));
     dispatch(stopLoader());
   } catch (error) {
     dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
