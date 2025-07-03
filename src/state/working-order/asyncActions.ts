@@ -279,6 +279,7 @@ export const openWorkingOrder = createAsyncThunk(
         comercialName: workingOrder.NombreComercial,
         email: workingOrder.CorreoElectronico,
         phoneNumber: workingOrder.Telefono,
+        activityCode: workingOrder.Cliente.CodigoActividad,
         exonerationType: workingOrder.Cliente.IdTipoExoneracion,
         exoneratedById: workingOrder.Cliente.IdNombreInstExoneracion,
         exonerationRef: workingOrder.Cliente.NumDocExoneracion,

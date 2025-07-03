@@ -200,6 +200,7 @@ export const getCustomerDetails = createAsyncThunk(
           comercialName: customer.NombreComercial,
           email: customer.CorreoElectronico,
           phoneNumber: customer.Telefono,
+          activityCode: customer.CodigoActividad,
           exonerationType: customer.IdTipoExoneracion,
           exonerationRef: customer.NumDocExoneracion,
           exonerationRef2: customer.ArticuloExoneracion,

@@ -175,6 +175,7 @@ export type CustomerDetailsType = {
   comercialName: string;
   email: string;
   phoneNumber: string;
+  activityCode: string;
   exonerationType: number;
   exonerationRef: string;
   exonerationRef2: string;

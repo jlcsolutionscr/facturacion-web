@@ -62,6 +62,7 @@ export const defaultCustomerDetails: CustomerDetailsType = {
   comercialName: "",
   email: "",
   phoneNumber: "",
+  activityCode: "",
   exonerationType: 1,
   exonerationRef: "",
   exonerationRef2: "",
