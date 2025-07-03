@@ -10,6 +10,7 @@ import {
   PaymentDetailsType,
   ProductDetailsType,
   ProductType,
+  ProformaType,
   ReceiptType,
   SummaryType,
   WorkingOrderType,
@@ -240,7 +241,7 @@ export async function getDistritoList(token: string, provinceId: number, cantonI
 }
 
 export async function getEconomicActivityList(id: number) {
-  const response = await fetch(HACIENDA_SERVER_URL + "?identificacion=" + id);
+  const response = await fetch(HACIENDA_SERVER_URL + "/fe/ae?identificacion=" + id);
   if (!response.ok) {
     let error = "";
     try {
@@ -260,6 +261,44 @@ export async function getEconomicActivityList(id: number) {
     } else {
       return [];
     }
+  }
+}
+
+export async function getDollarExchangeValue(token: string) {
+  let dollarExchange = 0;
+  const dateFilter = convertToDateString(new Date());
+  const data = "{NombreMetodo: 'ObtenerTipoCambioDolar', Parametros: {Fecha: '" + dateFilter + "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === "0") {
+    let error = "";
+    try {
+      const response = await fetch(HACIENDA_SERVER_URL + "/indicadores/tc/dolar");
+      if (!response.ok) {
+        error = "Error al obtener el tipo de cambio para la moneda de la transacción en proceso.";
+      } else {
+        const data = await response.json();
+        if (data?.venta) {
+          dollarExchange = data.venta.valor;
+        } else {
+          error = "Error al obtener el tipo de cambio para la moneda de la transacción en proceso.";
+        }
+      }
+    } catch {
+      error = "Error al obtener el tipo de cambio para la moneda de la transacción en proceso.";
+    }
+    if (error !== "") throw new Error(error);
+    else {
+      const data =
+        "{NombreMetodo: 'AgregarTipoCambioDolar', Parametros: {Fecha: '" +
+        dateFilter +
+        "', Valor: " +
+        dollarExchange +
+        "}}";
+      await post(APP_URL + "/ejecutar", token, data);
+      return dollarExchange;
+    }
+  } else {
+    return parseFloat(response);
   }
 }
 
@@ -357,9 +396,7 @@ export async function saveCustomerEntity(token: string, customer: CustomerType) 
   const entidad = JSON.stringify(customer);
   const data =
     "{NombreMetodo: '" + (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") + "', Entidad: " + entidad + "}";
-  const response = await post(APP_URL + "/ejecutar", token, data);
-  if (response === null) return null;
-  return response;
+  await post(APP_URL + "/ejecutar", token, data);
 }
 
 export async function getProductCategoryList(token: string, companyId: number) {
@@ -458,8 +495,13 @@ export async function saveProductEntity(token: string, product: ProductType) {
     "', Entidad: " +
     entidad +
     "}";
-  const response = await post(APP_URL + "/ejecutar", token, data);
-  if (response === null) return null;
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
+export async function getExonerationTypeList(token: string) {
+  const data = "{NombreMetodo: 'ObtenerListadoTipoExoneracion'}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return [];
   return response;
 }
 
@@ -588,7 +630,7 @@ export async function saveInvoiceEntity(
   activityCode: number,
   paymentDetailsList: PaymentDetailsType[],
   cashAdvance: number,
-  currencyType: number,
+  currency: number,
   vendorId: number,
   orderId: number,
   customerDetails: CustomerDetailsType,
@@ -596,6 +638,10 @@ export async function saveInvoiceEntity(
   summary: SummaryType,
   comment: string
 ) {
+  let dollarExchange = 0;
+  if (currency === 2) {
+    dollarExchange = await getDollarExchangeValue(token);
+  }
   const bankId = await getPaymentBankId(token, companyId, paymentDetailsList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
   productDetailsList.forEach(item => {
@@ -617,12 +663,12 @@ export async function saveInvoiceEntity(
       IdConsecutivo: 0,
       IdFactura: 0,
       IdFormaPago: paymentDetailsList[0].paymentId,
-      IdTipoMoneda: currencyType,
+      IdTipoMoneda: currency,
       IdCuentaBanco: bankId,
       TipoTarjeta: "",
       NroMovimiento: "",
       MontoLocal: summary.total - cashAdvance,
-      TipoDeCambio: 1,
+      TipoDeCambio: dollarExchange,
     },
   ];
   const invoiceDate = convertToDateTimeString(new Date());
@@ -633,8 +679,8 @@ export async function saveInvoiceEntity(
     IdTerminal: 1,
     IdFactura: 0,
     IdUsuario: userId,
-    IdTipoMoneda: 1,
-    TipoDeCambioDolar: 0,
+    IdTipoMoneda: currency,
+    TipoDeCambioDolar: dollarExchange,
     IdCliente: customerDetails.id,
     NombreCliente: customerDetails.name,
     IdCondicionVenta: 1,
@@ -651,10 +697,10 @@ export async function saveInvoiceEntity(
     MontoPagado: summary.total,
     MontoAdelanto: cashAdvance,
     IdTipoExoneracion: customerDetails.exonerationType,
-    IdNombreInstExoneracion: customerDetails.exoneratedById,
     NumDocExoneracion: customerDetails.exonerationRef,
     ArticuloExoneracion: customerDetails.exonerationRef2,
     IncisoExoneracion: customerDetails.exonerationRef3,
+    IdNombreInstExoneracion: customerDetails.exoneratedById,
     FechaEmisionDoc: convertToDateTimeString(customerDetails.exonerationDate),
     PorcentajeExoneracion: customerDetails.exonerationPercentage,
     IdCxC: 0,
@@ -748,7 +794,7 @@ export async function saveWorkingOrderEntity(
     IdOrden: order.id,
     ConsecOrdenServicio: order?.consecutive,
     IdUsuario: userId,
-    IdTipoMoneda: 1,
+    IdTipoMoneda: order.currency,
     IdCliente: order.customerDetails.id,
     NombreCliente: order.customerDetails.name,
     Fecha: workingOrderDate,
@@ -955,6 +1001,10 @@ export async function saveReceiptEntity(
   companyId: number,
   receipt: ReceiptType
 ) {
+  let dollarExchange = 0;
+  if (receipt.currency === 2) {
+    dollarExchange = await getDollarExchangeValue(token);
+  }
   const receiptDetails: DetalleFacturaCompraType[] = [];
   receipt.productDetailsList.forEach((item, index) => {
     const detail = {
@@ -976,7 +1026,8 @@ export async function saveReceiptEntity(
     IdSucursal: branchId,
     IdTerminal: 1,
     IdUsuario: userId,
-    IdTipoMoneda: 1,
+    IdTipoMoneda: receipt.currency,
+    TipoDeCambioDolar: dollarExchange,
     Fecha: receiptDate,
     IdCondicionVenta: 1,
     PlazoCredito: 0,
@@ -1027,12 +1078,9 @@ export async function saveProformaEntity(
   userId: number,
   companyId: number,
   branchId: number,
-  vendorId: number,
-  customerDetails: CustomerDetailsType,
-  productDetailsList: ProductDetailsType[],
-  summary: SummaryType,
-  comment: string
+  entity: ProformaType
 ) {
+  const { vendorId, currency, customerDetails, productDetailsList, summary, comment } = entity;
   const proformaDetails: DetalleProformaType[] = [];
   productDetailsList.forEach(item => {
     const detail = {
@@ -1055,7 +1103,7 @@ export async function saveProformaEntity(
     IdSucursal: branchId,
     IdProforma: 0,
     IdUsuario: userId,
-    IdTipoMoneda: 1,
+    IdTipoMoneda: currency,
     IdCliente: customerDetails.id,
     NombreCliente: customerDetails.name,
     Fecha: proformaDate,
@@ -1132,19 +1180,21 @@ export async function getProformaListPerPage(
   return response;
 }
 
-export function parseInvoiceEntity(entity: any, taxTypeList: IdDescriptionValueType[]) {
-  const customerDetails = {
+export function parseInvoiceEntity(entity: any) {
+  const customerDetails: CustomerDetailsType = {
     id: entity.IdCliente,
     name: entity.NombreCliente,
+    comercialName: entity.NombreComercial,
+    email: entity.CorreoElectronico,
+    phoneNumber: entity.Telefono,
     exonerationType: entity.Cliente.IdTipoExoneracion,
-    exoneratedById: entity.Cliente.IdNombreInstExoneracion,
     exonerationRef: entity.Cliente.NumDocExoneracion,
     exonerationRef2: entity.Cliente.ArticuloExoneracion,
     exonerationRef3: entity.Cliente.IncisoExoneracion,
+    exoneratedById: entity.Cliente.IdNombreInstExoneracion,
     exonerationPercentage: entity.Cliente.PorcentajeExoneracion,
     exonerationDate: entity.Cliente.FechaEmisionDoc,
     priceTypeId: entity.Cliente.IdTipoPrecio,
-    taxRate: getTaxeRateFromId(taxTypeList, entity.Cliente.IdImpuesto),
   };
   const productDetailsList = entity.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
     id: item.IdProducto,
@@ -1175,6 +1225,7 @@ export function parseInvoiceEntity(entity: any, taxTypeList: IdDescriptionValueT
     paymentDetailsList: paymentDetailsList,
     vendorId: entity.IdVendedor,
     comment: entity.TextoAdicional,
+    currency: entity.currency,
     successful: true,
     summary: { ...summary, cashAmount: 0 },
   };

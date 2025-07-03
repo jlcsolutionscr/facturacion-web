@@ -160,6 +160,7 @@ export const defaultInvoice: InvoiceType = {
     cashAmount: 0,
   },
   comment: "",
+  currency: 1,
   successful: false,
   cashAdvance: 0,
 };
@@ -177,6 +178,7 @@ export const defaultWorkingOrder: WorkingOrderType = {
   productDetailsList: [],
   paymentDetailsList: [],
   vendorId: 0,
+  currency: 1,
   summary: {
     taxed: 0,
     exonerated: 0,
@@ -230,6 +232,7 @@ export const defaultReceipt: ReceiptType = {
     date: "2000-01-01T23:59:59",
     percentage: 0,
   },
+  currency: 1,
   successful: false,
 };
 
@@ -241,6 +244,7 @@ export const defaultProforma: ProformaType = {
   productDetails: defaultProductDetails,
   productDetailsList: [],
   vendorId: 0,
+  currency: 1,
   summary: {
     taxed: 0,
     exonerated: 0,

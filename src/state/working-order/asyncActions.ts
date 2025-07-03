@@ -1,4 +1,4 @@
-import { DetalleProductoType } from "types/domain";
+import { CustomerDetailsType, DetalleProductoType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
@@ -41,7 +41,7 @@ import {
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
 import { printWorkingOrder } from "utils/printing";
-import { convertToDateString, getErrorMessage, getTaxeRateFromId, roundNumber } from "utils/utilities";
+import { convertToDateString, getErrorMessage, roundNumber } from "utils/utilities";
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -253,9 +253,8 @@ export const revokeWorkingOrder = createAsyncThunk(
 export const openWorkingOrder = createAsyncThunk(
   "working-order/openWorkingOrder",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { session, ui } = getState() as RootState;
+    const { session } = getState() as RootState;
     const { token, companyId, branchId, company } = session;
-    const { taxTypeList } = ui;
     dispatch(startLoader());
     dispatch(setActiveSection(14));
     try {
@@ -274,9 +273,12 @@ export const openWorkingOrder = createAsyncThunk(
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
-      const customerDetails = {
+      const customerDetails: CustomerDetailsType = {
         id: workingOrder.IdCliente,
         name: workingOrder.NombreCliente,
+        comercialName: workingOrder.NombreComercial,
+        email: workingOrder.CorreoElectronico,
+        phoneNumber: workingOrder.Telefono,
         exonerationType: workingOrder.Cliente.IdTipoExoneracion,
         exoneratedById: workingOrder.Cliente.IdNombreInstExoneracion,
         exonerationRef: workingOrder.Cliente.NumDocExoneracion,
@@ -285,7 +287,6 @@ export const openWorkingOrder = createAsyncThunk(
         exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
         exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
         priceTypeId: workingOrder.Cliente.IdTipoPrecio,
-        taxRate: getTaxeRateFromId(taxTypeList, workingOrder.Cliente.IdImpuesto),
       };
       const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
         id: item.IdProducto,

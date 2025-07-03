@@ -237,6 +237,7 @@ export type InvoiceType = {
   summary: SummaryType;
   comment: string;
   cashAdvance: number;
+  currency: number;
   successful: boolean;
 };
 
@@ -253,6 +254,7 @@ export type WorkingOrderType = {
   paymentDetailsList: PaymentDetailsType[];
   cashAdvance: number;
   vendorId: number;
+  currency: number;
   summary: SummaryType;
   delivery: DeliveryType;
 };
@@ -281,6 +283,7 @@ export type ReceiptType = {
     date: string;
     percentage: number;
   };
+  currency: number;
   successful: boolean;
 };
 
@@ -292,6 +295,7 @@ export type ProformaType = {
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
   vendorId: number;
+  currency: number;
   summary: SummaryType;
   comment: string;
   successful: boolean;
