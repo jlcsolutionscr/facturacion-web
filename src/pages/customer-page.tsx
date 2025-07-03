@@ -10,6 +10,7 @@ import Button from "components/button";
 import DatePicker from "components/data-picker";
 import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
 import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
@@ -56,6 +57,7 @@ export default function CustomerPage() {
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const exonerationNameList = useSelector(getExonerationNameList);
   const customer = useSelector(getCustomer);
+  const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   const idTypeItems = idTypeList.map(item => {
     return (
@@ -79,6 +81,13 @@ export default function CustomerPage() {
     );
   });
   const exonerationNamesItems = exonerationNameList.map(item => {
+    return (
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
+      </MenuItem>
+    );
+  });
+  const activityItems = economicActivityList.map(item => {
     return (
       <MenuItem key={item.Id} value={item.Id}>
         {item.Descripcion}
@@ -319,6 +328,23 @@ export default function CustomerPage() {
               numericFormat
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Select
+              id="CodigoActividad"
+              label="Seleccione la Actividad Económica"
+              value={customer.CodigoActividad}
+              onChange={event =>
+                dispatch(
+                  setCustomerAttribute({
+                    attribute: "CodigoActividad",
+                    value: event.target.value,
+                  })
+                )
+              }
+            >
+              {activityItems}
+            </Select>
           </Grid>
         </Grid>
       </Box>

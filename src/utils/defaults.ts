@@ -93,6 +93,7 @@ export const defaultCustomer: CustomerType = {
   FechaEmisionDoc: "2000-01-01T23:59:59",
   PorcentajeExoneracion: 0,
   PermiteCredito: false,
+  CodigoActividad: "",
 };
 
 export const defaultPaymentDetails: PaymentDetailsType = {

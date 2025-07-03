@@ -240,7 +240,7 @@ export async function getDistritoList(token: string, provinceId: number, cantonI
   return response;
 }
 
-export async function getEconomicActivityList(id: number) {
+export async function getEconomicActivityList(id: string) {
   const response = await fetch(HACIENDA_SERVER_URL + "/fe/ae?identificacion=" + id);
   if (!response.ok) {
     let error = "";

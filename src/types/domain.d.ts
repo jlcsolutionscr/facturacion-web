@@ -166,6 +166,7 @@ export type CustomerType = {
   FechaEmisionDoc: string;
   PorcentajeExoneracion: number;
   PermiteCredito: boolean;
+  CodigoActividad: string;
 };
 
 export type CustomerDetailsType = {

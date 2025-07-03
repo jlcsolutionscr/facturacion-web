@@ -1,8 +1,8 @@
 import { CustomerType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { setAvailableEconomicActivityList } from "state/company/reducer";
 import {
-  resetCustomer,
   setCustomer,
   setCustomerAttribute,
   setCustomerList,
@@ -21,6 +21,7 @@ import {
   getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
+  getEconomicActivityList,
   saveCustomerEntity,
 } from "utils/domainHelper";
 import { getErrorMessage } from "utils/utilities";
@@ -84,9 +85,12 @@ export const openCustomer = createAsyncThunk(
     try {
       let customer = { ...defaultCustomer, IdEmpresa: companyId };
       dispatch(setCustomer(customer));
+      dispatch(setAvailableEconomicActivityList([]));
       if (payload.idCustomer) {
         customer = await getCustomerEntity(token, payload.idCustomer);
+        const availableEconomicActivityList = await getEconomicActivityList(customer.Identificacion);
         dispatch(setCustomer(customer));
+        dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
       }
       dispatch(stopLoader());
     } catch (error) {
@@ -102,10 +106,14 @@ export const validateCustomerIdentifier = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
+    dispatch(setAvailableEconomicActivityList([]));
     try {
       const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
       if (customer) {
         if (customer.IdCliente > 0) {
+          const availableEconomicActivityList = await getEconomicActivityList(payload.identifier);
+          dispatch(setCustomer(customer));
+          dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
           dispatch(setMessage("Ya existe un cliente con la identificación ingresada"));
         } else {
           dispatch(
@@ -146,24 +154,6 @@ export const saveCustomer = createAsyncThunk("customer/saveCustomer", async (_pa
     dispatch(stopLoader());
   }
 });
-
-export const getCustomer = createAsyncThunk(
-  "customer/getCustomer",
-  async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { token } = session;
-    dispatch(startLoader());
-    dispatch(resetCustomer());
-    try {
-      const customer = await getCustomerEntity(token, payload.id);
-      dispatch(setCustomer(customer));
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
 
 export const filterCustomerList = createAsyncThunk(
   "customer/filterCustomerList",
