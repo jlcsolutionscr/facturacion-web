@@ -209,6 +209,8 @@ export const defaultReceipt: ReceiptType = {
     id: "",
     name: "",
     comercialName: "",
+    activityCode: "",
+    reference: "",
     address: "",
     phone: "",
     email: "",

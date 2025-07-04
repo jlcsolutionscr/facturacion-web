@@ -269,6 +269,8 @@ export type ReceiptType = {
     id: string;
     name: string;
     comercialName: string;
+    activityCode: string;
+    reference: string;
     address: string;
     phone: string;
     email: string;

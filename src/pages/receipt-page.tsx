@@ -21,6 +21,7 @@ import DatePicker from "components/data-picker";
 import LabelField from "components/label-field";
 import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
+import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { filterClasificationList } from "state/product/asyncActions";
 import { getClasificationList } from "state/product/reducer";
 import {
@@ -31,19 +32,16 @@ import {
   validateProductCode,
 } from "state/receipt/asyncActions";
 import {
-  getActivityCode,
   getExonerationDetails,
   getIssuerDetails,
   getProductDetails,
   getProductDetailsList,
   getSuccessful,
   getSummary,
-  setActivityCode,
   setExonerationDetails,
   setIssuerDetails,
   setProductDetails,
 } from "state/receipt/reducer";
-import { getCompany } from "state/session/reducer";
 import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
@@ -109,12 +107,11 @@ export default function ReceiptPage() {
   const exonerationNameList = useSelector(getExonerationNameList);
   const clasificationList = useSelector(getClasificationList);
   const exoneration = useSelector(getExonerationDetails);
-  const company = useSelector(getCompany);
   const productDetail = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
   const summary = useSelector(getSummary);
-  const activityCode = useSelector(getActivityCode);
   const successful = useSelector(getSuccessful);
+  const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   const handleIdTypeChange = (value: string) => {
     dispatch(setIssuerDetails({ attribute: "typeId", value: parseInt(value) }));
@@ -211,15 +208,13 @@ export default function ReceiptPage() {
     { field: "description", headerName: "Descripcion" },
   ];
 
-  const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map(item => {
-        return (
-          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-            {item.Descripcion}
-          </MenuItem>
-        );
-      })
-    : [];
+  const activityItems = economicActivityList.map(item => {
+    return (
+      <MenuItem key={item.Id} value={item.Id}>
+        {item.Descripcion}
+      </MenuItem>
+    );
+  });
 
   const addDisabled =
     productDetail.code.length < 13 ||
@@ -244,16 +239,6 @@ export default function ReceiptPage() {
           <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
             Factura de Compra
           </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            id="codigo-actividad-select-id"
-            label="Seleccione la Actividad Económica"
-            value={activityCode.toString()}
-            onChange={event => dispatch(setActivityCode(event.target.value))}
-          >
-            {activityItems}
-          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select
@@ -283,8 +268,27 @@ export default function ReceiptPage() {
             required
             value={issuer.name}
             label="Nombre"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "name", value: event.target.value }))}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "reference", value: event.target.value }))}
           />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            disabled={successful}
+            required
+            value={issuer.reference}
+            label="Nro. Factura Física"
+            onChange={event => dispatch(setIssuerDetails({ attribute: "reference", value: event.target.value }))}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Select
+            id="codigo-actividad-select-id"
+            label="Seleccione la Actividad Económica"
+            value={issuer.activityCode}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "activityCode", value: event.target.value }))}
+          >
+            {activityItems}
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

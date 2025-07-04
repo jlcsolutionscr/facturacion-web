@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { setAvailableEconomicActivityList } from "state/company/reducer";
 import {
   resetProductDetails,
   resetReceipt,
@@ -14,6 +15,7 @@ import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
   getCustomerByIdentifier,
+  getEconomicActivityList,
   getProductClasification,
   getProductSummary,
   saveReceiptEntity,
@@ -49,6 +51,8 @@ export const validateCustomerIdentifier = createAsyncThunk(
       if (issuer.typeId === 0 && payload.identifier.length === 9) {
         dispatch(startLoader());
         const customer = await getCustomerByIdentifier(token, companyId, payload.identifier);
+        const availableEconomicActivityList = await getEconomicActivityList(payload.identifier);
+        dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
         if (customer) {
           dispatch(setIssuerDetails({ attribute: "name", value: customer.Nombre }));
         } else {

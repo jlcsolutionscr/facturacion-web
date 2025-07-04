@@ -1037,6 +1037,8 @@ export async function saveReceiptEntity(
     IdentificacionEmisor: receipt.issuer.id,
     NombreComercialEmisor: receipt.issuer.comercialName,
     TelefonoEmisor: receipt.issuer.phone,
+    CodigoActividadEmisor: receipt.issuer.activityCode,
+    NumeroReferencia: receipt.issuer.reference,
     IdProvinciaEmisor: 1,
     IdCantonEmisor: 1,
     IdDistritoEmisor: 1,
