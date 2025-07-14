@@ -2,13 +2,7 @@ import { CustomerType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setAvailableEconomicActivityList } from "state/company/reducer";
-import {
-  setCustomer,
-  setCustomerAttribute,
-  setCustomerList,
-  setCustomerListCount,
-  setCustomerListPage,
-} from "state/customer/reducer";
+import { setCustomer, setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
 import { setCustomerDetails as setInvoiceCustomer } from "state/invoice/reducer";
 import { setCustomerDetails as setProformaCustomer } from "state/proforma/reducer";
 import { RootState } from "state/store";
@@ -18,10 +12,10 @@ import { FORM_TYPE } from "utils/constants";
 import { defaultCustomer, defaultCustomerDetails } from "utils/defaults";
 import {
   getCustomerByIdentifier,
+  getCustomerData,
   getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
-  getEconomicActivityList,
   saveCustomerEntity,
 } from "utils/domainHelper";
 import { getErrorMessage } from "utils/utilities";
@@ -88,7 +82,13 @@ export const openCustomer = createAsyncThunk(
       dispatch(setAvailableEconomicActivityList([]));
       if (payload.idCustomer) {
         customer = await getCustomerEntity(token, payload.idCustomer);
-        const availableEconomicActivityList = await getEconomicActivityList(customer.Identificacion);
+        const customerData = await getCustomerData(customer.Identificacion);
+        const availableEconomicActivityList = customerData.actividades.map(
+          (actividad: { codigo: string; descripcion: string }) => ({
+            Id: parseInt(actividad.codigo),
+            Descripcion: actividad.descripcion,
+          })
+        );
         dispatch(setCustomer(customer));
         dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
       }
@@ -102,34 +102,45 @@ export const openCustomer = createAsyncThunk(
 
 export const validateCustomerIdentifier = createAsyncThunk(
   "customer/validateCustomerIdentifier",
-  async (payload: { identifier: string }, { getState, dispatch }) => {
+  async (payload: { idType: number; identifier: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
     dispatch(startLoader());
     dispatch(setAvailableEconomicActivityList([]));
     try {
+      const customerData = await getCustomerData(payload.identifier);
+      console.log("Data", customerData);
+      const availableEconomicActivityList = customerData.actividades.map(
+        (actividad: { codigo: string; descripcion: string }) => ({
+          Id: parseInt(actividad.codigo),
+          Descripcion: actividad.descripcion,
+        })
+      );
+      dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
       const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
-      if (customer) {
-        if (customer.IdCliente > 0) {
-          const availableEconomicActivityList = await getEconomicActivityList(payload.identifier);
-          dispatch(setCustomer(customer));
-          dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
-          dispatch(setMessage("Ya existe un cliente con la identificación ingresada"));
-        } else {
-          dispatch(
-            setCustomerAttribute({
-              attribute: "Nombre",
-              value: customer.Nombre,
-            })
-          );
-        }
+      if (customer?.IdCliente > 0) {
+        dispatch(setCustomer(customer));
+        dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
       } else {
-        dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
+        dispatch(
+          setCustomer({
+            ...defaultCustomer,
+            IdTipoIdentificacion: payload.idType,
+            Identificacion: payload.identifier,
+            Nombre: customerData.nombre,
+          })
+        );
       }
       dispatch(stopLoader());
     } catch (error) {
-      dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(setMessage({ message: "No se logró obtener información del cliente. . .", type: "ERROR" }));
+      dispatch(
+        setCustomer({
+          ...defaultCustomer,
+          IdTipoIdentificacion: payload.idType,
+          Identificacion: payload.identifier,
+        })
+      );
       dispatch(stopLoader());
     }
   }

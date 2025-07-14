@@ -13,13 +13,7 @@ import {
 } from "state/receipt/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import {
-  getCustomerByIdentifier,
-  getEconomicActivityList,
-  getProductClasification,
-  getProductSummary,
-  saveReceiptEntity,
-} from "utils/domainHelper";
+import { getCustomerData, getProductClasification, getProductSummary, saveReceiptEntity } from "utils/domainHelper";
 import { getErrorMessage, getIdFromRateValue, roundNumber } from "utils/utilities";
 
 export const setReceiptParameters = createAsyncThunk(
@@ -43,21 +37,21 @@ export const setReceiptParameters = createAsyncThunk(
 export const validateCustomerIdentifier = createAsyncThunk(
   "receipt/validateCustomerIdentifier",
   async (payload: { identifier: string }, { getState, dispatch }) => {
-    const { session, receipt } = getState() as RootState;
-    const { token, companyId } = session;
+    const { receipt } = getState() as RootState;
     const { issuer } = receipt.entity;
     try {
       dispatch(setIssuerDetails({ attribute: "id", value: payload.identifier }));
       if (issuer.typeId === 0 && payload.identifier.length === 9) {
         dispatch(startLoader());
-        const customer = await getCustomerByIdentifier(token, companyId, payload.identifier);
-        const availableEconomicActivityList = await getEconomicActivityList(payload.identifier);
+        const customerData = await getCustomerData(payload.identifier);
+        const availableEconomicActivityList = customerData.actividades.map(
+          (actividad: { codigo: string; descripcion: string }) => ({
+            Id: parseInt(actividad.codigo),
+            Descripcion: actividad.descripcion,
+          })
+        );
         dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
-        if (customer) {
-          dispatch(setIssuerDetails({ attribute: "name", value: customer.Nombre }));
-        } else {
-          dispatch(setIssuerDetails({ attribute: "name", value: "" }));
-        }
+        dispatch(setIssuerDetails({ attribute: "name", value: customerData.nombre }));
         dispatch(stopLoader());
       }
     } catch (error) {

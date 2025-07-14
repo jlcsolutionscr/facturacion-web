@@ -51,7 +51,7 @@ function RoutingPage() {
   const { classes } = useStyles();
   const width = size.width > 320 ? size.width : 320;
   const component = !authenticated ? (
-    <LoginPage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => ![prev])} />
+    <LoginPage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
   ) : (
     <HomePage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
   );

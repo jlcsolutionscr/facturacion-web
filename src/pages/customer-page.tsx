@@ -12,9 +12,10 @@ import Select from "components/select";
 import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
-import { getCustomer, getPriceTypeList, setCustomerAttribute } from "state/customer/reducer";
+import { getCustomer, getPriceTypeList, setCustomer, setCustomerAttribute } from "state/customer/reducer";
 import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
+import { defaultCustomer } from "utils/defaults";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -121,14 +122,12 @@ export default function CustomerPage() {
       customer.IdTipoIdentificacion === 0 &&
       event.target.value.length === 9
     ) {
-      dispatch(validateCustomerIdentifier({ identifier: event.target.value }));
+      dispatch(validateCustomerIdentifier({ idType: customer.IdTipoIdentificacion, identifier: event.target.value }));
     }
   };
 
   const handleIdTypeChange = (value: string) => {
-    dispatch(setCustomerAttribute({ attribute: "IdTipoIdentificacion", value }));
-    dispatch(setCustomerAttribute({ attribute: "Identificacion", value: "" }));
-    dispatch(setCustomerAttribute({ attribute: "Nombre", value: "" }));
+    dispatch(setCustomer({ ...defaultCustomer, IdTipoIdentificacion: value }));
   };
 
   let idPlaceholder = "";

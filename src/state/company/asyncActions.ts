@@ -25,8 +25,8 @@ import {
   getCompanyEntity,
   getCompanyLogo,
   getCredentialsEntity,
+  getCustomerData,
   getDistritoList,
-  getEconomicActivityList,
   getReportData,
   saveCompanyEntity,
   saveCompanyLogo,
@@ -48,7 +48,13 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const credentials = await getCredentialsEntity(token, company.IdEmpresa);
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
-    const availableEconomicActivityList = await getEconomicActivityList(company.Identificacion);
+    const companyData = await getCustomerData(company.Identificacion);
+    const availableEconomicActivityList = companyData.actividades.map(
+      (actividad: { codigo: string; descripcion: string }) => ({
+        Id: parseInt(actividad.codigo),
+        Descripcion: actividad.descripcion,
+      })
+    );
     dispatch(setCompany(company));
     dispatch(
       setCredentials({

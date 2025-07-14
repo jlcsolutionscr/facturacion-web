@@ -240,26 +240,22 @@ export async function getDistritoList(token: string, provinceId: number, cantonI
   return response;
 }
 
-export async function getEconomicActivityList(id: string) {
+export async function getCustomerData(id: string) {
   const response = await fetch(HACIENDA_SERVER_URL + "/fe/ae?identificacion=" + id);
   if (!response.ok) {
     let error = "";
     try {
       error = await response.json();
     } catch {
-      error = "Error al obtener los datos de las actividades económicas de contribuyente.";
+      error = "Error al obtener los datos del contribuyente.";
     }
     throw new Error(error);
   } else {
     const data = await response.json();
     if (data) {
-      const actividadesList = data.actividades.map((actividad: { codigo: string; descripcion: string }) => ({
-        Id: parseInt(actividad.codigo),
-        Descripcion: actividad.descripcion,
-      }));
-      return actividadesList;
+      return data;
     } else {
-      return [];
+      throw new Error("Datos no encontrados en el Ministerio de Hacienda");
     }
   }
 }
