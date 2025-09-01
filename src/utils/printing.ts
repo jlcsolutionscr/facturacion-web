@@ -186,6 +186,11 @@ export const printInvoice = async (
       align: Align.Center,
     });
   }
+  lines.push({
+    text: "Moneda: " + (invoice.currency === 1 ? "COLONES" : "DOLARES"),
+    style: Style.Bold,
+    align: Align.Center,
+  });
   lines.push({ text: "" });
   lines.push({
     text: "Formas de pago",

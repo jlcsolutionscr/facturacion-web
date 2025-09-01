@@ -10,7 +10,14 @@ import Button from "components/button";
 import Select from "components/select";
 import TextField from "components/text-field";
 import { generateInvoiceTicket, saveInvoice } from "state/invoice/asyncActions";
-import { resetInvoice, setActivityCode, setComment, setPaymentDetailsList, setVendorId } from "state/invoice/reducer";
+import {
+  resetInvoice,
+  setActivityCode,
+  setComment,
+  setCurrency,
+  setPaymentDetailsList,
+  setVendorId,
+} from "state/invoice/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -68,6 +75,7 @@ interface StepThreeScreenProps {
   activityCode: number;
   paymentDetails: PaymentDetailsType[];
   vendorId: number;
+  currency: number;
   comment: string;
   vendorList: IdDescriptionType[];
   successful: boolean;
@@ -84,6 +92,7 @@ export default function StepThreeScreen({
   activityCode,
   paymentDetails,
   vendorId,
+  currency,
   comment,
   vendorList,
   successful,
@@ -243,6 +252,18 @@ export default function StepThreeScreen({
                 }
               >
                 {paymentItems}
+              </Select>
+            </Grid>
+            <Grid item xs={12} className={classes.centered}>
+              <Select
+                disabled={successful}
+                id="currenty-type-select-id"
+                label="Seleccione la moneda de la transacción"
+                value={currency.toString()}
+                onChange={event => dispatch(setCurrency(event.target.value))}
+              >
+                <MenuItem value={1}>COLONES</MenuItem>
+                <MenuItem value={2}>DOLARES</MenuItem>
               </Select>
             </Grid>
             <Grid item xs={12} className={classes.centered}>

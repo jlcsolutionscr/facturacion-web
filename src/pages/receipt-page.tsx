@@ -32,12 +32,14 @@ import {
   validateProductCode,
 } from "state/receipt/asyncActions";
 import {
+  getCurrency,
   getExonerationDetails,
   getIssuerDetails,
   getProductDetails,
   getProductDetailsList,
   getSuccessful,
   getSummary,
+  setCurrency,
   setExonerationDetails,
   setIssuerDetails,
   setProductDetails,
@@ -110,6 +112,7 @@ export default function ReceiptPage() {
   const productDetail = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
   const summary = useSelector(getSummary);
+  const currency = useSelector(getCurrency);
   const successful = useSelector(getSuccessful);
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
@@ -239,6 +242,18 @@ export default function ReceiptPage() {
           <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
             Factura de Compra
           </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Select
+            disabled={successful}
+            id="id-currency_type-select-id"
+            label="Seleccione la moneda de la transacción"
+            value={currency.toString()}
+            onChange={event => dispatch(setCurrency(event.target.value))}
+          >
+            <MenuItem value={1}>COLONES</MenuItem>
+            <MenuItem value={2}>DOLARES</MenuItem>
+          </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Select

@@ -260,41 +260,21 @@ export async function getCustomerData(id: string) {
   }
 }
 
-export async function getDollarExchangeValue(token: string) {
-  let dollarExchange = 0;
-  const dateFilter = convertToDateString(new Date());
-  const data = "{NombreMetodo: 'ObtenerTipoCambioDolar', Parametros: {Fecha: '" + dateFilter + "'}}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === "0") {
-    let error = "";
-    try {
-      const response = await fetch(HACIENDA_SERVER_URL + "/indicadores/tc/dolar");
-      if (!response.ok) {
-        error = "Error al obtener el tipo de cambio para la moneda de la transacción en proceso.";
+export async function getDollarExchangeValue() {
+  try {
+    const response = await fetch(HACIENDA_SERVER_URL + "/indicadores/tc/dolar");
+    if (!response.ok) {
+      throw new Error("Error al obtener el tipo de cambio para la moneda de la transacción en proceso.");
+    } else {
+      const data = await response.json();
+      if (data?.venta) {
+        return parseFloat(data.venta.valor);
       } else {
-        const data = await response.json();
-        if (data?.venta) {
-          dollarExchange = data.venta.valor;
-        } else {
-          error = "Error al obtener el tipo de cambio para la moneda de la transacción en proceso.";
-        }
+        throw new Error("Error al obtener el tipo de cambio para la moneda de la transacción en proceso.");
       }
-    } catch {
-      error = "Error al obtener el tipo de cambio para la moneda de la transacción en proceso.";
     }
-    if (error !== "") throw new Error(error);
-    else {
-      const data =
-        "{NombreMetodo: 'AgregarTipoCambioDolar', Parametros: {Fecha: '" +
-        dateFilter +
-        "', Valor: " +
-        dollarExchange +
-        "}}";
-      await post(APP_URL + "/ejecutar", token, data);
-      return dollarExchange;
-    }
-  } else {
-    return parseFloat(response);
+  } catch {
+    throw new Error("Error al obtener el tipo de cambio para la moneda de la transacción en proceso.");
   }
 }
 
@@ -636,7 +616,7 @@ export async function saveInvoiceEntity(
 ) {
   let dollarExchange = 0;
   if (currency === 2) {
-    dollarExchange = await getDollarExchangeValue(token);
+    dollarExchange = await getDollarExchangeValue();
   }
   const bankId = await getPaymentBankId(token, companyId, paymentDetailsList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
@@ -675,6 +655,7 @@ export async function saveInvoiceEntity(
     IdTerminal: 1,
     IdUsuario: userId,
     IdTipoMoneda: currency,
+    TipoDeCambioDolar: dollarExchange,
     IdCliente: customerDetails.id,
     NombreCliente: customerDetails.name,
     CodigoActividad: activityCode,
@@ -1000,7 +981,7 @@ export async function saveReceiptEntity(
 ) {
   let dollarExchange = 0;
   if (receipt.currency === 2) {
-    dollarExchange = await getDollarExchangeValue(token);
+    dollarExchange = await getDollarExchangeValue();
   }
   const receiptDetails: DetalleFacturaCompraType[] = [];
   receipt.productDetailsList.forEach((item, index) => {

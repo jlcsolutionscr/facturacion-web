@@ -10,7 +10,7 @@ import Button from "components/button";
 import Select from "components/select";
 import TextField from "components/text-field";
 import { saveProforma } from "state/proforma/asyncActions";
-import { resetProforma, setComment, setVendorId } from "state/proforma/reducer";
+import { resetProforma, setComment, setCurrency, setVendorId } from "state/proforma/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -64,6 +64,7 @@ interface StepThreeScreenProps {
   value: number;
   summary: SummaryType;
   vendorId: number;
+  currency: number;
   comment: string;
   vendorList: IdDescriptionType[];
   successful: boolean;
@@ -76,6 +77,7 @@ export default function StepThreeScreen({
   value,
   summary,
   vendorId,
+  currency,
   comment,
   vendorList,
   successful,
@@ -177,6 +179,19 @@ export default function StepThreeScreen({
                 <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
               </Grid>
             </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} className={classes.centered}>
+          <Grid item xs={10} sm={6} md={4}>
+            <Select
+              id="currenty-type-select-id"
+              label="Seleccione la moneda de la transacción"
+              value={currency.toString()}
+              onChange={event => dispatch(setCurrency(event.target.value))}
+            >
+              <MenuItem value={1}>COLONES</MenuItem>
+              <MenuItem value={2}>DOLARES</MenuItem>
+            </Select>
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.centered}>

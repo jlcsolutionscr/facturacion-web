@@ -51,6 +51,9 @@ const invoiceSlice = createSlice({
     setComment: (state, action) => {
       state.entity.comment = action.payload;
     },
+    setCurrency: (state, action) => {
+      state.entity.currency = action.payload;
+    },
     setSuccessful: (state, action) => {
       state.entity.invoiceId = action.payload.id;
       state.entity.consecutive = action.payload.consecutive;
@@ -90,6 +93,7 @@ export const {
   setPaymentDetailsList,
   setVendorId,
   setComment,
+  setCurrency,
   setSuccessful,
   setInvoiceListPage,
   setInvoiceListCount,
@@ -106,6 +110,7 @@ export const getActivityCode = (state: RootState) => state.invoice.entity.activi
 export const getPaymentDetailsList = (state: RootState) => state.invoice.entity.paymentDetailsList;
 export const getVendorId = (state: RootState) => state.invoice.entity.vendorId;
 export const getComment = (state: RootState) => state.invoice.entity.comment;
+export const getCurrency = (state: RootState) => state.invoice.entity.currency;
 export const getSuccessful = (state: RootState) => state.invoice.entity.successful;
 export const getInvoiceListPage = (state: RootState) => state.invoice.listPage;
 export const getInvoiceListCount = (state: RootState) => state.invoice.listCount;

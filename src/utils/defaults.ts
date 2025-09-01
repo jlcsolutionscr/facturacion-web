@@ -162,9 +162,9 @@ export const defaultInvoice: InvoiceType = {
     cashAmount: 0,
   },
   comment: "",
-  currency: 1,
   successful: false,
   cashAdvance: 0,
+  currency: 1,
 };
 
 export const defaultWorkingOrder: WorkingOrderType = {

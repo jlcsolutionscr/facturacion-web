@@ -43,6 +43,9 @@ export const receiptSlice = createSlice({
     setActivityCode: (state, action) => {
       state.entity.activityCode = action.payload;
     },
+    setCurrency: (state, action) => {
+      state.entity.currency = action.payload;
+    },
     setSuccessful: state => {
       state.entity.successful = true;
     },
@@ -66,6 +69,7 @@ export const {
   setSummary,
   setExonerationDetails,
   setActivityCode,
+  setCurrency,
   setSuccessful,
   resetReceipt,
 } = receiptSlice.actions;
@@ -76,6 +80,7 @@ export const getProductDetailsList = (state: RootState) => state.receipt.entity.
 export const getSummary = (state: RootState) => state.receipt.entity.summary;
 export const getExonerationDetails = (state: RootState) => state.receipt.entity.exoneration;
 export const getActivityCode = (state: RootState) => state.receipt.entity.activityCode;
+export const getCurrency = (state: RootState) => state.receipt.entity.currency;
 export const getSuccessful = (state: RootState) => state.receipt.entity.successful;
 
 export default receiptSlice.reducer;
