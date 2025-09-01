@@ -73,15 +73,17 @@ export const openCustomer = createAsyncThunk(
   "customer/openCustomer",
   async (payload: { idCustomer?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, companyId } = session;
+    const { token } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(11));
     try {
-      let customer = { ...defaultCustomer, IdEmpresa: companyId };
-      dispatch(setCustomer(customer));
-      dispatch(setAvailableEconomicActivityList([]));
       if (payload.idCustomer) {
-        customer = await getCustomerEntity(token, payload.idCustomer);
+        const customer = await getCustomerEntity(token, payload.idCustomer);
+        if (!customer) {
+          dispatch(setMessage({ message: "El cliente que intenta acceder con existe", type: "ERROR" }));
+          dispatch(stopLoader());
+          return;
+        }
         const customerData = await getCustomerData(customer.Identificacion);
         const availableEconomicActivityList = customerData.actividades.map(
           (actividad: { codigo: string; descripcion: string }) => ({
@@ -91,6 +93,9 @@ export const openCustomer = createAsyncThunk(
         );
         dispatch(setCustomer(customer));
         dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
+      } else {
+        dispatch(setCustomer(defaultCustomer));
+        dispatch(setAvailableEconomicActivityList([]));
       }
       dispatch(stopLoader());
     } catch (error) {
@@ -125,6 +130,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
         dispatch(
           setCustomer({
             ...defaultCustomer,
+            IdEmpresa: companyId,
             IdTipoIdentificacion: payload.idType,
             Identificacion: payload.identifier,
             Nombre: customerData.nombre,
