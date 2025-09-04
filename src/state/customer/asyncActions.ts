@@ -85,14 +85,8 @@ export const openCustomer = createAsyncThunk(
           return;
         }
         const customerData = await getCustomerData(customer.Identificacion);
-        const availableEconomicActivityList = customerData.actividades.map(
-          (actividad: { codigo: string; descripcion: string }) => ({
-            Id: parseInt(actividad.codigo),
-            Descripcion: actividad.descripcion,
-          })
-        );
         dispatch(setCustomer(customer));
-        dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
+        dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
       } else {
         dispatch(setCustomer(defaultCustomer));
         dispatch(setAvailableEconomicActivityList([]));
@@ -119,14 +113,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
       dispatch(setAvailableEconomicActivityList([]));
       try {
         const customerData = await getCustomerData(payload.identifier);
-        console.log("Data", customerData);
-        const availableEconomicActivityList = customerData.actividades.map(
-          (actividad: { codigo: string; descripcion: string }) => ({
-            Id: parseInt(actividad.codigo),
-            Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
-          })
-        );
-        dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
+        dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
         const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
         if (customer?.IdCliente > 0) {
           dispatch(setCustomer(customer));
@@ -138,7 +125,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
               IdEmpresa: companyId,
               IdTipoIdentificacion: payload.idType,
               Identificacion: payload.identifier,
-              Nombre: customerData.nombre,
+              Nombre: customerData.name,
             })
           );
         }

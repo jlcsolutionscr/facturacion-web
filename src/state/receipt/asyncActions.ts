@@ -48,14 +48,8 @@ export const validateCustomerIdentifier = createAsyncThunk(
       ) {
         dispatch(startLoader());
         const customerData = await getCustomerData(payload.identifier);
-        const availableEconomicActivityList = customerData.actividades.map(
-          (actividad: { codigo: string; descripcion: string }) => ({
-            Id: parseInt(actividad.codigo),
-            Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
-          })
-        );
-        dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
-        dispatch(setIssuerDetails({ attribute: "name", value: customerData.nombre }));
+        dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
+        dispatch(setIssuerDetails({ attribute: "name", value: customerData.name }));
         dispatch(stopLoader());
       }
     } catch (error) {

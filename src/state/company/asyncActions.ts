@@ -49,12 +49,6 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
     const companyData = await getCustomerData(company.Identificacion);
-    const availableEconomicActivityList = companyData.actividades.map(
-      (actividad: { codigo: string; descripcion: string }) => ({
-        Id: parseInt(actividad.codigo),
-        Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
-      })
-    );
     dispatch(setCompany(company));
     dispatch(
       setCredentials({
@@ -62,7 +56,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
         newCredentials: credentials === null,
       })
     );
-    dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
+    dispatch(setAvailableEconomicActivityList(companyData.economicActivityList));
     dispatch(setCantonList(cantonList));
     dispatch(setDistritoList(distritoList));
     dispatch(stopLoader());
