@@ -110,44 +110,50 @@ export const validateCustomerIdentifier = createAsyncThunk(
   async (payload: { idType: number; identifier: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
-    dispatch(startLoader());
-    dispatch(setAvailableEconomicActivityList([]));
-    try {
-      const customerData = await getCustomerData(payload.identifier);
-      console.log("Data", customerData);
-      const availableEconomicActivityList = customerData.actividades.map(
-        (actividad: { codigo: string; descripcion: string }) => ({
-          Id: parseInt(actividad.codigo),
-          Descripcion: actividad.descripcion,
-        })
-      );
-      dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
-      const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
-      if (customer?.IdCliente > 0) {
-        dispatch(setCustomer(customer));
-        dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
-      } else {
+    if (
+      (payload.idType === 0 && payload.identifier.length === 9) ||
+      (payload.idType === 1 && payload.identifier.length === 10) ||
+      (payload.idType > 1 && payload.identifier.length >= 11)
+    ) {
+      dispatch(startLoader());
+      dispatch(setAvailableEconomicActivityList([]));
+      try {
+        const customerData = await getCustomerData(payload.identifier);
+        console.log("Data", customerData);
+        const availableEconomicActivityList = customerData.actividades.map(
+          (actividad: { codigo: string; descripcion: string }) => ({
+            Id: parseInt(actividad.codigo),
+            Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
+          })
+        );
+        dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
+        const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
+        if (customer?.IdCliente > 0) {
+          dispatch(setCustomer(customer));
+          dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
+        } else {
+          dispatch(
+            setCustomer({
+              ...defaultCustomer,
+              IdEmpresa: companyId,
+              IdTipoIdentificacion: payload.idType,
+              Identificacion: payload.identifier,
+              Nombre: customerData.nombre,
+            })
+          );
+        }
+        dispatch(stopLoader());
+      } catch (error) {
+        dispatch(setMessage({ message: "No se logró obtener información del cliente. . .", type: "ERROR" }));
         dispatch(
           setCustomer({
             ...defaultCustomer,
-            IdEmpresa: companyId,
             IdTipoIdentificacion: payload.idType,
             Identificacion: payload.identifier,
-            Nombre: customerData.nombre,
           })
         );
+        dispatch(stopLoader());
       }
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: "No se logró obtener información del cliente. . .", type: "ERROR" }));
-      dispatch(
-        setCustomer({
-          ...defaultCustomer,
-          IdTipoIdentificacion: payload.idType,
-          Identificacion: payload.identifier,
-        })
-      );
-      dispatch(stopLoader());
     }
   }
 );

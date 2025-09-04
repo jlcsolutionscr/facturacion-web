@@ -117,11 +117,7 @@ export default function CustomerPage() {
         value: event.target.value,
       })
     );
-    if (
-      event.target.id === "Identificacion" &&
-      customer.IdTipoIdentificacion === 0 &&
-      event.target.value.length === 9
-    ) {
+    if (event.target.id === "Identificacion") {
       dispatch(validateCustomerIdentifier({ idType: customer.IdTipoIdentificacion, identifier: event.target.value }));
     }
   };

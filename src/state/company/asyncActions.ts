@@ -52,7 +52,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const availableEconomicActivityList = companyData.actividades.map(
       (actividad: { codigo: string; descripcion: string }) => ({
         Id: parseInt(actividad.codigo),
-        Descripcion: actividad.descripcion,
+        Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
       })
     );
     dispatch(setCompany(company));

@@ -41,13 +41,17 @@ export const validateCustomerIdentifier = createAsyncThunk(
     const { issuer } = receipt.entity;
     try {
       dispatch(setIssuerDetails({ attribute: "id", value: payload.identifier }));
-      if (issuer.typeId === 0 && payload.identifier.length === 9) {
+      if (
+        (issuer.typeId === 0 && payload.identifier.length === 9) ||
+        (issuer.typeId === 1 && payload.identifier.length === 10) ||
+        (issuer.typeId > 1 && payload.identifier.length >= 11)
+      ) {
         dispatch(startLoader());
         const customerData = await getCustomerData(payload.identifier);
         const availableEconomicActivityList = customerData.actividades.map(
           (actividad: { codigo: string; descripcion: string }) => ({
             Id: parseInt(actividad.codigo),
-            Descripcion: actividad.descripcion,
+            Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
           })
         );
         dispatch(setAvailableEconomicActivityList(availableEconomicActivityList));
