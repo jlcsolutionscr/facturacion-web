@@ -49,10 +49,25 @@ export const sessionSlice = createSlice({
     setVendorList: (state, action) => {
       state.vendorList = action.payload;
     },
+    setResetPasswordId: (state, action) => {
+      state.resetPasswordId = action.payload;
+    },
+    setPasswordResetMessage: (state, action) => {
+      state.passwordResetMessage = action.payload;
+    },
   },
 });
 
-export const { login, logout, setCompany, setBranchId, setPrinter, setVendorList } = sessionSlice.actions;
+export const {
+  login,
+  logout,
+  setCompany,
+  setBranchId,
+  setPrinter,
+  setVendorList,
+  setResetPasswordId,
+  setPasswordResetMessage,
+} = sessionSlice.actions;
 
 export const getAuthenticated = (state: RootState) => state.session.authenticated;
 export const getCompany = (state: RootState) => state.session.company;
@@ -62,5 +77,7 @@ export const getVendorList = (state: RootState) => state.session.vendorList;
 export const getPermissions = (state: RootState) => state.session.permissions;
 export const getBranchList = (state: RootState) => state.session.branchList;
 export const getReportList = (state: RootState) => state.session.reportList;
+export const getResetPasswordId = (state: RootState) => state.session.resetPasswordId;
+export const getPasswordResetMessage = (state: RootState) => state.session.passwordResetMessage;
 
 export default sessionSlice.reducer;

@@ -96,12 +96,36 @@ export function ExportDataToXls(filename: string, title: string, data: { [key: s
   saveAs(new Blob([wbout], { type: "application/octet-stream" }), filename + ".xlsx");
 }
 
+export async function get(endpointURL: string, token: string) {
+  const headers: HeaderType = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+  if (token !== "") {
+    headers.Authorization = "bearer " + token;
+  }
+  const response = await fetch(endpointURL, {
+    method: "GET",
+    headers,
+  });
+  if (!response.ok) {
+    let error = "";
+    try {
+      error = await response.json();
+      console.log("error on get", error);
+    } catch {
+      error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
+    }
+    throw new Error(error);
+  }
+}
+
 export async function getWithResponse(endpointURL: string, token: string) {
   const headers: HeaderType = {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
-  if (token !== null) {
+  if (token !== "") {
     headers.Authorization = "bearer " + token;
   }
   const response = await fetch(endpointURL, {
@@ -187,8 +211,8 @@ export function writeToLocalStorage(user: string, data: object) {
 }
 
 export function readFromLocalStorage() {
-  const data = window.sessionStorage.getItem("session") || "{}";
-  return JSON.parse(data);
+  const data = window.sessionStorage.getItem("session");
+  return data ? JSON.parse(data) : null;
 }
 
 export async function cleanLocalStorage() {

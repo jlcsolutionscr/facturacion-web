@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setPriceTypeList } from "state/customer/reducer";
 import { setProductTypeList } from "state/product/reducer";
-import { login, logout, setVendorList } from "state/session/reducer";
+import { login, logout, setPasswordResetMessage, setResetPasswordId, setVendorList } from "state/session/reducer";
 import {
   setActiveSection,
   setExonerationNameList,
@@ -14,7 +14,13 @@ import {
   startLoader,
   stopLoader,
 } from "state/ui/reducer";
-import { getVendorList, requestUserLogin } from "utils/domainHelper";
+import {
+  getVendorList,
+  requestUserLogin,
+  requestUserPasswordReset,
+  resetUserPassword as resetUserPasswordRequest,
+  validateResetId,
+} from "utils/domainHelper";
 import { cleanLocalStorage, getErrorMessage, writeToLocalStorage } from "utils/utilities";
 
 type SessionCompanyType = CompanyType & {
@@ -82,5 +88,54 @@ export const restoreSession = createAsyncThunk(
       dispatch(logout());
       dispatch(stopLoader());
     }
+  }
+);
+
+export const requestUserPasswordResetLink = createAsyncThunk(
+  "session/requestUserPasswordResetLink",
+  async (payload: { id: string; email: string }, { dispatch }) => {
+    dispatch(startLoader());
+    try {
+      await requestUserPasswordReset(payload.id, payload.email);
+      dispatch(stopLoader());
+      dispatch(setMessage({ message: "Solicitud de restablecimiento enviada satisfactoriamente. . .", type: "INFO" }));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const validateResetLink = createAsyncThunk(
+  "session/validateResetLink",
+  async (payload: { id: string }, { dispatch }) => {
+    dispatch(startLoader());
+    try {
+      await validateResetId(payload.id);
+      dispatch(setResetPasswordId(payload.id));
+    } catch (error) {
+      dispatch(
+        setPasswordResetMessage(
+          "La sesión se encuentra expirada. Por favor reinicie la solicitud de cambio de contraseña. . ."
+        )
+      );
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
+  }
+);
+
+export const resetUserPassword = createAsyncThunk(
+  "session/resetUserPassword",
+  async (payload: { id: string; password: string }, { dispatch }) => {
+    dispatch(startLoader());
+    try {
+      await resetUserPasswordRequest(payload.id, payload.password);
+      dispatch(setPasswordResetMessage("La contraseña se reestableció satisfactoriamente. . ."));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
   }
 );

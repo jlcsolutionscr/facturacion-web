@@ -57,6 +57,8 @@ type SessionStateType = {
   permissions: PermissionType[];
   printer: string;
   token: string;
+  resetPasswordId: string;
+  passwordResetMessage: string;
 };
 
 type CompanyStateType = {
@@ -166,6 +168,8 @@ export const sessionInitialState: SessionStateType = {
   permissions: [],
   printer: "",
   token: "",
+  resetPasswordId: "",
+  passwordResetMessage: "",
 };
 
 export const companyInitialState: CompanyStateType = {

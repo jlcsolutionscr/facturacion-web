@@ -21,6 +21,7 @@ import {
   convertToDateString,
   convertToDateTimeString,
   encryptString,
+  get,
   getTaxeRateFromId,
   getWithResponse,
   post,
@@ -84,6 +85,23 @@ export async function requestUserLogin(user: string, password: string, id: strin
     APP_URL + "/validarcredencialesweb?usuario=" + user + "&clave=" + ecryptedPass + "&identificacion=" + id;
   const company = await getWithResponse(endpoint, "");
   return company;
+}
+
+export async function requestUserPasswordReset(id: string, email: string) {
+  const endpoint =
+    APP_URL + "/generarnotificacionrestablecerclaveusuario?identificacion=" + id + "&correonotificacion=" + email;
+  await get(endpoint, "");
+}
+
+export async function validateResetId(id: string) {
+  const endpoint = APP_URL + "/validarregistroautenticacion?session=" + id;
+  await get(endpoint, "");
+}
+
+export async function resetUserPassword(id: string, password: string) {
+  const ecryptedPass = encryptString(password);
+  const endpoint = APP_URL + "/restablecerclaveusuario?session=" + id + "&clave=" + ecryptedPass;
+  await get(endpoint, "");
 }
 
 export async function getCompanyEntity(token: string, companyId: number) {

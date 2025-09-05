@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,7 +15,14 @@ import TextField from "@mui/material/TextField";
 import LoginImage from "assets/img/login-background.webp";
 import LoginImageJpg from "assets/img/login-background.webp";
 import LogoImage from "assets/img/login-logo.webp";
-import { restoreSession, userLogin } from "state/session/asyncActions";
+import {
+  requestUserPasswordResetLink,
+  resetUserPassword,
+  restoreSession,
+  userLogin,
+  validateResetLink,
+} from "state/session/asyncActions";
+import { getPasswordResetMessage, getResetPasswordId } from "state/session/reducer";
 import { readFromLocalStorage } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -71,6 +79,9 @@ const useStyles = makeStyles()(theme => ({
     display: "flex",
     alignItems: "center",
   },
+  dialogActions: {
+    margin: "0 20px 10px 20px",
+  },
 }));
 
 interface LoginPageProps {
@@ -83,9 +94,16 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
   const { classes } = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const [id, setId] = useState("");
+  const [resetId, setResetId] = useState("");
+  const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [dialogStatus, setDialogStatus] = useState({ type: "request", open: false });
+
   const dispatch = useDispatch();
+  const passwordResetId = useSelector(getResetPasswordId);
+  const passwordResetMessage = useSelector(getPasswordResetMessage);
 
   useEffect(() => {
     const session = readFromLocalStorage();
@@ -94,20 +112,137 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
       if (session.dateTime > expiredTime - 12 * 60 * 60 * 1000) {
         dispatch(restoreSession(session.company));
       }
+    } else {
+      const isResetLink = window.location.pathname === "/reset";
+      if (isResetLink) {
+        const params = new URLSearchParams(window.location.search);
+        for (const [key, value] of params.entries()) {
+          console.log("validateResetLink", value);
+          if (key === "id") dispatch(validateResetLink({ id: value }));
+        }
+      }
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (passwordResetId !== "") setDialogStatus({ type: "reset", open: true });
+  }, [passwordResetId]);
+
+  useEffect(() => {
+    if (passwordResetMessage !== "") setDialogStatus({ type: "alert", open: true });
+  }, [passwordResetMessage]);
 
   const handleOnChange = (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
     if (field === "username") setUsername(event.target.value);
     if (field === "password") setPassword(event.target.value);
     if (field === "id") setId(event.target.value);
+    if (field === "resetId") setResetId(event.target.value);
+    if (field === "email") setEmail(event.target.value);
+    if (field === "newPassword") setNewPassword(event.target.value);
+    if (field === "confirmNewPassword") setConfirmNewPassword(event.target.value);
   };
 
   const handleLoginClick = () => {
     dispatch(userLogin({ username, password, id }));
   };
 
+  const handleDialogClose = () => {
+    setResetId("");
+    setEmail("");
+    setDialogStatus(prev => ({ ...prev, open: false }));
+  };
+
+  const handleDialogConfirm = () => {
+    if (dialogStatus.type === "request") {
+      dispatch(requestUserPasswordResetLink({ id: resetId, email }));
+    } else if (dialogStatus.type === "reset") {
+      dispatch(resetUserPassword({ id: passwordResetId, password: newPassword }));
+    } else {
+      window.location.href = window.location.origin;
+    }
+    setDialogStatus(prev => ({ ...prev, open: false }));
+  };
+
   const isSubmitButtonDisabled = username === "" || password === "" || id === "";
+
+  const dialogContent = (
+    <div>
+      <DialogTitle>
+        {dialogStatus.type === "request" ? "Enviar solicitud para reestablecer contraseña" : "Reestablecer contraseña"}
+      </DialogTitle>
+      <DialogContent>
+        {dialogStatus.type === "request" ? (
+          <>
+            <TextField
+              variant="standard"
+              required
+              fullWidth
+              name="resetId"
+              label="Identificación"
+              id="resetId"
+              autoComplete="on"
+              value={resetId}
+              onChange={handleOnChange("resetId")}
+            />
+            <TextField
+              variant="standard"
+              required
+              fullWidth
+              name="email"
+              label="Correo electrónico"
+              id="email"
+              autoComplete="on"
+              value={email}
+              onChange={handleOnChange("email")}
+            />
+          </>
+        ) : dialogStatus.type === "reset" ? (
+          <>
+            <TextField
+              variant="standard"
+              required
+              fullWidth
+              name="newPassword"
+              label="Nueva contraseña"
+              id="newPassword"
+              autoComplete="on"
+              value={newPassword}
+              onChange={handleOnChange("newPassword")}
+            />
+            <TextField
+              variant="standard"
+              required
+              fullWidth
+              name="confirmNewPassword"
+              label="Confirme su contraseña"
+              id="confirmNewPassword"
+              autoComplete="on"
+              value={confirmNewPassword}
+              onChange={handleOnChange("confirmNewPassword")}
+            />
+          </>
+        ) : (
+          <DialogContentText>{passwordResetMessage}</DialogContentText>
+        )}
+      </DialogContent>
+      <DialogActions className={classes.dialogActions}>
+        {dialogStatus.type !== "alert" && <Button onClick={handleDialogClose}>Cancelar</Button>}
+        <Button
+          autoFocus
+          onClick={handleDialogConfirm}
+          disabled={
+            dialogStatus.type === "request"
+              ? resetId === "" || email === ""
+              : dialogStatus.type === "reset"
+              ? newPassword === "" || confirmNewPassword === "" || newPassword !== confirmNewPassword
+              : false
+          }
+        >
+          {dialogStatus.type === "request" ? "Enviar" : dialogStatus.type === "reset" ? "Guardar" : "Cerrar"}
+        </Button>
+      </DialogActions>
+    </div>
+  );
 
   return (
     <Grid container component="main">
@@ -181,8 +316,8 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
                   />
                 </Grid>
                 <Grid item xs={12} style={{ marginTop: "5%", textAlign: "center" }}>
-                  <Link onClick={e => e.preventDefault()} variant="body2">
-                    Olvido su contraseña?
+                  <Link onClick={() => setDialogStatus({ type: "request", open: true })} variant="body2">
+                    Olvidó su contraseña?
                   </Link>
                 </Grid>
               </Grid>
@@ -191,6 +326,9 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
         </div>
       </Grid>
       <Grid item xs={false} sm={6} md={8} className={classes.image} />
+      <Dialog onClose={handleDialogClose} open={dialogStatus.open}>
+        {dialogContent}
+      </Dialog>
     </Grid>
   );
 }
