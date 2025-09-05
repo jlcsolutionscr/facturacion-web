@@ -202,6 +202,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               variant="standard"
               required
               fullWidth
+              type="password"
               name="newPassword"
               label="Nueva contraseña"
               id="newPassword"
@@ -213,6 +214,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               variant="standard"
               required
               fullWidth
+              type="password"
               name="confirmNewPassword"
               label="Confirme su contraseña"
               id="confirmNewPassword"
