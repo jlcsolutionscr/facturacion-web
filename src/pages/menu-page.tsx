@@ -166,6 +166,11 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
+            <Button className={classes.button} onClick={() => dispatch(setActiveSection(2))}>
+              Actualizar usuario
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getLogo())}>
               Actualizar logotipo
             </Button>
@@ -177,7 +182,7 @@ export default function MenuPage() {
               onClick={() =>
                 dispatch(
                   getCustomerListFirstPage({
-                    id: 3,
+                    id: 4,
                     filterText: "",
                     rowsPerPage: ROWS_PER_CUSTOMER,
                   })
@@ -194,7 +199,7 @@ export default function MenuPage() {
               onClick={() =>
                 dispatch(
                   getProductListFirstPage({
-                    id: 4,
+                    id: 5,
                     filterText: "",
                     type: 2,
                     rowsPerPage: ROWS_PER_PRODUCT,
@@ -209,7 +214,7 @@ export default function MenuPage() {
             <Button
               disabled={!generateInvoice}
               className={classes.button}
-              onClick={() => dispatch(setInvoiceParameters({ id: 5 }))}
+              onClick={() => dispatch(setInvoiceParameters({ id: 6 }))}
             >
               Facturar
             </Button>
@@ -218,7 +223,7 @@ export default function MenuPage() {
             <Button
               disabled={!generateReceipt}
               className={classes.button}
-              onClick={() => dispatch(setReceiptParameters({ id: 6 }))}
+              onClick={() => dispatch(setReceiptParameters({ id: 7 }))}
             >
               Factura de compra
             </Button>
@@ -227,7 +232,7 @@ export default function MenuPage() {
             <Button
               disabled={!generateInvoice}
               className={classes.button}
-              onClick={() => dispatch(getInvoiceListFirstPage({ id: 7 }))}
+              onClick={() => dispatch(getInvoiceListFirstPage({ id: 8 }))}
             >
               Facturas electrónicas
             </Button>
@@ -236,7 +241,7 @@ export default function MenuPage() {
             <Button
               disabled={!manageDocuments}
               className={classes.button}
-              onClick={() => dispatch(getDocumentListFirstPage({ id: 8 }))}
+              onClick={() => dispatch(getDocumentListFirstPage({ id: 9 }))}
             >
               Documentos electrónicos
             </Button>
@@ -254,12 +259,12 @@ export default function MenuPage() {
             <Button
               disabled={!generateWorkingOrder}
               className={classes.button}
-              onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 9 }))}
+              onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 11 }))}
             >
               Ordenes de servicio
             </Button>
           </Grid>
-          <Grid item xs={12} alignItems="center">
+          <Grid item xs={12} sm={6}>
             <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
               Menu de reportes
             </Button>

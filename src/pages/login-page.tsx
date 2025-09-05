@@ -16,13 +16,14 @@ import LoginImage from "assets/img/login-background.webp";
 import LoginImageJpg from "assets/img/login-background.webp";
 import LogoImage from "assets/img/login-logo.webp";
 import {
+  authorizeUserEmail,
   requestUserPasswordResetLink,
   resetUserPassword,
   restoreSession,
   userLogin,
-  validateResetLink,
+  validateProcessingToken,
 } from "state/session/asyncActions";
-import { getPasswordResetMessage, getResetPasswordId } from "state/session/reducer";
+import { getProcessingToken, getProcessingTokenMessage } from "state/session/reducer";
 import { readFromLocalStorage } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -95,15 +96,14 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [id, setId] = useState("");
-  const [resetId, setResetId] = useState("");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [dialogStatus, setDialogStatus] = useState({ type: "request", open: false });
 
   const dispatch = useDispatch();
-  const passwordResetId = useSelector(getResetPasswordId);
-  const passwordResetMessage = useSelector(getPasswordResetMessage);
+  const processingToken = useSelector(getProcessingToken);
+  const processingTokenMessage = useSelector(getProcessingTokenMessage);
 
   useEffect(() => {
     const session = readFromLocalStorage();
@@ -113,30 +113,28 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
         dispatch(restoreSession(session.company));
       }
     } else {
-      const isResetLink = window.location.pathname === "/reset";
-      if (isResetLink) {
+      if (["/reset", "/authorize"].includes(window.location.pathname)) {
         const params = new URLSearchParams(window.location.search);
         for (const [key, value] of params.entries()) {
-          console.log("validateResetLink", value);
-          if (key === "id") dispatch(validateResetLink({ id: value }));
+          if (key === "id")
+            dispatch(validateProcessingToken({ type: window.location.pathname.substring(1), id: value }));
         }
       }
     }
   }, [dispatch]);
 
   useEffect(() => {
-    if (passwordResetId !== "") setDialogStatus({ type: "reset", open: true });
-  }, [passwordResetId]);
+    if (processingToken.id !== "") setDialogStatus({ type: processingToken.type, open: true });
+  }, [processingToken.id, processingToken.type]);
 
   useEffect(() => {
-    if (passwordResetMessage !== "") setDialogStatus({ type: "alert", open: true });
-  }, [passwordResetMessage]);
+    if (processingTokenMessage !== "") setDialogStatus({ type: "alert", open: true });
+  }, [processingTokenMessage]);
 
   const handleOnChange = (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
     if (field === "username") setUsername(event.target.value);
     if (field === "password") setPassword(event.target.value);
     if (field === "id") setId(event.target.value);
-    if (field === "resetId") setResetId(event.target.value);
     if (field === "email") setEmail(event.target.value);
     if (field === "newPassword") setNewPassword(event.target.value);
     if (field === "confirmNewPassword") setConfirmNewPassword(event.target.value);
@@ -147,16 +145,19 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
   };
 
   const handleDialogClose = () => {
-    setResetId("");
     setEmail("");
     setDialogStatus(prev => ({ ...prev, open: false }));
+    window.location.href = window.location.origin;
   };
 
   const handleDialogConfirm = () => {
     if (dialogStatus.type === "request") {
-      dispatch(requestUserPasswordResetLink({ id: resetId, email }));
+      dispatch(requestUserPasswordResetLink({ email }));
+      setEmail("");
     } else if (dialogStatus.type === "reset") {
-      dispatch(resetUserPassword({ id: passwordResetId, password: newPassword }));
+      dispatch(resetUserPassword({ id: processingToken.id, password: newPassword }));
+    } else if (dialogStatus.type === "authorize") {
+      dispatch(authorizeUserEmail({ id: processingToken.id }));
     } else {
       window.location.href = window.location.origin;
     }
@@ -168,22 +169,17 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
   const dialogContent = (
     <div>
       <DialogTitle>
-        {dialogStatus.type === "request" ? "Enviar solicitud para reestablecer contraseña" : "Reestablecer contraseña"}
+        {dialogStatus.type === "request"
+          ? "Enviar solicitud para reestablecer contraseña"
+          : dialogStatus.type === "authorize"
+          ? "Autorización de dirección electrónica"
+          : dialogStatus.type === "reset"
+          ? "Reestablecer contraseña"
+          : "Proceso completado"}
       </DialogTitle>
       <DialogContent>
         {dialogStatus.type === "request" ? (
           <>
-            <TextField
-              variant="standard"
-              required
-              fullWidth
-              name="resetId"
-              label="Identificación"
-              id="resetId"
-              autoComplete="on"
-              value={resetId}
-              onChange={handleOnChange("resetId")}
-            />
             <TextField
               variant="standard"
               required
@@ -223,8 +219,12 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               onChange={handleOnChange("confirmNewPassword")}
             />
           </>
+        ) : dialogStatus.type === "authorize" ? (
+          <DialogContentText>
+            Desea proceder con la autorización para la dirección de correo electrónico ingresado?
+          </DialogContentText>
         ) : (
-          <DialogContentText>{passwordResetMessage}</DialogContentText>
+          <DialogContentText>{processingTokenMessage}</DialogContentText>
         )}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
@@ -234,13 +234,21 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
           onClick={handleDialogConfirm}
           disabled={
             dialogStatus.type === "request"
-              ? resetId === "" || email === ""
+              ? email === ""
               : dialogStatus.type === "reset"
               ? newPassword === "" || confirmNewPassword === "" || newPassword !== confirmNewPassword
+              : dialogStatus.type === "authorize"
+              ? false
               : false
           }
         >
-          {dialogStatus.type === "request" ? "Enviar" : dialogStatus.type === "reset" ? "Guardar" : "Cerrar"}
+          {dialogStatus.type === "request"
+            ? "Enviar"
+            : dialogStatus.type === "reset"
+            ? "Guardar"
+            : dialogStatus.type === "authorize"
+            ? "Autorizar"
+            : "Cerrar"}
         </Button>
       </DialogActions>
     </div>

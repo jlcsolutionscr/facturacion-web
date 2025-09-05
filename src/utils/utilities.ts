@@ -38,6 +38,10 @@ export function formatCurrency(number: number, decPlaces = 2, decSep = ".", thou
   return integerValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${thouSep}`) + decSep + decValue;
 }
 
+export function validateEmail(email: string) {
+  return email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g);
+}
+
 export function roundNumber(number: number, places: number) {
   return +(Math.round(parseFloat(number + `e+${places}`)) + `e-${places}`);
 }

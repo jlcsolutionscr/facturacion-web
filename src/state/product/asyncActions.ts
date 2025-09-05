@@ -120,7 +120,7 @@ export const openProduct = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, token } = session;
     dispatch(startLoader());
-    dispatch(setActiveSection(12));
+    dispatch(setActiveSection(13));
     try {
       let product = {
         ...defaultProduct,

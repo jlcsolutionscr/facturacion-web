@@ -87,13 +87,12 @@ export async function requestUserLogin(user: string, password: string, id: strin
   return company;
 }
 
-export async function requestUserPasswordReset(id: string, email: string) {
-  const endpoint =
-    APP_URL + "/generarnotificacionrestablecerclaveusuario?identificacion=" + id + "&correonotificacion=" + email;
+export async function requestUserPasswordReset(email: string) {
+  const endpoint = APP_URL + "/generarnotificacionrestablecerclaveusuario?correonotificacion=" + email;
   await get(endpoint, "");
 }
 
-export async function validateResetId(id: string) {
+export async function validateProcessingToken(id: string) {
   const endpoint = APP_URL + "/validarregistroautenticacion?session=" + id;
   await get(endpoint, "");
 }
@@ -101,6 +100,21 @@ export async function validateResetId(id: string) {
 export async function resetUserPassword(id: string, password: string) {
   const ecryptedPass = encryptString(password);
   const endpoint = APP_URL + "/restablecerclaveusuario?session=" + id + "&clave=" + ecryptedPass;
+  await get(endpoint, "");
+}
+
+export async function updateUserEmail(token: string, userId: number, userEmail: string) {
+  const data =
+    "{NombreMetodo: 'GenerarAutorizacionActualizacionCorreoUsuario', Parametros: {IdUsuario: " +
+    userId +
+    ", CorreoNotificacion: '" +
+    userEmail +
+    "'}}";
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
+export async function authorizeUserEmail(id: string) {
+  const endpoint = APP_URL + "/autorizarcorreousuario?session=" + id;
   await get(endpoint, "");
 }
 

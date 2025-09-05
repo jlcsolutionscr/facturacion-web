@@ -153,7 +153,7 @@ export const getLogo = createAsyncThunk("company/getLogo", async (_payload, { ge
   const { session } = getState() as RootState;
   const { companyId, token } = session;
   dispatch(startLoader());
-  dispatch(setActiveSection(2));
+  dispatch(setActiveSection(3));
   try {
     const logo = await getCompanyLogo(token, companyId);
     dispatch(setCompanyLogo(`data:image/png;base64,${logo}`));

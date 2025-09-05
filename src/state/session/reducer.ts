@@ -49,11 +49,11 @@ export const sessionSlice = createSlice({
     setVendorList: (state, action) => {
       state.vendorList = action.payload;
     },
-    setResetPasswordId: (state, action) => {
-      state.resetPasswordId = action.payload;
+    setProcessingToken: (state, action) => {
+      state.processingToken = { type: action.payload.type, id: action.payload.id };
     },
-    setPasswordResetMessage: (state, action) => {
-      state.passwordResetMessage = action.payload;
+    setProcessingTokenMessage: (state, action) => {
+      state.processingTokenMessage = action.payload;
     },
   },
 });
@@ -65,19 +65,21 @@ export const {
   setBranchId,
   setPrinter,
   setVendorList,
-  setResetPasswordId,
-  setPasswordResetMessage,
+  setProcessingToken,
+  setProcessingTokenMessage,
 } = sessionSlice.actions;
 
 export const getAuthenticated = (state: RootState) => state.session.authenticated;
 export const getCompany = (state: RootState) => state.session.company;
+export const getUserId = (state: RootState) => state.session.userId;
+export const getUserCode = (state: RootState) => state.session.userCode;
 export const getBranchId = (state: RootState) => state.session.branchId;
 export const getPrinter = (state: RootState) => state.session.printer;
 export const getVendorList = (state: RootState) => state.session.vendorList;
 export const getPermissions = (state: RootState) => state.session.permissions;
 export const getBranchList = (state: RootState) => state.session.branchList;
 export const getReportList = (state: RootState) => state.session.reportList;
-export const getResetPasswordId = (state: RootState) => state.session.resetPasswordId;
-export const getPasswordResetMessage = (state: RootState) => state.session.passwordResetMessage;
+export const getProcessingToken = (state: RootState) => state.session.processingToken;
+export const getProcessingTokenMessage = (state: RootState) => state.session.processingTokenMessage;
 
 export default sessionSlice.reducer;

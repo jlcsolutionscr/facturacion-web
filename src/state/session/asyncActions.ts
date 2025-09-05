@@ -3,7 +3,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setPriceTypeList } from "state/customer/reducer";
 import { setProductTypeList } from "state/product/reducer";
-import { login, logout, setPasswordResetMessage, setResetPasswordId, setVendorList } from "state/session/reducer";
+import { login, logout, setProcessingToken, setProcessingTokenMessage, setVendorList } from "state/session/reducer";
+import { RootState } from "state/store";
 import {
   setActiveSection,
   setExonerationNameList,
@@ -15,11 +16,13 @@ import {
   stopLoader,
 } from "state/ui/reducer";
 import {
+  authorizeUserEmail as authorizeUserEmailRequest,
   getVendorList,
   requestUserLogin,
   requestUserPasswordReset,
   resetUserPassword as resetUserPasswordRequest,
-  validateResetId,
+  updateUserEmail,
+  validateProcessingToken as validateProcessingTokenRequest,
 } from "utils/domainHelper";
 import { cleanLocalStorage, getErrorMessage, writeToLocalStorage } from "utils/utilities";
 
@@ -93,10 +96,10 @@ export const restoreSession = createAsyncThunk(
 
 export const requestUserPasswordResetLink = createAsyncThunk(
   "session/requestUserPasswordResetLink",
-  async (payload: { id: string; email: string }, { dispatch }) => {
+  async (payload: { email: string }, { dispatch }) => {
     dispatch(startLoader());
     try {
-      await requestUserPasswordReset(payload.id, payload.email);
+      await requestUserPasswordReset(payload.email);
       dispatch(stopLoader());
       dispatch(setMessage({ message: "Solicitud de restablecimiento enviada satisfactoriamente. . .", type: "INFO" }));
     } catch (error) {
@@ -106,16 +109,16 @@ export const requestUserPasswordResetLink = createAsyncThunk(
   }
 );
 
-export const validateResetLink = createAsyncThunk(
-  "session/validateResetLink",
-  async (payload: { id: string }, { dispatch }) => {
+export const validateProcessingToken = createAsyncThunk(
+  "session/validateProcessingToken",
+  async (payload: { type: string; id: string }, { dispatch }) => {
     dispatch(startLoader());
     try {
-      await validateResetId(payload.id);
-      dispatch(setResetPasswordId(payload.id));
+      await validateProcessingTokenRequest(payload.id);
+      dispatch(setProcessingToken({ type: payload.type, id: payload.id }));
     } catch (error) {
       dispatch(
-        setPasswordResetMessage(
+        setProcessingTokenMessage(
           "La sesión se encuentra expirada. Por favor reinicie la solicitud de cambio de contraseña. . ."
         )
       );
@@ -131,7 +134,45 @@ export const resetUserPassword = createAsyncThunk(
     dispatch(startLoader());
     try {
       await resetUserPasswordRequest(payload.id, payload.password);
-      dispatch(setPasswordResetMessage("La contraseña se reestableció satisfactoriamente. . ."));
+      dispatch(setProcessingTokenMessage("La contraseña se reestableció satisfactoriamente. . ."));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
+  }
+);
+
+export const saveUserEmail = createAsyncThunk(
+  "session/saveUserEmail",
+  async (payload: { email: string }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, userId } = session;
+    dispatch(startLoader());
+    try {
+      await updateUserEmail(token, userId, payload.email);
+      dispatch(
+        setMessage({
+          message:
+            "La dirección de correo se actualizó correctamente sin embargo debe validar la información ingresada con el acceso adjunto en el correo enviado. . .",
+          type: "INFO",
+        })
+      );
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
+  }
+);
+
+export const authorizeUserEmail = createAsyncThunk(
+  "session/authorizeUserEmail",
+  async (payload: { id: string }, { dispatch }) => {
+    dispatch(startLoader());
+    try {
+      await authorizeUserEmailRequest(payload.id);
+      dispatch(setProcessingTokenMessage("La autorización se realizó satisfactoriamente. . ."));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());

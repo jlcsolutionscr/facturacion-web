@@ -19,7 +19,7 @@ interface CustomTextFieldProps {
   disabled?: boolean;
   required?: boolean;
   inputProps?: { [key: string]: string | number | boolean };
-  onChange: (event: TextFieldOnChangeEventType) => void;
+  onChange?: (event: TextFieldOnChangeEventType) => void;
   onPaste?: (event: SyntheticEvent) => void;
 }
 
@@ -30,7 +30,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
     let value = event.target.value;
     if (numericFormat) value = event.target.value.replace(/[^0-9.]/g, "");
     event.target.value = value;
-    onChange({ target: { id: props.id, value } });
+    onChange && onChange({ target: { id: props.id, value } });
   };
 
   return (

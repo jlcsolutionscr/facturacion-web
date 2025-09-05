@@ -75,7 +75,7 @@ export const openCustomer = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
-    dispatch(setActiveSection(11));
+    dispatch(setActiveSection(12));
     try {
       if (payload.idCustomer) {
         const customer = await getCustomerEntity(token, payload.idCustomer);

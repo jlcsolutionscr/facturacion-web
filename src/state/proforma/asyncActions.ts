@@ -38,7 +38,7 @@ export const setProformaParameters = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, token, vendorList } = session;
     dispatch(startLoader());
-    dispatch(setActiveSection(13));
+    dispatch(setActiveSection(14));
     dispatch(resetProforma());
     try {
       const customerCount = await getCustomerListCount(token, companyId, "");

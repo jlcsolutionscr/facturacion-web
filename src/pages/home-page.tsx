@@ -20,6 +20,7 @@ import ReceiptPage from "pages/receipt-page";
 import ReportsPage from "pages/reports-page";
 import RestaurantOrderListPage from "pages/restaurant-order-list-page";
 import RestaurantOrderPage from "pages/restaurant-order-page";
+import UserPage from "pages/user-page";
 import WorkingOrderListPage from "pages/working-order-list-page";
 import WorkingOrderPage from "pages/working-order-page";
 import { getCompany } from "state/session/reducer";
@@ -79,19 +80,26 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
       <div ref={myRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
-        {activeSection === 2 && <LogoPage />}
-        {activeSection === 3 && <CustomerListPage />}
-        {activeSection === 4 && <ProductListPage />}
-        {activeSection === 5 && <InvoicePage />}
-        {activeSection === 6 && <ReceiptPage />}
-        {activeSection === 7 && <InvoiceListPage />}
-        {activeSection === 8 && <DocumentListPage />}
-        {activeSection === 9 ? company?.Modalidad === 1 ? <WorkingOrderListPage /> : <RestaurantOrderListPage /> : null}
+        {activeSection === 2 && <UserPage />}
+        {activeSection === 3 && <LogoPage />}
+        {activeSection === 4 && <CustomerListPage />}
+        {activeSection === 5 && <ProductListPage />}
+        {activeSection === 6 && <InvoicePage />}
+        {activeSection === 7 && <ReceiptPage />}
+        {activeSection === 8 && <InvoiceListPage />}
+        {activeSection === 9 && <DocumentListPage />}
         {activeSection === 10 && <ProformaListPage />}
-        {activeSection === 11 && <CustomerPage />}
-        {activeSection === 12 && <ProductPage />}
-        {activeSection === 13 && <ProformaPage />}
-        {activeSection === 14 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
+        {activeSection === 11 ? (
+          company?.Modalidad === 1 ? (
+            <WorkingOrderListPage />
+          ) : (
+            <RestaurantOrderListPage />
+          )
+        ) : null}
+        {activeSection === 12 && <CustomerPage />}
+        {activeSection === 13 && <ProductPage />}
+        {activeSection === 14 && <ProformaPage />}
+        {activeSection === 15 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
         {activeSection === 20 && <ReportsPage />}
       </div>
     </div>

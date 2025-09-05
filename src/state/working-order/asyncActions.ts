@@ -49,7 +49,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
     const { session } = getState() as RootState;
     const { companyId, branchId, company, token, vendorList } = session;
     dispatch(startLoader());
-    dispatch(setActiveSection(14));
+    dispatch(setActiveSection(15));
     dispatch(resetWorkingOrder());
     try {
       if (company?.Modalidad === 1) {
