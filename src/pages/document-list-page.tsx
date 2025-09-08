@@ -8,12 +8,14 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
 
 import Button from "components/button";
 import DataGrid from "components/data-grid";
 import {
   getDocumentDetails as getDocumentDetailsAction,
   getDocumentListByPageNumber,
+  reprocesingDocument,
   sendNotification,
 } from "state/document/asyncActions";
 import {
@@ -25,7 +27,7 @@ import {
 } from "state/document/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { EmailIcon, InfoIcon } from "utils/iconsHelper";
+import { EmailIcon, InfoIcon, RefreshIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -122,6 +124,10 @@ export default function DocumentListPage() {
     dispatch(getDocumentDetailsAction({ id }));
   };
 
+  const handleResendClick = (id: number) => {
+    dispatch(reprocesingDocument({ id }));
+  };
+
   const handleDialogClose = () => {
     if (email !== "") setEmail("");
     if (details !== "") dispatch(setDocumentDetails(null));
@@ -170,25 +176,42 @@ export default function DocumentListPage() {
       name: row.NombreReceptor,
       amount: formatCurrency(row.MontoTotal),
       email: (
-        <IconButton
-          disabled={buttonDisabled}
-          className={classes.emailIcon}
-          color="secondary"
-          component="span"
-          onClick={() => handleEmailClick(row.IdDocumento, row.CorreoNotificacion)}
-        >
-          <EmailIcon />
-        </IconButton>
+        <Tooltip title="Reenviar notifiación por correo">
+          <IconButton
+            disabled={buttonDisabled}
+            className={classes.emailIcon}
+            color="secondary"
+            component="span"
+            onClick={() => handleEmailClick(row.IdDocumento, row.CorreoNotificacion)}
+          >
+            <EmailIcon />
+          </IconButton>
+        </Tooltip>
       ),
       details: (
-        <IconButton
-          className={classes.infoIcon}
-          color="secondary"
-          component="span"
-          onClick={() => handleDetailsClick(row.IdDocumento)}
-        >
-          <InfoIcon />
-        </IconButton>
+        <Tooltip title="Mostrar respuesta de Hacienda">
+          <IconButton
+            className={classes.infoIcon}
+            color="secondary"
+            component="span"
+            onClick={() => handleDetailsClick(row.IdDocumento)}
+          >
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
+      ),
+      reprocesing: (
+        <Tooltip title="Re-procesar documento rechazado">
+          <IconButton
+            className={classes.infoIcon}
+            color="secondary"
+            component="span"
+            disabled={row.EstadoEnvio === "aceptado" || row.IdTipoDocumento > 3 || row.Reprocesado}
+            onClick={() => handleResendClick(row.IdDocumento)}
+          >
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
       ),
     };
   });
@@ -202,6 +225,7 @@ export default function DocumentListPage() {
     { field: "amount", headerName: "Total", type: "number" },
     { field: "email", headerName: "" },
     { field: "details", headerName: "" },
+    { field: "reprocesing", headerName: "" },
   ];
 
   return (

@@ -943,6 +943,11 @@ export async function getDocumentEntity(token: string, idDocument: number) {
   return response;
 }
 
+export async function reprocesingDocument(token: string, idDocument: number) {
+  const data = "{NombreMetodo: 'ReprocesarDocumentoElectronico', Parametros: {IdDocumento: " + idDocument + "}}";
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
 export async function sendDocumentEmail(token: string, idDocument: number, emailTo: string) {
   const data =
     "{NombreMetodo: 'EnviarNotificacionDocumentoElectronico', Parametros: {IdDocumento: " +

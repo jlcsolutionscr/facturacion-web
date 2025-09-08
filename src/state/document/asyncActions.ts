@@ -3,7 +3,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setDocumentCount, setDocumentDetails, setDocumentList, setDocumentPage } from "state/document/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { getDocumentEntity, getDocumentListCount, getDocumentListPerPage, sendDocumentEmail } from "utils/domainHelper";
+import {
+  getDocumentEntity,
+  getDocumentListCount,
+  getDocumentListPerPage,
+  reprocesingDocument as reprocesingDocumentRequest,
+  sendDocumentEmail,
+} from "utils/domainHelper";
 import { getErrorMessage, xmlToObject } from "utils/utilities";
 
 export const getDocumentListFirstPage = createAsyncThunk(
@@ -82,6 +88,29 @@ export const getDocumentDetails = createAsyncThunk(
       const response = await getDocumentEntity(token, payload.id);
       const { MensajeHacienda } = xmlToObject(response.Respuesta);
       dispatch(setDocumentDetails(MensajeHacienda.DetalleMensaje));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const reprocesingDocument = createAsyncThunk(
+  "document/sendNotification",
+  async (payload: { id: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token } = session;
+    dispatch(startLoader());
+    try {
+      await reprocesingDocumentRequest(token, payload.id);
+      dispatch(getDocumentListFirstPage({ id: 9 }));
+      dispatch(
+        setMessage({
+          message: "Documento electrónico reprocesado satisfactoriamente.",
+          type: "INFO",
+        })
+      );
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

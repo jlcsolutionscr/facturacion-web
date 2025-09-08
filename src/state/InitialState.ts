@@ -134,6 +134,7 @@ type DocumentStateType = {
     NombreReceptor: string;
     MontoTotal: number;
     CorreoNotificacion: string;
+    Reprocesado: boolean;
   }[];
   details: string | null;
 };
