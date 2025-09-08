@@ -87,7 +87,14 @@ export const getDocumentDetails = createAsyncThunk(
     try {
       const response = await getDocumentEntity(token, payload.id);
       const { MensajeHacienda } = xmlToObject(response.Respuesta);
-      dispatch(setDocumentDetails(MensajeHacienda.DetalleMensaje));
+      dispatch(
+        setDocumentDetails(
+          MensajeHacienda.DetalleMensaje.toString()
+            .replaceAll("&#13;", "\r\n")
+            .replaceAll("Ã³", "ó")
+            .replaceAll("Ã©", "é")
+        )
+      );
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
