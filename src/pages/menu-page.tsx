@@ -13,7 +13,7 @@ import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asy
 import { getProductListFirstPage } from "state/product/asyncActions";
 import { getProformaListFirstPage } from "state/proforma/asyncActions";
 import { setReceiptParameters } from "state/receipt/asyncActions";
-import { getBranchId, getBranchList, getPermissions, setBranchId } from "state/session/reducer";
+import { getBranchId, getBranchList, getPermissions, getUserCode, setBranchId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
@@ -91,9 +91,9 @@ const useStyles = makeStyles()(theme => ({
       backgroundColor: theme.palette.mode === "dark" ? "#4d4949" : "#27546c",
       boxShadow: "none",
     },
-    "&:disabled": {
+    "&.Mui-disabled": {
       color: "rgba(255,255,255,0.65)",
-      backgroundColor: "#595959",
+      backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     },
     "@media screen and (min-width:430px)": {
       width: "280px",
@@ -122,6 +122,7 @@ export default function MenuPage() {
   const permissions = useSelector(getPermissions);
   const branchId = useSelector(getBranchId);
   const branchList = useSelector(getBranchList);
+  const userCode = useSelector(getUserCode);
 
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0;
   const manageCustomers = permissions.filter(role => [1, 100].includes(role.IdRole)).length > 0;
@@ -166,7 +167,11 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Button className={classes.button} onClick={() => dispatch(setActiveSection(2))}>
+            <Button
+              className={classes.button}
+              disabled={["ADMIN", "CONTADOR"].includes(userCode)}
+              onClick={() => dispatch(setActiveSection(2))}
+            >
               Actualizar usuario
             </Button>
           </Grid>
