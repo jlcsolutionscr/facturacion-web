@@ -22,6 +22,7 @@ export type IdDescriptionTaxType = {
   Id: string;
   Descripcion: string;
   Impuesto: number;
+  Tipo: number;
 };
 
 export type CodeDescriptionType = {

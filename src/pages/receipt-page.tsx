@@ -145,6 +145,7 @@ export default function ReceiptPage() {
       if (codeEntity) {
         dispatch(setProductDetails({ attribute: "taxRate", value: codeEntity.Impuesto }));
         dispatch(setProductDetails({ attribute: "description", value: codeEntity.Descripcion }));
+        dispatch(setProductDetails({ attribute: "unit", value: codeEntity.Tipo === 1 ? "UND" : "SER" }));
       }
     }
     setDialogOpen(false);
@@ -446,7 +447,7 @@ export default function ReceiptPage() {
         </Grid>
         <Grid item xs={3}>
           <TextField
-            disabled={successful}
+            disabled
             label="Unidad"
             id="Unidad"
             value={productDetail.unit}
