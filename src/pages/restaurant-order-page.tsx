@@ -8,7 +8,7 @@ import Tabs from "@mui/material/Tabs";
 import StepTwoScreen from "./steps-screens/restaurant-final-screen";
 import StepOneScreen from "./steps-screens/restaurant-first-screen";
 import { getPermissions } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
+import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
@@ -72,7 +72,11 @@ export default function RestaurantOrderPage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => dispatch(setActiveSection(9))}>
+        <IconButton
+          aria-label="upload picture"
+          component="span"
+          onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 11 }))}
+        >
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

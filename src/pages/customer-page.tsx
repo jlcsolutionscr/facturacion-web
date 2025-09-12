@@ -346,7 +346,7 @@ export default function CustomerPage() {
       <Box className={classes.footer}>
         <Grid container justifyContent="center" gap={1}>
           <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveCustomer())} />
-          <Button label="Regresar" onClick={() => dispatch(setActiveSection(3))} />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(4))} />
         </Grid>
       </Box>
     </Box>

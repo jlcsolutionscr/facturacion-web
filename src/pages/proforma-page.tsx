@@ -26,7 +26,6 @@ import {
   setProductDetails,
 } from "state/proforma/reducer";
 import { getPermissions, getVendorList } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
 import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
@@ -93,15 +92,10 @@ export default function ProformaPage() {
     setValue(newValue);
   };
 
-  const handleBackAction = () => {
-    dispatch(setActiveSection(10));
-    dispatch(getProformaListFirstPage({ id: 10 }));
-  };
-
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="close" component="span" onClick={() => handleBackAction()}>
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

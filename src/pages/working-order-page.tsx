@@ -14,8 +14,7 @@ import { getCustomerList, getCustomerListCount, getCustomerListPage } from "stat
 import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
-import { addDetails, removeDetails } from "state/working-order/asyncActions";
+import { addDetails, getWorkingOrderListFirstPage, removeDetails } from "state/working-order/asyncActions";
 import {
   getActivityCode,
   getCashAdvance,
@@ -112,14 +111,14 @@ export default function WorkingOrderPage() {
     setValue(newValue);
   };
 
-  const handleBackAction = () => {
-    dispatch(setActiveSection(9));
-  };
-
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="upload picture" component="span" onClick={() => handleBackAction()}>
+        <IconButton
+          aria-label="upload picture"
+          component="span"
+          onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 11 }))}
+        >
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

@@ -434,7 +434,7 @@ export default function ProductPage() {
       <Box className={classes.footer}>
         <Grid container justifyContent="center" gap={1}>
           <Button disabled={disabled} label="Guardar" onClick={() => dispatch(saveProduct())} />
-          <Button label="Regresar" onClick={() => dispatch(setActiveSection(4))} />
+          <Button label="Regresar" onClick={() => dispatch(setActiveSection(5))} />
         </Grid>
       </Box>
       <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
