@@ -9,10 +9,14 @@ export const useStyles = makeStyles()(() => ({
   },
 }));
 
-export default function CustomSelect({ label, className, id, children, ...rest }: SelectProps<string>) {
+type CustomSelectType = SelectProps<string> & {
+  maxWidth?: string;
+};
+
+export default function CustomSelect({ label, className, id, maxWidth, children, ...rest }: CustomSelectType) {
   const { classes } = useStyles();
   return (
-    <FormControl className={`${classes.container} ${className}`}>
+    <FormControl className={`${classes.container} ${className}`} style={{ maxWidth }}>
       {label && <InputLabel id={id}>{label}</InputLabel>}
       <Select {...rest} label={label ?? undefined} variant="outlined" size="small" inputProps={{ id: id }}>
         {children}

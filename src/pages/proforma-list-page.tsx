@@ -20,7 +20,7 @@ import {
 } from "state/proforma/asyncActions";
 import { getProformaList, getProformaListCount, getProformaListPage } from "state/proforma/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { TRANSITION_ANIMATION } from "utils/constants";
+import { ROWS_PER_LIST, TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, EmailIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -31,11 +31,10 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
-      margin: "10px",
     },
     "@media screen and (max-width:599px)": {
       width: "100%",
@@ -178,7 +177,7 @@ export default function ProformaListPage() {
   const columns = [
     { field: "id", headerName: "Id" },
     { field: "date", headerName: "Fecha" },
-    { field: "name", headerName: "Nombre" },
+    { field: "name", headerName: "Nombre", width: "280px" },
     { field: "taxes", headerName: "Impuesto", type: "number" },
     { field: "amount", headerName: "Total", type: "number" },
     { field: "action1", headerName: "" },
@@ -229,7 +228,7 @@ export default function ProformaListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={10}
+          rowsPerPage={ROWS_PER_LIST}
           onPageChange={page => {
             dispatch(getProformaListByPageNumber({ pageNumber: page + 1 }));
           }}

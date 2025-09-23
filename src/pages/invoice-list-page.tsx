@@ -19,7 +19,7 @@ import {
 } from "state/invoice/asyncActions";
 import { getInvoiceList, getInvoiceListCount, getInvoiceListPage } from "state/invoice/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { TRANSITION_ANIMATION } from "utils/constants";
+import { ROWS_PER_LIST, TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
@@ -155,7 +155,7 @@ export default function InvoiceListPage() {
   const columns = [
     { field: "id", headerName: "Id" },
     { field: "date", headerName: "Fecha" },
-    { field: "name", headerName: "Nombre" },
+    { field: "name", headerName: "Nombre", width: "280px" },
     { field: "taxes", headerName: "Impuesto", type: "number" },
     { field: "amount", headerName: "Total", type: "number" },
   ];
@@ -174,7 +174,7 @@ export default function InvoiceListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={10}
+          rowsPerPage={ROWS_PER_LIST}
           onPageChange={page => {
             dispatch(getInvoiceListByPageNumber({ pageNumber: page + 1 }));
           }}

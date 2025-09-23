@@ -23,7 +23,7 @@ const useStyles = makeStyles()(theme => ({
     overflowY: "hidden",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",

@@ -19,7 +19,7 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",

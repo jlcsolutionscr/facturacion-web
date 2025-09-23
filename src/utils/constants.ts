@@ -1,5 +1,6 @@
-export const ROWS_PER_CUSTOMER = 9;
-export const ROWS_PER_PRODUCT = 9;
+export const ROWS_PER_CUSTOMER = 8;
+export const ROWS_PER_PRODUCT = 8;
+export const ROWS_PER_LIST = 9;
 export const FORM_TYPE = {
   INVOICE: "INVOICE",
   ORDER: "ORDER",

@@ -15,7 +15,7 @@ import {
 } from "state/proforma/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_CUSTOMER, ROWS_PER_LIST, ROWS_PER_PRODUCT } from "utils/constants";
 import {
   generateProformaPDF,
   getCustomerListCount,
@@ -180,7 +180,7 @@ export const getProformaListFirstPage = createAsyncThunk(
       const recordCount = await getProformaListCount(token, companyId, branchId, false);
       dispatch(setProformaListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProformaListPerPage(token, companyId, branchId, false, 1, 10);
+        const newList = await getProformaListPerPage(token, companyId, branchId, false, 1, ROWS_PER_LIST);
         dispatch(setProformaList(newList));
       } else {
         dispatch(setProformaList([]));
@@ -200,7 +200,14 @@ export const getProformaListByPageNumber = createAsyncThunk(
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getProformaListPerPage(token, companyId, branchId, false, payload.pageNumber, 10);
+      const newList = await getProformaListPerPage(
+        token,
+        companyId,
+        branchId,
+        false,
+        payload.pageNumber,
+        ROWS_PER_LIST
+      );
       dispatch(setProformaListPage(payload.pageNumber));
       dispatch(setProformaList(newList));
       dispatch(stopLoader());

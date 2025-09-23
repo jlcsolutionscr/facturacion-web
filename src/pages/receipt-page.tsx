@@ -54,7 +54,7 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.background.paper,
     overflow: "auto",
     maxWidth: "900px",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       margin: "10px",

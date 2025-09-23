@@ -36,8 +36,8 @@ const useStyles = makeStyles()(theme => ({
     margin: "0 auto",
     height: "35px",
     alignContent: "center",
+    justifyContent: "center",
     padding: "0",
-    width: "100%",
     "@media screen and (min-width:430px)": {
       height: "38px",
     },
@@ -150,6 +150,7 @@ export default function MenuPage() {
             label="Seleccione la sucursal:"
             value={branchId.toString()}
             onChange={event => dispatch(setBranchId(event.target.value))}
+            maxWidth="570px"
           >
             {branchItems}
           </Select>

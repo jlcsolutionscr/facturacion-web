@@ -20,6 +20,7 @@ import {
   setWorkingOrderParameters,
 } from "state/working-order/asyncActions";
 import { getWorkingOrderList, getWorkingOrderListCount, getWorkingOrderListPage } from "state/working-order/reducer";
+import { ROWS_PER_LIST } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, EditIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -30,7 +31,7 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",
@@ -162,7 +163,7 @@ export default function WorkingOrderListPage() {
   const columns = [
     { field: "id", headerName: "Id" },
     { field: "date", headerName: "Fecha" },
-    { field: "name", headerName: "Nombre" },
+    { field: "name", headerName: "Nombre", width: "280px" },
     { field: "taxes", headerName: "Impuesto", type: "number" },
     { field: "amount", headerName: "Total", type: "number" },
     { field: "action1", headerName: "" },
@@ -180,7 +181,7 @@ export default function WorkingOrderListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={10}
+          rowsPerPage={ROWS_PER_LIST}
           onPageChange={page => {
             dispatch(getWorkingOrderListByPageNumber({ pageNumber: page + 1 }));
           }}

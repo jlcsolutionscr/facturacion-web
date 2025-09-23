@@ -26,7 +26,7 @@ import {
   setDocumentDetails,
 } from "state/document/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { TRANSITION_ANIMATION } from "utils/constants";
+import { ROWS_PER_LIST, TRANSITION_ANIMATION } from "utils/constants";
 import { EmailIcon, InfoIcon, RefreshIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -37,11 +37,10 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "1024px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
-      margin: "10px",
     },
     "@media screen and (max-width:599px)": {
       width: "100%",
@@ -238,7 +237,7 @@ export default function DocumentListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={10}
+          rowsPerPage={ROWS_PER_LIST}
           onPageChange={page => {
             dispatch(getDocumentListByPageNumber({ pageNumber: page + 1 }));
           }}

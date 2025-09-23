@@ -3,6 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setDocumentCount, setDocumentDetails, setDocumentList, setDocumentPage } from "state/document/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
+import { ROWS_PER_LIST } from "utils/constants";
 import {
   getDocumentEntity,
   getDocumentListCount,
@@ -25,7 +26,7 @@ export const getDocumentListFirstPage = createAsyncThunk(
       const recordCount = await getDocumentListCount(token, companyId, branchId);
       dispatch(setDocumentCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getDocumentListPerPage(token, companyId, branchId, 1, 10);
+        const newList = await getDocumentListPerPage(token, companyId, branchId, 1, ROWS_PER_LIST);
         dispatch(setDocumentList(newList));
       } else {
         dispatch(setDocumentList([]));
@@ -45,7 +46,7 @@ export const getDocumentListByPageNumber = createAsyncThunk(
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getDocumentListPerPage(token, companyId, branchId, payload.pageNumber, 10);
+      const newList = await getDocumentListPerPage(token, companyId, branchId, payload.pageNumber, ROWS_PER_LIST);
       dispatch(setDocumentPage(payload.pageNumber));
       dispatch(setDocumentList(newList));
       dispatch(stopLoader());

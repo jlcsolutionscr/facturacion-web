@@ -21,7 +21,7 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
       margin: "10px",

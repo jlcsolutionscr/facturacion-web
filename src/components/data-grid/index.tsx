@@ -108,6 +108,7 @@ export default function DataGrid({
   };
   if (height > 0)
     tableStyle = { ...tableStyle, display: "list-table", ...(page === undefined && { maxHeight: height }) };
+  console.log("columns", columns);
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -123,7 +124,7 @@ export default function DataGrid({
                         key={cell.field}
                         align={cell.type && cell.type === "number" ? "right" : "left"}
                         padding="normal"
-                        style={{ width: cell.width || "auto" }}
+                        style={{ maxWidth: cell.width || "auto" }}
                       >
                         {cell.headerName}
                       </TableCell>
@@ -144,7 +145,12 @@ export default function DataGrid({
                       .filter(col => !col.hidden)
                       .map((cell, cellIndex) => (
                         <TableCell
-                          style={{ whiteSpace: "nowrap" }}
+                          style={{
+                            maxWidth: cell.width || "auto",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
                           key={`${rowIndex}-${cellIndex}`}
                           component="th"
                           scope="row"

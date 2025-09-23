@@ -16,7 +16,7 @@ import {
 import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_CUSTOMER, ROWS_PER_LIST, ROWS_PER_PRODUCT } from "utils/constants";
 import {
   generateInvoicePDF,
   getCustomerListCount,
@@ -188,7 +188,7 @@ export const getInvoiceListFirstPage = createAsyncThunk(
       const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
       dispatch(setInvoiceListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, 10);
+        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, ROWS_PER_LIST);
         dispatch(setInvoiceList(newList));
       } else {
         dispatch(setInvoiceList([]));
@@ -208,7 +208,13 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, payload.pageNumber, 10);
+      const newList = await getProcessedInvoiceListPerPage(
+        token,
+        companyId,
+        branchId,
+        payload.pageNumber,
+        ROWS_PER_LIST
+      );
       dispatch(setInvoiceListPage(payload.pageNumber));
       dispatch(setInvoiceList(newList));
       dispatch(stopLoader());

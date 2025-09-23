@@ -22,7 +22,7 @@ import {
   setWorkingOrderListCount,
   setWorkingOrderListPage,
 } from "state/working-order/reducer";
-import { ORDER_STATUS, ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT } from "utils/constants";
+import { ORDER_STATUS, ROWS_PER_CUSTOMER, ROWS_PER_LIST, ROWS_PER_PRODUCT } from "utils/constants";
 import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
@@ -196,7 +196,7 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
           branchId,
           false,
           1,
-          company?.Modalidad === 1 ? 10 : 100
+          company?.Modalidad === 1 ? ROWS_PER_LIST : 100
         );
         dispatch(setWorkingOrderList(newList));
       } else {
@@ -217,7 +217,14 @@ export const getWorkingOrderListByPageNumber = createAsyncThunk(
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, payload.pageNumber, 10);
+      const newList = await getWorkingOrderListPerPage(
+        token,
+        companyId,
+        branchId,
+        false,
+        payload.pageNumber,
+        ROWS_PER_LIST
+      );
       dispatch(setWorkingOrderListPage(payload.pageNumber));
       dispatch(setWorkingOrderList(newList));
       dispatch(stopLoader());

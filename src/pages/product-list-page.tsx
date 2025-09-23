@@ -21,7 +21,7 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
@@ -134,10 +134,11 @@ export default function ProductListPage() {
   }));
 
   const columns = [
-    { field: "id", width: "5%", headerName: "Id" },
-    { field: "name", width: "90%", headerName: "Nombre" },
-    { field: "action1", width: "5%", headerName: "" },
+    { field: "id", headerName: "Id", hidden: true },
+    { field: "name", width: "310px", headerName: "Nombre" },
+    { field: "action1", headerName: "" },
   ];
+
   return (
     <div className={classes.root}>
       <Grid className={classes.filterContainer} container spacing={2}>
