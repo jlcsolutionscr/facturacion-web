@@ -1,5 +1,5 @@
 import { SyntheticEvent } from "react";
-import TextField, { TextFieldVariants } from "@mui/material/TextField";
+import TextField, { BaseTextFieldProps, TextFieldVariants } from "@mui/material/TextField";
 
 import { useStyles } from "./styles";
 
@@ -7,7 +7,7 @@ export type TextFieldOnChangeEventType = {
   target: { id?: string; value: string };
 };
 
-interface CustomTextFieldProps {
+interface CustomTextFieldProps extends BaseTextFieldProps {
   value: string;
   label: string;
   id?: string;

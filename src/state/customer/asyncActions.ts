@@ -84,9 +84,18 @@ export const openCustomer = createAsyncThunk(
           dispatch(stopLoader());
           return;
         }
-        const customerData = await getCustomerData(customer.Identificacion);
         dispatch(setCustomer(customer));
-        dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
+        try {
+          const customerData = await getCustomerData(customer.Identificacion);
+          dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
+        } catch (error) {
+          dispatch(
+            setMessage({
+              message: "Ocurrió un error al generar la consulta en el Ministerio de Hacienda!",
+              type: "ERROR",
+            })
+          );
+        }
       } else {
         dispatch(setCustomer(defaultCustomer));
         dispatch(setAvailableEconomicActivityList([]));

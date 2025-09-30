@@ -104,7 +104,8 @@ export default function CustomerPage() {
       customer.Telefono === "" ||
       customer.CorreoElectronico === "" ||
       customer.IdTipoPrecio === null ||
-      customer.IdTipoExoneracion === null;
+      customer.IdTipoExoneracion === null ||
+      customer.CodigoActividad.length < 6;
   }
   const handlePaste = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -325,21 +326,32 @@ export default function CustomerPage() {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <Select
-              id="CodigoActividad"
-              label="Seleccione la Actividad Económica"
-              value={customer.CodigoActividad}
-              onChange={event =>
-                dispatch(
-                  setCustomerAttribute({
-                    attribute: "CodigoActividad",
-                    value: event.target.value,
-                  })
-                )
-              }
-            >
-              {activityItems}
-            </Select>
+            {activityItems.length > 0 ? (
+              <Select
+                id="CodigoActividad"
+                label="Seleccione la Actividad Económica"
+                value={customer.CodigoActividad}
+                onChange={event =>
+                  dispatch(
+                    setCustomerAttribute({
+                      attribute: "CodigoActividad",
+                      value: event.target.value,
+                    })
+                  )
+                }
+              >
+                {activityItems}
+              </Select>
+            ) : (
+              <TextField
+                id="CodigoActividad"
+                value={customer.CodigoActividad}
+                label="Actividad Económica"
+                numericFormat
+                inputProps={{ maxLength: 6 }}
+                onChange={handleChange}
+              />
+            )}
           </Grid>
         </Grid>
       </Box>
