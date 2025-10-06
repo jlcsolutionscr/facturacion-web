@@ -869,7 +869,7 @@ export async function getWorkingOrderListCount(
     companyId +
     ", IdSucursal: " +
     branchId +
-    ", Aplicado: '" +
+    ", FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
@@ -892,7 +892,7 @@ export async function getWorkingOrderListPerPage(
     branchId +
     ", NumeroPagina: " +
     pageNumber +
-    ", Aplicado: '" +
+    ", FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "', FilasPorPagina: " +
     rowPerPage +
@@ -1168,7 +1168,7 @@ export async function getProformaListCount(token: string, companyId: number, bra
     companyId +
     ", IdSucursal: " +
     branchId +
-    ", Aplicado: '" +
+    ", FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
@@ -1191,7 +1191,7 @@ export async function getProformaListPerPage(
     branchId +
     ", NumeroPagina: " +
     pageNumber +
-    ", Aplicado: '" +
+    ", FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "', FilasPorPagina: " +
     rowPerPage +
