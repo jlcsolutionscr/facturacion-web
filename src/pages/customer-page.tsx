@@ -57,41 +57,31 @@ export default function CustomerPage() {
   const customer = useSelector(getCustomer);
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
-  const idTypeItems = idTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const priceTypeItems = priceTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const exonerationTypeItems = exonerationTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const exonerationNamesItems = exonerationNameList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
-  const activityItems = economicActivityList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const idTypeItems = idTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
+  const priceTypeItems = priceTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
+  const exonerationTypeItems = exonerationTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
+  const exonerationNamesItems = exonerationNameList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
+  const activityItems = economicActivityList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
   let disabled = true;
   if (customer != null) {
     disabled =

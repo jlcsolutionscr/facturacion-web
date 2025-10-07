@@ -134,29 +134,23 @@ export default function CompanyPage() {
     }
   };
 
-  const cantonItems = cantonList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const cantonItems = cantonList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
-  const distritoItems = distritoList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const distritoItems = distritoList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
-  const activityItems = economicActivityList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const activityItems = economicActivityList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   return (
     <Box className={classes.root}>

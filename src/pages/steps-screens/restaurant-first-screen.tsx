@@ -151,13 +151,11 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
     isPriceChangeEnabled && setPrice(event.target.value);
   };
 
-  const paymentItems = servicePointList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const paymentItems = servicePointList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const buttonEnabled = productDetails.description !== "" && productDetails.quantity > 0 && productDetails.price > 0;
   const display = value !== index ? "none" : "flex";

@@ -117,13 +117,11 @@ export default function StepFourScreen({
     { id: 3, description: "CHEQUE" },
     { id: 4, description: "TRANSFERENCIA" },
   ];
-  const paymentItems = paymentMethods.map(item => {
-    return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
-      </MenuItem>
-    );
-  });
+  const paymentItems = paymentMethods.map(item => (
+    <MenuItem key={item.id} value={item.id}>
+      {item.description}
+    </MenuItem>
+  ));
 
   const handleOnPrintClick = () => {
     if (status === ORDER_STATUS.CONVERTED) {
@@ -139,21 +137,17 @@ export default function StepFourScreen({
   };
 
   const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map(item => {
-        return (
-          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-            {item.Descripcion}
-          </MenuItem>
-        );
-      })
+    ? company.ActividadEconomicaEmpresa.map(item => (
+        <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+          {item.Descripcion}
+        </MenuItem>
+      ))
     : [];
-  const vendorItems = vendorList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const vendorItems = vendorList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>

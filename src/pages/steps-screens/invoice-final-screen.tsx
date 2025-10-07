@@ -114,13 +114,11 @@ export default function StepThreeScreen({
     { id: 3, description: "CHEQUE" },
     { id: 4, description: "TRANSFERENCIA" },
   ];
-  const paymentItems = paymentMethods.map(item => {
-    return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
-      </MenuItem>
-    );
-  });
+  const paymentItems = paymentMethods.map(item => (
+    <MenuItem key={item.id} value={item.id}>
+      {item.description}
+    </MenuItem>
+  ));
   const handleOnPress = () => {
     if (!successful) {
       dispatch(saveInvoice());
@@ -135,21 +133,17 @@ export default function StepThreeScreen({
     invoiceId && dispatch(generateInvoiceTicket({ id: invoiceId }));
   };
   const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map(item => {
-        return (
-          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-            {item.Descripcion}
-          </MenuItem>
-        );
-      })
+    ? company.ActividadEconomicaEmpresa.map(item => (
+        <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+          {item.Descripcion}
+        </MenuItem>
+      ))
     : [];
-  const vendorItems = vendorList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const vendorItems = vendorList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
@@ -181,7 +175,7 @@ export default function StepThreeScreen({
                 <Select
                   id="id-vendedor-select-id"
                   label="Seleccione el Vendedor"
-                  value={vendorId.toString()}
+                  value={vendorId > 0 ? vendorId.toString() : ""}
                   onChange={event => dispatch(setVendorId(event.target.value))}
                 >
                   {vendorItems}

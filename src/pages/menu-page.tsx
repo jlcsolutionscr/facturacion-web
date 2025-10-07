@@ -134,13 +134,11 @@ export default function MenuPage() {
   const generateProforma = permissions.filter(role => [1, 200].includes(role.IdRole)).length > 0;
   const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0;
   const switchBrand = permissions.filter(role => [1, 2, 48].includes(role.IdRole)).length > 0;
-  const branchItems = branchList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const branchItems = branchList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
   return (
     <Grid className={classes.root} container>
       <Grid item xs={12} alignItems="center" className={classes.branches}>

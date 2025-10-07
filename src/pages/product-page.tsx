@@ -113,21 +113,17 @@ export default function ProductPage() {
     setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto));
   }, [product, taxTypeList]);
 
-  const productTypes = productTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const productTypes = productTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
-  const categories = categoryList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const categories = categoryList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const disabled =
     product.IdLinea === 0 ||

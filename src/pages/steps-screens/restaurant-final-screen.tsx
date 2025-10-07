@@ -95,21 +95,17 @@ export default function StepTwoScreen({ value, index, setValue, className }: Ste
     { id: 3, description: "CHEQUE" },
     { id: 4, description: "TRANSFERENCIA" },
   ];
-  const paymentItems = paymentMethods.map(item => {
-    return (
-      <MenuItem key={item.id} value={item.id}>
-        {item.description}
-      </MenuItem>
-    );
-  });
+  const paymentItems = paymentMethods.map(item => (
+    <MenuItem key={item.id} value={item.id}>
+      {item.description}
+    </MenuItem>
+  ));
   const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map(item => {
-        return (
-          <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-            {item.Descripcion}
-          </MenuItem>
-        );
-      })
+    ? company.ActividadEconomicaEmpresa.map(item => (
+        <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+          {item.Descripcion}
+        </MenuItem>
+      ))
     : [];
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
   const buttonDisabled = total === 0;

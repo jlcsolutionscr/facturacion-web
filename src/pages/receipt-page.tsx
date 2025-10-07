@@ -179,29 +179,23 @@ export default function ReceiptPage() {
       idMaxLength = 9;
   }
 
-  const idTypeItems = idTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const idTypeItems = idTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
-  const exonerationTypeItems = exonerationTypeList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const exonerationTypeItems = exonerationTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
-  const exonerationNameItems = exonerationNameList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const exonerationNameItems = exonerationNameList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const rows = clasificationList.map(row => ({
     id: row.Id,
@@ -215,13 +209,11 @@ export default function ReceiptPage() {
     { field: "description", headerName: "Descripcion" },
   ];
 
-  const activityItems = economicActivityList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const activityItems = economicActivityList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const addDisabled =
     productDetail.code.length < 13 ||

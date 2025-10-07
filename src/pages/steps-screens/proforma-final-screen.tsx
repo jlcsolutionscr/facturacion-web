@@ -93,13 +93,11 @@ export default function StepThreeScreen({
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
   const buttonDisabled = total === 0;
 
-  const vendorItems = vendorList.map(item => {
-    return (
-      <MenuItem key={item.Id} value={item.Id}>
-        {item.Descripcion}
-      </MenuItem>
-    );
-  });
+  const vendorItems = vendorList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const handleOnPress = () => {
     if (!successful) {
