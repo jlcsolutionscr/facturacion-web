@@ -1,10 +1,10 @@
+import { TextField } from "jlc-component-library";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { DeliveryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 
-import TextField from "components/text-field";
 import { setDeliveryAttribute } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
 

@@ -1,10 +1,10 @@
+import { Button } from "jlc-component-library";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 
-import Button from "components/button";
 import { saveLogo } from "state/company/asyncActions";
 import { getCompanyLogo } from "state/company/reducer";
 import { setActiveSection } from "state/ui/reducer";

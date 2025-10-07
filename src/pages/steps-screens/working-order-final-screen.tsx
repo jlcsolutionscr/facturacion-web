@@ -1,3 +1,4 @@
+import { Button, Select } from "jlc-component-library";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -6,8 +7,6 @@ import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
-import Button from "components/button";
-import Select from "components/select";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { generateInvoice, generateWorkingOrderTicket, saveWorkingOrder } from "state/working-order/asyncActions";
 import {

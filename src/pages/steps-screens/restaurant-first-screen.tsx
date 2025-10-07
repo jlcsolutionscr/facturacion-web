@@ -1,3 +1,12 @@
+import {
+  Button,
+  LabelField,
+  ListDropDown,
+  Select,
+  TextField,
+  type ListDropdownOnChangeEventType,
+  type TextFieldOnChangeEventType,
+} from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -13,11 +22,6 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import Button from "components/button";
-import LabelField from "components/label-field";
-import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
-import Select from "components/select";
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import {
   filterProductList,
   getProductDetails as getProductDetailsAction,
@@ -181,7 +185,7 @@ export default function StepOneScreen({ index, value, className }: StepOneScreen
               </Grid>
             )}
             <Grid item xs={12}>
-              <ListDropdown
+              <ListDropDown
                 disabled={false}
                 label="Seleccione un producto"
                 page={productListPage - 1}

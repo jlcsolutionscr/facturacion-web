@@ -1,3 +1,4 @@
+import { Button, DatePicker, Select, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
 import { SyntheticEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -6,10 +7,6 @@ import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-import Button from "components/button";
-import DatePicker from "components/data-picker";
-import Select from "components/select";
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomer, setCustomerAttribute } from "state/customer/reducer";

@@ -1,12 +1,10 @@
+import { LabelField, ListDropDown, TextField, type ListDropdownOnChangeEventType } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { CustomerDetailsType, IdDescriptionType } from "types/domain";
 import Grid from "@mui/material/Grid";
 
-import LabelField from "components/label-field";
-import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
-import TextField from "components/text-field";
 import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
 import { getExonerationNameList, getExonerationTypeList } from "state/ui/reducer";
 import { ROWS_PER_CUSTOMER } from "utils/constants";
@@ -91,7 +89,7 @@ export default function StepOneScreen({
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ListDropdown
+          <ListDropDown
             disabled={listDisabled}
             label="Seleccione un cliente"
             page={customerListPage - 1}

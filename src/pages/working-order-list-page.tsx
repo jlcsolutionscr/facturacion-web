@@ -1,3 +1,4 @@
+import { Button, DataGrid } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -8,8 +9,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
-import Button from "components/button";
-import DataGrid from "components/data-grid";
 import { setActiveSection } from "state/ui/reducer";
 import {
   generatePDF,

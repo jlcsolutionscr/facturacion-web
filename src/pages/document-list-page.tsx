@@ -1,3 +1,4 @@
+import { Button, DataGrid } from "jlc-component-library";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -10,8 +11,6 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 
-import Button from "components/button";
-import DataGrid from "components/data-grid";
 import {
   getDocumentDetails as getDocumentDetailsAction,
   getDocumentListByPageNumber,

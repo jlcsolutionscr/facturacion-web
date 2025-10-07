@@ -1,3 +1,4 @@
+import { Button, TextField } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -5,8 +6,6 @@ import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import Button from "components/button";
-import TextField from "components/text-field";
 import { saveUserEmail } from "state/session/asyncActions";
 import { getUserCode, getUserId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";

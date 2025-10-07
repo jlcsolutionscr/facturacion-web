@@ -1,3 +1,4 @@
+import { Select } from "jlc-component-library";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Button from "@mui/material/Button";
@@ -5,7 +6,6 @@ import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-import Select from "components/select";
 import { getCompany, getLogo } from "state/company/asyncActions";
 import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";

@@ -1,3 +1,11 @@
+import {
+  Button,
+  DataGrid,
+  LabelField,
+  Select,
+  TextField,
+  type TextFieldOnChangeEventType,
+} from "jlc-component-library";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -12,11 +20,6 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-import Button from "components/button";
-import DataGrid from "components/data-grid";
-import LabelField from "components/label-field";
-import Select from "components/select";
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterClasificationList, saveProduct, validateProductCode } from "state/product/asyncActions";
 import {
   getCategoryList,

@@ -1,3 +1,12 @@
+import {
+  Button,
+  DataGrid,
+  DatePicker,
+  LabelField,
+  Select,
+  TextField,
+  type TextFieldOnChangeEventType,
+} from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -15,12 +24,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-import Button from "components/button";
-import DataGrid from "components/data-grid";
-import DatePicker from "components/data-picker";
-import LabelField from "components/label-field";
-import Select from "components/select";
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { filterClasificationList } from "state/product/asyncActions";
 import { getClasificationList } from "state/product/reducer";

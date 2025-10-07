@@ -1,3 +1,4 @@
+import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -5,9 +6,6 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
-import Button from "components/button";
-import DataGrid from "components/data-grid";
-import TextField, { TextFieldOnChangeEventType } from "components/text-field";
 import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";

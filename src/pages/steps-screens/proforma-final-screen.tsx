@@ -1,3 +1,4 @@
+import { Button, Select, TextField } from "jlc-component-library";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -6,9 +7,6 @@ import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
-import Button from "components/button";
-import Select from "components/select";
-import TextField from "components/text-field";
 import { saveProforma } from "state/proforma/asyncActions";
 import { resetProforma, setComment, setCurrency, setVendorId } from "state/proforma/reducer";
 import { formatCurrency } from "utils/utilities";

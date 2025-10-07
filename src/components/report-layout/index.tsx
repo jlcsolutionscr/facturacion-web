@@ -1,8 +1,7 @@
+import { Button, DataGrid } from "jlc-component-library";
 import Typography from "@mui/material/Typography";
 
 import { useStyles } from "./styles";
-import Button from "components/button";
-import DataGrid from "components/data-grid";
 import { formatCurrency } from "utils/utilities";
 
 type DataType = { [key: string]: any };

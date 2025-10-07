@@ -1,3 +1,4 @@
+import { ListDropDown, TextField, type ListDropdownOnChangeEventType } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -11,8 +12,6 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import ListDropdown, { ListDropdownOnChangeEventType } from "components/list-dropdown";
-import TextField from "components/text-field";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
 import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
@@ -139,7 +138,7 @@ export default function StepTwoScreen({
       <div className={classes.body}>
         <Grid container spacing={2}>
           <Grid item xs={10} sm={10.5} md={11}>
-            <ListDropdown
+            <ListDropDown
               disabled={stepDisabled}
               label="Seleccione un producto"
               page={productListPage - 1}

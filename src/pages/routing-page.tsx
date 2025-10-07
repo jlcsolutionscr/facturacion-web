@@ -1,3 +1,4 @@
+import { useWindowSize } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -7,7 +8,6 @@ import SnackbarContent from "@mui/material/SnackbarContent";
 import { ThemeProvider } from "@mui/material/styles";
 
 import Loader from "components/loader";
-import useWindowSize from "hooks/use-window-size";
 import HomePage from "pages/home-page";
 import LoginPage from "pages/login-page";
 import { getAuthenticated } from "state/session/reducer";
