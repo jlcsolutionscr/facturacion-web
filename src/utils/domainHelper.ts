@@ -285,10 +285,12 @@ export async function getCustomerData(id: string) {
   } else {
     const data = await response.json();
     if (data) {
-      const list = data.actividades.map((actividad: { codigo: string; descripcion: string }) => ({
-        Id: parseInt(actividad.codigo),
-        Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
-      }));
+      const list = data.actividades.map((actividad: { ciiu3: { codigo: string; descripcion: string }[] }) => {
+        return {
+          Id: parseInt(actividad.ciiu3[0].codigo),
+          Descripcion: `${actividad.ciiu3[0].codigo} - ${actividad.ciiu3[0].descripcion}`,
+        };
+      });
       return { name: data.nombre, economicActivityList: list };
     } else {
       throw new Error("Datos no encontrados en el Ministerio de Hacienda");

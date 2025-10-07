@@ -108,7 +108,6 @@ export default function DataGrid({
   };
   if (height > 0)
     tableStyle = { ...tableStyle, display: "list-table", ...(page === undefined && { maxHeight: height }) };
-  console.log("columns", columns);
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
