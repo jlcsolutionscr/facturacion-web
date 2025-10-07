@@ -1,4 +1,4 @@
-import { Button, Tab } from "jlc-component-library";
+import { Button } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -9,6 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 
+import Tab from "components/tab";
 import { setActiveSection } from "state/ui/reducer";
 import { openWorkingOrder, revokeWorkingOrder, setWorkingOrderParameters } from "state/working-order/asyncActions";
 import { getWorkingOrderList } from "state/working-order/reducer";

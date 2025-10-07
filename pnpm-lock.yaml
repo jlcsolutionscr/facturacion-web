@@ -39,8 +39,8 @@ importers:
         specifier: 2.0.5
         version: 2.0.5
       jlc-component-library:
-        specifier: 1.0.14
-        version: 1.0.14(86273fea08c74994970dd81625c31a53)
+        specifier: 1.0.17
+        version: 1.0.17(86273fea08c74994970dd81625c31a53)
       path:
         specifier: 0.12.7
         version: 0.12.7
@@ -1584,8 +1584,8 @@ packages:
     resolution: {integrity: sha512-H0dkQoCa3b2VEeKQBOxFph+JAbcrQdE7KC0UkqwpLmv2EC4P41QXP+rqo9wYodACiG5/WM5s9oDApTU8utwj9g==}
     engines: {node: '>= 0.4'}
 
-  jlc-component-library@1.0.14:
-    resolution: {integrity: sha512-mXdKk6+vd5XESzs/90x9ZldxL73BKXqld93AWTuKmAPwJActRnh0SDw5kdIRy6OJXpfxE3XXGfRgL2zNzYjaEg==}
+  jlc-component-library@1.0.17:
+    resolution: {integrity: sha512-mcf+LXs87yDnGfRL0MTeoJWfMjuhWj94pn1ytMVS1RYQQg55uizCTSkChn1TDq6RBmkebSq68ellHEDeKbSe1g==}
     peerDependencies:
       '@emotion/react': 11.11.1
       '@emotion/styled': 11.11.0
@@ -3843,7 +3843,7 @@ snapshots:
       has-symbols: 1.1.0
       set-function-name: 2.0.2
 
-  jlc-component-library@1.0.14(86273fea08c74994970dd81625c31a53):
+  jlc-component-library@1.0.17(86273fea08c74994970dd81625c31a53):
     dependencies:
       '@emotion/react': 11.11.1(@types/react@18.2.37)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.1(@types/react@18.2.37)(react@18.2.0))(@types/react@18.2.37)(react@18.2.0)
