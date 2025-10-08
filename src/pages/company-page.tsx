@@ -2,7 +2,7 @@ import { Button, LabelField, Select, TextField, type TextFieldOnChangeEventType 
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";

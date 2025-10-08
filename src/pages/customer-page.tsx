@@ -2,7 +2,7 @@ import { Button, DatePicker, Select, TextField, type TextFieldOnChangeEventType 
 import { SyntheticEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";

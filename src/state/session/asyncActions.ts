@@ -116,7 +116,7 @@ export const validateProcessingToken = createAsyncThunk(
     try {
       await validateProcessingTokenRequest(payload.id);
       dispatch(setProcessingToken({ type: payload.type, id: payload.id }));
-    } catch (error) {
+    } catch {
       dispatch(
         setProcessingTokenMessage(
           "La sesión se encuentra expirada. Por favor reinicie la solicitud de cambio de contraseña. . ."

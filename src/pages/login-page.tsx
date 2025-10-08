@@ -1,10 +1,14 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
@@ -172,10 +176,10 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
         {dialogStatus.type === "request"
           ? "Enviar solicitud para reestablecer contraseña"
           : dialogStatus.type === "authorize"
-          ? "Autorización de dirección electrónica"
-          : dialogStatus.type === "reset"
-          ? "Reestablecer contraseña"
-          : "Proceso completado"}
+            ? "Autorización de dirección electrónica"
+            : dialogStatus.type === "reset"
+              ? "Reestablecer contraseña"
+              : "Proceso completado"}
       </DialogTitle>
       <DialogContent>
         {dialogStatus.type === "request" ? (
@@ -236,19 +240,19 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
             dialogStatus.type === "request"
               ? email === ""
               : dialogStatus.type === "reset"
-              ? newPassword === "" || confirmNewPassword === "" || newPassword !== confirmNewPassword
-              : dialogStatus.type === "authorize"
-              ? false
-              : false
+                ? newPassword === "" || confirmNewPassword === "" || newPassword !== confirmNewPassword
+                : dialogStatus.type === "authorize"
+                  ? false
+                  : false
           }
         >
           {dialogStatus.type === "request"
             ? "Enviar"
             : dialogStatus.type === "reset"
-            ? "Guardar"
-            : dialogStatus.type === "authorize"
-            ? "Autorizar"
-            : "Cerrar"}
+              ? "Guardar"
+              : dialogStatus.type === "authorize"
+                ? "Autorizar"
+                : "Cerrar"}
         </Button>
       </DialogActions>
     </div>

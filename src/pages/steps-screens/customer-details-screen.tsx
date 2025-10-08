@@ -122,8 +122,8 @@ export default function StepOneScreen({
             label="Tipo de exoneración"
             value={
               customer
-                ? exonerationTypeList.filter(item => item.Id === customer.exonerationType)[0]?.Descripcion ??
-                  "Tipo no encontrado"
+                ? (exonerationTypeList.filter(item => item.Id === customer.exonerationType)[0]?.Descripcion ??
+                  "Tipo no encontrado")
                 : ""
             }
           />
@@ -133,8 +133,8 @@ export default function StepOneScreen({
             label="Nombre de la institución"
             value={
               customer
-                ? exonerationNameList.filter(item => item.Id === customer.exoneratedById)[0]?.Descripcion ??
-                  "Institución no encontrada"
+                ? (exonerationNameList.filter(item => item.Id === customer.exoneratedById)[0]?.Descripcion ??
+                  "Institución no encontrada")
                 : ""
             }
           />

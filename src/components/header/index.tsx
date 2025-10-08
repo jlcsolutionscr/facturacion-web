@@ -27,12 +27,12 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
         "-" +
         companyIdentifier.substring(5)
       : companyIdentifier.length === 10
-      ? companyIdentifier.substring(0, 1) +
-        "-" +
-        companyIdentifier.substring(1, 4) +
-        "-" +
-        companyIdentifier.substring(4)
-      : companyIdentifier;
+        ? companyIdentifier.substring(0, 1) +
+          "-" +
+          companyIdentifier.substring(1, 4) +
+          "-" +
+          companyIdentifier.substring(4)
+        : companyIdentifier;
   return (
     <div className={classes.header}>
       <div className={classes.banner} />

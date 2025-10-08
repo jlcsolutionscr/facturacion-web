@@ -116,7 +116,7 @@ export async function get(endpointURL: string, token: string) {
     let error = "";
     try {
       error = await response.json();
-      console.log("error on get", error);
+      console.error("error on get", error);
     } catch {
       error = "Error al comunicarse con el servicio de factura electrónica. Por favor verifique su conexión de datos.";
     }

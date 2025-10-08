@@ -88,7 +88,7 @@ export const openCustomer = createAsyncThunk(
         try {
           const customerData = await getCustomerData(customer.Identificacion);
           dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
-        } catch (error) {
+        } catch {
           dispatch(
             setMessage({
               message: "Ocurrió un error al generar la consulta en el Ministerio de Hacienda!",
@@ -139,7 +139,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
           );
         }
         dispatch(stopLoader());
-      } catch (error) {
+      } catch {
         dispatch(setMessage({ message: "No se logró obtener información del cliente. . .", type: "ERROR" }));
         dispatch(
           setCustomer({
@@ -208,8 +208,8 @@ export const getCustomerDetails = createAsyncThunk(
       payload.type === FORM_TYPE.INVOICE
         ? setInvoiceCustomer
         : payload.type === FORM_TYPE.PROFORMA
-        ? setProformaCustomer
-        : setWorkingOrderCustomer;
+          ? setProformaCustomer
+          : setWorkingOrderCustomer;
     try {
       const customer = await getCustomerEntity(token, payload.id);
       dispatch(

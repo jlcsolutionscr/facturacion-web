@@ -268,8 +268,8 @@ export const getProductDetails = createAsyncThunk(
         payload.type === FORM_TYPE.INVOICE
           ? setInvoiceProduct
           : payload.type === FORM_TYPE.PROFORMA
-          ? setProformaProduct
-          : setWorkingOrderProduct;
+            ? setProformaProduct
+            : setWorkingOrderProduct;
       try {
         const product = await getProductEntity(token, payload.id, branchId);
         if (product) {
