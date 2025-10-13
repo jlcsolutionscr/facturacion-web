@@ -39,6 +39,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
   async (payload: { identifier: string }, { getState, dispatch }) => {
     const { receipt } = getState() as RootState;
     const { issuer } = receipt.entity;
+    dispatch(setAvailableEconomicActivityList([]));
     try {
       dispatch(setIssuerDetails({ attribute: "id", value: payload.identifier }));
       if (
@@ -47,9 +48,18 @@ export const validateCustomerIdentifier = createAsyncThunk(
         (issuer.typeId > 1 && payload.identifier.length >= 11)
       ) {
         dispatch(startLoader());
-        const customerData = await getCustomerData(payload.identifier);
-        dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
-        dispatch(setIssuerDetails({ attribute: "name", value: customerData.name }));
+        try {
+          const customerData = await getCustomerData(payload.identifier);
+          dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
+          dispatch(setIssuerDetails({ attribute: "name", value: customerData.name }));
+        } catch {
+          dispatch(
+            setMessage({
+              message: "Ocurrió un error al obtener la información del contribuyente en el Ministerio de Hacienda!",
+              type: "ERROR",
+            })
+          );
+        }
         dispatch(stopLoader());
       }
     } catch (error) {

@@ -74,8 +74,9 @@ export const openCustomer = createAsyncThunk(
   async (payload: { idCustomer?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
-    dispatch(startLoader());
     dispatch(setActiveSection(12));
+    dispatch(startLoader());
+    dispatch(setAvailableEconomicActivityList([]));
     try {
       if (payload.idCustomer) {
         const customer = await getCustomerEntity(token, payload.idCustomer);
@@ -91,7 +92,7 @@ export const openCustomer = createAsyncThunk(
         } catch {
           dispatch(
             setMessage({
-              message: "Ocurrió un error al generar la consulta en el Ministerio de Hacienda!",
+              message: "Ocurrió un error al obtener la información del contribuyente en el Ministerio de Hacienda!",
               type: "ERROR",
             })
           );
@@ -120,9 +121,20 @@ export const validateCustomerIdentifier = createAsyncThunk(
     ) {
       dispatch(startLoader());
       dispatch(setAvailableEconomicActivityList([]));
+      let customerName = "";
       try {
-        const customerData = await getCustomerData(payload.identifier);
-        dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
+        try {
+          const customerData = await getCustomerData(payload.identifier);
+          dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
+          customerName = customerData.name;
+        } catch {
+          dispatch(
+            setMessage({
+              message: "Ocurrió un error al obtener la información del contribuyente en el Ministerio de Hacienda!",
+              type: "ERROR",
+            })
+          );
+        }
         const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
         if (customer?.IdCliente > 0) {
           dispatch(setCustomer(customer));
@@ -134,7 +146,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
               IdEmpresa: companyId,
               IdTipoIdentificacion: payload.idType,
               Identificacion: payload.identifier,
-              Nombre: customerData.name,
+              Nombre: customerName,
             })
           );
         }

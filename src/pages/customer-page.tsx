@@ -312,7 +312,7 @@ export default function CustomerPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             {activityItems.length > 0 ? (
               <Select
                 id="CodigoActividad"

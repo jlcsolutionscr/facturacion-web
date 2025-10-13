@@ -42,13 +42,24 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
   const { session } = getState() as RootState;
   const { companyId, token } = session;
   dispatch(startLoader());
+  dispatch(setAvailableEconomicActivityList([]));
   try {
     dispatch(setActiveSection(1));
     const company = await getCompanyEntity(token, companyId);
     const credentials = await getCredentialsEntity(token, company.IdEmpresa);
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
-    const companyData = await getCustomerData(company.Identificacion);
+    try {
+      const companyData = await getCustomerData(company.Identificacion);
+      dispatch(setAvailableEconomicActivityList(companyData.economicActivityList));
+    } catch {
+      dispatch(
+        setMessage({
+          message: "Se produjo un error al obtener la información de la empresa en el Ministerio de Hacienda!",
+          type: "ERROR",
+        })
+      );
+    }
     dispatch(setCompany(company));
     dispatch(
       setCredentials({
@@ -56,7 +67,6 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
         newCredentials: credentials === null,
       })
     );
-    dispatch(setAvailableEconomicActivityList(companyData.economicActivityList));
     dispatch(setCantonList(cantonList));
     dispatch(setDistritoList(distritoList));
     dispatch(stopLoader());

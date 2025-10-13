@@ -273,7 +273,16 @@ export async function getDistritoList(token: string, provinceId: number, cantonI
 }
 
 export async function getCustomerData(id: string) {
-  const response = await fetch(HACIENDA_SERVER_URL + "/fe/ae?identificacion=" + id);
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  // Set a timeout of 5 seconds
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, 5000);
+
+  const response = await fetch(HACIENDA_SERVER_URL + "/fe/ae?identificacion=" + id, { signal });
+  clearTimeout(timeoutId);
   if (!response.ok) {
     let error = "";
     try {
