@@ -14,7 +14,6 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "my-types/*": ["./dist/types/*"],
       "assets/*": ["src/assets/*"],
       "components/*": ["src/components/*"],
       "pages/*": ["src/pages/*"],

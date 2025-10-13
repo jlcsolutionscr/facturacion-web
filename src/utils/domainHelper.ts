@@ -285,10 +285,10 @@ export async function getCustomerData(id: string) {
   } else {
     const data = await response.json();
     if (data) {
-      const list = data.actividades.map((actividad: { ciiu3: { codigo: string; descripcion: string }[] }) => {
+      const list = data.actividades.map((actividad: { codigo: string; descripcion: string }) => {
         return {
-          Id: parseInt(actividad.ciiu3[0].codigo),
-          Descripcion: `${actividad.ciiu3[0].codigo} - ${actividad.ciiu3[0].descripcion}`,
+          Llave: actividad.codigo,
+          Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
         };
       });
       return { name: data.nombre, economicActivityList: list };

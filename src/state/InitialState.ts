@@ -9,6 +9,7 @@ import {
   IdDescriptionValueType,
   InvoiceEntityType,
   InvoiceType,
+  LlaveDescriptionType,
   PermissionType,
   ProductType,
   ProformaType,
@@ -63,7 +64,7 @@ type SessionStateType = {
 
 type CompanyStateType = {
   entity: CompanyType;
-  availableEconomicActivityList: IdDescriptionType[];
+  availableEconomicActivityList: LlaveDescriptionType[];
   credentials: CredentialType;
   logo: string;
   newCredentials: boolean;

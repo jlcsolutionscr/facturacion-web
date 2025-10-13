@@ -8,8 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build-dev": "tsc && vite build --mode development",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@emotion/react": "11.11.1",

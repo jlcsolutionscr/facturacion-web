@@ -210,7 +210,7 @@ export default function ReceiptPage() {
   ];
 
   const activityItems = economicActivityList.map(item => (
-    <MenuItem key={item.Id} value={item.Id}>
+    <MenuItem key={item.Llave} value={item.Llave}>
       {item.Descripcion}
     </MenuItem>
   ));

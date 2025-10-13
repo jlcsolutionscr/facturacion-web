@@ -7,6 +7,11 @@ export type PermissionType = {
   IdRole: number;
 };
 
+export type LlaveDescriptionType = {
+  Llave: string;
+  Descripcion: string;
+};
+
 export type IdDescriptionType = {
   Id: number;
   Descripcion: string;
@@ -33,7 +38,7 @@ export type CodeDescriptionType = {
 
 export type EconomicActivityType = {
   IdEmpresa: number;
-  CodigoActividad: number;
+  CodigoActividad: string;
   Descripcion: string;
 };
 

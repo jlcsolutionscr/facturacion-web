@@ -1,4 +1,4 @@
-import { EconomicActivityType, IdDescriptionType } from "types/domain";
+import { EconomicActivityType, LlaveDescriptionType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
@@ -166,14 +166,14 @@ export const getLogo = createAsyncThunk("company/getLogo", async (_payload, { ge
 
 export const addActivity = createAsyncThunk(
   "company/addActivity",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { id: string }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
     const { entity: companyEntity, availableEconomicActivityList } = company;
-    const activity = availableEconomicActivityList.find((x: IdDescriptionType) => x.Id === payload.id);
+    const activity = availableEconomicActivityList.find((x: LlaveDescriptionType) => x.Llave === payload.id);
     if (!activity) {
       dispatch(
         setMessage({
-          message: "La actividad económica seleccionada no está existe",
+          message: "La actividad económica seleccionada no existe",
           type: "INFO",
         })
       );
@@ -183,7 +183,7 @@ export const addActivity = createAsyncThunk(
           ...companyEntity.ActividadEconomicaEmpresa,
           {
             IdEmpresa: companyEntity.IdEmpresa,
-            CodigoActividad: activity.Id,
+            CodigoActividad: activity.Llave,
             Descripcion: activity.Descripcion,
           },
         ];
@@ -200,7 +200,7 @@ export const addActivity = createAsyncThunk(
 
 export const removeActivity = createAsyncThunk(
   "company/removeActivity",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { id: string }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
     const { entity } = company;
 

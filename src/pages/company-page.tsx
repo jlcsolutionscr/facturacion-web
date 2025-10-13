@@ -76,7 +76,7 @@ export default function CompanyPage() {
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   useEffect(() => {
-    if (economicActivityList.length > 0) setActivityCode(economicActivityList[0].Id.toString());
+    if (economicActivityList.length > 0) setActivityCode(economicActivityList[0].Llave);
   }, [economicActivityList]);
 
   let disabled = true;
@@ -147,7 +147,7 @@ export default function CompanyPage() {
   ));
 
   const activityItems = economicActivityList.map(item => (
-    <MenuItem key={item.Id} value={item.Id}>
+    <MenuItem key={item.Llave} value={item.Llave}>
       {item.Descripcion}
     </MenuItem>
   ));
@@ -389,7 +389,7 @@ export default function CompanyPage() {
               color="primary"
               disabled={activityCode === ""}
               component="span"
-              onClick={() => dispatch(addActivity({ id: parseInt(activityCode) }))}
+              onClick={() => dispatch(addActivity({ id: activityCode }))}
             >
               <AddCircleIcon />
             </IconButton>
@@ -407,7 +407,7 @@ export default function CompanyPage() {
                   <TableBody>
                     {company.ActividadEconomicaEmpresa.map((row, index) => (
                       <TableRow key={index}>
-                        <TableCell>{`${row.CodigoActividad} - ${row.Descripcion}`}</TableCell>
+                        <TableCell>{row.Descripcion}</TableCell>
                         <TableCell>
                           <IconButton
                             color="secondary"
