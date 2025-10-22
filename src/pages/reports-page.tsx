@@ -80,13 +80,17 @@ export default function ReportsPage() {
   const isAccountingUser = permissions.filter(role => role.IdRole === 2).length > 0;
 
   useEffect(() => {
-    const today = new Date();
-    setStartDate(today);
-    setEndDate(lastDayOfMonth(today));
     if (reportList.length && reportId === 0) {
+      const today = new Date();
+      setStartDate(today);
+      setEndDate(lastDayOfMonth(today));
       setReportId(reportList[0].IdReporte);
     }
   }, [reportId, reportList]);
+
+  useEffect(() => {
+    setEndDate(lastDayOfMonth(startDate));
+  }, [startDate]);
 
   useEffect(() => {
     if (reportResults.length > 0) {
