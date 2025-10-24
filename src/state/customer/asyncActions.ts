@@ -242,6 +242,14 @@ export const getCustomerDetails = createAsyncThunk(
           priceTypeId: customer.IdTipoPrecio,
         })
       );
+      if (customer.CodigoActividad === "")
+        dispatch(
+          setMessage({
+            message:
+              "El cliente no tiene asignada una actividad ecónomica y se generará un tiquete electrónico en caso de continuar!",
+            type: "INFO",
+          })
+        );
       dispatch(stopLoader());
     } catch (error) {
       dispatch(action(defaultCustomerDetails));
