@@ -1,11 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { setAvailableEconomicActivityList } from "state/company/reducer";
 import {
   resetProductDetails,
   resetReceipt,
   setActivityCode,
-  setIssuerDetails,
   setProductDetails,
   setProductDetailsList,
   setSuccessful,
@@ -13,7 +11,7 @@ import {
 } from "state/receipt/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { getCustomerData, getProductClasification, getProductSummary, saveReceiptEntity } from "utils/domainHelper";
+import { getProductClasification, getProductSummary, saveReceiptEntity } from "utils/domainHelper";
 import { getErrorMessage, getIdFromRateValue, roundNumber } from "utils/utilities";
 
 export const setReceiptParameters = createAsyncThunk(
@@ -29,42 +27,6 @@ export const setReceiptParameters = createAsyncThunk(
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const validateCustomerIdentifier = createAsyncThunk(
-  "receipt/validateCustomerIdentifier",
-  async (payload: { identifier: string }, { getState, dispatch }) => {
-    const { receipt } = getState() as RootState;
-    const { issuer } = receipt.entity;
-    dispatch(setAvailableEconomicActivityList([]));
-    try {
-      dispatch(setIssuerDetails({ attribute: "id", value: payload.identifier }));
-      if (
-        (issuer.typeId === 0 && payload.identifier.length === 9) ||
-        (issuer.typeId === 1 && payload.identifier.length === 10) ||
-        (issuer.typeId > 1 && payload.identifier.length >= 11)
-      ) {
-        dispatch(startLoader());
-        try {
-          const customerData = await getCustomerData(payload.identifier);
-          dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
-          dispatch(setIssuerDetails({ attribute: "name", value: customerData.name }));
-        } catch {
-          dispatch(
-            setMessage({
-              message: "Ocurrió un error al obtener la información del contribuyente en el Ministerio de Hacienda!",
-              type: "ERROR",
-            })
-          );
-        }
-        dispatch(stopLoader());
-      }
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(setIssuerDetails({ attribute: "name", value: "" }));
       dispatch(stopLoader());
     }
   }

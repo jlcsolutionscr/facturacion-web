@@ -12,7 +12,6 @@ import { FORM_TYPE } from "utils/constants";
 import { defaultCustomer, defaultCustomerDetails } from "utils/defaults";
 import {
   getCustomerByIdentifier,
-  getCustomerData,
   getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
@@ -76,7 +75,6 @@ export const openCustomer = createAsyncThunk(
     const { token } = session;
     dispatch(setActiveSection(12));
     dispatch(startLoader());
-    dispatch(setAvailableEconomicActivityList([]));
     try {
       if (payload.idCustomer) {
         const customer = await getCustomerEntity(token, payload.idCustomer);
@@ -86,17 +84,6 @@ export const openCustomer = createAsyncThunk(
           return;
         }
         dispatch(setCustomer(customer));
-        try {
-          const customerData = await getCustomerData(customer.Identificacion);
-          dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
-        } catch {
-          dispatch(
-            setMessage({
-              message: "Ocurrió un error al obtener la información del contribuyente en el Ministerio de Hacienda!",
-              type: "ERROR",
-            })
-          );
-        }
       } else {
         dispatch(setCustomer(defaultCustomer));
         dispatch(setAvailableEconomicActivityList([]));
@@ -120,48 +107,21 @@ export const validateCustomerIdentifier = createAsyncThunk(
       (payload.idType > 1 && payload.identifier.length >= 11)
     ) {
       dispatch(startLoader());
-      dispatch(setAvailableEconomicActivityList([]));
-      let customerName = "";
-      try {
-        try {
-          const customerData = await getCustomerData(payload.identifier);
-          dispatch(setAvailableEconomicActivityList(customerData.economicActivityList));
-          customerName = customerData.name;
-        } catch {
-          dispatch(
-            setMessage({
-              message: "Ocurrió un error al obtener la información del contribuyente en el Ministerio de Hacienda!",
-              type: "ERROR",
-            })
-          );
-        }
-        const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
-        if (customer?.IdCliente > 0) {
-          dispatch(setCustomer(customer));
-          dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
-        } else {
-          dispatch(
-            setCustomer({
-              ...defaultCustomer,
-              IdEmpresa: companyId,
-              IdTipoIdentificacion: payload.idType,
-              Identificacion: payload.identifier,
-              Nombre: customerName,
-            })
-          );
-        }
-        dispatch(stopLoader());
-      } catch {
-        dispatch(setMessage({ message: "No se logró obtener información del cliente. . .", type: "ERROR" }));
+      const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
+      if (customer?.IdCliente > 0) {
+        dispatch(setCustomer(customer));
+        dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
+      } else {
         dispatch(
           setCustomer({
             ...defaultCustomer,
+            IdEmpresa: companyId,
             IdTipoIdentificacion: payload.idType,
             Identificacion: payload.identifier,
           })
         );
-        dispatch(stopLoader());
       }
+      dispatch(stopLoader());
     }
   }
 );

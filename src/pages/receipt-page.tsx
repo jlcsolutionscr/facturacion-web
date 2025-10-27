@@ -24,16 +24,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { filterClasificationList } from "state/product/asyncActions";
 import { getClasificationList } from "state/product/reducer";
-import {
-  addDetails,
-  removeDetails,
-  saveReceipt,
-  validateCustomerIdentifier,
-  validateProductCode,
-} from "state/receipt/asyncActions";
+import { addDetails, removeDetails, saveReceipt, validateProductCode } from "state/receipt/asyncActions";
 import {
   getCurrency,
   getExonerationDetails,
@@ -117,7 +110,6 @@ export default function ReceiptPage() {
   const summary = useSelector(getSummary);
   const currency = useSelector(getCurrency);
   const successful = useSelector(getSuccessful);
-  const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   const handleIdTypeChange = (value: string) => {
     dispatch(setIssuerDetails({ attribute: "typeId", value: parseInt(value) }));
@@ -209,12 +201,6 @@ export default function ReceiptPage() {
     { field: "description", headerName: "Descripcion" },
   ];
 
-  const activityItems = economicActivityList.map(item => (
-    <MenuItem key={item.Llave} value={item.Llave}>
-      {item.Descripcion}
-    </MenuItem>
-  ));
-
   const addDisabled =
     productDetail.code.length < 13 ||
     productDetail.description === "" ||
@@ -229,7 +215,8 @@ export default function ReceiptPage() {
     issuer.name === "" ||
     issuer.address === "" ||
     issuer.phone === "" ||
-    issuer.email === "";
+    issuer.email === "" ||
+    issuer.activityCode.length < 6;
 
   return (
     <div className={classes.root}>
@@ -270,7 +257,7 @@ export default function ReceiptPage() {
             required
             value={issuer.id}
             label="Identificación"
-            onChange={event => dispatch(validateCustomerIdentifier({ identifier: event.target.value }))}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "id", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -279,7 +266,7 @@ export default function ReceiptPage() {
             required
             value={issuer.name}
             label="Nombre"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "reference", value: event.target.value }))}
+            onChange={event => dispatch(setIssuerDetails({ attribute: "name", value: event.target.value }))}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -292,14 +279,14 @@ export default function ReceiptPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          <Select
-            id="codigo-actividad-select-id"
-            label="Seleccione la Actividad Económica"
+          <TextField
+            disabled={successful}
+            required
             value={issuer.activityCode}
+            inputProps={{ maxLength: 6 }}
+            label="Actividad Económica"
             onChange={event => dispatch(setIssuerDetails({ attribute: "activityCode", value: event.target.value }))}
-          >
-            {activityItems}
-          </Select>
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

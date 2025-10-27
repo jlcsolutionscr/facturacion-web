@@ -7,7 +7,6 @@ import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-import { getAvailableEconomicActivityList } from "state/company/reducer";
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomer, setCustomerAttribute } from "state/customer/reducer";
 import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
@@ -55,7 +54,6 @@ export default function CustomerPage() {
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const exonerationNameList = useSelector(getExonerationNameList);
   const customer = useSelector(getCustomer);
-  const economicActivityList = useSelector(getAvailableEconomicActivityList);
 
   const idTypeItems = idTypeList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -77,11 +75,6 @@ export default function CustomerPage() {
       {item.Descripcion}
     </MenuItem>
   ));
-  const activityItems = economicActivityList.map(item => (
-    <MenuItem key={item.Llave} value={item.Llave}>
-      {item.Descripcion}
-    </MenuItem>
-  ));
   let disabled = true;
   if (customer != null) {
     disabled =
@@ -92,7 +85,7 @@ export default function CustomerPage() {
       customer.CorreoElectronico === "" ||
       customer.IdTipoPrecio === null ||
       customer.IdTipoExoneracion === null ||
-      customer.CodigoActividad.length < 6;
+      (customer.CodigoActividad.length > 0 && customer.CodigoActividad.length < 6);
   }
   const handlePaste = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -313,32 +306,14 @@ export default function CustomerPage() {
             />
           </Grid>
           <Grid item xs={12}>
-            {activityItems.length > 0 ? (
-              <Select
-                id="CodigoActividad"
-                label="Seleccione la Actividad Económica"
-                value={customer.CodigoActividad}
-                onChange={event =>
-                  dispatch(
-                    setCustomerAttribute({
-                      attribute: "CodigoActividad",
-                      value: event.target.value,
-                    })
-                  )
-                }
-              >
-                {activityItems}
-              </Select>
-            ) : (
-              <TextField
-                id="CodigoActividad"
-                value={customer.CodigoActividad}
-                label="Actividad Económica"
-                numericFormat
-                inputProps={{ maxLength: 6 }}
-                onChange={handleChange}
-              />
-            )}
+            <TextField
+              id="CodigoActividad"
+              value={customer.CodigoActividad}
+              label="Actividad Económica"
+              numericFormat
+              inputProps={{ maxLength: 6 }}
+              onChange={handleChange}
+            />
           </Grid>
         </Grid>
       </Box>
