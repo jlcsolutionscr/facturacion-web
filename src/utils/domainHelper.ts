@@ -761,7 +761,7 @@ export async function getProcessedInvoiceListCount(token: string, companyId: num
     companyId +
     ", IdSucursal: " +
     branchId +
-    "}}";
+    ", ExcluyeNulos: true}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return null;
   return response;
@@ -779,6 +779,7 @@ export async function getProcessedInvoiceListPerPage(
     companyId +
     ", IdSucursal: " +
     branchId +
+    ", ExcluyeNulos: true" +
     ", NumeroPagina: " +
     pageNumber +
     ",FilasPorPagina: " +
@@ -880,7 +881,7 @@ export async function getWorkingOrderListCount(
     companyId +
     ", IdSucursal: " +
     branchId +
-    ", FiltraEstado: true, Aplicado: '" +
+    ", ExcluyeNulos: true, FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
@@ -903,7 +904,7 @@ export async function getWorkingOrderListPerPage(
     branchId +
     ", NumeroPagina: " +
     pageNumber +
-    ", FiltraEstado: true, Aplicado: '" +
+    ", ExcluyeNulos: true, FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "', FilasPorPagina: " +
     rowPerPage +
@@ -1179,7 +1180,7 @@ export async function getProformaListCount(token: string, companyId: number, bra
     companyId +
     ", IdSucursal: " +
     branchId +
-    ", FiltraEstado: true, Aplicado: '" +
+    ", ExcluyeNulos: true, FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
@@ -1202,7 +1203,7 @@ export async function getProformaListPerPage(
     branchId +
     ", NumeroPagina: " +
     pageNumber +
-    ", FiltraEstado: true, Aplicado: '" +
+    ", ExcluyeNulos: true, FiltraEstado: true, Aplicado: '" +
     bolApplied +
     "', FilasPorPagina: " +
     rowPerPage +
