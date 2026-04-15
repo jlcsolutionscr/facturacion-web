@@ -27,6 +27,7 @@ export const defaultCompany: CompanyType = {
   Telefono2: "",
   CorreoNotificacion: "",
   Modalidad: 1,
+  Logotipo: "",
   TipoContrato: 1,
   IdTipoMoneda: 1,
   FechaVence: "",

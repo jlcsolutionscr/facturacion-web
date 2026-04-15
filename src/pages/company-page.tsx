@@ -57,7 +57,7 @@ const useStyles = makeStyles()(theme => ({
     scrollbarWidth: "thin",
   },
   footer: {
-    height: "50px",
+    height: "60px",
     alignContent: "center",
   },
 }));
@@ -66,7 +66,9 @@ export default function CompanyPage() {
   const { classes } = useStyles();
   const [certificate, setCertificate] = useState("");
   const [activityCode, setActivityCode] = useState("");
-  const inputFile = useRef<HTMLInputElement>(null);
+  const [logoFilePath, setLogoFilePath] = useState("");
+  const logoFileRef = useRef<HTMLInputElement>(null);
+  const certificateFileRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
@@ -117,6 +119,20 @@ export default function CompanyPage() {
       dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: 1 }));
     } else if (id === "IdDistrito") {
       dispatch(setCompanyAttribute({ attribute: "IdDistrito", value: value }));
+    }
+  };
+
+  const handleLogoFileChange = (event: { preventDefault: () => void; target: { files: FileList | null } }) => {
+    event.preventDefault();
+    if (event.target.files !== null) {
+      const reader: FileReader = new FileReader();
+      const file = event.target.files[0];
+      setLogoFilePath(file.name);
+      reader.onloadend = () => {
+        const logoBase64 = (reader.result as string).substring((reader.result as string).indexOf(",") + 1);
+        dispatch(setCompanyAttribute({ attribute: "Logotipo", value: logoBase64 }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -253,6 +269,43 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
+          <Grid item xs={9} md={6} lg={4}>
+            <LabelField id="Logotipo" value={logoFilePath} label="Logotipo de empresa" />
+          </Grid>
+          <Grid item xs={3}>
+            <input
+              accept="image/*"
+              style={{ display: "none" }}
+              id="logo-image-upload-button-input"
+              ref={logoFileRef}
+              multiple
+              type="file"
+              onChange={handleLogoFileChange}
+            />
+            <Button label="Cargar" onClick={() => logoFileRef.current?.click()} />
+          </Grid>
+          <Grid item xs={12} display="flex" justifyContent="center">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "350px",
+                paddingX: "auto",
+                height: "150px",
+                alignItems: "center",
+                marginY: "20px",
+              }}
+            >
+              {company.Logotipo !== "" && (
+                <Box
+                  sx={{ width: "inherit", height: "inherit" }}
+                  component="img"
+                  alt="Comapny logo image."
+                  src={`data:image/png;base64,${company.Logotipo}`}
+                />
+              )}
+            </Box>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               required
@@ -289,69 +342,70 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              disabled={company.RegimenSimplificado}
-              id="UsuarioHacienda"
-              value={credentials.UsuarioHacienda}
-              label="Usuario ATV"
-              onChange={event =>
-                dispatch(
-                  setCredentialsAttribute({
-                    attribute: "UsuarioHacienda",
-                    value: event.target.value,
-                  })
-                )
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              disabled={company.RegimenSimplificado}
-              id="ClaveHacienda"
-              value={credentials.ClaveHacienda}
-              label="Clave ATV"
-              onChange={event =>
-                dispatch(
-                  setCredentialsAttribute({
-                    attribute: "ClaveHacienda",
-                    value: event.target.value,
-                  })
-                )
-              }
-            />
-          </Grid>
-          <Grid item xs={8} sm={9} md={10}>
-            <LabelField id="Certificado" value={credentials.NombreCertificado} label="Llave criptográfica" />
-          </Grid>
-          <Grid item xs={1}>
-            <input
-              accept="p12/*"
-              style={{ display: "none" }}
-              id="contained-button-file"
-              ref={inputFile}
-              multiple
-              type="file"
-              onChange={handleCertificateChange}
-            />
-            <Button disabled={company.RegimenSimplificado} label="Cargar" onClick={() => inputFile.current?.click()} />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              disabled={company.RegimenSimplificado}
-              id="PinCertificado"
-              value={credentials.PinCertificado}
-              label="Pin de llave criptográfica"
-              onChange={event =>
-                dispatch(
-                  setCredentialsAttribute({
-                    attribute: "PinCertificado",
-                    value: event.target.value,
-                  })
-                )
-              }
-            />
-          </Grid>
+          {!company.RegimenSimplificado && (
+            <>
+              <Grid item xs={12}>
+                <TextField
+                  id="UsuarioHacienda"
+                  value={credentials.UsuarioHacienda}
+                  label="Usuario ATV"
+                  onChange={event =>
+                    dispatch(
+                      setCredentialsAttribute({
+                        attribute: "UsuarioHacienda",
+                        value: event.target.value,
+                      })
+                    )
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="ClaveHacienda"
+                  value={credentials.ClaveHacienda}
+                  label="Clave ATV"
+                  onChange={event =>
+                    dispatch(
+                      setCredentialsAttribute({
+                        attribute: "ClaveHacienda",
+                        value: event.target.value,
+                      })
+                    )
+                  }
+                />
+              </Grid>
+              <Grid item xs={9} md={6} lg={4}>
+                <LabelField id="Certificado" value={credentials.NombreCertificado} label="Llave criptográfica" />
+              </Grid>
+              <Grid item xs={1}>
+                <input
+                  accept="p12/*"
+                  style={{ display: "none" }}
+                  id="certificate-upload-button-field"
+                  ref={certificateFileRef}
+                  multiple
+                  type="file"
+                  onChange={handleCertificateChange}
+                />
+                <Button label="Cargar" onClick={() => certificateFileRef.current?.click()} />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="PinCertificado"
+                  value={credentials.PinCertificado}
+                  label="Pin de llave criptográfica"
+                  onChange={event =>
+                    dispatch(
+                      setCredentialsAttribute({
+                        attribute: "PinCertificado",
+                        value: event.target.value,
+                      })
+                    )
+                  }
+                />
+              </Grid>
+            </>
+          )}
           <Grid item xs={12}>
             <FormControlLabel
               componentsProps={{
@@ -374,56 +428,60 @@ export default function CompanyPage() {
               label="IVA incluido en precio de venta"
             />
           </Grid>
-          <Grid item xs={10} md={8}>
-            <Select
-              id="codigo-actividad-id"
-              label="Seleccione la Actividad Económica"
-              value={activityCode}
-              onChange={event => setActivityCode(event.target.value)}
-            >
-              {activityItems}
-            </Select>
-          </Grid>
-          <Grid item xs={2}>
-            <IconButton
-              color="primary"
-              disabled={activityCode === ""}
-              component="span"
-              onClick={() => dispatch(addActivity({ id: activityCode }))}
-            >
-              <AddCircleIcon />
-            </IconButton>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container style={{ overflowY: "auto" }}>
-              <Grid item xs={12}>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Actividades Económicas Asignadas</TableCell>
-                      <TableCell> - </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {company.ActividadEconomicaEmpresa.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{row.Descripcion}</TableCell>
-                        <TableCell>
-                          <IconButton
-                            color="secondary"
-                            component="span"
-                            onClick={() => dispatch(removeActivity({ id: row.CodigoActividad }))}
-                          >
-                            <RemoveCircleIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+          {!company.RegimenSimplificado && (
+            <>
+              <Grid item xs={10} md={8}>
+                <Select
+                  id="codigo-actividad-id"
+                  label="Seleccione la Actividad Económica"
+                  value={activityCode}
+                  onChange={event => setActivityCode(event.target.value)}
+                >
+                  {activityItems}
+                </Select>
               </Grid>
-            </Grid>
-          </Grid>
+              <Grid item xs={2}>
+                <IconButton
+                  color="primary"
+                  disabled={activityCode === ""}
+                  component="span"
+                  onClick={() => dispatch(addActivity({ id: activityCode }))}
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container style={{ overflowY: "auto" }}>
+                  <Grid item xs={12}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Actividades Económicas Asignadas</TableCell>
+                          <TableCell> - </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {company.ActividadEconomicaEmpresa.map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{row.Descripcion}</TableCell>
+                            <TableCell>
+                              <IconButton
+                                color="secondary"
+                                component="span"
+                                onClick={() => dispatch(removeActivity({ id: row.CodigoActividad }))}
+                              >
+                                <RemoveCircleIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </>
+          )}
         </Grid>
       </Box>
       <Box className={classes.footer}>

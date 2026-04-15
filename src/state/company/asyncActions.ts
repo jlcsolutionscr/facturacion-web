@@ -5,7 +5,6 @@ import {
   setAvailableEconomicActivityList,
   setCompany,
   setCompanyAttribute,
-  setCompanyLogo,
   setCredentials,
   setReportResults,
 } from "state/company/reducer";
@@ -23,13 +22,11 @@ import { defaultCredentials } from "utils/defaults";
 import {
   getCantonList,
   getCompanyEntity,
-  getCompanyLogo,
   getCredentialsEntity,
   getCustomerData,
   getDistritoList,
   getReportData,
   saveCompanyEntity,
-  saveCompanyLogo,
   saveCredentialsEntity,
   sendReportEmail,
   updateCredentialsEntity,
@@ -49,6 +46,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const credentials = await getCredentialsEntity(token, company.IdEmpresa);
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
+    //Disabled Hacienda company information request until service get back online
     try {
       const companyData = await getCustomerData(company.Identificacion);
       dispatch(setAvailableEconomicActivityList(companyData.economicActivityList));
@@ -134,45 +132,6 @@ export const saveCompany = createAsyncThunk(
     }
   }
 );
-
-export const saveLogo = createAsyncThunk(
-  "company/saveLogo",
-  async (payload: { logo: string }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { companyId, token } = session;
-    dispatch(startLoader());
-    try {
-      if (payload.logo !== "") {
-        await saveCompanyLogo(token, companyId, payload.logo);
-      }
-      dispatch(
-        setMessage({
-          message: "Transacción completada satisfactoriamente",
-          type: "INFO",
-        })
-      );
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
-  }
-);
-
-export const getLogo = createAsyncThunk("company/getLogo", async (_payload, { getState, dispatch }) => {
-  const { session } = getState() as RootState;
-  const { companyId, token } = session;
-  dispatch(startLoader());
-  dispatch(setActiveSection(3));
-  try {
-    const logo = await getCompanyLogo(token, companyId);
-    dispatch(setCompanyLogo(`data:image/png;base64,${logo}`));
-    dispatch(stopLoader());
-  } catch (error) {
-    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-    dispatch(stopLoader());
-  }
-});
 
 export const addActivity = createAsyncThunk(
   "company/addActivity",

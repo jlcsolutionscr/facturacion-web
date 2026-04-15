@@ -65,6 +65,7 @@ export const getProductListFirstPage = createAsyncThunk(
           1,
           payload.rowsPerPage,
           payload.filterText,
+          false,
           payload.type
         );
         dispatch(setProductList(newList));
@@ -102,6 +103,7 @@ export const getProductListByPageNumber = createAsyncThunk(
         payload.pageNumber,
         payload.rowsPerPage,
         payload.filterText,
+        false,
         payload.type
       );
       dispatch(setProductListPage(payload.pageNumber));
@@ -171,6 +173,7 @@ export const filterProductList = createAsyncThunk(
         1,
         payload.rowsPerPage,
         payload.filterText,
+        false,
         payload.type
       );
       dispatch(setProductListCount(productCount));

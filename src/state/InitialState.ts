@@ -66,7 +66,6 @@ type CompanyStateType = {
   entity: CompanyType;
   availableEconomicActivityList: LlaveDescriptionType[];
   credentials: CredentialType;
-  logo: string;
   newCredentials: boolean;
   credentialsChanged: boolean;
   reportResults: object[];
@@ -178,7 +177,6 @@ export const companyInitialState: CompanyStateType = {
   entity: defaultCompany,
   availableEconomicActivityList: [],
   credentials: defaultCredentials,
-  logo: "",
   newCredentials: true,
   credentialsChanged: false,
   reportResults: [],

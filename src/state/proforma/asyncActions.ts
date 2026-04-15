@@ -1,7 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
-import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import {
   resetProductDetails,
   resetProforma,
@@ -15,13 +13,9 @@ import {
 } from "state/proforma/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER, ROWS_PER_LIST, ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_LIST } from "utils/constants";
 import {
   generateProformaPDF,
-  getCustomerListCount,
-  getCustomerListPerPage,
-  getProductListCount,
-  getProductListPerPage,
   getProductSummary,
   getProformaListCount,
   getProformaListPerPage,
@@ -36,21 +30,11 @@ export const setProformaParameters = createAsyncThunk(
   "proforma/setProformaParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { companyId, branchId, token, vendorList } = session;
+    const { vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(14));
     dispatch(resetProforma());
     try {
-      const customerCount = await getCustomerListCount(token, companyId, "");
-      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
-      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
-      dispatch(setCustomerListPage(1));
-      dispatch(setCustomerListCount(customerCount));
-      dispatch(setCustomerList(customerList));
-      dispatch(setProductListPage(1));
-      dispatch(setProductListCount(productCount));
-      dispatch(setProductList(productList));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
     } catch (error) {

@@ -10,7 +10,6 @@ import CustomerPage from "pages/customer-page";
 import DocumentListPage from "pages/document-list-page";
 import InvoiceListPage from "pages/invoice-list-page";
 import InvoicePage from "pages/invoice-page";
-import LogoPage from "pages/logo-page";
 import MenuPage from "pages/menu-page";
 import ProductListPage from "pages/product-list-page";
 import ProductPage from "pages/product-page";
@@ -81,7 +80,6 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <UserPage />}
-        {activeSection === 3 && <LogoPage />}
         {activeSection === 4 && <CustomerListPage />}
         {activeSection === 5 && <ProductListPage />}
         {activeSection === 6 && <InvoicePage />}

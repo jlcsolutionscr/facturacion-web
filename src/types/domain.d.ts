@@ -88,6 +88,7 @@ export type CompanyType = {
   LeyendaApartado: string;
   LeyendaOrdenServicio: string;
   Modalidad: number;
+  Logotipo: string;
   ActividadEconomicaEmpresa: EconomicActivityType[];
   Usuario: { Token: string };
 };

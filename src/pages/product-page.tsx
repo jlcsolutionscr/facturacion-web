@@ -6,7 +6,7 @@ import {
   TextField,
   type TextFieldOnChangeEventType,
 } from "jlc-component-library";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Box from "@mui/material/Box";
@@ -61,7 +61,7 @@ const useStyles = makeStyles()(theme => ({
     scrollbarWidth: "thin",
   },
   footer: {
-    height: "50px",
+    height: "60px",
     alignContent: "center",
   },
   icon: {
@@ -94,6 +94,9 @@ export default function ProductPage() {
   const [untaxPrice3, setUntaxPrice3] = useState(0);
   const [untaxPrice4, setUntaxPrice4] = useState(0);
   const [untaxPrice5, setUntaxPrice5] = useState(0);
+  const [imageFilePath, setImageFilePath] = useState("");
+
+  const imageFileRef = useRef<HTMLInputElement>(null);
 
   const product = useSelector(getProduct);
   const productTypeList = useSelector(getProductTypeList);
@@ -215,6 +218,20 @@ export default function ProductPage() {
       if (taxRateId) dispatch(setProductAttribute({ attribute: "IdImpuesto", value: taxRateId }));
     }
     setDialogOpen(false);
+  };
+
+  const handleImageFileChange = (event: { preventDefault: () => void; target: { files: FileList | null } }) => {
+    event.preventDefault();
+    if (event.target.files !== null) {
+      const reader: FileReader = new FileReader();
+      const file = event.target.files[0];
+      setImageFilePath(file.name);
+      reader.onloadend = () => {
+        const logoBase64 = (reader.result as string).substring((reader.result as string).indexOf(",") + 1);
+        dispatch(setProductAttribute({ attribute: "Imagen", value: logoBase64 }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const rows = clasificationList.map(row => ({
@@ -427,6 +444,43 @@ export default function ProductPage() {
               }
               label="Producto activo"
             />
+          </Grid>
+          <Grid item xs={9} md={6} lg={4}>
+            <LabelField id="Logotipo" value={imageFilePath} label="Logotipo de empresa" />
+          </Grid>
+          <Grid item xs={3}>
+            <input
+              accept="image/*"
+              style={{ display: "none" }}
+              id="logo-image-upload-button-input"
+              ref={imageFileRef}
+              multiple
+              type="file"
+              onChange={handleImageFileChange}
+            />
+            <Button label="Cargar" onClick={() => imageFileRef.current?.click()} />
+          </Grid>
+          <Grid item xs={12} display="flex" justifyContent="center">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "250px",
+                paddingX: "auto",
+                height: "250px",
+                alignItems: "center",
+                marginY: "20px",
+              }}
+            >
+              {product.Imagen !== "" && (
+                <Box
+                  sx={{ width: "inherit", height: "inherit" }}
+                  component="img"
+                  alt="Comapny logo image."
+                  src={`data:image/png;base64,${product.Imagen}`}
+                />
+              )}
+            </Box>
           </Grid>
         </Grid>
       </Box>

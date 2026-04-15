@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
 import {
   resetInvoice,
   resetProductDetails,
@@ -13,19 +12,14 @@ import {
   setSummary,
   setVendorId,
 } from "state/invoice/reducer";
-import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER, ROWS_PER_LIST, ROWS_PER_PRODUCT } from "utils/constants";
+import { ROWS_PER_LIST } from "utils/constants";
 import {
   generateInvoicePDF,
   generateInvoiceTicketPDF,
-  getCustomerListCount,
-  getCustomerListPerPage,
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
-  getProductListCount,
-  getProductListPerPage,
   getProductSummary,
   getTaxedPrice,
   revokeInvoiceEntity,
@@ -37,21 +31,11 @@ export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { companyId, branchId, company, token, vendorList } = session;
+    const { company, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(payload.id));
     dispatch(resetInvoice());
     try {
-      const customerCount = await getCustomerListCount(token, companyId, "");
-      const customerList = await getCustomerListPerPage(token, companyId, 1, ROWS_PER_CUSTOMER, "");
-      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, ROWS_PER_PRODUCT, "", 1);
-      dispatch(setCustomerListPage(1));
-      dispatch(setCustomerListCount(customerCount));
-      dispatch(setCustomerList(customerList));
-      dispatch(setProductListPage(1));
-      dispatch(setProductListCount(productCount));
-      dispatch(setProductList(productList));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(stopLoader());

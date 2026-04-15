@@ -153,6 +153,7 @@ export async function getCompanyEntity(token: string, companyId: number) {
     LeyendaProforma: response.LeyendaProforma,
     LeyendaApartado: response.LeyendaApartado,
     LeyendaOrdenServicio: response.LeyendaOrdenServicio,
+    Logotipo: response.Logotipo,
     Modalidad: response.Modalidad,
     ActividadEconomicaEmpresa: response.ActividadEconomicaEmpresa,
   };
@@ -160,18 +161,6 @@ export async function getCompanyEntity(token: string, companyId: number) {
 
 export async function saveCompanyEntity(token: string, company: CompanyType) {
   const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" + JSON.stringify(company) + "'}";
-  await post(APP_URL + "/ejecutar", token, data);
-}
-
-export async function getCompanyLogo(token: string, companyId: number) {
-  const data = "{NombreMetodo: 'ObtenerLogotipoEmpresa', Parametros: {IdEmpresa: " + companyId + "}}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return response;
-}
-
-export async function saveCompanyLogo(token: string, companyId: number, strLogo: string) {
-  const data =
-    "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + companyId + ", Logotipo: '" + strLogo + "'}}";
   await post(APP_URL + "/ejecutar", token, data);
 }
 
@@ -473,6 +462,7 @@ export async function getProductListPerPage(
   page: number,
   rowsPerPage: number,
   filterText: string,
+  imageIncluded: boolean,
   type: number
 ) {
   const data =
@@ -486,6 +476,8 @@ export async function getProductListPerPage(
     rowsPerPage +
     ", IncluyeServicios: 'true', FiltraActivos: '" +
     activeOnly +
+    "', IncluyeImagen: '" +
+    imageIncluded +
     "', IdLinea: 0, Codigo: '" +
     (type === 1 ? filterText : "") +
     "', Descripcion: '" +
