@@ -3,17 +3,18 @@ import { makeStyles } from "tss-react/mui";
 export const useStyles = makeStyles()(() => ({
   container: {
     display: "flex",
-    backgroundColor: "lightgray",
-    boxShadow: "7px 7px 7px #777",
+    backgroundColor: "rgb(8, 65, 96)",
+    color: "#CCC",
+    boxShadow: "6px 6px 6px #777",
     cursor: "pointer",
     margin: "10px",
-    padding: "10px",
+    padding: "7px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
     width: "140px",
     height: "50px",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   title: {
     display: "flex",

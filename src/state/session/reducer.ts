@@ -71,6 +71,7 @@ export const {
 
 export const getAuthenticated = (state: RootState) => state.session.authenticated;
 export const getCompany = (state: RootState) => state.session.company;
+export const getCompanyMode = (state: RootState) => state.session.company?.Modalidad ?? 1;
 export const getUserId = (state: RootState) => state.session.userId;
 export const getUserCode = (state: RootState) => state.session.userCode;
 export const getBranchId = (state: RootState) => state.session.branchId;

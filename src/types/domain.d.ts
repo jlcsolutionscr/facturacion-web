@@ -251,6 +251,7 @@ export type InvoiceType = {
 
 export type WorkingOrderType = {
   id: number;
+  servicePointId: number;
   consecutive: number;
   invoiceId: number;
   date: string;

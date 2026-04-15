@@ -86,6 +86,9 @@ const workingOrderSlice = createSlice({
     resetWorkingOrder: state => {
       state.entity = defaultWorkingOrder;
     },
+    setServicePointId: (state, action) => {
+      state.entity.servicePointId = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(logout, () => {
@@ -117,6 +120,7 @@ export const {
   setWorkingOrderList,
   setServicePointList,
   resetWorkingOrder,
+  setServicePointId,
 } = workingOrderSlice.actions;
 
 export const getCustomerDetails = (state: RootState) => state.workingOrder.entity.customerDetails;

@@ -169,6 +169,7 @@ export const defaultInvoice: InvoiceType = {
 
 export const defaultWorkingOrder: WorkingOrderType = {
   id: 0,
+  servicePointId: 0,
   consecutive: 0,
   date: "",
   cashAdvance: 0,

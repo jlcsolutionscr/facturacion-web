@@ -117,7 +117,7 @@ export default function WorkingOrderPage() {
         <IconButton
           aria-label="upload picture"
           component="span"
-          onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 11 }))}
+          onClick={() => dispatch(getWorkingOrderListFirstPage())}
         >
           <BackArrowIcon className={classes.icon} />
         </IconButton>

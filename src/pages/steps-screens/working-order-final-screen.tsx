@@ -234,7 +234,7 @@ export default function StepFourScreen({
               <Select
                 id="forma-pago-select-id"
                 label="Seleccione la forma de pago:"
-                value={paymentDetails[0].paymentId.toString()}
+                value={paymentDetails[0] ? paymentDetails[0].paymentId.toString() : ""}
                 onChange={event =>
                   dispatch(
                     setPaymentDetailsList([

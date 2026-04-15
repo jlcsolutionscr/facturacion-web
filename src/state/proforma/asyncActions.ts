@@ -131,8 +131,8 @@ export const saveProforma = createAsyncThunk("proforma/saveProforma", async (_pa
   const { token, userId, branchId, companyId } = session;
   dispatch(startLoader());
   try {
-    const ids = await saveProformaEntity(token, userId, companyId, branchId, proforma.entity);
-    dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));
+    const references = await saveProformaEntity(token, userId, companyId, branchId, proforma.entity);
+    dispatch(setSuccessful({ id: references.id, consecutive: references.consecutive, success: true }));
     dispatch(
       setMessage({
         message: "Transacción completada satisfactoriamente",

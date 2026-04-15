@@ -13,9 +13,16 @@ import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asy
 import { getProductListFirstPage } from "state/product/asyncActions";
 import { getProformaListFirstPage } from "state/proforma/asyncActions";
 import { setReceiptParameters } from "state/receipt/asyncActions";
-import { getBranchId, getBranchList, getPermissions, getUserCode, setBranchId } from "state/session/reducer";
+import {
+  getBranchId,
+  getBranchList,
+  getCompanyMode,
+  getPermissions,
+  getUserCode,
+  setBranchId,
+} from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
+import { getServicePointList, getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
 import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
@@ -123,6 +130,7 @@ export default function MenuPage() {
   const branchId = useSelector(getBranchId);
   const branchList = useSelector(getBranchList);
   const userCode = useSelector(getUserCode);
+  const companyMode = useSelector(getCompanyMode);
 
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0;
   const manageCustomers = permissions.filter(role => [1, 100].includes(role.IdRole)).length > 0;
@@ -263,9 +271,15 @@ export default function MenuPage() {
             <Button
               disabled={!generateWorkingOrder}
               className={classes.button}
-              onClick={() => dispatch(getWorkingOrderListFirstPage({ id: 11 }))}
+              onClick={() => {
+                if (companyMode === 1) {
+                  dispatch(getWorkingOrderListFirstPage());
+                } else {
+                  dispatch(getServicePointList());
+                }
+              }}
             >
-              Ordenes de servicio
+              {companyMode === 1 ? "Ordenes de servicio" : "Puntos de servicio"}
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>

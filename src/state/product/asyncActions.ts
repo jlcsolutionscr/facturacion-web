@@ -290,6 +290,7 @@ export const getProductDetails = createAsyncThunk(
               price,
               costPrice: product.PrecioCosto,
               instalationPrice: 0,
+              disccountRate: 0,
             })
           );
         }

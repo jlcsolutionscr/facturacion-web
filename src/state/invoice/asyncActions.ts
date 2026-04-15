@@ -19,20 +19,18 @@ import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/
 import { ROWS_PER_CUSTOMER, ROWS_PER_LIST, ROWS_PER_PRODUCT } from "utils/constants";
 import {
   generateInvoicePDF,
+  generateInvoiceTicketPDF,
   getCustomerListCount,
   getCustomerListPerPage,
-  getInvoiceEntity,
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
   getTaxedPrice,
-  parseInvoiceEntity,
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
-import { printInvoice } from "utils/printing";
 import { getErrorMessage } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
@@ -254,7 +252,7 @@ export const generatePDF = createAsyncThunk(
     const { token } = session;
     dispatch(startLoader());
     try {
-      await generateInvoicePDF(token, payload.id, payload.ref);
+      await generateInvoicePDF(token, payload.id);
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -267,15 +265,10 @@ export const generateInvoiceTicket = createAsyncThunk(
   "invoice/generateInvoiceTicket",
   async (payload: { id: number; ref?: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, userCode, device, branchList, branchId, company } = session;
+    const { token } = session;
     dispatch(startLoader());
     try {
-      const invoiceEntity = await getInvoiceEntity(token, payload.id);
-      const invoice = parseInvoiceEntity(invoiceEntity);
-      const branchName = branchList.find(x => x.Id === branchId)?.Descripcion ?? "SIN DESCRIPCION";
-      if (company !== null) {
-        printInvoice(userCode, company, invoice, branchName, device?.lineWidth ?? 80);
-      }
+      await generateInvoiceTicketPDF(token, payload.id);
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

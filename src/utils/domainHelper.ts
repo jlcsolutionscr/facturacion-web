@@ -1,4 +1,5 @@
 import { saveAs } from "file-saver";
+import printJS from "print-js";
 import {
   CompanyType,
   CustomerDetailsType,
@@ -563,6 +564,13 @@ export async function getServicePointList(
   return response;
 }
 
+export async function getServicePointEntity(token: string, id: number) {
+  const data = "{NombreMetodo: 'ObtenerPuntoDeServicio', Parametros: {IdPuntoDeServicio: " + id + "}}";
+  const servicePoint = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (servicePoint === null) return null;
+  return servicePoint;
+}
+
 export function getCustomerPrice(
   customerPriceType: number,
   product: ProductType,
@@ -737,22 +745,17 @@ export async function saveInvoiceEntity(
     DesglosePagoFactura: invoicePayments,
   };
   const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}";
-  const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  const ids = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  const references = ids.split("-");
   return {
-    id: references.Id,
-    consecutive: references.Consec,
+    id: references[0],
+    consecutive: references[1],
   };
 }
 
 export async function revokeInvoiceEntity(token: string, invoiceId: number, idUser: number) {
   const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + invoiceId + ", IdUsuario: " + idUser + "}}";
   await post(APP_URL + "/ejecutar", token, data);
-}
-
-export async function getInvoiceEntity(token: string, invoiceId: number) {
-  const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + invoiceId + "}}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return response;
 }
 
 export async function getProcessedInvoiceListCount(token: string, companyId: number, branchId: number) {
@@ -840,6 +843,7 @@ export async function saveWorkingOrderEntity(
     MontoPagado: 0,
     Nulo: false,
     DetalleOrdenServicio: workingOrderDetails,
+    IdPuntoServicio: order.servicePointId,
   };
   const data =
     "{NombreMetodo: '" +
@@ -848,10 +852,11 @@ export async function saveWorkingOrderEntity(
     JSON.stringify(workingOrder) +
     "}";
   if (order.id === 0) {
-    const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+    const ids = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+    const references = ids.split("-");
     return {
-      id: references.Id,
-      consecutive: references.Consec,
+      id: references[0],
+      consecutive: references[1],
     };
   } else {
     await post(APP_URL + "/ejecutar", token, data);
@@ -1005,23 +1010,48 @@ export async function sendReportEmail(
   }
 }
 
-export async function generateInvoicePDF(token: string, invoiceId: number, ref: number) {
+export async function generateInvoicePDF(token: string, invoiceId: number) {
   const data = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: " + invoiceId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
     const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
-    const file = new Blob([byteArray], { type: "application/octet-stream" });
-    saveAs(file, `Factura-${ref}.pdf`);
+    const file = new Blob([byteArray], { type: "application/pdf" });
+    const pdfUrl = URL.createObjectURL(file);
+    window.open(pdfUrl);
   }
 }
 
-export async function generateWorkingOrderPDF(token: string, orderId: number, ref: number) {
+export async function generateWorkingOrderPDF(token: string, orderId: number) {
   const data = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrden: " + orderId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response.length > 0) {
     const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
-    const file = new Blob([byteArray], { type: "application/octet-stream" });
-    saveAs(file, `OrdenServicio-${ref}.pdf`);
+    const file = new Blob([byteArray], { type: "application/pdf" });
+    const pdfUrl = URL.createObjectURL(file);
+    window.open(pdfUrl);
+  }
+}
+
+export async function generateInvoiceTicketPDF(token: string, invoiceId: number) {
+  const data = "{NombreMetodo: 'GenerarTiqueteFacturaPDF', Parametros: {IdFactura: " + invoiceId + ", LargoLinea: 80}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response.length > 0) {
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
+    const file = new Blob([byteArray], { type: "application/pdf" });
+    const pdfUrl = URL.createObjectURL(file);
+    printJS(pdfUrl);
+  }
+}
+
+export async function generateWorkingOrderTicketPDF(token: string, invoiceId: number) {
+  const data =
+    "{NombreMetodo: 'GenerarTiqueteOrdenServicioPDF', Parametros: {IdOrden: " + invoiceId + ", LargoLinea: 80}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response.length > 0) {
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
+    const file = new Blob([byteArray], { type: "application/pdf" });
+    const pdfUrl = URL.createObjectURL(file);
+    printJS(pdfUrl);
   }
 }
 
@@ -1090,8 +1120,9 @@ export async function saveReceiptEntity(
     DetalleFacturaCompra: receiptDetails,
   };
   const data = "{NombreMetodo: 'AgregarFacturaCompra', Entidad: " + JSON.stringify(newReceipt) + "}";
-  const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return references.Id;
+  const ids = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  const references = ids.split("-");
+  return references[0];
 }
 
 export async function getProductClasificationList(token: string, filterText: string) {
@@ -1151,10 +1182,11 @@ export async function saveProformaEntity(
     DetalleProforma: proformaDetails,
   };
   const data = "{NombreMetodo: 'AgregarProforma', Entidad: " + JSON.stringify(proforma) + "}";
-  const references = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  const ids = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  const references = ids.split("-");
   return {
-    id: references.Id,
-    consecutive: references.Consec,
+    id: references[0],
+    consecutive: references[1],
   };
 }
 
