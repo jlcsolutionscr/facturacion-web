@@ -1,8 +1,16 @@
-import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
+import {
+  Button,
+  LabelField,
+  ListDropDown,
+  ListDropdownOnChangeEventType,
+  Select,
+  TextField,
+} from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType } from "types/domain";
+import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,13 +29,20 @@ import {
 } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
-import { getCompany } from "state/session/reducer";
-import { generateInvoice, removeDetails, revokeWorkingOrder, saveWorkingOrder } from "state/working-order/asyncActions";
+import { getCompany, getPermissions } from "state/session/reducer";
+import {
+  generateInvoice,
+  removeDetails,
+  revokeWorkingOrder,
+  saveWorkingOrder,
+  updateDetails,
+} from "state/working-order/asyncActions";
 import {
   getActivityCode,
   getCustomerDetails,
   getInvoiceId,
   getPaymentDetailsList,
+  getProductDetails,
   getProductDetailsList,
   getStatus,
   getSummary,
@@ -35,10 +50,13 @@ import {
   setActivityCode,
   setCustomerAttribute,
   setPaymentDetailsList,
+  setPrice,
+  setProductDetails,
+  setQuantity,
 } from "state/working-order/reducer";
 import { FORM_TYPE, ORDER_STATUS, ROWS_PER_CUSTOMER, TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { formatCurrency, roundNumber } from "utils/utilities";
+import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   container: {
@@ -98,8 +116,13 @@ interface RestaurantFinalScreenProps {
   className?: string;
 }
 
+enum dialogType {
+  REVOKE = "REVOKE",
+  UPDATE = "UPDATE",
+}
+
 export default function RestaurantFinalScreen({ value, index, className }: RestaurantFinalScreenProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogStatus, setDialogStatus] = useState({ status: false, id: 0, type: dialogType.REVOKE });
   const [filterText, setFilterText] = useState("");
 
   const { classes } = useStyles();
@@ -116,9 +139,13 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
   const company = useSelector(getCompany);
   const activityCode = useSelector(getActivityCode);
   const customerDetails = useSelector(getCustomerDetails);
+  const productDetails = useSelector(getProductDetails);
   const paymentDetails = useSelector(getPaymentDetailsList);
   const productDetailsList = useSelector(getProductDetailsList);
   const status = useSelector(getStatus);
+  const permissions = useSelector(getPermissions);
+
+  const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -174,12 +201,90 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
   };
 
   const handleRevokeButtonClick = () => {
-    setDialogOpen(true);
+    setDialogStatus({ status: true, id: workingOrderId, type: dialogType.REVOKE });
   };
 
   const handleConfirmButtonClick = () => {
-    setDialogOpen(false);
-    dispatch(revokeWorkingOrder({ id: workingOrderId }));
+    setDialogStatus({ status: false, id: 0, type: dialogType.REVOKE });
+    dispatch(revokeWorkingOrder({ id: dialogStatus.id }));
+  };
+
+  const handleProductUpdate = (details: any, index: number) => {
+    dispatch(setProductDetails(details));
+    setDialogStatus({ status: true, id: index, type: dialogType.UPDATE });
+  };
+
+  const revokeOrderContent = () => {
+    return (
+      <>
+        <DialogTitle>Anular orden de servicio</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {`Desea proceder con la anulación de la orden para la ${workingOrderId}?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button
+            negative
+            label="Cerrar"
+            onClick={() => setDialogStatus({ status: false, id: 0, type: dialogType.REVOKE })}
+          />
+          <Button label="Anular" autoFocus onClick={handleConfirmButtonClick} />
+        </DialogActions>
+      </>
+    );
+  };
+
+  const updateItemContent = () => {
+    const handleUpdate = () => {
+      dispatch(updateDetails({ pos: dialogStatus.id }));
+      setDialogStatus({ status: false, id: 0, type: dialogType.UPDATE });
+    };
+    return (
+      <>
+        <DialogTitle>Actualizar producto</DialogTitle>
+        <DialogContent>
+          <Box sx={{ paddingTop: { xs: 1, sm: 2 } }}>
+            <Grid container spacing={{ xs: 1, sm: 2 }}>
+              <Grid item xs={12}>
+                <LabelField label="Descripción" id="Descripcion" value={productDetails.description} />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  label="Cantidad"
+                  id="Cantidad"
+                  value={productDetails.quantity.toString()}
+                  numericFormat
+                  onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  readOnly={!isPriceChangeEnabled}
+                  label="Precio"
+                  value={productDetails.price.toString()}
+                  numericFormat
+                  onChange={event => dispatch(setPrice(parseStringToNumber(event.target.value)))}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button
+            negative
+            label="Cerrar"
+            onClick={() => setDialogStatus({ status: false, id: 0, type: dialogType.UPDATE })}
+          />
+          <Button
+            disabled={productDetails.quantity == 0 || productDetails.price == 0}
+            label="Aplicar"
+            autoFocus
+            onClick={handleUpdate}
+          />
+        </DialogActions>
+      </>
+    );
   };
 
   return (
@@ -235,17 +340,17 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
                   </Typography>
                 </Grid>
                 <Grid item xs={3} textAlign="end">
-                  <Typography>{formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}</Typography>
+                  <Typography>{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</Typography>
                 </Grid>
                 <Grid item xs={10}>
-                  <Typography>{`${row.quantity} Und x ${formatCurrency(row.pricePlusTaxes, 2)}`}</Typography>
+                  <Typography>{`${row.quantity} Und x ${formatCurrency(row.price, 2)}`}</Typography>
                 </Grid>
                 <Grid item xs={1}>
                   <IconButton
                     style={{ padding: 0 }}
                     color="primary"
                     component="span"
-                    onClick={() => dispatch(removeDetails({ id: row.id, pos: index }))}
+                    onClick={() => handleProductUpdate(row, index)}
                   >
                     <EditIcon />
                   </IconButton>
@@ -255,7 +360,7 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
                     style={{ padding: 0 }}
                     color="secondary"
                     component="span"
-                    onClick={() => dispatch(removeDetails({ id: row.id, pos: index }))}
+                    onClick={() => dispatch(removeDetails({ pos: index }))}
                   >
                     <RemoveCircleIcon />
                   </IconButton>
@@ -361,17 +466,12 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
           </Grid>
         )}
       </Grid>
-      <Dialog id="revoke-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
-        <DialogTitle>Anular orden de servicio</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {`Desea proceder con la anulación de la orden para la ${workingOrderId}?`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions className={classes.dialogActions}>
-          <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
-          <Button label="Anular" autoFocus onClick={handleConfirmButtonClick} />
-        </DialogActions>
+      <Dialog
+        id="revoke-dialog"
+        onClose={() => setDialogStatus({ status: false, id: 0, type: dialogStatus.type })}
+        open={dialogStatus.status}
+      >
+        {dialogStatus.type === dialogType.REVOKE ? revokeOrderContent() : updateItemContent()}
       </Dialog>
     </div>
   );

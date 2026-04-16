@@ -30,7 +30,7 @@ import {
 } from "state/product/reducer";
 import { getTaxTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { SearchIcon } from "utils/iconsHelper";
+import { AddCircleIcon, SearchIcon } from "utils/iconsHelper";
 import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -66,6 +66,9 @@ const useStyles = makeStyles()(theme => ({
   },
   icon: {
     padding: "7px",
+  },
+  tableIcon: {
+    padding: 0,
   },
 }));
 
@@ -238,12 +241,23 @@ export default function ProductPage() {
     id: row.Id,
     taxRate: row.Impuesto,
     description: row.Descripcion,
+    action1: (
+      <IconButton
+        className={classes.icon}
+        color="secondary"
+        component="span"
+        onClick={() => handleClasificationRowClick(row.Id)}
+      >
+        <AddCircleIcon className={classes.tableIcon} />
+      </IconButton>
+    ),
   }));
 
   const columns = [
     { field: "id", headerName: "Código", hidden: true },
     { field: "taxRate", headerName: "IVA", type: "number" },
     { field: "description", headerName: "Descripcion" },
+    { field: "action1", headerName: "-" },
   ];
 
   return (
@@ -503,7 +517,6 @@ export default function ProductPage() {
             </Grid>
             <Grid item xs={12}>
               <DataGrid
-                rowAction={handleClasificationRowClick}
                 rowActionValue="id"
                 showHeader
                 dense

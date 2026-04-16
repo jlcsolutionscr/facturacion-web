@@ -12,7 +12,7 @@ import {
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { getProductClasification, getProductSummary, saveReceiptEntity } from "utils/domainHelper";
-import { getErrorMessage, getIdFromRateValue, roundNumber } from "utils/utilities";
+import { getErrorMessage, getIdFromRateValue } from "utils/utilities";
 
 export const setReceiptParameters = createAsyncThunk(
   "receipt/setReceiptParameters",
@@ -90,7 +90,6 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
         taxRate: productDetails.taxRate,
         unit: "UND",
         price: productDetails.price,
-        pricePlusTaxes: roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
         costPrice: 0,
         disccountRate: 0,
       };
@@ -105,10 +104,10 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
 
 export const removeDetails = createAsyncThunk(
   "receipt/removeDetails",
-  async (payload: { id: string }, { getState, dispatch }) => {
+  async (payload: { pos: number }, { getState, dispatch }) => {
     const { receipt } = getState() as RootState;
     const { exoneration, productDetailsList } = receipt.entity;
-    const index = productDetailsList.findIndex(item => item.id === payload.id);
+    const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(newProducts, exoneration.percentage);

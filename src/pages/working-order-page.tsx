@@ -155,8 +155,8 @@ export default function WorkingOrderPage() {
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
         }
-        addDetails={() => dispatch(addDetails())}
-        removeDetails={(id: string, pos: number) => dispatch(removeDetails({ id, pos }))}
+        addDetails={() => dispatch(addDetails({ id: undefined }))}
+        removeDetails={(pos: number) => dispatch(removeDetails({ pos }))}
       />
       <StepThreeScreen className={classes.tab} value={value} index={2} delivery={delivery} status={status} />
       <StepFourScreen

@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
 import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
-import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getProductList, getProductListCount, getProductListPage, setProductList } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
@@ -101,12 +101,14 @@ export default function ProductListPage() {
   const { classes } = useStyles();
   const [filter, setFilter] = useState("");
   const [filterType, setFilterType] = useState(2);
+
   const handleOnFilterTypeChange = () => {
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
     dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
+
   const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
     setFilter(event.target.value);
     if (delayTimer) {
@@ -116,6 +118,12 @@ export default function ProductListPage() {
       dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT }));
     }, 1000);
   };
+
+  const handleClose = () => {
+    dispatch(setProductList([]));
+    dispatch(setActiveSection(0));
+  };
+
   const rows = list.map(row => ({
     id: row.Id,
     name: filterType === 1 ? `${row.Codigo} - ${row.Descripcion}` : row.Descripcion,
@@ -175,7 +183,7 @@ export default function ProductListPage() {
       </div>
       <div className={classes.buttonContainer}>
         <Button label="Agregar" onClick={() => dispatch(openProduct({ id: undefined }))} />
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
+        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={handleClose} />
       </div>
     </div>
   );

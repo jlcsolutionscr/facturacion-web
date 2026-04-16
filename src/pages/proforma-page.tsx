@@ -132,7 +132,7 @@ export default function ProformaPage() {
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
         }
         addDetails={() => dispatch(addDetails())}
-        removeDetails={(id: string) => dispatch(removeDetails({ id }))}
+        removeDetails={(pos: number) => dispatch(removeDetails({ pos }))}
       />
       <StepThreeScreen
         className={classes.tab}

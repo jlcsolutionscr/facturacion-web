@@ -1,13 +1,11 @@
 import { saveAs } from "file-saver";
 import printJS from "print-js";
 import {
+  CodeDescriptionType,
   CompanyType,
   CustomerDetailsType,
   CustomerType,
-  DetallePagoType,
-  DetalleProductoType,
   IdDescriptionValueType,
-  InvoiceType,
   PaymentDetailsType,
   ProductDetailsType,
   ProductType,
@@ -17,9 +15,7 @@ import {
   WorkingOrderType,
 } from "types/domain";
 
-import { defaultCustomerDetails, defaultProductDetails } from "./defaults";
 import {
-  convertToDateString,
   convertToDateTimeString,
   encryptString,
   get,
@@ -565,7 +561,7 @@ export async function getServicePointEntity(token: string, id: number) {
 
 export function getCustomerPrice(
   customerPriceType: number,
-  product: ProductType,
+  product: CodeDescriptionType,
   priceIncludedTaxes: boolean,
   taxRateTypeList: IdDescriptionValueType[]
 ) {
@@ -597,14 +593,6 @@ export function getCustomerPrice(
   return { taxRate, price: customerPrice };
 }
 
-export function getTaxedPrice(productTaxRate: number, productPrice: number, priceIncludedTaxes: boolean) {
-  const taxRate = productTaxRate;
-  const untaxedPrice = priceIncludedTaxes ? roundNumber(productPrice / (1 + productTaxRate / 100), 3) : productPrice;
-  let pricePlusTaxes = priceIncludedTaxes ? untaxedPrice : productPrice;
-  if (taxRate > 0) pricePlusTaxes = roundNumber(untaxedPrice * (1 + taxRate / 100), 2);
-  return { taxRate, price: untaxedPrice, pricePlusTaxes };
-}
-
 export function getProductSummary(products: ProductDetailsType[], exonerationPercentage: number) {
   let taxed = 0;
   let exonerated = 0;
@@ -614,7 +602,8 @@ export function getProductSummary(products: ProductDetailsType[], exonerationPer
   let total = 0;
   const totalCost = 0;
   products.forEach(item => {
-    const subtotal = item.price * item.quantity;
+    const priceNoTaxes = roundNumber(item.price / (1 + item.taxRate / 100), 3);
+    const subtotal = priceNoTaxes * item.quantity;
     if (item.taxRate > 0) {
       let taxesAmount = (subtotal * item.taxRate) / 100;
       let taxedAmount = subtotal;
@@ -673,7 +662,7 @@ export async function saveInvoiceEntity(
       IdProducto: parseInt(item.id),
       Descripcion: item.description,
       Cantidad: item.quantity,
-      PrecioVenta: roundNumber(item.pricePlusTaxes / (1 + item.taxRate / 100), 3),
+      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
       PrecioCosto: item.costPrice,
       PorcentajeIVA: item.taxRate,
@@ -800,7 +789,7 @@ export async function saveWorkingOrderEntity(
       Codigo: item.code,
       Descripcion: item.description,
       Cantidad: item.quantity,
-      PrecioVenta: roundNumber(item.pricePlusTaxes / (1 + item.taxRate / 100), 3),
+      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,
       PorcDescuento: item.disccountRate,
@@ -1145,7 +1134,7 @@ export async function saveProformaEntity(
       Codigo: item.code,
       Descripcion: item.description,
       Cantidad: item.quantity,
-      PrecioVenta: roundNumber(item.pricePlusTaxes / (1 + item.taxRate / 100), 3),
+      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       PrecioCosto: item.costPrice,
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,
@@ -1235,57 +1224,4 @@ export async function getProformaListPerPage(
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
   return response;
-}
-
-export function parseInvoiceEntity(entity: any) {
-  const customerDetails: CustomerDetailsType = {
-    id: entity.IdCliente,
-    name: entity.NombreCliente,
-    comercialName: entity.Cliente.NombreComercial,
-    email: entity.Cliente.CorreoElectronico,
-    phoneNumber: entity.Cliente.Telefono,
-    activityCode: entity.Cliente.ActividadEconomica,
-    exonerationType: entity.Cliente.IdTipoExoneracion,
-    exonerationRef: entity.Cliente.NumDocExoneracion,
-    exonerationRef2: entity.Cliente.ArticuloExoneracion,
-    exonerationRef3: entity.Cliente.IncisoExoneracion,
-    exoneratedById: entity.Cliente.IdNombreInstExoneracion,
-    exonerationPercentage: entity.Cliente.PorcentajeExoneracion,
-    exonerationDate: entity.Cliente.FechaEmisionDoc,
-    priceTypeId: entity.Cliente.IdTipoPrecio,
-  };
-  const productDetailsList = entity.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
-    id: item.IdProducto,
-    quantity: item.Cantidad,
-    code: item.Codigo,
-    description: item.Descripcion,
-    taxRate: item.PorcentajeIVA,
-    unit: "UND",
-    price: item.PrecioVenta,
-    pricePlusTaxes: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
-    costPrice: item.Producto.PrecioCosto,
-  }));
-  const paymentDetailsList = entity.DesglosePagoFactura.map((item: DetallePagoType) => ({
-    paymentId: item.IdFormaPago,
-    description: "",
-    amount: item.MontoLocal,
-  }));
-  const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
-  const invoice: InvoiceType = {
-    invoiceId: entity.IdFactura,
-    consecutive: entity.ConsecOrdenServicio,
-    date: convertToDateString(entity.Fecha),
-    cashAdvance: entity.MontoAdelanto,
-    activityCode: entity.CodigoActividad,
-    customerDetails: defaultCustomerDetails,
-    productDetails: defaultProductDetails,
-    productDetailsList,
-    paymentDetailsList: paymentDetailsList,
-    vendorId: entity.IdVendedor,
-    comment: entity.TextoAdicional,
-    currency: entity.currency,
-    successful: true,
-    summary: { ...summary, cashAmount: 0 },
-  };
-  return invoice;
 }

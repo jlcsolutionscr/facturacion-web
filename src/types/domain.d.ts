@@ -32,8 +32,15 @@ export type IdDescriptionTaxType = {
 
 export type CodeDescriptionType = {
   Id: number;
+  IdImpuesto: number;
   Codigo: string;
   Descripcion: string;
+  PrecioVenta1: number;
+  PrecioVenta2: number;
+  PrecioVenta3: number;
+  PrecioVenta4: number;
+  PrecioVenta5: number;
+  Imagen: string;
 };
 
 export type EconomicActivityType = {
@@ -202,7 +209,6 @@ export type ProductDetailsType = {
   taxRateType?: number;
   unit: string;
   price: number;
-  pricePlusTaxes: number;
   costPrice: number;
   disccountRate: number;
 };

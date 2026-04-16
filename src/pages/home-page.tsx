@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 
 import BannerImage from "assets/img/home-background.webp";
-import Header from "components/header";
+import Header from "components/Header";
 import CompanyPage from "pages/company-page";
 import CustomerListPage from "pages/customer-list-page";
 import CustomerPage from "pages/customer-page";

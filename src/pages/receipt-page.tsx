@@ -487,16 +487,14 @@ export default function ReceiptPage() {
                   <TableCell>{row.code}</TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell align="right">{row.quantity}</TableCell>
-                  <TableCell align="right">
-                    {formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}
-                  </TableCell>
+                  <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
                   <TableCell align="right">
                     <IconButton
                       disabled={successful}
                       className={classes.innerButton}
                       color="secondary"
                       component="span"
-                      onClick={() => dispatch(removeDetails({ id: row.id }))}
+                      onClick={() => dispatch(removeDetails({ pos: index }))}
                     >
                       <RemoveCircleIcon />
                     </IconButton>

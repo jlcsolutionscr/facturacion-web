@@ -1,6 +1,6 @@
 import { makeStyles } from "tss-react/mui";
 
-export const useStyles = makeStyles()(() => ({
+const useStyles = makeStyles()(() => ({
   container: {
     display: "flex",
     backgroundColor: "rgb(8, 65, 96)",
@@ -11,7 +11,7 @@ export const useStyles = makeStyles()(() => ({
     padding: "7px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
-    width: "140px",
+    width: "auto",
     height: "50px",
     alignItems: "center",
     justifyContent: "center",
@@ -32,3 +32,19 @@ export const useStyles = makeStyles()(() => ({
     marginRight: "10px",
   },
 }));
+
+interface TabProps {
+  title: string;
+  edit: () => void;
+}
+
+export default function Tab({ title, edit }: TabProps) {
+  const { classes } = useStyles();
+  return (
+    <div className={classes.container} onClick={edit}>
+      <div className={classes.title}>
+        <span>{title}</span>
+      </div>
+    </div>
+  );
+}

@@ -19,7 +19,6 @@ import {
   getProductSummary,
   getProformaListCount,
   getProformaListPerPage,
-  getTaxedPrice,
   revokeProformaEntity,
   saveProformaEntity,
   sendProformaEmail,
@@ -56,25 +55,21 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
     productDetails.price > 0
   ) {
     try {
-      const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
-        productDetails.taxRate,
-        productDetails.price,
-        company.PrecioVentaIncluyeIVA
-      );
       let newProducts = null;
       const item = {
         id: productDetails.id,
         code: productDetails.code,
         description: productDetails.description,
         quantity: productDetails.quantity,
-        taxRate,
+        taxRate: productDetails.taxRate,
         unit: "UND",
-        price,
-        pricePlusTaxes,
+        price: productDetails.price,
         costPrice: productDetails.costPrice,
         disccountRate: productDetails.disccountRate,
       };
-      const index = productDetailsList.findIndex(item => item.id === productDetails.id);
+      const index = productDetailsList.findIndex(
+        item => item.id === productDetails.id && item.price === productDetails.price
+      );
       if (index >= 0) {
         newProducts = [
           ...productDetailsList.slice(0, index),
@@ -99,10 +94,10 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
 
 export const removeDetails = createAsyncThunk(
   "proforma/removeDetails",
-  async (payload: { id: string }, { getState, dispatch }) => {
+  async (payload: { pos: number }, { getState, dispatch }) => {
     const { proforma } = getState() as RootState;
     const { customerDetails, productDetailsList } = proforma.entity;
-    const index = productDetailsList.findIndex(item => item.id === payload.id);
+    const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);

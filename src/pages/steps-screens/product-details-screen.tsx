@@ -65,7 +65,7 @@ interface StepTwoScreenProps {
   stepDisabled: boolean;
   getProductDetails: (id: number) => void;
   addDetails: () => void;
-  removeDetails: (id: string, pos: number) => void;
+  removeDetails: (pos: number) => void;
   setProductDetails: (attribute: string, value: number | string) => void;
   className?: string;
 }
@@ -217,18 +217,16 @@ export default function StepTwoScreen({
                 </TableHead>
                 <TableBody>
                   {productDetailsList.map((row, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={row.id}>
                       <TableCell>{row.quantity}</TableCell>
                       <TableCell>{`${row.code} - ${row.description}`}</TableCell>
-                      <TableCell align="right">
-                        {formatCurrency(roundNumber(row.quantity * row.pricePlusTaxes, 2), 2)}
-                      </TableCell>
+                      <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
-                          onClick={() => removeDetails(row.id, index)}
+                          onClick={() => removeDetails(index)}
                         >
                           <RemoveCircleIcon />
                         </IconButton>

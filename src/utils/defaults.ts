@@ -112,7 +112,6 @@ export const defaultProductDetails: ProductDetailsType = {
   taxRate: 13,
   unit: "UND",
   price: 0,
-  pricePlusTaxes: 0,
   costPrice: 0,
   disccountRate: 0,
 };

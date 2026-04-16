@@ -27,12 +27,13 @@ import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } 
 import {
   generateInvoiceTicketPDF,
   generateWorkingOrderPDF,
+  getCustomerPrice,
+  getProductEntity,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
   getServicePointEntity,
   getServicePointList as getServicePointListRequest,
-  getTaxedPrice,
   getWorkingOrderEntity,
   getWorkingOrderListCount,
   getWorkingOrderListPerPage,
@@ -40,7 +41,7 @@ import {
   saveInvoiceEntity,
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
-import { convertToDateString, getErrorMessage, roundNumber } from "utils/utilities";
+import { convertToDateString, getErrorMessage } from "utils/utilities";
 
 const ROWS_PER_PRODUCT = 30;
 
@@ -65,65 +66,119 @@ export const setWorkingOrderParameters = createAsyncThunk(
   }
 );
 
-export const addDetails = createAsyncThunk("working-order/addDetails", async (_payload, { getState, dispatch }) => {
-  const { session, workingOrder } = getState() as RootState;
-  const { company } = session;
-  const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
-  if (
-    company &&
-    productDetails.id !== "" &&
-    productDetails.description !== "" &&
-    productDetails.quantity > 0 &&
-    productDetails.price > 0
-  ) {
-    try {
-      let newProducts = null;
-      const { taxRate, price, pricePlusTaxes } = getTaxedPrice(
-        productDetails.taxRate,
-        productDetails.price,
-        company.PrecioVentaIncluyeIVA
+export const addDetails = createAsyncThunk(
+  "working-order/addDetails",
+  async (payload: { id?: number }, { getState, dispatch }) => {
+    const { session, workingOrder, ui } = getState() as RootState;
+    const { taxTypeList } = ui;
+    const { company, branchId, token } = session;
+    const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
+    let loadedProductDetails = productDetails;
+    if (company && payload.id) {
+      const product = await getProductEntity(token, payload.id, branchId);
+      const { price, taxRate } = getCustomerPrice(
+        customerDetails.priceTypeId,
+        product,
+        company.PrecioVentaIncluyeIVA,
+        taxTypeList
       );
-      const item = {
-        id: productDetails.id,
-        code: productDetails.code,
-        description: productDetails.description,
-        quantity: productDetails.quantity,
-        unit: productDetails.unit,
-        price,
-        pricePlusTaxes,
+      loadedProductDetails = {
+        id: product.IdProducto.toString(),
+        quantity: 1,
+        code: "",
+        description: product.Descripcion,
         taxRate,
-        costPrice: productDetails.costPrice,
-        disccountRate: productDetails.disccountRate,
+        unit: "UND",
+        price,
+        costPrice: 0,
+        disccountRate: 0,
       };
-      const index = productDetailsList.findIndex(item => item.id === productDetails.id);
-      if (index >= 0) {
-        newProducts = [
-          ...productDetailsList.slice(0, index),
-          {
-            ...item,
-            quantity: productDetailsList[index].quantity + item.quantity,
-          },
-          ...productDetailsList.slice(index + 1),
-        ];
-      } else {
-        newProducts = [...productDetailsList, item];
+    }
+    if (
+      company &&
+      loadedProductDetails.id !== "" &&
+      loadedProductDetails.description !== "" &&
+      loadedProductDetails.quantity > 0 &&
+      loadedProductDetails.price > 0
+    ) {
+      try {
+        let newProducts = null;
+        const newItem = {
+          id: loadedProductDetails.id,
+          code: loadedProductDetails.code,
+          description: loadedProductDetails.description,
+          quantity: loadedProductDetails.quantity,
+          unit: loadedProductDetails.unit,
+          price: loadedProductDetails.price,
+          taxRate: loadedProductDetails.taxRate,
+          costPrice: loadedProductDetails.costPrice,
+          disccountRate: loadedProductDetails.disccountRate,
+        };
+        const index = productDetailsList.findIndex(item => item.id === newItem.id && item.price === newItem.price);
+        if (index >= 0) {
+          newProducts = [
+            ...productDetailsList.slice(0, index),
+            {
+              ...newItem,
+              quantity: productDetailsList[index].quantity + newItem.quantity,
+            },
+            ...productDetailsList.slice(index + 1),
+          ];
+        } else {
+          newProducts = [...productDetailsList, newItem];
+        }
+        dispatch(setProductDetailsList(newProducts));
+        const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+        dispatch(setSummary(summary));
+        dispatch(resetProductDetails());
+      } catch (error) {
+        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       }
-      dispatch(setProductDetailsList(newProducts));
-      const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
-      dispatch(setSummary(summary));
-      dispatch(resetProductDetails());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
   }
-});
+);
+
+export const updateDetails = createAsyncThunk(
+  "working-order/updateDetails",
+  async (payload: { pos: number }, { getState, dispatch }) => {
+    const { session, workingOrder } = getState() as RootState;
+    const { company } = session;
+    const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
+    if (company && productDetails.id) {
+      if (company && productDetails.quantity > 0 && productDetails.price > 0) {
+        try {
+          const index = productDetailsList.findIndex(
+            (item, index) => item.id === productDetails.id.toString() && index === payload.pos
+          );
+          if (index >= 0) {
+            const newProducts = [
+              ...productDetailsList.slice(0, index),
+              {
+                ...productDetailsList[index],
+                price: productDetails.price,
+                quantity: productDetails.quantity,
+              },
+              ...productDetailsList.slice(index + 1),
+            ];
+            dispatch(setProductDetailsList(newProducts));
+            const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+            dispatch(setSummary(summary));
+            dispatch(resetProductDetails());
+          }
+        } catch (error) {
+          dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+        }
+      }
+    }
+  }
+);
 
 export const removeDetails = createAsyncThunk(
   "working-order/removeDetails",
-  async (payload: { id: string; pos: number }, { getState, dispatch }) => {
+  async (payload: { pos: number }, { getState, dispatch }) => {
     const { workingOrder } = getState() as RootState;
     const { customerDetails, productDetailsList } = workingOrder.entity;
-    const index = productDetailsList.findIndex((item, index) => item.id === payload.id && index == payload.pos);
+    const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
     const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
@@ -269,7 +324,6 @@ export const openWorkingOrder = createAsyncThunk(
         taxRate: item.PorcentajeIVA,
         unit: "UND",
         price: item.PrecioVenta,
-        pricePlusTaxes: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
         costPrice: item.Producto.PrecioCosto,
         disccountRate: 0,
       }));
@@ -379,7 +433,6 @@ export const openServicePoint = createAsyncThunk(
           taxRate: item.PorcentajeIVA,
           unit: "UND",
           price: item.PrecioVenta,
-          pricePlusTaxes: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
           costPrice: item.Producto.PrecioCosto,
         }));
         const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);

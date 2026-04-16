@@ -23,7 +23,6 @@ import {
   getCantonList,
   getCompanyEntity,
   getCredentialsEntity,
-  getCustomerData,
   getDistritoList,
   getReportData,
   saveCompanyEntity,
@@ -47,7 +46,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
     //Disabled Hacienda company information request until service get back online
-    try {
+    /*try {
       const companyData = await getCustomerData(company.Identificacion);
       dispatch(setAvailableEconomicActivityList(companyData.economicActivityList));
     } catch {
@@ -57,7 +56,7 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
           type: "ERROR",
         })
       );
-    }
+    }*/
     dispatch(setCompany(company));
     dispatch(
       setCredentials({
