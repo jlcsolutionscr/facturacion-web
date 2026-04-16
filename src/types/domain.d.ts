@@ -201,7 +201,7 @@ export type CustomerDetailsType = {
 };
 
 export type ProductDetailsType = {
-  id: string;
+  id: number;
   quantity: number;
   code: string;
   description: string;

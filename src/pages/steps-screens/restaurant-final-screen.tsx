@@ -426,7 +426,7 @@ export default function RestaurantFinalScreen({ isSplitMode, value }: Restaurant
         </Grid>
         {status === ORDER_STATUS.READY && (
           <Grid container xs={12}>
-            <Grid xs={10} sm={6} md={4} className={classes.centered}>
+            <Grid xs={6} md={isSplitMode ? 6 : 4} className={classes.centered}>
               <Select
                 id="forma-pago-select-id"
                 label="Seleccione la forma de pago:"

@@ -659,7 +659,7 @@ export async function saveInvoiceEntity(
   productDetailsList.forEach(item => {
     const detail = {
       IdFactura: 0,
-      IdProducto: parseInt(item.id),
+      IdProducto: item.id,
       Descripcion: item.description,
       Cantidad: item.quantity,
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
@@ -785,7 +785,7 @@ export async function saveWorkingOrderEntity(
   order.productDetailsList.forEach(item => {
     const detail = {
       IdOrden: order.id,
-      IdProducto: parseInt(item.id),
+      IdProducto: item.id,
       Codigo: item.code,
       Descripcion: item.description,
       Cantidad: item.quantity,
@@ -1130,7 +1130,7 @@ export async function saveProformaEntity(
   productDetailsList.forEach(item => {
     const detail = {
       IdProforma: 0,
-      IdProducto: parseInt(item.id),
+      IdProducto: item.id,
       Codigo: item.code,
       Descripcion: item.description,
       Cantidad: item.quantity,

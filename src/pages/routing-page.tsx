@@ -67,7 +67,7 @@ function RoutingPage() {
         {component}
         <Snackbar
           anchorOrigin={{
-            vertical: "bottom",
+            vertical: "top",
             horizontal: "center",
           }}
           TransitionComponent={Slide}

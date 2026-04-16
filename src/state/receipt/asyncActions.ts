@@ -82,7 +82,7 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
       );
     } else {
       const item = {
-        id: crypto.randomUUID(),
+        id: 0,
         code: productDetails.code,
         description: productDetails.description,
         quantity: productDetails.quantity,

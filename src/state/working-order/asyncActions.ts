@@ -98,7 +98,7 @@ export const addDetails = createAsyncThunk(
     }
     if (
       company &&
-      loadedProductDetails.id !== "" &&
+      loadedProductDetails.id !== 0 &&
       loadedProductDetails.description !== "" &&
       loadedProductDetails.quantity > 0 &&
       loadedProductDetails.price > 0
@@ -150,7 +150,7 @@ export const updateDetails = createAsyncThunk(
       if (company && productDetails.quantity > 0 && productDetails.price > 0) {
         try {
           const index = productDetailsList.findIndex(
-            (item, index) => item.id === productDetails.id.toString() && index === payload.pos
+            (item, index) => item.id === productDetails.id && index === payload.pos
           );
           if (index >= 0) {
             const newProducts = [

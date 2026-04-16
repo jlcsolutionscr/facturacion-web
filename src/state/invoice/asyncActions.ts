@@ -51,7 +51,7 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
   const { customerDetails, productDetails, productDetailsList } = invoice.entity;
   if (
     company &&
-    productDetails.id !== "" &&
+    productDetails.id !== 0 &&
     productDetails.description !== "" &&
     productDetails.quantity > 0 &&
     productDetails.price > 0

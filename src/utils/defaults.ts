@@ -105,7 +105,7 @@ export const defaultPaymentDetails: PaymentDetailsType = {
 };
 
 export const defaultProductDetails: ProductDetailsType = {
-  id: "",
+  id: 0,
   code: "",
   description: "",
   quantity: 1,
