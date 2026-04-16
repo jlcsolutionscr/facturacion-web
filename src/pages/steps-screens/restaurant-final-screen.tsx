@@ -16,11 +16,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Unstable_Grid2";
 
 import {
   filterCustomerList,
@@ -30,6 +30,7 @@ import {
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { getCompany, getPermissions } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import {
   generateInvoice,
   removeDetails,
@@ -47,6 +48,7 @@ import {
   getStatus,
   getSummary,
   getWorkingOrderId,
+  resetWorkingOrder,
   setActivityCode,
   setCustomerAttribute,
   setPaymentDetailsList,
@@ -54,27 +56,11 @@ import {
   setProductDetails,
   setQuantity,
 } from "state/working-order/reducer";
-import { FORM_TYPE, ORDER_STATUS, ROWS_PER_CUSTOMER, TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, ORDER_STATUS, ROWS_PER_CUSTOMER } from "utils/constants";
 import { EditIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
-  container: {
-    flex: 1,
-    overflowY: "auto",
-    backgroundColor: theme.palette.background.paper,
-    padding: "20px",
-    transition: `background-color ${TRANSITION_ANIMATION}`,
-    "@media screen and (max-width:959px)": {
-      padding: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      padding: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      padding: "10 5px 5px 5px",
-    },
-  },
   summary: {
     flexDirection: "column",
     maxWidth: "300px",
@@ -111,18 +97,18 @@ const useStyles = makeStyles()(theme => ({
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 interface RestaurantFinalScreenProps {
-  index: number;
-  value: number;
-  className?: string;
+  isSplitMode: boolean;
+  value?: number;
 }
 
 enum dialogType {
+  CLEAR = "CLEAR",
   REVOKE = "REVOKE",
   UPDATE = "UPDATE",
 }
 
-export default function RestaurantFinalScreen({ value, index, className }: RestaurantFinalScreenProps) {
-  const [dialogStatus, setDialogStatus] = useState({ status: false, id: 0, type: dialogType.REVOKE });
+export default function RestaurantFinalScreen({ isSplitMode, value }: RestaurantFinalScreenProps) {
+  const [dialogStatus, setDialogStatus] = useState({ status: false, id: 0, type: dialogType.CLEAR });
   const [filterText, setFilterText] = useState("");
 
   const { classes } = useStyles();
@@ -204,17 +190,43 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
     setDialogStatus({ status: true, id: workingOrderId, type: dialogType.REVOKE });
   };
 
-  const handleConfirmButtonClick = () => {
-    setDialogStatus({ status: false, id: 0, type: dialogType.REVOKE });
-    dispatch(revokeWorkingOrder({ id: dialogStatus.id }));
-  };
-
   const handleProductUpdate = (details: any, index: number) => {
     dispatch(setProductDetails(details));
     setDialogStatus({ status: true, id: index, type: dialogType.UPDATE });
   };
 
+  const clearOrderContent = () => {
+    const handleConfirmButtonClick = () => {
+      setDialogStatus({ status: false, id: 0, type: dialogType.CLEAR });
+      dispatch(resetWorkingOrder());
+    };
+
+    return (
+      <>
+        <DialogTitle>Limpiar orden de servicio</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Desea proceder con la eliminación de la información actual?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button
+            negative
+            label="Cerrar"
+            onClick={() => setDialogStatus({ status: false, id: 0, type: dialogType.CLEAR })}
+          />
+          <Button label="Limpiar" autoFocus onClick={handleConfirmButtonClick} />
+        </DialogActions>
+      </>
+    );
+  };
+
   const revokeOrderContent = () => {
+    const handleConfirmButtonClick = () => {
+      setDialogStatus({ status: false, id: 0, type: dialogType.REVOKE });
+      dispatch(revokeWorkingOrder({ id: dialogStatus.id }));
+    };
+
     return (
       <>
         <DialogTitle>Anular orden de servicio</DialogTitle>
@@ -245,11 +257,11 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
         <DialogTitle>Actualizar producto</DialogTitle>
         <DialogContent>
           <Box sx={{ paddingTop: { xs: 1, sm: 2 } }}>
-            <Grid container spacing={{ xs: 1, sm: 2 }}>
-              <Grid item xs={12}>
+            <Grid container gap={{ xs: 1, sm: 2 }}>
+              <Grid xs={12}>
                 <LabelField label="Descripción" id="Descripcion" value={productDetails.description} />
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   label="Cantidad"
                   id="Cantidad"
@@ -258,7 +270,7 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
                   onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   readOnly={!isPriceChangeEnabled}
                   label="Precio"
@@ -288,9 +300,9 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
   };
 
   return (
-    <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+    <>
+      <Grid container overflow="auto" pt={1} gap={2} ref={myRef} justifyContent="center">
+        <Grid xs={12}>
           <ListDropDown
             disabled={customerEditDisabled}
             label="Seleccione un cliente"
@@ -304,7 +316,7 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
             onPageChange={handleOnPageChange}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <TextField
             required
             readOnly={customerEditDisabled || customerDetails.id !== 1}
@@ -314,8 +326,8 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
           />
         </Grid>
         {activityItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={12} sm={7} md={6}>
+          <Grid xs={12} className={classes.centered}>
+            <Grid xs={12} sm={7} md={6}>
               <Select
                 id="codigo-actividad-select-id"
                 label="Seleccione la Actividad Económica"
@@ -327,25 +339,25 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12} textAlign="center">
+        <Grid xs={12} textAlign="center">
           <InputLabel className={classes.summaryTitle}>DETALLE DE LA ORDEN</InputLabel>
         </Grid>
-        <Grid container item>
+        <Grid container xs={12} mx={{ xs: 0.5, sm: 0 }} justifyContent="center">
           {productDetailsList.map((row, index) => {
             return (
-              <Grid key={row.id} container item>
-                <Grid item xs={9}>
+              <Grid key={row.id} container xs={12}>
+                <Grid xs={9}>
                   <Typography overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
                     {row.description}
                   </Typography>
                 </Grid>
-                <Grid item xs={3} textAlign="end">
+                <Grid xs={3} textAlign="end">
                   <Typography>{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</Typography>
                 </Grid>
-                <Grid item xs={10}>
+                <Grid xs={10}>
                   <Typography>{`${row.quantity} Und x ${formatCurrency(row.price, 2)}`}</Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid xs={1}>
                   <IconButton
                     style={{ padding: 0 }}
                     color="primary"
@@ -355,7 +367,7 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
                     <EditIcon />
                   </IconButton>
                 </Grid>
-                <Grid item xs={1} textAlign="end">
+                <Grid xs={1} textAlign="end">
                   <IconButton
                     style={{ padding: 0 }}
                     color="secondary"
@@ -369,52 +381,52 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
             );
           })}
         </Grid>
-        <Grid item xs={12}>
-          <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
+        <Grid container xs={12}>
+          <Grid container xs={12} sm={isSplitMode ? 12 : 8} className={`${classes.summary} ${classes.centered}`}>
             <InputLabel className={classes.summaryTitle}>RESUMEN ORDEN DE SERVICIO</InputLabel>
             <Grid container className={classes.details}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
               </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
+              <Grid xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(taxed)}</InputLabel>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <InputLabel className={classes.summaryRow}>Exonerado</InputLabel>
               </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
+              <Grid xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(exonerated)}</InputLabel>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <InputLabel className={classes.summaryRow}>Excento</InputLabel>
               </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
+              <Grid xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(exempt)}</InputLabel>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <InputLabel className={classes.summaryRow}>SubTotal</InputLabel>
               </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
+              <Grid xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(subTotal)}</InputLabel>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <InputLabel className={classes.summaryRow}>Impuesto</InputLabel>
               </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
+              <Grid xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(taxes)}</InputLabel>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <InputLabel className={classes.summaryRow}>Total</InputLabel>
               </Grid>
-              <Grid item xs={6} className={classes.columnRight}>
+              <Grid xs={6} className={classes.columnRight}>
                 <InputLabel className={classes.summaryRow}>{formatCurrency(total)}</InputLabel>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
         {status === ORDER_STATUS.READY && (
-          <>
-            <Grid item xs={10} sm={6} md={4} className={classes.centered}>
+          <Grid container xs={12}>
+            <Grid xs={10} sm={6} md={4} className={classes.centered}>
               <Select
                 id="forma-pago-select-id"
                 label="Seleccione la forma de pago:"
@@ -435,44 +447,68 @@ export default function RestaurantFinalScreen({ value, index, className }: Resta
                 {paymentItems}
               </Select>
             </Grid>
-            <Grid item xs={12} className={classes.centered}>
+          </Grid>
+        )}
+        <Grid container xs={12} gap={2} pb={1} justifyContent="center">
+          {status === ORDER_STATUS.READY && (
+            <Grid>
               {status === ORDER_STATUS.READY && total > 0 && (
                 <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
               )}
             </Grid>
-          </>
-        )}
-        {status === ORDER_STATUS.ON_PROGRESS && (
-          <Grid item container gap={2} justifyContent="center">
-            <Grid item>
+          )}
+          {status === ORDER_STATUS.ON_PROGRESS && (
+            <Grid>
               <Button
                 disabled={buttonDisabled}
-                label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
+                label={workingOrderId > 0 ? "Actualizar" : "Guardar"}
                 onClick={() => dispatch(saveWorkingOrder())}
               />
             </Grid>
-          </Grid>
-        )}
-        {workingOrderId > 0 && status !== ORDER_STATUS.CONVERTED && (
-          <Grid item container gap={2} justifyContent="center">
-            <Grid item>
+          )}
+          {workingOrderId > 0 && status !== ORDER_STATUS.CONVERTED && (
+            <Grid>
               <Button label="Anular" onClick={handleRevokeButtonClick} />
             </Grid>
-          </Grid>
-        )}
-        {status === ORDER_STATUS.CONVERTED && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button label="Imprimir Factura" onClick={() => dispatch(generateInvoiceTicket({ id: invoiceId }))} />
-          </Grid>
-        )}
+          )}
+          {workingOrderId === 0 && (
+            <Grid xs="auto">
+              <Button
+                disabled={total === 0}
+                label="Limpiar"
+                onClick={() => setDialogStatus({ status: true, id: 0, type: dialogType.CLEAR })}
+              />
+            </Grid>
+          )}
+          {status === ORDER_STATUS.CONVERTED && (
+            <Grid xs="auto">
+              <Button label="Imprimir Factura" onClick={() => dispatch(generateInvoiceTicket({ id: invoiceId }))} />
+            </Grid>
+          )}
+          {isSplitMode && (
+            <Grid xs="auto">
+              <Button
+                label="Regresar"
+                onClick={() => {
+                  dispatch(resetWorkingOrder());
+                  dispatch(setActiveSection(11));
+                }}
+              />
+            </Grid>
+          )}
+        </Grid>
       </Grid>
       <Dialog
         id="revoke-dialog"
         onClose={() => setDialogStatus({ status: false, id: 0, type: dialogStatus.type })}
         open={dialogStatus.status}
       >
-        {dialogStatus.type === dialogType.REVOKE ? revokeOrderContent() : updateItemContent()}
+        {dialogStatus.type === dialogType.CLEAR
+          ? clearOrderContent()
+          : dialogStatus.type === dialogType.REVOKE
+            ? revokeOrderContent()
+            : updateItemContent()}
       </Dialog>
-    </div>
+    </>
   );
 }

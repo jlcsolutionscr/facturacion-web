@@ -41,9 +41,9 @@ import {
   saveInvoiceEntity,
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
-import { convertToDateString, getErrorMessage } from "utils/utilities";
+import { convertToDateString, getErrorMessage, roundNumber } from "utils/utilities";
 
-const ROWS_PER_PRODUCT = 30;
+const ROWS_PER_PRODUCT = 25;
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -75,7 +75,9 @@ export const addDetails = createAsyncThunk(
     const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
     let loadedProductDetails = productDetails;
     if (company && payload.id) {
+      dispatch(startLoader());
       const product = await getProductEntity(token, payload.id, branchId);
+      dispatch(stopLoader());
       const { price, taxRate } = getCustomerPrice(
         customerDetails.priceTypeId,
         product,
@@ -388,6 +390,7 @@ export const openServicePoint = createAsyncThunk(
     const { list } = product;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
+    dispatch(resetWorkingOrder());
     try {
       const servicePoint = await getServicePointEntity(token, payload.id);
       if (list.length === 0) {
@@ -432,7 +435,7 @@ export const openServicePoint = createAsyncThunk(
           description: item.Descripcion,
           taxRate: item.PorcentajeIVA,
           unit: "UND",
-          price: item.PrecioVenta,
+          price: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
           costPrice: item.Producto.PrecioCosto,
         }));
         const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
@@ -462,8 +465,6 @@ export const openServicePoint = createAsyncThunk(
             },
           })
         );
-      } else {
-        dispatch(resetWorkingOrder());
       }
       dispatch(setCustomerDetails(defaultCustomerDetails));
       dispatch(setServicePointId(servicePoint.IdPunto));

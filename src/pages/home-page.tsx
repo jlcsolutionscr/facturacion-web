@@ -38,8 +38,7 @@ const useStyles = makeStyles()(theme => ({
     backgroundSize: `100% 100%`,
     display: "flex",
     flex: "1 1 auto",
-    overflowY: "auto",
-    overflowX: "hidden",
+    overflow: "hidden",
     scrollbarWidth: "thin",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:429px)": {

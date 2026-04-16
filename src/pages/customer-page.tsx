@@ -41,8 +41,9 @@ const useStyles = makeStyles()(theme => ({
     scrollbarWidth: "thin",
   },
   footer: {
-    height: "60px",
-    alignContent: "center",
+    display: "flex",
+    height: "50px",
+    alignItems: "center",
   },
 }));
 

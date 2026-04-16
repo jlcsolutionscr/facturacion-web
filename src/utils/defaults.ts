@@ -174,7 +174,7 @@ export const defaultWorkingOrder: WorkingOrderType = {
   date: "",
   cashAdvance: 0,
   invoiceId: 0,
-  status: ORDER_STATUS.ON_PROGRESS,
+  status: ORDER_STATUS.READY,
   activityCode: 0,
   customerDetails: defaultCustomerDetails,
   productDetails: defaultProductDetails,

@@ -13,9 +13,10 @@ import { DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
 const useStyles = makeStyles()(theme => ({
   header: {
     backgroundImage: "linear-gradient(to bottom, rgba(8, 65, 92, 0.6), rgba(8, 65, 92, 0.9), rgba(8, 65, 92, 1))",
-    minHeight: "150px",
+    minHeight: "100px",
   },
   banner: {
+    display: "none",
     backgroundImage: `url(${LogoDarkImage})`,
     backgroundRepeat: "no-repeat",
     position: "absolute",
@@ -24,24 +25,28 @@ const useStyles = makeStyles()(theme => ({
     height: "75px",
     top: "5px",
     width: "75px",
+    "@media screen and (min-width:900px)": {
+      display: "block",
+    },
   },
   toogle: {
     position: "absolute",
-    top: "99px",
+    top: "59px",
     right: "52px",
     zIndex: 2,
   },
   logout: {
     position: "absolute",
-    top: "99px",
+    top: "59px",
     right: "8px",
     zIndex: 2,
   },
   text: {
+    display: "none",
     textAlign: "left",
-    margin: "20px 0 10px 100px",
-    "@media screen and (min-width:600px)": {
-      marginBottom: "0",
+    margin: "20px 0 0 100px",
+    "@media screen and (min-width:900px)": {
+      display: "block",
     },
   },
   h2: {
@@ -63,13 +68,10 @@ const useStyles = makeStyles()(theme => ({
   title: {
     display: "flex",
     flexDirection: "column",
-    position: "relative",
+    position: "absolute",
+    top: theme.spacing(2),
     textAlign: "center",
     width: "100%",
-    "@media screen and (min-width:960px)": {
-      position: "absolute",
-      top: theme.spacing(4),
-    },
   },
   companyText: {
     color: "rgba(255,255,255,0.85)",
@@ -82,7 +84,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (min-width:600px)": {
       fontSize: theme.typography.pxToRem(23),
     },
-    "@media screen and (min-width:960px)": {
+    "@media screen and (min-width:900px)": {
       fontSize: theme.typography.pxToRem(25),
     },
   },

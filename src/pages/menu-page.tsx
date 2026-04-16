@@ -167,7 +167,7 @@ export default function MenuPage() {
         )}
       </Grid>
       <div className={classes.buttonContainer}>
-        <Grid container item xs={12}>
+        <Grid container item xs={12} justifyContent="center">
           <Grid item xs={12} sm={6}>
             <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getCompany())}>
               Actualizar empresa

@@ -13,3 +13,8 @@ body {
     local("Exo 2"),
     url("./assets/fonts/Exo2-Italic-VariableFont_wght.ttf") format("truetype");
 }
+
+* {
+  scrollbar-color: #08415c #f1f1f1;
+  scrollbar-width: thin;
+}

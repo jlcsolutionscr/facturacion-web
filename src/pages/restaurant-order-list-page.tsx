@@ -75,7 +75,7 @@ export default function RestaurantOrderListPage() {
         </Grid>
       </div>
       <div className={classes.buttonContainer}>
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
+        <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
     </div>
   );
