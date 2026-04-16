@@ -85,7 +85,7 @@ export const addDetails = createAsyncThunk(
         taxTypeList
       );
       loadedProductDetails = {
-        id: product.IdProducto.toString(),
+        id: product.IdProducto,
         quantity: 1,
         code: "",
         description: product.Descripcion,
