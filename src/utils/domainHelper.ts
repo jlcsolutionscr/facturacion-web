@@ -631,6 +631,7 @@ export function getProductSummary(products: ProductDetailsType[], exonerationPer
     taxes: roundNumber(taxes, 2),
     total: roundNumber(total, 2),
     totalCost: roundNumber(totalCost, 2),
+    cashAmount: roundNumber(total, 2),
   };
 }
 
@@ -641,7 +642,6 @@ export async function saveInvoiceEntity(
   branchId: number,
   activityCode: number,
   paymentDetailsList: PaymentDetailsType[],
-  cashAdvance: number,
   currency: number,
   vendorId: number,
   orderId: number,
@@ -679,7 +679,7 @@ export async function saveInvoiceEntity(
       IdCuentaBanco: bankId,
       TipoTarjeta: "",
       NroMovimiento: "",
-      MontoLocal: summary.total - cashAdvance,
+      MontoLocal: summary.total,
       TipoDeCambio: dollarExchange,
     },
   ];
@@ -707,8 +707,8 @@ export async function saveInvoiceEntity(
     Exonerado: summary.exonerated,
     Descuento: 0,
     Impuesto: summary.taxes,
-    MontoPagado: summary.total,
-    MontoAdelanto: cashAdvance,
+    MontoPagado: summary.cashAmount,
+    MontoAdelanto: 0,
     TotalCosto: summary.totalCost,
     IdTipoExoneracion: customerDetails.exonerationType,
     IdNombreInstExoneracion: customerDetails.exoneratedById,

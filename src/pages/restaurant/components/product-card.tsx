@@ -6,14 +6,15 @@ import { formatCurrency } from "utils/utilities";
 const useStyles = makeStyles()(() => ({
   container: {
     display: "flex",
+    textAlign: "center",
     flexDirection: "column",
     backgroundColor: "#FFF",
     color: "black",
     cursor: "pointer",
-    padding: "10px",
+    padding: "5px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
-    width: "120px",
+    width: "180px",
     height: "auto",
     fontFamily: "Helvetica",
     transform: "scale(1)",
@@ -23,18 +24,27 @@ const useStyles = makeStyles()(() => ({
       transform: "scale(0.98)",
       transition: ".1s",
     },
+    "@media screen and (min-width:600px)": {
+      padding: "10px",
+      width: "130px",
+    },
   },
   imageContainer: {
     display: "flex",
-    height: "120px",
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
     display: "flex",
     justifyContent: "center",
-    width: "stretch",
-    height: "stretch",
+    width: "100px",
+    height: "100px",
+    "@media screen and (min-width:600px)": {
+      width: "120px",
+      height: "120px",
+    },
   },
   descriptionContainer: {
     display: "flex",

@@ -130,7 +130,6 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
       branchId,
       activityCode,
       paymentDetailsList,
-      0,
       currency,
       vendorId,
       0,

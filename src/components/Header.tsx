@@ -13,21 +13,7 @@ import { DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
 const useStyles = makeStyles()(theme => ({
   header: {
     backgroundImage: "linear-gradient(to bottom, rgba(8, 65, 92, 0.6), rgba(8, 65, 92, 0.9), rgba(8, 65, 92, 1))",
-    minHeight: "100px",
-  },
-  banner: {
-    display: "none",
-    backgroundImage: `url(${LogoDarkImage})`,
-    backgroundRepeat: "no-repeat",
-    position: "absolute",
-    backgroundSize: "75px 75px",
-    left: "10px",
-    height: "75px",
-    top: "5px",
-    width: "75px",
-    "@media screen and (min-width:900px)": {
-      display: "block",
-    },
+    height: "100px",
   },
   toogle: {
     position: "absolute",
@@ -41,13 +27,34 @@ const useStyles = makeStyles()(theme => ({
     right: "8px",
     zIndex: 2,
   },
-  text: {
+  poweredBy: {
     display: "none",
-    textAlign: "left",
-    margin: "20px 0 0 100px",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "fixed",
+    marginLeft: "10px",
+    width: "240px",
+    height: "100px",
     "@media screen and (min-width:900px)": {
-      display: "block",
+      display: "flex",
     },
+  },
+  banner: {
+    display: "none",
+    backgroundImage: `url(${LogoDarkImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "75px 75px",
+    left: "10px",
+    height: "75px",
+    top: "5px",
+    width: "75px",
+    "@media screen and (min-width:900px)": {
+      display: "flex",
+    },
+  },
+  poweredByText: {
+    display: "flex",
+    flexDirection: "column",
   },
   h2: {
     color: theme.palette.mode === "dark" ? "#333" : "#08415c",
@@ -68,10 +75,16 @@ const useStyles = makeStyles()(theme => ({
   title: {
     display: "flex",
     flexDirection: "column",
-    position: "absolute",
-    top: theme.spacing(2),
-    textAlign: "center",
-    width: "100%",
+    height: "100px",
+    margin: "0 auto",
+    justifyContent: "center",
+    alignContent: "end",
+    "@media screen and (min-width:900px)": {
+      maxWidth: "450px",
+    },
+    "@media screen and (min-width:1040px)": {
+      maxWidth: "600px",
+    },
   },
   companyText: {
     color: "rgba(255,255,255,0.85)",
@@ -83,9 +96,6 @@ const useStyles = makeStyles()(theme => ({
     marginBottom: 0,
     "@media screen and (min-width:600px)": {
       fontSize: theme.typography.pxToRem(23),
-    },
-    "@media screen and (min-width:900px)": {
-      fontSize: theme.typography.pxToRem(25),
     },
   },
   icon: {
@@ -120,7 +130,6 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
         : companyIdentifier;
   return (
     <div className={classes.header}>
-      <div className={classes.banner} />
       <Tooltip title="Cambiar tema" aria-label="cambiar tema">
         <IconButton
           className={classes.toogle}
@@ -141,13 +150,16 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
           <LogOutIcon className={classes.icon} />
         </IconButton>
       </Tooltip>
-      <div className={classes.text}>
-        <Typography classes={{ h2: classes.h2 }} variant="h2" component="h2">
-          JLC Solutions
-        </Typography>
-        <Typography classes={{ h4: classes.h4 }} variant="h4" component="h4">
-          Facturación Electrónica
-        </Typography>
+      <div className={classes.poweredBy}>
+        <div className={classes.banner} />
+        <div className={classes.poweredByText}>
+          <Typography classes={{ h2: classes.h2 }} variant="h2" component="h2">
+            JLC Solutions
+          </Typography>
+          <Typography classes={{ h4: classes.h4 }} variant="h4" component="h4">
+            Facturación Electrónica
+          </Typography>
+        </div>
       </div>
       <div className={classes.title}>
         <Typography className={classes.companyText} align="center" paragraph>

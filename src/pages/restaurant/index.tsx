@@ -98,7 +98,7 @@ const useStyles = makeStyles()(theme => ({
   desktopProductList: {
     display: "flex",
     width: "calc(68% - 5px)",
-    height: "auto",
+    height: "fit-content",
     maxHeight: "100%",
     "@media screen and (max-width:429px)": {
       width: "calc(55% - 5px)",

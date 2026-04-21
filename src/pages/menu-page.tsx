@@ -10,7 +10,6 @@ import { getCompany } from "state/company/asyncActions";
 import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getDocumentListFirstPage } from "state/document/asyncActions";
 import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asyncActions";
-import { getProductListFirstPage } from "state/product/asyncActions";
 import { getProformaListFirstPage } from "state/proforma/asyncActions";
 import { setReceiptParameters } from "state/receipt/asyncActions";
 import {
@@ -23,7 +22,7 @@ import {
 } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { getServicePointList, getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
-import { ROWS_PER_CUSTOMER, ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
+import { ROWS_PER_CUSTOMER, TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -40,7 +39,7 @@ const useStyles = makeStyles()(theme => ({
   branches: {
     backgroundColor: "transparent",
     borderRadius: theme.shape.borderRadius,
-    margin: "0 auto",
+    margin: "10px 0",
     height: "35px",
     alignContent: "center",
     justifyContent: "center",
@@ -49,6 +48,7 @@ const useStyles = makeStyles()(theme => ({
       height: "38px",
     },
     "@media screen and (min-width:600px)": {
+      margin: "0",
       height: "75px",
     },
   },
@@ -200,20 +200,7 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Button
-              disabled={!manageProducts}
-              className={classes.button}
-              onClick={() =>
-                dispatch(
-                  getProductListFirstPage({
-                    id: 5,
-                    filterText: "",
-                    type: 2,
-                    rowsPerPage: ROWS_PER_PRODUCT,
-                  })
-                )
-              }
-            >
+            <Button disabled={!manageProducts} className={classes.button} onClick={() => dispatch(setActiveSection(5))}>
               Catálogo de productos
             </Button>
           </Grid>

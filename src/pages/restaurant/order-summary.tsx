@@ -11,9 +11,11 @@ import ClearOrderDialog from "pages/restaurant/clear-order-dialog";
 import PaymentDialog from "pages/restaurant/payment-dialog";
 import RevokeOrderDialog from "pages/restaurant/revoke-order-dialog";
 import UpdateProducDialog from "pages/restaurant/update-product-dialog";
+import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { setActiveSection } from "state/ui/reducer";
 import { removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
+  getInvoiceId,
   getProductDetailsList,
   getStatus,
   getSummary,
@@ -38,11 +40,13 @@ const useStyles = makeStyles()(theme => ({
     maxWidth: "300px",
     textAlign: "center",
   },
-  details: {
-    marginTop: "0",
-    textAlign: "left",
-    " & .MuiGrid-item": {
-      paddingTop: "8px",
+  summaryDetails: {
+    justifyContent: "center",
+    height: "auto",
+    maxHeight: "calc(100% - 91px)",
+    overflow: "hidden auto",
+    "@media screen and (min-width:600px)": {
+      maxHeight: "calc(100% - 99px)",
     },
   },
   summaryTitle: {
@@ -91,6 +95,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
   const workingOrderId = useSelector(getWorkingOrderId);
   const productDetailsList = useSelector(getProductDetailsList);
   const status = useSelector(getStatus);
+  const invoiceId = useSelector(getInvoiceId);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -120,7 +125,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
       justifyContent="center"
     >
       <Grid container xs={12} justifyContent="center">
-        <Grid container>
+        <Grid container gap={1}>
           {isSplitMode && (
             <Grid>
               <div className={classes.backButton}>
@@ -130,7 +135,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
               </div>
             </Grid>
           )}
-          {status !== ORDER_STATUS.CONVERTED && (
+          {status !== ORDER_STATUS.CONVERTED ? (
             <>
               {status === ORDER_STATUS.READY && (
                 <Grid>
@@ -166,6 +171,10 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
                 </Grid>
               )}
             </>
+          ) : (
+            <Grid xs="auto">
+              <Button label="Imprimir Factura" onClick={() => dispatch(generateInvoiceTicket({ id: invoiceId }))} />
+            </Grid>
           )}
         </Grid>
       </Grid>
@@ -175,14 +184,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
       <Grid xs={12} textAlign="center">
         <Typography className={classes.summaryTitle}>DETALLE DE LA ORDEN</Typography>
       </Grid>
-      <Grid
-        container
-        xs={12}
-        justifyContent="center"
-        height="auto"
-        maxHeight="calc(100% - 99px)"
-        overflow="hidden auto"
-      >
+      <Grid container xs={12} className={classes.summaryDetails}>
         {productDetailsList.map((row, index) => {
           return (
             <Grid key={row.id} container xs={12}>

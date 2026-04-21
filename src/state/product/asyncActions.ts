@@ -34,7 +34,6 @@ export const getProductListFirstPage = createAsyncThunk(
   "product/getProductListFirstPage",
   async (
     payload: {
-      id: number;
       filterText: string;
       type: number;
       rowsPerPage: number;
@@ -44,7 +43,6 @@ export const getProductListFirstPage = createAsyncThunk(
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
-    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setProductListPage(1));
       const recordCount = await getProductListCount(

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 
-import Tab from "components/point-of-service-card";
+import Tab from "pages/restaurant/components/point-of-service-card";
 import { setActiveSection } from "state/ui/reducer";
 import { openServicePoint } from "state/working-order/asyncActions";
 import { getServicePointList } from "state/working-order/reducer";
@@ -63,7 +63,7 @@ export default function RestaurantOrderListPage() {
 
   const rows = servicePointList.map(row => (
     <Grid item key={row.Id} xs={4} sm={3} md={2} justifyItems="center">
-      <Tab title={row.Descripcion} edit={() => handleOpenOrderClick(row.Id)} />
+      <Tab title={row.Descripcion} active={row.Valor > 0} edit={() => handleOpenOrderClick(row.Id)} />
     </Grid>
   ));
 

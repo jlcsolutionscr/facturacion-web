@@ -1,7 +1,7 @@
 import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { IdDescriptionType } from "types/domain";
+import { IdDescriptionType, SummaryType } from "types/domain";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +26,7 @@ import {
   setActivityCode,
   setCustomerAttribute,
   setPaymentDetailsList,
+  setSummary,
 } from "state/working-order/reducer";
 import { FORM_TYPE, ORDER_STATUS, ROWS_PER_CUSTOMER } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
@@ -39,21 +40,13 @@ const paymentMethods: { id: number; description: string }[] = [
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 type PaymentDialogProps = {
-  summary: {
-    taxed: number;
-    exonerated: number;
-    exempt: number;
-    subTotal: number;
-    taxes: number;
-    total: number;
-  };
+  summary: SummaryType;
   status: string;
   setDialogStatus: (value: DialogStatus) => void;
   classes: any;
 };
 
 export default function PaymentDialog({ summary, status, setDialogStatus, classes }: PaymentDialogProps) {
-  const [paymentAmount, setPaymentAmount] = useState<string>(summary.total.toString());
   const [filterText, setFilterText] = useState("");
 
   const dispatch = useDispatch();
@@ -67,7 +60,7 @@ export default function PaymentDialog({ summary, status, setDialogStatus, classe
   const customerListPage = useSelector(getCustomerListPage);
   const customerList = useSelector(getCustomerList);
 
-  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+  const { taxed, exonerated, exempt, subTotal, taxes, total, cashAmount } = summary;
 
   const customerEditDisabled = status === ORDER_STATUS.CONVERTED;
 
@@ -217,15 +210,22 @@ export default function PaymentDialog({ summary, status, setDialogStatus, classe
               <Grid xs={5} sm={12}>
                 <TextField
                   numericFormat
-                  value={paymentAmount}
+                  value={cashAmount.toString()}
                   label="Monto de pago:"
-                  onChange={event => setPaymentAmount(event.target.value)}
+                  onChange={event =>
+                    dispatch(
+                      setSummary({
+                        ...summary,
+                        cashAmount: event.target.value !== "" ? parseFloat(event.target.value) : "",
+                      })
+                    )
+                  }
                 />
               </Grid>
               <Grid xs={12} textAlign="center">
                 <Typography
                   style={{ fontWeight: "bold", fontSize: 22 }}
-                >{`Cambio: ${formatCurrency(parseFloat(paymentAmount) - total)}`}</Typography>
+                >{`Cambio: ${cashAmount.toString() !== "" ? formatCurrency(cashAmount - total) : "0.00"}`}</Typography>
               </Grid>
             </Grid>
           </Grid>

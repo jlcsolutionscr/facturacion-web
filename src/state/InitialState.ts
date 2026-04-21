@@ -112,7 +112,7 @@ type WorkingOrderStateType = {
   listPage: number;
   listCount: number;
   list: InvoiceEntityType[];
-  servicePointList: IdDescriptionType[];
+  servicePointList: IdDescriptionValueType[];
 };
 
 type ProformaStateType = {

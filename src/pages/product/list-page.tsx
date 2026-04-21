@@ -1,15 +1,20 @@
 import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
-import { filterProductList, getProductListByPageNumber, openProduct } from "state/product/asyncActions";
+import {
+  filterProductList,
+  getProductListByPageNumber,
+  getProductListFirstPage,
+  openProduct,
+} from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage, setProductList } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -90,6 +95,10 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
+const height = window.innerHeight - 100 - 71 - 35 - 38 - 35 - 22;
+
+const ROWS_PER_PRODUCT = Math.floor(height / 35);
+
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 export default function ProductListPage() {
@@ -101,6 +110,16 @@ export default function ProductListPage() {
   const { classes } = useStyles();
   const [filter, setFilter] = useState("");
   const [filterType, setFilterType] = useState(2);
+
+  useEffect(() => {
+    dispatch(
+      getProductListFirstPage({
+        filterText: "",
+        type: 2,
+        rowsPerPage: ROWS_PER_PRODUCT,
+      })
+    );
+  }, []);
 
   const handleOnFilterTypeChange = () => {
     const newFilterType = filterType === 1 ? 2 : 1;

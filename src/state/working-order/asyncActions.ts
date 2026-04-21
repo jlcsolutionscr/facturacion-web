@@ -193,12 +193,24 @@ export const saveWorkingOrder = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { entity, listPage } = workingOrder;
+    const { entity, servicePointList, listPage } = workingOrder;
     dispatch(startLoader());
     try {
       const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
       if (ids) {
         dispatch(setWorkingOrder({ ...entity, id: ids.id, consecutive: ids.consecutive }));
+        if (entity.servicePointId > 0) {
+          const index = servicePointList.findIndex(item => item.Id === entity.servicePointId);
+          const newList = [
+            ...servicePointList.slice(0, index),
+            {
+              ...servicePointList[index],
+              Valor: parseInt(ids.id),
+            },
+            ...servicePointList.slice(index + 1),
+          ];
+          dispatch(setServicePointList(newList));
+        }
       }
       dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(
@@ -269,11 +281,24 @@ export const getWorkingOrderListByPageNumber = createAsyncThunk(
 export const revokeWorkingOrder = createAsyncThunk(
   "working-order/revokeWorkingOrder",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+    const { session, workingOrder } = getState() as RootState;
     const { token, userId, company } = session;
+    const { entity, servicePointList } = workingOrder;
     dispatch(startLoader());
     try {
       await revokeWorkingOrderEntity(token, payload.id, userId);
+      if (entity.servicePointId > 0) {
+        const index = servicePointList.findIndex(item => item.Id === entity.servicePointId);
+        const newList = [
+          ...servicePointList.slice(0, index),
+          {
+            ...servicePointList[index],
+            Valor: 0,
+          },
+          ...servicePointList.slice(index + 1),
+        ];
+        dispatch(setServicePointList(newList));
+      }
       dispatch(resetWorkingOrder());
       if (company?.Modalidad === 2) {
         dispatch(setActiveSection(11));
@@ -516,8 +541,18 @@ export const generateInvoice = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { id, activityCode, paymentDetailsList, vendorId, currency, customerDetails, productDetailsList, summary } =
-      workingOrder.entity;
+    const { servicePointList, entity } = workingOrder;
+    const {
+      id,
+      activityCode,
+      paymentDetailsList,
+      vendorId,
+      currency,
+      customerDetails,
+      productDetailsList,
+      summary,
+      servicePointId,
+    } = entity;
     dispatch(startLoader());
     try {
       const references = await saveInvoiceEntity(
@@ -527,7 +562,6 @@ export const generateInvoice = createAsyncThunk(
         branchId,
         activityCode,
         paymentDetailsList,
-        0,
         currency,
         vendorId,
         id,
@@ -538,6 +572,18 @@ export const generateInvoice = createAsyncThunk(
       );
       dispatch(setInvoiceId(references.id));
       dispatch(setStatus(ORDER_STATUS.CONVERTED));
+      if (servicePointId > 0) {
+        const index = servicePointList.findIndex(item => item.Id === servicePointId);
+        const newList = [
+          ...servicePointList.slice(0, index),
+          {
+            ...servicePointList[index],
+            Valor: 0,
+          },
+          ...servicePointList.slice(index + 1),
+        ];
+        dispatch(setServicePointList(newList));
+      }
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",
