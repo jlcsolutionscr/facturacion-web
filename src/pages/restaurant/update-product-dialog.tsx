@@ -13,11 +13,11 @@ import { getProductDetails, setPrice, setQuantity } from "state/working-order/re
 import { parseStringToNumber } from "utils/utilities";
 
 type UpdateProducDialogProps = {
-  workingOrderId: number;
+  productId: number;
   setDialogStatus: (value: DialogStatus) => void;
 };
 
-export default function UpdateProducDialog({ workingOrderId, setDialogStatus }: UpdateProducDialogProps) {
+export default function UpdateProducDialog({ productId, setDialogStatus }: UpdateProducDialogProps) {
   const dispatch = useDispatch();
   const productDetails = useSelector(getProductDetails);
   const permissions = useSelector(getPermissions);
@@ -25,7 +25,7 @@ export default function UpdateProducDialog({ workingOrderId, setDialogStatus }: 
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
 
   const handleUpdate = () => {
-    dispatch(updateDetails({ pos: workingOrderId }));
+    dispatch(updateDetails({ pos: productId }));
     setDialogStatus({ status: false, id: 0, type: DialogType.UPDATE });
   };
   return (

@@ -130,38 +130,42 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
               </div>
             </Grid>
           )}
-          {status === ORDER_STATUS.READY && (
-            <Grid>
-              {total > 0 && (
-                <Button
-                  label="Facturar"
-                  onClick={() => setDialogStatus({ status: true, id: workingOrderId, type: DialogType.PAYMENT })}
-                />
+          {status !== ORDER_STATUS.CONVERTED && (
+            <>
+              {status === ORDER_STATUS.READY && (
+                <Grid>
+                  {total > 0 && (
+                    <Button
+                      label="Facturar"
+                      onClick={() => setDialogStatus({ status: true, id: workingOrderId, type: DialogType.PAYMENT })}
+                    />
+                  )}
+                </Grid>
               )}
-            </Grid>
-          )}
-          {status === ORDER_STATUS.ON_PROGRESS && (
-            <Grid>
-              <Button
-                disabled={buttonDisabled}
-                label={workingOrderId > 0 ? "Actualizar" : "Guardar"}
-                onClick={() => dispatch(saveWorkingOrder())}
-              />
-            </Grid>
-          )}
-          {workingOrderId > 0 && status !== ORDER_STATUS.CONVERTED && (
-            <Grid>
-              <Button label="Anular" onClick={handleRevokeButtonClick} />
-            </Grid>
-          )}
-          {workingOrderId === 0 && (
-            <Grid xs="auto">
-              <Button
-                disabled={total === 0}
-                label="Limpiar"
-                onClick={() => setDialogStatus({ status: true, id: 0, type: DialogType.CLEAR })}
-              />
-            </Grid>
+              {status === ORDER_STATUS.ON_PROGRESS && (
+                <Grid>
+                  <Button
+                    disabled={buttonDisabled}
+                    label={workingOrderId > 0 ? "Actualizar" : "Guardar"}
+                    onClick={() => dispatch(saveWorkingOrder())}
+                  />
+                </Grid>
+              )}
+              {workingOrderId > 0 && status !== ORDER_STATUS.CONVERTED && (
+                <Grid>
+                  <Button label="Anular" onClick={handleRevokeButtonClick} />
+                </Grid>
+              )}
+              {workingOrderId === 0 && (
+                <Grid xs="auto">
+                  <Button
+                    disabled={total === 0}
+                    label="Limpiar"
+                    onClick={() => setDialogStatus({ status: true, id: 0, type: DialogType.CLEAR })}
+                  />
+                </Grid>
+              )}
+            </>
           )}
         </Grid>
       </Grid>
@@ -228,7 +232,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
         ) : dialogStatus.type === DialogType.REVOKE ? (
           <RevokeOrderDialog workingOrderId={workingOrderId} setDialogStatus={setDialogStatus} />
         ) : dialogStatus.type === DialogType.UPDATE ? (
-          <UpdateProducDialog workingOrderId={workingOrderId} setDialogStatus={setDialogStatus} />
+          <UpdateProducDialog productId={dialogStatus.id} setDialogStatus={setDialogStatus} />
         ) : (
           <PaymentDialog classes={classes} summary={summary} status={status} setDialogStatus={setDialogStatus} />
         )}

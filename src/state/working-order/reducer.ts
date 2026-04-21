@@ -84,7 +84,13 @@ const workingOrderSlice = createSlice({
       state.servicePointList = action.payload;
     },
     resetWorkingOrder: state => {
-      state.entity = defaultWorkingOrder;
+      state.entity = {
+        ...defaultWorkingOrder,
+        vendorId: state.entity.vendorId,
+        activityCode: state.entity.activityCode,
+        paymentDetailsList: state.entity.paymentDetailsList,
+        servicePointId: state.entity.servicePointId,
+      };
     },
     setServicePointId: (state, action) => {
       state.entity.servicePointId = action.payload;
