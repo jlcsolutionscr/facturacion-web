@@ -5,32 +5,34 @@ import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import StepOneScreen from "./steps-screens/customer-details-screen";
-import StepThreeScreen from "./steps-screens/invoice-final-screen";
-import StepTwoScreen from "./steps-screens/product-details-screen";
+import OrderSummary from "./order-summary";
+import OtherDetails from "./other-details";
+import ProductDetails from "components//product-details-screen";
+import CustomerDetails from "components/customer-details-screen";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
-import { addDetails, removeDetails } from "state/invoice/asyncActions";
+import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
+import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
+import { addDetails, getWorkingOrderListFirstPage, removeDetails } from "state/working-order/asyncActions";
 import {
   getActivityCode,
-  getComment,
+  getCashAdvance,
   getCurrency,
   getCustomerDetails,
+  getDeliveryDetails,
   getInvoiceId,
   getPaymentDetailsList,
   getProductDetails,
   getProductDetailsList,
-  getSuccessful,
+  getStatus,
   getSummary,
   getVendorId,
+  getWorkingOrderId,
   setCustomerAttribute,
   setProductDetails,
-} from "state/invoice/reducer";
-import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
-import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
-import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
+} from "state/working-order/reducer";
+import { FORM_TYPE, ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -52,6 +54,13 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   tabs: {
+    color: "#FFF",
+    "& .MuiTab-root": {
+      color: "#FFF",
+    },
+    "& .Mui-selected": {
+      color: "#90CAF9",
+    },
     "@media screen and (max-width:599px)": {
       borderTop: "solid 2px #FFF",
     },
@@ -70,7 +79,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function InvoicePage() {
+export default function WorkingOrderPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
@@ -85,16 +94,18 @@ export default function InvoicePage() {
   const productDetails = useSelector(getProductDetails);
   const productList = useSelector(getProductList);
   const productDetailsList = useSelector(getProductDetailsList);
-  const invoiceId = useSelector(getInvoiceId);
+  const delivery = useSelector(getDeliveryDetails);
   const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
   const activityCode = useSelector(getActivityCode);
   const paymentDetails = useSelector(getPaymentDetailsList);
   const vendorId = useSelector(getVendorId);
-  const comment = useSelector(getComment);
   const currency = useSelector(getCurrency);
-  const successful = useSelector(getSuccessful);
+  const workingOrderId = useSelector(getWorkingOrderId);
   const vendorList = useSelector(getVendorList);
+  const cashAdvance = useSelector(getCashAdvance);
+  const status = useSelector(getStatus);
+  const invoiceId = useSelector(getInvoiceId);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -103,16 +114,21 @@ export default function InvoicePage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(0))}>
+        <IconButton
+          aria-label="upload picture"
+          component="span"
+          onClick={() => dispatch(getWorkingOrderListFirstPage())}
+        >
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
       <Tabs className={classes.tabs} centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Cliente" />
         <Tab label="Detalle" />
+        <Tab label="Otros" />
         <Tab label="Generar" />
       </Tabs>
-      <StepOneScreen
+      <CustomerDetails
         className={classes.tab}
         value={value}
         index={0}
@@ -120,11 +136,11 @@ export default function InvoicePage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={successful}
-        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
+        listDisabled={status === ORDER_STATUS.CONVERTED}
+        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
-      <StepTwoScreen
+      <ProductDetails
         className={classes.tab}
         value={value}
         index={1}
@@ -134,29 +150,31 @@ export default function InvoicePage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={successful}
-        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
+        stepDisabled={status === ORDER_STATUS.CONVERTED}
+        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
         }
-        addDetails={() => dispatch(addDetails())}
+        addDetails={() => dispatch(addDetails({ id: undefined }))}
         removeDetails={(pos: number) => dispatch(removeDetails({ pos }))}
       />
-      <StepThreeScreen
+      <OtherDetails className={classes.tab} value={value} index={2} delivery={delivery} status={status} />
+      <OrderSummary
         className={classes.tab}
         value={value}
-        invoiceId={invoiceId}
+        index={3}
         company={company}
         summary={summary}
         activityCode={activityCode}
         paymentDetails={paymentDetails}
         vendorId={vendorId}
-        currency={currency}
-        comment={comment}
+        workingOrderId={workingOrderId}
         vendorList={vendorList}
-        successful={successful}
+        currency={currency}
+        cashAdvance={cashAdvance}
+        status={status}
+        invoiceId={invoiceId}
         setValue={setValue}
-        index={2}
       />
     </div>
   );

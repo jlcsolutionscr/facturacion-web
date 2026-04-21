@@ -5,34 +5,28 @@ import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import StepOneScreen from "./steps-screens/customer-details-screen";
-import StepTwoScreen from "./steps-screens/product-details-screen";
-import StepFourScreen from "./steps-screens/working-order-final-screen";
-import StepThreeScreen from "./steps-screens/working-order-third-screen";
+import ProformaSummary from "./proforma-summary";
+import CustomerDetails from "components/customer-details-screen";
+import ProductDetails from "components/product-details-screen";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
-import { addDetails, getWorkingOrderListFirstPage, removeDetails } from "state/working-order/asyncActions";
+import { addDetails, getProformaListFirstPage, removeDetails } from "state/proforma/asyncActions";
 import {
-  getActivityCode,
-  getCashAdvance,
+  getComment,
   getCurrency,
   getCustomerDetails,
-  getDeliveryDetails,
-  getInvoiceId,
-  getPaymentDetailsList,
   getProductDetails,
   getProductDetailsList,
-  getStatus,
+  getSuccessful,
   getSummary,
   getVendorId,
-  getWorkingOrderId,
   setCustomerAttribute,
   setProductDetails,
-} from "state/working-order/reducer";
-import { FORM_TYPE, ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
+} from "state/proforma/reducer";
+import { getPermissions, getVendorList } from "state/session/reducer";
+import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -42,7 +36,7 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     maxWidth: "900px",
     width: "100%",
-    margin: "10px auto",
+    margin: "15px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
@@ -54,13 +48,6 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   tabs: {
-    color: "#FFF",
-    "& .MuiTab-root": {
-      color: "#FFF",
-    },
-    "& .Mui-selected": {
-      color: "#90CAF9",
-    },
     "@media screen and (max-width:599px)": {
       borderTop: "solid 2px #FFF",
     },
@@ -79,7 +66,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function WorkingOrderPage() {
+export default function ProformaPage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
@@ -94,18 +81,12 @@ export default function WorkingOrderPage() {
   const productDetails = useSelector(getProductDetails);
   const productList = useSelector(getProductList);
   const productDetailsList = useSelector(getProductDetailsList);
-  const delivery = useSelector(getDeliveryDetails);
-  const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
-  const activityCode = useSelector(getActivityCode);
-  const paymentDetails = useSelector(getPaymentDetailsList);
   const vendorId = useSelector(getVendorId);
   const currency = useSelector(getCurrency);
-  const workingOrderId = useSelector(getWorkingOrderId);
+  const comment = useSelector(getComment);
+  const successful = useSelector(getSuccessful);
   const vendorList = useSelector(getVendorList);
-  const cashAdvance = useSelector(getCashAdvance);
-  const status = useSelector(getStatus);
-  const invoiceId = useSelector(getInvoiceId);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -114,21 +95,16 @@ export default function WorkingOrderPage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton
-          aria-label="upload picture"
-          component="span"
-          onClick={() => dispatch(getWorkingOrderListFirstPage())}
-        >
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
       <Tabs className={classes.tabs} centered value={value} indicatorColor="secondary" onChange={handleChange}>
         <Tab label="Cliente" />
         <Tab label="Detalle" />
-        <Tab label="Otros" />
         <Tab label="Generar" />
       </Tabs>
-      <StepOneScreen
+      <CustomerDetails
         className={classes.tab}
         value={value}
         index={0}
@@ -136,11 +112,11 @@ export default function WorkingOrderPage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={status === ORDER_STATUS.CONVERTED}
-        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.ORDER }))}
+        listDisabled={successful}
+        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
-      <StepTwoScreen
+      <ProductDetails
         className={classes.tab}
         value={value}
         index={1}
@@ -150,31 +126,25 @@ export default function WorkingOrderPage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={status === ORDER_STATUS.CONVERTED}
-        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.ORDER }))}
+        stepDisabled={successful}
+        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
         }
-        addDetails={() => dispatch(addDetails({ id: undefined }))}
+        addDetails={() => dispatch(addDetails())}
         removeDetails={(pos: number) => dispatch(removeDetails({ pos }))}
       />
-      <StepThreeScreen className={classes.tab} value={value} index={2} delivery={delivery} status={status} />
-      <StepFourScreen
+      <ProformaSummary
         className={classes.tab}
         value={value}
-        index={3}
-        company={company}
         summary={summary}
-        activityCode={activityCode}
-        paymentDetails={paymentDetails}
         vendorId={vendorId}
-        workingOrderId={workingOrderId}
-        vendorList={vendorList}
         currency={currency}
-        cashAdvance={cashAdvance}
-        status={status}
-        invoiceId={invoiceId}
+        comment={comment}
+        vendorList={vendorList}
+        successful={successful}
         setValue={setValue}
+        index={2}
       />
     </div>
   );

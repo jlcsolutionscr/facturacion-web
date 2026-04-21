@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType, SummaryType } from "types/domain";
+import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -57,7 +58,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface StepThreeScreenProps {
+interface ProformaSummaryProps {
   index: number;
   value: number;
   summary: SummaryType;
@@ -70,7 +71,7 @@ interface StepThreeScreenProps {
   className?: string;
 }
 
-export default function StepThreeScreen({
+export default function ProformaSummary({
   index,
   value,
   summary,
@@ -81,7 +82,7 @@ export default function StepThreeScreen({
   successful,
   setValue,
   className,
-}: StepThreeScreenProps) {
+}: ProformaSummaryProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
@@ -136,7 +137,7 @@ export default function StepThreeScreen({
         )}
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
-            <InputLabel className={classes.summaryTitle}>RESUMEN DE PROFORMA</InputLabel>
+            <Typography className={classes.summaryTitle}>RESUMEN DE PROFORMA</Typography>
             <Grid container className={classes.details}>
               <Grid item xs={6}>
                 <InputLabel className={classes.summaryRow}>Gravado</InputLabel>
@@ -191,7 +192,7 @@ export default function StepThreeScreen({
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.centered}>
-          <Button disabled={buttonDisabled} label={successful ? "Nueva proforma" : "Agregar"} onClick={handleOnPress} />
+          <Button disabled={buttonDisabled} label={successful ? "Nueva proforma" : "Guardar"} onClick={handleOnPress} />
         </Grid>
       </Grid>
     </div>

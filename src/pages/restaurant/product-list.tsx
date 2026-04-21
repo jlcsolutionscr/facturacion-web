@@ -2,15 +2,15 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import ProductCard from "components/ProductCard";
+import ProductCard from "components/product-card";
 import { getProductList, getProductListCount } from "state/product/reducer";
 import { addDetails, loadMoreProductsToList } from "state/working-order/asyncActions";
 
-interface StepOneScreenProps {
+interface ProductListProps {
   value?: number;
 }
 
-export default function StepOneScreen({ value }: StepOneScreenProps) {
+export default function ProductList({ value }: ProductListProps) {
   const dispatch = useDispatch();
 
   const myRef = useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ export default function StepOneScreen({ value }: StepOneScreenProps) {
   }, [dispatch, productList.length, productListCount]);
 
   const rows = productList.map(row => (
-    <Grid key={row.Id}>
+    <Grid key={row.Id} height="fit-content">
       <ProductCard
         description={row.Descripcion}
         price={row.PrecioVenta1}
@@ -49,7 +49,16 @@ export default function StepOneScreen({ value }: StepOneScreenProps) {
   ));
 
   return (
-    <Grid ref={myRef} overflow="auto" container gap={{ xs: 0, sm: 0.5 }} justifyContent="center">
+    <Grid
+      ref={myRef}
+      width="100%"
+      height="auto"
+      maxHeight="100%"
+      overflow="hidden auto"
+      container
+      spacing={{ xs: 0, sm: 0.5 }}
+      justifyContent="center"
+    >
       {rows}
       <div ref={loader} style={{ width: "100%", height: "0" }} />
     </Grid>

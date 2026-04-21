@@ -64,7 +64,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface StepThreeScreenProps {
+interface InvoiceSummaryProps {
   index: number;
   value: number;
   invoiceId: number | null;
@@ -81,7 +81,7 @@ interface StepThreeScreenProps {
   className?: string;
 }
 
-export default function StepThreeScreen({
+export default function InvoiceSummary({
   index,
   value,
   invoiceId,
@@ -96,7 +96,7 @@ export default function StepThreeScreen({
   successful,
   setValue,
   className,
-}: StepThreeScreenProps) {
+}: InvoiceSummaryProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
@@ -261,7 +261,7 @@ export default function StepThreeScreen({
             <Grid item xs={12} className={classes.centered}>
               <Button
                 disabled={buttonDisabled}
-                label={successful ? "Nueva factura" : "Agregar"}
+                label={successful ? "Nueva factura" : "Guardar"}
                 onClick={handleOnPress}
               />
             </Grid>

@@ -459,10 +459,10 @@ export default function ProductPage() {
               label="Producto activo"
             />
           </Grid>
-          <Grid item xs={9} md={6} lg={4}>
+          <Grid item xs={8} md={6} lg={4}>
             <LabelField id="Logotipo" value={imageFilePath} label="Logotipo de empresa" />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <input
               accept="image/*"
               style={{ display: "none" }}

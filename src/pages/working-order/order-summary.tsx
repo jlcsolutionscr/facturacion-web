@@ -66,7 +66,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface StepFourScreenProps {
+interface OrderSummaryProps {
   index: number;
   value: number;
   company: CompanyType | null;
@@ -84,7 +84,7 @@ interface StepFourScreenProps {
   className?: string;
 }
 
-export default function StepFourScreen({
+export default function OrderSummary({
   value,
   index,
   company,
@@ -100,7 +100,7 @@ export default function StepFourScreen({
   invoiceId,
   setValue,
   className,
-}: StepFourScreenProps) {
+}: OrderSummaryProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);

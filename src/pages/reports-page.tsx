@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { lastDayOfMonth, parse } from "date-fns";
 import UAParser from "ua-parser-js";
 
-import ReportLayout from "components/ReportLayout";
+import ReportLayout from "components/report-layout";
 import { exportReport, generateReport, sendReportToEmail } from "state/company/asyncActions";
 import { getReportResults, getReportSummary, setReportResults } from "state/company/reducer";
 import { getPermissions, getReportList } from "state/session/reducer";

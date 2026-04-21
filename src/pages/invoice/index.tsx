@@ -5,18 +5,19 @@ import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import StepOneScreen from "./steps-screens/customer-details-screen";
-import StepTwoScreen from "./steps-screens/product-details-screen";
-import StepThreeScreen from "./steps-screens/proforma-final-screen";
+import StepThreeScreen from "./invoice-summary";
+import StepOneScreen from "components/customer-details-screen";
+import StepTwoScreen from "components/product-details-screen";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
-import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
-import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { addDetails, getProformaListFirstPage, removeDetails } from "state/proforma/asyncActions";
+import { addDetails, removeDetails } from "state/invoice/asyncActions";
 import {
+  getActivityCode,
   getComment,
   getCurrency,
   getCustomerDetails,
+  getInvoiceId,
+  getPaymentDetailsList,
   getProductDetails,
   getProductDetailsList,
   getSuccessful,
@@ -24,8 +25,11 @@ import {
   getVendorId,
   setCustomerAttribute,
   setProductDetails,
-} from "state/proforma/reducer";
-import { getPermissions, getVendorList } from "state/session/reducer";
+} from "state/invoice/reducer";
+import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
+import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
+import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
@@ -36,7 +40,7 @@ const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     maxWidth: "900px",
     width: "100%",
-    margin: "15px auto",
+    margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       width: "calc(100% - 20px)",
@@ -66,7 +70,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function ProformaPage() {
+export default function InvoicePage() {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
@@ -81,10 +85,14 @@ export default function ProformaPage() {
   const productDetails = useSelector(getProductDetails);
   const productList = useSelector(getProductList);
   const productDetailsList = useSelector(getProductDetailsList);
+  const invoiceId = useSelector(getInvoiceId);
+  const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
+  const activityCode = useSelector(getActivityCode);
+  const paymentDetails = useSelector(getPaymentDetailsList);
   const vendorId = useSelector(getVendorId);
-  const currency = useSelector(getCurrency);
   const comment = useSelector(getComment);
+  const currency = useSelector(getCurrency);
   const successful = useSelector(getSuccessful);
   const vendorList = useSelector(getVendorList);
 
@@ -95,7 +103,7 @@ export default function ProformaPage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="close" component="span" onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}>
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(0))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>
@@ -113,7 +121,7 @@ export default function ProformaPage() {
         customerListPage={customerListPage}
         customerList={customerList}
         listDisabled={successful}
-        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
+        getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
       <StepTwoScreen
@@ -127,7 +135,7 @@ export default function ProformaPage() {
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         stepDisabled={successful}
-        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
+        getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
         }
@@ -137,7 +145,11 @@ export default function ProformaPage() {
       <StepThreeScreen
         className={classes.tab}
         value={value}
+        invoiceId={invoiceId}
+        company={company}
         summary={summary}
+        activityCode={activityCode}
+        paymentDetails={paymentDetails}
         vendorId={vendorId}
         currency={currency}
         comment={comment}

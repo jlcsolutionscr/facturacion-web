@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 
-import Tab from "components/PointOfServiceCard";
+import Tab from "components/point-of-service-card";
 import { setActiveSection } from "state/ui/reducer";
 import { openServicePoint } from "state/working-order/asyncActions";
 import { getServicePointList } from "state/working-order/reducer";
