@@ -1,5 +1,5 @@
 import { Button, DataGrid } from "jlc-component-library";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -11,9 +11,11 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 
+import useUpdateEffect from "hooks/useUpdateEffect";
 import {
   getDocumentDetails as getDocumentDetailsAction,
   getDocumentListByPageNumber,
+  getDocumentListFirstPage,
   reprocesingDocument,
   sendNotification,
 } from "state/document/asyncActions";
@@ -25,7 +27,7 @@ import {
   setDocumentDetails,
 } from "state/document/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { ROWS_PER_LIST, TRANSITION_ANIMATION } from "utils/constants";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { EmailIcon, InfoIcon, RefreshIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -63,15 +65,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
   dialogActions: {
     margin: "0 20px 10px 20px",
@@ -96,11 +89,23 @@ export default function DocumentListPage() {
   });
   const [documentId, setDocumentId] = useState(0);
   const [email, setEmail] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(0);
 
   const listPage = useSelector(getDocumentListPage);
   const listCount = useSelector(getDocumentListCount);
   const list = useSelector(getDocumentList);
   const details = useSelector(getDocumentDetails);
+
+  const containeRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (containeRef.current) {
+      const height = containeRef.current.offsetHeight - 122;
+      const rowsPerPage = Math.floor(height / 35);
+      setRowsPerPage(rowsPerPage);
+      dispatch(getDocumentListFirstPage({ rowsPerPage }));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (details !== null) setDialogStatus({ open: true, type: 2 });
@@ -123,7 +128,7 @@ export default function DocumentListPage() {
   };
 
   const handleResendClick = (id: number) => {
-    dispatch(reprocesingDocument({ id }));
+    dispatch(reprocesingDocument({ id, rowsPerPage }));
   };
 
   const handleDialogClose = () => {
@@ -227,7 +232,7 @@ export default function DocumentListPage() {
   ];
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containeRef}>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
@@ -236,9 +241,9 @@ export default function DocumentListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={ROWS_PER_LIST}
+          rowsPerPage={rowsPerPage}
           onPageChange={page => {
-            dispatch(getDocumentListByPageNumber({ pageNumber: page + 1 }));
+            dispatch(getDocumentListByPageNumber({ pageNumber: page + 1, rowsPerPage: rowsPerPage }));
           }}
         />
       </div>

@@ -22,7 +22,7 @@ import {
   setWorkingOrderListCount,
   setWorkingOrderListPage,
 } from "state/working-order/reducer";
-import { ORDER_STATUS, ROWS_PER_LIST } from "utils/constants";
+import { ORDER_STATUS } from "utils/constants";
 import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
 import {
   generateInvoiceTicketPDF,
@@ -193,7 +193,7 @@ export const saveWorkingOrder = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { entity, servicePointList, listPage } = workingOrder;
+    const { entity, servicePointList } = workingOrder;
     dispatch(startLoader());
     try {
       const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
@@ -219,7 +219,6 @@ export const saveWorkingOrder = createAsyncThunk(
           type: "INFO",
         })
       );
-      dispatch(getWorkingOrderListByPageNumber({ pageNumber: listPage }));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -230,7 +229,7 @@ export const saveWorkingOrder = createAsyncThunk(
 
 export const getWorkingOrderListFirstPage = createAsyncThunk(
   "working-order/getWorkingOrderListFirstPage",
-  async (_payload, { getState, dispatch }) => {
+  async (payload: { rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
@@ -240,7 +239,7 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
       const recordCount = await getWorkingOrderListCount(token, companyId, branchId, false);
       dispatch(setWorkingOrderListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, 1, ROWS_PER_LIST);
+        const newList = await getWorkingOrderListPerPage(token, companyId, branchId, false, 1, payload.rowsPerPage);
         dispatch(setWorkingOrderList(newList));
       } else {
         dispatch(setWorkingOrderList([]));
@@ -255,7 +254,7 @@ export const getWorkingOrderListFirstPage = createAsyncThunk(
 
 export const getWorkingOrderListByPageNumber = createAsyncThunk(
   "working-order/getWorkingOrderListByPageNumber",
-  async (payload: { pageNumber: number }, { getState, dispatch }) => {
+  async (payload: { pageNumber: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
@@ -266,7 +265,7 @@ export const getWorkingOrderListByPageNumber = createAsyncThunk(
         branchId,
         false,
         payload.pageNumber,
-        ROWS_PER_LIST
+        payload.rowsPerPage
       );
       dispatch(setWorkingOrderListPage(payload.pageNumber));
       dispatch(setWorkingOrderList(newList));

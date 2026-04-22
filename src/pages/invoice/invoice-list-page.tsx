@@ -1,5 +1,5 @@
 import { Button, DataGrid } from "jlc-component-library";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -10,15 +10,17 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import UAParser from "ua-parser-js";
 
+import useUpdateEffect from "hooks/useUpdateEffect";
 import {
   generateInvoiceTicket,
   generatePDF,
   getInvoiceListByPageNumber,
+  getInvoiceListFirstPage,
   revokeInvoice,
 } from "state/invoice/asyncActions";
 import { getInvoiceList, getInvoiceListCount, getInvoiceListPage } from "state/invoice/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { ROWS_PER_LIST, TRANSITION_ANIMATION } from "utils/constants";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -57,15 +59,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
   icon: {
     padding: 0,
@@ -91,26 +84,47 @@ export default function InvoiceListPage() {
   const { classes } = useStyles();
   const [invoiceId, setInvoiceId] = useState(0);
   const [dialogOpen, setDialogOpen] = useState({ open: false, id: 0 });
+  const [rowsPerPage, setRowsPerPage] = useState(0);
 
   const listPage = useSelector(getInvoiceListPage);
   const listCount = useSelector(getInvoiceListCount);
   const list = useSelector(getInvoiceList);
 
+  const containeRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (containeRef.current) {
+      const height = containeRef.current.offsetHeight - 122;
+      const rowsPerPage = Math.floor(height / 35);
+      setRowsPerPage(rowsPerPage);
+      dispatch(
+        getInvoiceListFirstPage({
+          rowsPerPage,
+        })
+      );
+    }
+  }, [dispatch]);
+
   const isMobile = !!result.device.type;
+
   const printReceipt = (id: number) => {
     dispatch(generateInvoiceTicket({ id }));
   };
+
   const handlePdfButtonClick = (id: number, ref: number) => {
     dispatch(generatePDF({ id, ref }));
   };
+
   const handleRevokeButtonClick = (id: number, ref: number) => {
     setInvoiceId(id);
     setDialogOpen({ open: true, id: ref });
   };
+
   const handleConfirmButtonClick = () => {
     setDialogOpen({ open: false, id: 0 });
-    dispatch(revokeInvoice({ id: invoiceId }));
+    dispatch(revokeInvoice({ id: invoiceId, rowsPerPage }));
   };
+
   const rows = list.map(row => ({
     id: row.Consecutivo,
     date: row.Fecha,
@@ -158,13 +172,15 @@ export default function InvoiceListPage() {
     { field: "taxes", headerName: "Impuesto", type: "number" },
     { field: "amount", headerName: "Total", type: "number" },
   ];
+
   if (!isMobile) {
     columns.push({ field: "action1", headerName: "" });
   }
   columns.push({ field: "action2", headerName: "" });
   columns.push({ field: "action3", headerName: "" });
+
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containeRef}>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
@@ -173,9 +189,9 @@ export default function InvoiceListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={ROWS_PER_LIST}
+          rowsPerPage={rowsPerPage}
           onPageChange={page => {
-            dispatch(getInvoiceListByPageNumber({ pageNumber: page + 1 }));
+            dispatch(getInvoiceListByPageNumber({ pageNumber: page + 1, rowsPerPage: rowsPerPage }));
           }}
         />
       </div>

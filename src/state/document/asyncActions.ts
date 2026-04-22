@@ -2,8 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setDocumentCount, setDocumentDetails, setDocumentList, setDocumentPage } from "state/document/reducer";
 import { RootState } from "state/store";
-import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_LIST } from "utils/constants";
+import { setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
   getDocumentEntity,
   getDocumentListCount,
@@ -15,18 +14,17 @@ import { getErrorMessage, xmlToObject } from "utils/utilities";
 
 export const getDocumentListFirstPage = createAsyncThunk(
   "document/getDocumentListFirstPage",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     dispatch(setDocumentList([]));
-    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setDocumentPage(1));
       const recordCount = await getDocumentListCount(token, companyId, branchId);
       dispatch(setDocumentCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getDocumentListPerPage(token, companyId, branchId, 1, ROWS_PER_LIST);
+        const newList = await getDocumentListPerPage(token, companyId, branchId, 1, payload.rowsPerPage);
         dispatch(setDocumentList(newList));
       } else {
         dispatch(setDocumentList([]));
@@ -41,12 +39,12 @@ export const getDocumentListFirstPage = createAsyncThunk(
 
 export const getDocumentListByPageNumber = createAsyncThunk(
   "document/getDocumentListFirstPage",
-  async (payload: { pageNumber: number }, { getState, dispatch }) => {
+  async (payload: { pageNumber: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getDocumentListPerPage(token, companyId, branchId, payload.pageNumber, ROWS_PER_LIST);
+      const newList = await getDocumentListPerPage(token, companyId, branchId, payload.pageNumber, payload.rowsPerPage);
       dispatch(setDocumentPage(payload.pageNumber));
       dispatch(setDocumentList(newList));
       dispatch(stopLoader());
@@ -106,13 +104,13 @@ export const getDocumentDetails = createAsyncThunk(
 
 export const reprocesingDocument = createAsyncThunk(
   "document/sendNotification",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { id: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
       await reprocesingDocumentRequest(token, payload.id);
-      dispatch(getDocumentListFirstPage({ id: 9 }));
+      dispatch(getDocumentListFirstPage({ rowsPerPage: payload.rowsPerPage }));
       dispatch(
         setMessage({
           message: "Documento electrónico reprocesado satisfactoriamente.",

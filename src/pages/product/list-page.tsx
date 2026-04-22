@@ -1,11 +1,12 @@
 import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
+import useUpdateEffect from "hooks/useUpdateEffect";
 import {
   filterProductList,
   getProductListByPageNumber,
@@ -64,15 +65,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
   icon: {
     padding: 0,
@@ -95,37 +87,42 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-const height = window.innerHeight - 100 - 71 - 35 - 38 - 35 - 22;
-
-const ROWS_PER_PRODUCT = Math.floor(height / 35);
-
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 export default function ProductListPage() {
+  const [filter, setFilter] = useState("");
+  const [filterType, setFilterType] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(0);
+
   const dispatch = useDispatch();
   const listPage = useSelector(getProductListPage);
   const listCount = useSelector(getProductListCount);
   const list = useSelector(getProductList);
 
   const { classes } = useStyles();
-  const [filter, setFilter] = useState("");
-  const [filterType, setFilterType] = useState(2);
 
-  useEffect(() => {
-    dispatch(
-      getProductListFirstPage({
-        filterText: "",
-        type: 2,
-        rowsPerPage: ROWS_PER_PRODUCT,
-      })
-    );
-  }, []);
+  const containeRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (containeRef.current) {
+      const height = containeRef.current.offsetHeight - 192;
+      const rowsPerPage = Math.floor(height / 35);
+      setRowsPerPage(rowsPerPage);
+      dispatch(
+        getProductListFirstPage({
+          filterText: "",
+          type: 2,
+          rowsPerPage,
+        })
+      );
+    }
+  }, [dispatch]);
 
   const handleOnFilterTypeChange = () => {
     const newFilterType = filterType === 1 ? 2 : 1;
     setFilterType(newFilterType);
     setFilter("");
-    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
+    dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage }));
   };
 
   const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
@@ -134,7 +131,7 @@ export default function ProductListPage() {
       clearTimeout(delayTimer);
     }
     delayTimer = setTimeout(() => {
-      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage: ROWS_PER_PRODUCT }));
+      dispatch(filterProductList({ filterText: event.target.value, type: filterType, rowsPerPage }));
     }, 1000);
   };
 
@@ -165,7 +162,7 @@ export default function ProductListPage() {
   ];
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containeRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={10} sm={10.5} md={11}>
           <TextField
@@ -187,14 +184,14 @@ export default function ProductListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={ROWS_PER_PRODUCT}
+          rowsPerPage={rowsPerPage}
           onPageChange={page => {
             dispatch(
               getProductListByPageNumber({
                 pageNumber: page + 1,
                 filterText: filter,
                 type: filterType,
-                rowsPerPage: ROWS_PER_PRODUCT,
+                rowsPerPage: rowsPerPage,
               })
             );
           }}

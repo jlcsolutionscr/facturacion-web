@@ -61,14 +61,9 @@ const useStyles = makeStyles()(theme => ({
   tabContent: {
     overflowY: "hidden",
     backgroundColor: theme.palette.background.paper,
-    padding: "15px",
-    width: "calc(100% - 30px)",
-    height: "calc(100% - 30px)",
-    "@media screen and (max-width:599px)": {
-      padding: "10px",
-      width: "calc(100% - 20px)",
-      height: "calc(100% - 20px)",
-    },
+    padding: "10px",
+    width: "calc(100% - 20px)",
+    height: "calc(100% - 20px)",
     "@media screen and (max-width:429px)": {
       padding: "5px",
       width: "calc(100% - 10px)",
@@ -77,31 +72,31 @@ const useStyles = makeStyles()(theme => ({
   },
   desktopContent: {
     display: "flex",
-    width: "100%",
-    height: "auto",
-    maxHeight: "calc(100% - 10px)",
     overflowY: "hidden",
     backgroundColor: theme.palette.background.paper,
     gap: "10px",
-    padding: "5px",
+    padding: "10px",
+    width: "calc(100% - 20px)",
+    height: "auto",
+    maxHeight: "calc(100% - 20px)",
   },
   desktopSummary: {
     display: "flex",
-    width: "calc(32% - 5px)",
+    width: "calc(40% - 5px)",
     height: "auto",
     maxHeight: "-webkit-fill-available",
     alignSelf: "flex-start",
-    "@media screen and (max-width:429px)": {
-      width: "calc(45% - 5px)",
+    "@media screen and (min-width:1260px)": {
+      width: "calc(32% - 5px)",
     },
   },
   desktopProductList: {
     display: "flex",
-    width: "calc(68% - 5px)",
+    width: "calc(60% - 5px)",
     height: "fit-content",
     maxHeight: "100%",
-    "@media screen and (max-width:429px)": {
-      width: "calc(55% - 5px)",
+    "@media screen and (min-width:1260px)": {
+      width: "calc(68% - 5px)",
     },
   },
   backButton: {

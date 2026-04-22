@@ -56,7 +56,7 @@ interface HomePageProps {
 
 export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePageProps) {
   const { classes } = useStyles();
-  const myRef = useRef<HTMLDivElement>(null);
+  const containeRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
 
   const activeSection = useSelector(getActiveSection);
@@ -69,13 +69,13 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
   }, [dispatch]);
 
   useEffect(() => {
-    myRef.current?.scrollTo(0, 0);
+    containeRef.current?.scrollTo(0, 0);
   }, [activeSection]);
 
   return (
     <div id="id_home_page" className={classes.root} style={{ minWidth: `${width}px` }}>
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <div ref={myRef} className={classes.body}>
+      <div ref={containeRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <UserPage />}

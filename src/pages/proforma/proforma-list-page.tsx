@@ -1,5 +1,5 @@
 import { Button, DataGrid } from "jlc-component-library";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -10,16 +10,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 
+import useUpdateEffect from "hooks/useUpdateEffect";
 import {
   generatePDF,
   getProformaListByPageNumber,
+  getProformaListFirstPage,
   revokeProforma,
   sendEmail,
   setProformaParameters,
 } from "state/proforma/asyncActions";
 import { getProformaList, getProformaListCount, getProformaListPage } from "state/proforma/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { ROWS_PER_LIST, TRANSITION_ANIMATION } from "utils/constants";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, EmailIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -57,15 +59,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
   icon: {
     padding: 0,
@@ -99,10 +92,22 @@ export default function ProformaListPage() {
     type: 1,
     id: 0,
   });
+  const [rowsPerPage, setRowsPerPage] = useState(0);
 
   const listPage = useSelector(getProformaListPage);
   const listCount = useSelector(getProformaListCount);
   const list = useSelector(getProformaList);
+
+  const containeRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (containeRef.current) {
+      const height = containeRef.current.offsetHeight - 122;
+      const rowsPerPage = Math.floor(height / 35);
+      setRowsPerPage(rowsPerPage);
+      dispatch(getProformaListFirstPage({ rowsPerPage }));
+    }
+  }, [dispatch]);
 
   const handlePdfButtonClick = (id: number, ref: number) => {
     dispatch(generatePDF({ id, ref }));
@@ -124,7 +129,7 @@ export default function ProformaListPage() {
 
   const handleConfirmButtonClick = () => {
     setDialogStatus({ open: false, type: 1, id: 0 });
-    dispatch(revokeProforma({ id: proformaId }));
+    dispatch(revokeProforma({ id: proformaId, rowsPerPage: rowsPerPage }));
   };
 
   const handleConfirmEmailClick = () => {
@@ -218,7 +223,7 @@ export default function ProformaListPage() {
     ) : null;
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containeRef}>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader
@@ -227,9 +232,9 @@ export default function ProformaListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={ROWS_PER_LIST}
+          rowsPerPage={rowsPerPage}
           onPageChange={page => {
-            dispatch(getProformaListByPageNumber({ pageNumber: page + 1 }));
+            dispatch(getProformaListByPageNumber({ pageNumber: page + 1, rowsPerPage: rowsPerPage }));
           }}
         />
       </div>

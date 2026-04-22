@@ -39,15 +39,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
 }));
 

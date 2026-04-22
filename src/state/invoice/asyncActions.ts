@@ -14,7 +14,6 @@ import {
 } from "state/invoice/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_LIST } from "utils/constants";
 import {
   generateInvoicePDF,
   generateInvoiceTicketPDF,
@@ -154,17 +153,16 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
 
 export const getInvoiceListFirstPage = createAsyncThunk(
   "invoice/getInvoiceListFirstPage",
-  async (payload: { id: number | null }, { getState, dispatch }) => {
+  async (payload: { rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
-    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setInvoiceListPage(1));
       const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
       dispatch(setInvoiceListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, ROWS_PER_LIST);
+        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, payload.rowsPerPage);
         dispatch(setInvoiceList(newList));
       } else {
         dispatch(setInvoiceList([]));
@@ -179,7 +177,7 @@ export const getInvoiceListFirstPage = createAsyncThunk(
 
 export const getInvoiceListByPageNumber = createAsyncThunk(
   "invoice/getInvoiceListByPageNumber",
-  async (payload: { pageNumber: number }, { getState, dispatch }) => {
+  async (payload: { pageNumber: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
@@ -189,7 +187,7 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
         companyId,
         branchId,
         payload.pageNumber,
-        ROWS_PER_LIST
+        payload.rowsPerPage
       );
       dispatch(setInvoiceListPage(payload.pageNumber));
       dispatch(setInvoiceList(newList));
@@ -203,13 +201,13 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
 
 export const revokeInvoice = createAsyncThunk(
   "invoice/revokeInvoice",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { id: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, userId } = session;
     dispatch(startLoader());
     try {
       await revokeInvoiceEntity(token, payload.id, userId);
-      dispatch(getInvoiceListFirstPage({ id: null }));
+      dispatch(getInvoiceListFirstPage({ rowsPerPage: payload.rowsPerPage }));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",

@@ -13,7 +13,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
-import { ROWS_PER_PRODUCT, TRANSITION_ANIMATION } from "utils/constants";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
 
@@ -50,6 +50,8 @@ const useStyles = makeStyles()(theme => ({
     padding: "0px",
   },
 }));
+
+const ROWS_PER_PRODUCT = 8;
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 

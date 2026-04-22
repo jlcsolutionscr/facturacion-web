@@ -21,10 +21,9 @@ import { getErrorMessage } from "utils/utilities";
 
 export const getCustomerListFirstPage = createAsyncThunk(
   "customer/getCustomerListFirstPage",
-  async (payload: { id: number; filterText: string; rowsPerPage: number }, { getState, dispatch }) => {
+  async (payload: { filterText: string; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId } = session;
-    if (payload.id) dispatch(setActiveSection(payload.id));
     dispatch(startLoader());
     try {
       dispatch(setCustomerListPage(1));

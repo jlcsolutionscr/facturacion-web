@@ -28,7 +28,7 @@ import {
   setPaymentDetailsList,
   setSummary,
 } from "state/working-order/reducer";
-import { FORM_TYPE, ORDER_STATUS, ROWS_PER_CUSTOMER } from "utils/constants";
+import { FORM_TYPE, ORDER_STATUS } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
 const paymentMethods: { id: number; description: string }[] = [
@@ -36,6 +36,8 @@ const paymentMethods: { id: number; description: string }[] = [
   { id: 2, description: "TARJETA" },
   { id: 4, description: "TRANSFERENCIA" },
 ];
+
+const ROWS_PER_CUSTOMER = 8;
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 

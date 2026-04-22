@@ -7,10 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
 import { getCompany } from "state/company/asyncActions";
-import { getCustomerListFirstPage } from "state/customer/asyncActions";
-import { getDocumentListFirstPage } from "state/document/asyncActions";
-import { getInvoiceListFirstPage, setInvoiceParameters } from "state/invoice/asyncActions";
-import { getProformaListFirstPage } from "state/proforma/asyncActions";
+import { setInvoiceParameters } from "state/invoice/asyncActions";
 import { setReceiptParameters } from "state/receipt/asyncActions";
 import {
   getBranchId,
@@ -21,8 +18,8 @@ import {
   setBranchId,
 } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { getServicePointList, getWorkingOrderListFirstPage } from "state/working-order/asyncActions";
-import { ROWS_PER_CUSTOMER, TRANSITION_ANIMATION } from "utils/constants";
+import { getServicePointList } from "state/working-order/asyncActions";
+import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -186,15 +183,7 @@ export default function MenuPage() {
             <Button
               disabled={!manageCustomers}
               className={classes.button}
-              onClick={() =>
-                dispatch(
-                  getCustomerListFirstPage({
-                    id: 4,
-                    filterText: "",
-                    rowsPerPage: ROWS_PER_CUSTOMER,
-                  })
-                )
-              }
+              onClick={() => dispatch(setActiveSection(4))}
             >
               Catálogo de clientes
             </Button>
@@ -226,7 +215,7 @@ export default function MenuPage() {
             <Button
               disabled={!generateInvoice}
               className={classes.button}
-              onClick={() => dispatch(getInvoiceListFirstPage({ id: 8 }))}
+              onClick={() => dispatch(setActiveSection(8))}
             >
               Facturas electrónicas
             </Button>
@@ -235,7 +224,7 @@ export default function MenuPage() {
             <Button
               disabled={!manageDocuments}
               className={classes.button}
-              onClick={() => dispatch(getDocumentListFirstPage({ id: 9 }))}
+              onClick={() => dispatch(setActiveSection(9))}
             >
               Documentos electrónicos
             </Button>
@@ -244,7 +233,7 @@ export default function MenuPage() {
             <Button
               disabled={!generateProforma}
               className={classes.button}
-              onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}
+              onClick={() => dispatch(setActiveSection(10))}
             >
               Factura proforma
             </Button>
@@ -255,7 +244,7 @@ export default function MenuPage() {
               className={classes.button}
               onClick={() => {
                 if (companyMode === 1) {
-                  dispatch(getWorkingOrderListFirstPage());
+                  dispatch(setActiveSection(11));
                 } else {
                   dispatch(getServicePointList());
                 }

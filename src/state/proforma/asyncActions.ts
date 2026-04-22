@@ -13,7 +13,6 @@ import {
 } from "state/proforma/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { ROWS_PER_LIST } from "utils/constants";
 import {
   generateProformaPDF,
   getProductSummary,
@@ -149,17 +148,16 @@ export const sendEmail = createAsyncThunk(
 
 export const getProformaListFirstPage = createAsyncThunk(
   "proforma/getProformaListFirstPage",
-  async (payload: { id: number | null }, { getState, dispatch }) => {
+  async (payload: { rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
-    if (payload.id) dispatch(setActiveSection(payload.id));
     try {
       dispatch(setProformaListPage(1));
       const recordCount = await getProformaListCount(token, companyId, branchId, false);
       dispatch(setProformaListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProformaListPerPage(token, companyId, branchId, false, 1, ROWS_PER_LIST);
+        const newList = await getProformaListPerPage(token, companyId, branchId, false, 1, payload.rowsPerPage);
         dispatch(setProformaList(newList));
       } else {
         dispatch(setProformaList([]));
@@ -174,7 +172,7 @@ export const getProformaListFirstPage = createAsyncThunk(
 
 export const getProformaListByPageNumber = createAsyncThunk(
   "proforma/getProformaListByPageNumber",
-  async (payload: { pageNumber: number }, { getState, dispatch }) => {
+  async (payload: { pageNumber: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
@@ -185,7 +183,7 @@ export const getProformaListByPageNumber = createAsyncThunk(
         branchId,
         false,
         payload.pageNumber,
-        ROWS_PER_LIST
+        payload.rowsPerPage
       );
       dispatch(setProformaListPage(payload.pageNumber));
       dispatch(setProformaList(newList));
@@ -199,13 +197,13 @@ export const getProformaListByPageNumber = createAsyncThunk(
 
 export const revokeProforma = createAsyncThunk(
   "proforma/revokeProforma",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (payload: { id: number; rowsPerPage: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, userId } = session;
     dispatch(startLoader());
     try {
       await revokeProformaEntity(token, payload.id, userId);
-      dispatch(getProformaListFirstPage({ id: null }));
+      dispatch(getProformaListFirstPage({ rowsPerPage: payload.rowsPerPage }));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",

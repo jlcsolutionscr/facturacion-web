@@ -12,7 +12,7 @@ import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/a
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
-import { addDetails, getProformaListFirstPage, removeDetails } from "state/proforma/asyncActions";
+import { addDetails, removeDetails } from "state/proforma/asyncActions";
 import {
   getComment,
   getCurrency,
@@ -26,6 +26,7 @@ import {
   setProductDetails,
 } from "state/proforma/reducer";
 import { getPermissions, getVendorList } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
@@ -95,7 +96,7 @@ export default function ProformaPage() {
   return (
     <div className={classes.container}>
       <div className={classes.backButton}>
-        <IconButton aria-label="close" component="span" onClick={() => dispatch(getProformaListFirstPage({ id: 10 }))}>
+        <IconButton aria-label="close" component="span" onClick={() => dispatch(setActiveSection(10))}>
           <BackArrowIcon className={classes.icon} />
         </IconButton>
       </div>

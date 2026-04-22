@@ -1,4 +1,4 @@
-import { Button } from "jlc-component-library";
+import { Button, TextField } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -15,11 +15,13 @@ import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { setActiveSection } from "state/ui/reducer";
 import { removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
+  getDeliveryDetails,
   getInvoiceId,
   getProductDetailsList,
   getStatus,
   getSummary,
   getWorkingOrderId,
+  setDeliveryAttribute,
   setProductDetails,
 } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
@@ -42,11 +44,12 @@ const useStyles = makeStyles()(theme => ({
   },
   summaryDetails: {
     justifyContent: "center",
+    width: "100%",
     height: "auto",
-    maxHeight: "calc(100% - 91px)",
+    maxHeight: "calc(100% - 186px)",
     overflow: "hidden auto",
-    "@media screen and (min-width:600px)": {
-      maxHeight: "calc(100% - 99px)",
+    "@media screen and (min-width:900px)": {
+      maxHeight: "calc(100% - 194px)",
     },
   },
   summaryTitle: {
@@ -96,6 +99,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
   const productDetailsList = useSelector(getProductDetailsList);
   const status = useSelector(getStatus);
   const invoiceId = useSelector(getInvoiceId);
+  const delivery = useSelector(getDeliveryDetails);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -121,20 +125,20 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
       maxHeight="100%"
       overflow="hidden"
       container
-      spacing={{ xs: 0, sm: 0.5 }}
+      gap={1}
       justifyContent="center"
     >
+      {isSplitMode && (
+        <Grid>
+          <div className={classes.backButton}>
+            <IconButton aria-label="back-button" component="span" onClick={() => dispatch(setActiveSection(11))}>
+              <BackArrowIcon className={classes.icon} />
+            </IconButton>
+          </div>
+        </Grid>
+      )}
       <Grid container xs={12} justifyContent="center">
         <Grid container gap={1}>
-          {isSplitMode && (
-            <Grid>
-              <div className={classes.backButton}>
-                <IconButton aria-label="back-button" component="span" onClick={() => dispatch(setActiveSection(11))}>
-                  <BackArrowIcon className={classes.icon} />
-                </IconButton>
-              </div>
-            </Grid>
-          )}
           {status !== ORDER_STATUS.CONVERTED ? (
             <>
               {status === ORDER_STATUS.READY && (
@@ -177,6 +181,22 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
             </Grid>
           )}
         </Grid>
+      </Grid>
+      <Grid xs={12} textAlign="center">
+        <TextField
+          multiline
+          rows={2}
+          value={delivery.details}
+          label="Observaciones:"
+          onChange={event =>
+            dispatch(
+              setDeliveryAttribute({
+                attribute: "details",
+                value: event.target.value,
+              })
+            )
+          }
+        />
       </Grid>
       <Grid xs={12} textAlign="center">
         <Typography style={{ fontWeight: "bold", fontSize: 22 }}>{`Total: ${formatCurrency(total)}`}</Typography>

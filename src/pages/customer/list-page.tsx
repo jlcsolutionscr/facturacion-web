@@ -1,14 +1,20 @@
 import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 
-import { filterCustomerList, getCustomerListByPageNumber, openCustomer } from "state/customer/asyncActions";
+import useUpdateEffect from "hooks/useUpdateEffect";
+import {
+  filterCustomerList,
+  getCustomerListByPageNumber,
+  getCustomerListFirstPage,
+  openCustomer,
+} from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { setActiveSection } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER, TRANSITION_ANIMATION } from "utils/constants";
+import { TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -18,6 +24,7 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: "column",
     maxWidth: "900px",
     width: "100%",
+    height: "calc(100% - 20px)",
     margin: "10px auto",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
@@ -27,6 +34,7 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:599px)": {
       width: "100%",
       margin: "0",
+      height: "100%",
     },
   },
   filterContainer: {
@@ -58,15 +66,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
   icon: {
     padding: 0,
@@ -89,6 +88,7 @@ const useStyles = makeStyles()(theme => ({
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 export default function CustomerListPage() {
+  const [rowsPerCustomer, setRowsPerCustomer] = useState(0);
   const dispatch = useDispatch();
   const listPage = useSelector(getCustomerListPage);
   const listCount = useSelector(getCustomerListCount);
@@ -96,6 +96,22 @@ export default function CustomerListPage() {
 
   const { classes } = useStyles();
   const [filter, setFilter] = useState("");
+
+  const containeRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (containeRef.current) {
+      const height = containeRef.current.offsetHeight - 192;
+      const rowsPerPage = Math.floor(height / 35);
+      setRowsPerCustomer(rowsPerPage);
+      dispatch(
+        getCustomerListFirstPage({
+          filterText: "",
+          rowsPerPage,
+        })
+      );
+    }
+  }, [dispatch]);
 
   const handleOnFilterChange = (event: TextFieldOnChangeEventType) => {
     setFilter(event.target.value);
@@ -106,7 +122,7 @@ export default function CustomerListPage() {
       dispatch(
         filterCustomerList({
           filterText: event.target.value,
-          rowsPerPage: ROWS_PER_CUSTOMER,
+          rowsPerPage: rowsPerCustomer,
         })
       );
     }, 1000);
@@ -134,7 +150,7 @@ export default function CustomerListPage() {
   ];
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containeRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
           <TextField id="text-filter-id" value={filter} label="Filtro por nombre" onChange={handleOnFilterChange} />
@@ -148,13 +164,13 @@ export default function CustomerListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={ROWS_PER_CUSTOMER}
+          rowsPerPage={rowsPerCustomer}
           onPageChange={page => {
             dispatch(
               getCustomerListByPageNumber({
                 pageNumber: page + 1,
                 filterText: filter,
-                rowsPerPage: ROWS_PER_CUSTOMER,
+                rowsPerPage: rowsPerCustomer,
               })
             );
           }}

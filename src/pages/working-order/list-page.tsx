@@ -1,5 +1,5 @@
 import { Button, DataGrid } from "jlc-component-library";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -9,17 +9,18 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
+import useUpdateEffect from "hooks/useUpdateEffect";
 import { setActiveSection } from "state/ui/reducer";
 import {
   generatePDF,
   generateWorkingOrderTicket,
   getWorkingOrderListByPageNumber,
+  getWorkingOrderListFirstPage,
   openWorkingOrder,
   revokeWorkingOrder,
   setWorkingOrderParameters,
 } from "state/working-order/asyncActions";
 import { getWorkingOrderList, getWorkingOrderListCount, getWorkingOrderListPage } from "state/working-order/reducer";
-import { ROWS_PER_LIST } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, EditIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
@@ -57,15 +58,6 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    "@media screen and (max-width:959px)": {
-      marginLeft: "15px",
-    },
-    "@media screen and (max-width:599px)": {
-      marginLeft: "10px",
-    },
-    "@media screen and (max-width:429px)": {
-      marginLeft: "5px",
-    },
   },
   icon: {
     padding: 0,
@@ -81,10 +73,22 @@ export default function WorkingOrderListPage() {
 
   const [workingOrderId, setWorkingOrderId] = useState(0);
   const [dialogOpen, setDialogOpen] = useState({ open: false, id: 0 });
+  const [rowsPerPage, setRowsPerPage] = useState(0);
 
   const listPage = useSelector(getWorkingOrderListPage);
   const listCount = useSelector(getWorkingOrderListCount);
   const list = useSelector(getWorkingOrderList);
+
+  const containeRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (containeRef.current) {
+      const height = containeRef.current.offsetHeight - 122;
+      const rowsPerPage = Math.floor(height / 35);
+      setRowsPerPage(rowsPerPage);
+      dispatch(getWorkingOrderListFirstPage({ rowsPerPage }));
+    }
+  }, [dispatch]);
 
   const printReceipt = (id: number) => {
     dispatch(generateWorkingOrderTicket({ id }));
@@ -180,9 +184,9 @@ export default function WorkingOrderListPage() {
           columns={columns}
           rows={rows}
           rowsCount={listCount}
-          rowsPerPage={ROWS_PER_LIST}
+          rowsPerPage={rowsPerPage}
           onPageChange={page => {
-            dispatch(getWorkingOrderListByPageNumber({ pageNumber: page + 1 }));
+            dispatch(getWorkingOrderListByPageNumber({ pageNumber: page + 1, rowsPerPage: rowsPerPage }));
           }}
         />
       </div>

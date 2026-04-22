@@ -7,7 +7,6 @@ import Grid from "@mui/material/Grid";
 
 import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
 import { getExonerationNameList, getExonerationTypeList } from "state/ui/reducer";
-import { ROWS_PER_CUSTOMER } from "utils/constants";
 import { convertToDateString } from "utils/utilities";
 
 const useStyles = makeStyles()(() => ({
@@ -26,6 +25,8 @@ const useStyles = makeStyles()(() => ({
     },
   },
 }));
+
+const ROWS_PER_CUSTOMER = 8;
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
