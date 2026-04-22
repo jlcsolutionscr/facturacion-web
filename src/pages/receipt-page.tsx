@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -61,6 +62,21 @@ const useStyles = makeStyles()(theme => ({
     "@media screen and (max-width:429px)": {
       margin: "0",
     },
+  },
+  header: {
+    height: "45px",
+    alignContent: "center",
+  },
+  content: {
+    overflowY: "scroll",
+    height: "calc(100% - 105px)",
+    padding: "5px",
+    scrollbarWidth: "thin",
+  },
+  footer: {
+    display: "flex",
+    height: "50px",
+    alignItems: "center",
   },
   container: {
     padding: "20px",
@@ -220,295 +236,301 @@ export default function ReceiptPage() {
 
   return (
     <div className={classes.root}>
-      <Grid container className={classes.container} spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
-            Factura de Compra
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            disabled={successful}
-            id="id-currency_type-select-id"
-            label="Seleccione la moneda de la transacción"
-            value={currency.toString()}
-            onChange={event => dispatch(setCurrency(event.target.value))}
-          >
-            <MenuItem value={1}>COLONES</MenuItem>
-            <MenuItem value={2}>DOLARES</MenuItem>
-          </Select>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            disabled={successful}
-            id="id-tipo-identificacion-select-id"
-            label="Seleccione el tipo de Identificación"
-            value={issuer.typeId.toString()}
-            onChange={event => handleIdTypeChange(event.target.value)}
-          >
-            {idTypeItems}
-          </Select>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            placeholder={idPlaceholder}
-            inputProps={{ maxLength: idMaxLength }}
-            required
-            value={issuer.id}
-            label="Identificación"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "id", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            required
-            value={issuer.name}
-            label="Nombre"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "name", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            required
-            value={issuer.reference}
-            label="Nro. Factura Física"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "reference", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            disabled={successful}
-            required
-            value={issuer.activityCode}
-            inputProps={{ maxLength: 6 }}
-            label="Actividad Económica"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "activityCode", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            value={issuer.comercialName}
-            label="Nombre comercial"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "comercialName", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            required
-            value={issuer.address}
-            label="Dirección"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "address", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            required
-            value={issuer.phone}
-            label="Teléfono"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "phone", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            required
-            value={issuer.email}
-            label="Correo electrónico"
-            onChange={event => dispatch(setIssuerDetails({ attribute: "email", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            disabled={successful}
-            id="id-tipo-exoneracion-select-id"
-            label="Seleccione el tipo de exoneración"
-            value={exoneration.type.toString()}
-            onChange={event => dispatch(setExonerationDetails({ attribute: "type", value: event.target.value }))}
-          >
-            {exonerationTypeItems}
-          </Select>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select
-            disabled={successful}
-            id="id-tipo-institucion-select-id"
-            label="Seleccione la institución"
-            value={exoneration.exoneratedById.toString()}
-            onChange={event =>
-              dispatch(setExonerationDetails({ attribute: "exoneratedById", value: event.target.value }))
-            }
-          >
-            {exonerationNameItems}
-          </Select>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            id="NumDocExoneracion"
-            label="Documento de exoneración"
-            value={exoneration.ref}
-            onChange={event => dispatch(setExonerationDetails({ attribute: "ref", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            id="ArticuloExoneracion"
-            label="Artículo"
-            value={exoneration.ref2}
-            onChange={event => dispatch(setExonerationDetails({ attribute: "ref2", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            disabled={successful}
-            id="IncisoExoneracion"
-            label="Inciso"
-            value={exoneration.ref3}
-            onChange={event => dispatch(setExonerationDetails({ attribute: "ref3", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={6} sm={6}>
-          <DatePicker
-            disabled={successful}
-            label="Fecha exoneración"
-            value={exoneration.date}
-            onChange={date => dispatch(setExonerationDetails({ attribute: "date", value: date }))}
-          />
-        </Grid>
-        <Grid item xs={6} sm={6}>
-          <TextField
-            disabled={successful}
-            id="PorcentajeExoneracion"
-            value={exoneration.percentage.toString()}
-            label="Porcentaje de exoneración"
-            numericFormat
-            onChange={event => dispatch(setExonerationDetails({ attribute: "percentage", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid style={{ textAlign: "center" }} item xs={12}>
-          <InputLabel>DETALLE DE FACTURA</InputLabel>
-        </Grid>
-        <Grid item xs={6} sm={6}>
-          <TextField
-            disabled={successful}
-            label="Código CABYS"
-            id="Codigo"
-            inputProps={{ maxLength: 13 }}
-            value={productDetail.code}
-            onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <IconButton
-            className={classes.icon}
-            aria-label="upload picture"
-            component="span"
-            onClick={handleClasificationClick}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Grid>
-        <Grid item xs={4}>
-          <LabelField id="TasaIva" value={productDetail.taxRate.toString()} label="Tasa del IVA" />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            disabled={successful}
-            label="Descripción"
-            id="Descripcion"
-            value={productDetail.description}
-            onChange={event => dispatch(setProductDetails({ attribute: "description", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <TextField
-            disabled
-            label="Unidad"
-            id="Unidad"
-            value={productDetail.unit}
-            onChange={event => dispatch(setProductDetails({ attribute: "unit", value: event.target.value }))}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <TextField
-            disabled={successful}
-            label="Cantidad"
-            id="Cantidad"
-            numericFormat
-            value={productDetail.quantity.toString()}
-            onChange={event =>
-              dispatch(setProductDetails({ attribute: "quantity", value: parseStringToNumber(event.target.value) }))
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            disabled={successful}
-            label="Precio"
-            numericFormat
-            value={productDetail.price.toString()}
-            onChange={event =>
-              dispatch(setProductDetails({ attribute: "price", value: parseStringToNumber(event.target.value) }))
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <IconButton
-            disabled={addDisabled}
-            className={classes.outerButton}
-            color="primary"
-            component="span"
-            onClick={() => dispatch(addDetails())}
-          >
-            <AddCircleIcon />
-          </IconButton>
-        </Grid>
-        <div className={classes.bottom}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Código</TableCell>
-                <TableCell>Descripción</TableCell>
-                <TableCell align="right">Cantidad</TableCell>
-                <TableCell align="right">Total</TableCell>
-                <TableCell align="right"> - </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productDetailsList.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.code}</TableCell>
-                  <TableCell>{row.description}</TableCell>
-                  <TableCell align="right">{row.quantity}</TableCell>
-                  <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      disabled={successful}
-                      className={classes.innerButton}
-                      color="secondary"
-                      component="span"
-                      onClick={() => dispatch(removeDetails({ pos: index }))}
-                    >
-                      <RemoveCircleIcon />
-                    </IconButton>
-                  </TableCell>
+      <Box className={classes.header}>
+        <Typography variant="h6" textAlign="center" fontWeight="700" color="textPrimary">
+          Factura de Compra
+        </Typography>
+      </Box>
+      <Box className={classes.content}>
+        <Grid container spacing={{ xs: 1, sm: 2 }}>
+          <Grid item xs={12} sm={6}>
+            <Select
+              disabled={successful}
+              id="id-currency_type-select-id"
+              label="Seleccione la moneda de la transacción"
+              value={currency.toString()}
+              onChange={event => dispatch(setCurrency(event.target.value))}
+            >
+              <MenuItem value={1}>COLONES</MenuItem>
+              <MenuItem value={2}>DOLARES</MenuItem>
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              disabled={successful}
+              id="id-tipo-identificacion-select-id"
+              label="Seleccione el tipo de Identificación"
+              value={issuer.typeId.toString()}
+              onChange={event => handleIdTypeChange(event.target.value)}
+            >
+              {idTypeItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              placeholder={idPlaceholder}
+              inputProps={{ maxLength: idMaxLength }}
+              required
+              value={issuer.id}
+              label="Identificación"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "id", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              required
+              value={issuer.name}
+              label="Nombre"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "name", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              required
+              value={issuer.reference}
+              label="Nro. Factura Física"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "reference", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              disabled={successful}
+              required
+              value={issuer.activityCode}
+              inputProps={{ maxLength: 6 }}
+              label="Actividad Económica"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "activityCode", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              value={issuer.comercialName}
+              label="Nombre comercial"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "comercialName", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              required
+              value={issuer.address}
+              label="Dirección"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "address", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              required
+              value={issuer.phone}
+              label="Teléfono"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "phone", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              required
+              value={issuer.email}
+              label="Correo electrónico"
+              onChange={event => dispatch(setIssuerDetails({ attribute: "email", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              disabled={successful}
+              id="id-tipo-exoneracion-select-id"
+              label="Seleccione el tipo de exoneración"
+              value={exoneration.type.toString()}
+              onChange={event => dispatch(setExonerationDetails({ attribute: "type", value: event.target.value }))}
+            >
+              {exonerationTypeItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              disabled={successful}
+              id="id-tipo-institucion-select-id"
+              label="Seleccione la institución"
+              value={exoneration.exoneratedById.toString()}
+              onChange={event =>
+                dispatch(setExonerationDetails({ attribute: "exoneratedById", value: event.target.value }))
+              }
+            >
+              {exonerationNameItems}
+            </Select>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              id="NumDocExoneracion"
+              label="Documento de exoneración"
+              value={exoneration.ref}
+              onChange={event => dispatch(setExonerationDetails({ attribute: "ref", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              id="ArticuloExoneracion"
+              label="Artículo"
+              value={exoneration.ref2}
+              onChange={event => dispatch(setExonerationDetails({ attribute: "ref2", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled={successful}
+              id="IncisoExoneracion"
+              label="Inciso"
+              value={exoneration.ref3}
+              onChange={event => dispatch(setExonerationDetails({ attribute: "ref3", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={6} sm={6}>
+            <DatePicker
+              disabled={successful}
+              label="Fecha exoneración"
+              value={exoneration.date}
+              onChange={date => dispatch(setExonerationDetails({ attribute: "date", value: date }))}
+            />
+          </Grid>
+          <Grid item xs={6} sm={6}>
+            <TextField
+              disabled={successful}
+              id="PorcentajeExoneracion"
+              value={exoneration.percentage.toString()}
+              label="Porcentaje de exoneración"
+              numericFormat
+              onChange={event =>
+                dispatch(setExonerationDetails({ attribute: "percentage", value: event.target.value }))
+              }
+            />
+          </Grid>
+          <Grid style={{ textAlign: "center" }} item xs={12}>
+            <InputLabel>DETALLE DE FACTURA</InputLabel>
+          </Grid>
+          <Grid item xs={6} sm={6}>
+            <TextField
+              disabled={successful}
+              label="Código CABYS"
+              id="Codigo"
+              inputProps={{ maxLength: 13 }}
+              value={productDetail.code}
+              onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton
+              className={classes.icon}
+              aria-label="upload picture"
+              component="span"
+              onClick={handleClasificationClick}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Grid>
+          <Grid item xs={4}>
+            <LabelField id="TasaIva" value={productDetail.taxRate.toString()} label="Tasa del IVA" />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              disabled={successful}
+              label="Descripción"
+              id="Descripcion"
+              value={productDetail.description}
+              onChange={event => dispatch(setProductDetails({ attribute: "description", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              disabled
+              label="Unidad"
+              id="Unidad"
+              value={productDetail.unit}
+              onChange={event => dispatch(setProductDetails({ attribute: "unit", value: event.target.value }))}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              disabled={successful}
+              label="Cantidad"
+              id="Cantidad"
+              numericFormat
+              value={productDetail.quantity.toString()}
+              onChange={event =>
+                dispatch(setProductDetails({ attribute: "quantity", value: parseStringToNumber(event.target.value) }))
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              disabled={successful}
+              label="Precio"
+              numericFormat
+              value={productDetail.price.toString()}
+              onChange={event =>
+                dispatch(setProductDetails({ attribute: "price", value: parseStringToNumber(event.target.value) }))
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton
+              disabled={addDisabled}
+              className={classes.outerButton}
+              color="primary"
+              component="span"
+              onClick={() => dispatch(addDetails())}
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Grid>
+          <div className={classes.bottom}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Código</TableCell>
+                  <TableCell>Descripción</TableCell>
+                  <TableCell align="right">Cantidad</TableCell>
+                  <TableCell align="right">Total</TableCell>
+                  <TableCell align="right"> - </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        <Grid item xs={12} display="flex" gap={2} flexDirection="row">
+              </TableHead>
+              <TableBody>
+                {productDetailsList.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.code}</TableCell>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell align="right">{row.quantity}</TableCell>
+                    <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        disabled={successful}
+                        className={classes.innerButton}
+                        color="secondary"
+                        component="span"
+                        onClick={() => dispatch(removeDetails({ pos: index }))}
+                      >
+                        <RemoveCircleIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </Grid>
+      </Box>
+      <Box className={classes.footer}>
+        <Grid container justifyContent="center" gap={1}>
           <Button disabled={saveDisabled} label="Guardar" onClick={() => dispatch(saveReceipt())} />
           <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
         </Grid>
-      </Grid>
+      </Box>
       <Dialog id="clasification-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
         <DialogContent>
           <Grid container spacing={2}>
