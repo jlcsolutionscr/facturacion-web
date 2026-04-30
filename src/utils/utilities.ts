@@ -209,18 +209,27 @@ export async function postWithResponse(endpointURL: string, token: string, data:
   }
 }
 
-export function writeToLocalStorage(user: string, data: object) {
+export function writeSessionToStorage(user: string, data: object) {
   const dateTime = Date.now();
   window.sessionStorage.setItem("session", JSON.stringify({ userName: user, dateTime, company: data }));
 }
 
-export function readFromLocalStorage() {
+export function readSessionFromStorage() {
   const data = window.sessionStorage.getItem("session");
   return data ? JSON.parse(data) : null;
 }
 
-export async function cleanLocalStorage() {
+export function clearSessionFromStorage() {
   window.sessionStorage.removeItem("session");
+}
+
+export function writeKeyToStorage(key: string, data: object) {
+  window.localStorage.setItem(key, JSON.stringify(data));
+}
+
+export function readyKeyFromStorage(key: string) {
+  const data = window.localStorage.getItem(key);
+  return data ? JSON.parse(data) : null;
 }
 
 export function getErrorMessage(error: unknown) {

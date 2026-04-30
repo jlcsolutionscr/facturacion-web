@@ -24,7 +24,7 @@ import {
   updateUserEmail,
   validateProcessingToken as validateProcessingTokenRequest,
 } from "utils/domainHelper";
-import { cleanLocalStorage, getErrorMessage, writeToLocalStorage } from "utils/utilities";
+import { clearSessionFromStorage, getErrorMessage, writeSessionToStorage } from "utils/utilities";
 
 type SessionCompanyType = CompanyType & {
   ListadoTipoIdentificacion: IdDescriptionType[];
@@ -50,7 +50,7 @@ export const userLogin = createAsyncThunk(
       dispatch(setExonerationNameList(company.ListadoNombreInstExoneracion));
       dispatch(setPriceTypeList(company.ListadoTipoPrecio));
       dispatch(setProductTypeList(company.ListadoTipoProducto));
-      writeToLocalStorage(payload.username, company);
+      writeSessionToStorage(payload.username, company);
       dispatch(setActiveSection(0));
       dispatch(stopLoader());
     } catch (error) {
@@ -63,7 +63,7 @@ export const userLogin = createAsyncThunk(
 
 export const userLogout = createAsyncThunk("session/userLogout", async (_payload, { dispatch }) => {
   try {
-    cleanLocalStorage();
+    clearSessionFromStorage();
     dispatch(logout());
   } catch (error) {
     dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

@@ -25,8 +25,8 @@ import {
 import { ORDER_STATUS } from "utils/constants";
 import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
 import {
-  generateInvoiceTicketPDF,
   generateWorkingOrderPDF,
+  generateWorkingOrderTicketPDF,
   getCustomerPrice,
   getProductEntity,
   getProductListCount,
@@ -37,6 +37,7 @@ import {
   getWorkingOrderEntity,
   getWorkingOrderListCount,
   getWorkingOrderListPerPage,
+  printWorkingOrderPendingTickets as printWorkingOrderPendingTicketsUtil,
   revokeWorkingOrderEntity,
   saveInvoiceEntity,
   saveWorkingOrderEntity,
@@ -191,7 +192,7 @@ export const removeDetails = createAsyncThunk(
 export const saveWorkingOrder = createAsyncThunk(
   "working-order/saveWorkingOrder",
   async (_payload, { getState, dispatch }) => {
-    const { session, workingOrder } = getState() as RootState;
+    const { session, workingOrder, ui } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
     const { entity, servicePointList } = workingOrder;
     dispatch(startLoader());
@@ -199,17 +200,20 @@ export const saveWorkingOrder = createAsyncThunk(
       const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
       if (ids) {
         dispatch(setWorkingOrder({ ...entity, id: ids.id, consecutive: ids.consecutive }));
-        if (entity.servicePointId > 0) {
-          const index = servicePointList.findIndex(item => item.Id === entity.servicePointId);
-          const newList = [
-            ...servicePointList.slice(0, index),
-            {
-              ...servicePointList[index],
-              Valor: parseInt(ids.id),
-            },
-            ...servicePointList.slice(index + 1),
-          ];
-          dispatch(setServicePointList(newList));
+        const index = servicePointList.findIndex(item => item.Id === entity.servicePointId);
+        const newList = [
+          ...servicePointList.slice(0, index),
+          {
+            ...servicePointList[index],
+            Valor: parseInt(ids.id),
+          },
+          ...servicePointList.slice(index + 1),
+        ];
+        dispatch(setServicePointList(newList));
+      }
+      if (entity.servicePointId > 0) {
+        if (ui.ticketPrinterName !== "") {
+          dispatch(printWorkingOrderPendingTickets({ printerName: ui.ticketPrinterName }));
         }
       }
       dispatch(setStatus(ORDER_STATUS.READY));
@@ -620,7 +624,22 @@ export const generateWorkingOrderTicket = createAsyncThunk(
     const { token } = session;
     dispatch(startLoader());
     try {
-      await generateInvoiceTicketPDF(token, payload.id);
+      await generateWorkingOrderTicketPDF(token, payload.id);
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const printWorkingOrderPendingTickets = createAsyncThunk(
+  "working-order/printWorkingOrderPendingTickets",
+  async (payload: { printerName: string }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    dispatch(startLoader());
+    try {
+      await printWorkingOrderPendingTicketsUtil(session.companyId, session.branchId, payload.printerName);
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

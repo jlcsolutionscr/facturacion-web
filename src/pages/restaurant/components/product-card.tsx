@@ -14,7 +14,7 @@ const useStyles = makeStyles()(() => ({
     padding: "5px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
-    width: "180px",
+    width: "160px",
     height: "auto",
     fontFamily: "Helvetica",
     transform: "scale(1)",

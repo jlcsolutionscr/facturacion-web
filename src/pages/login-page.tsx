@@ -28,7 +28,7 @@ import {
   validateProcessingToken,
 } from "state/session/asyncActions";
 import { getProcessingToken, getProcessingTokenMessage } from "state/session/reducer";
-import { readFromLocalStorage } from "utils/utilities";
+import { readSessionFromStorage } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -110,7 +110,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
   const processingTokenMessage = useSelector(getProcessingTokenMessage);
 
   useEffect(() => {
-    const session = readFromLocalStorage();
+    const session = readSessionFromStorage();
     if (session) {
       const expiredTime = Date.now();
       if (session.dateTime > expiredTime - 12 * 60 * 60 * 1000) {

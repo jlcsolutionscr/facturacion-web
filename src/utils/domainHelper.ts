@@ -1,5 +1,6 @@
+// @ts-ignore
+import ReceiptPrinterEncoder from "@point-of-sale/receipt-printer-encoder";
 import { saveAs } from "file-saver";
-import printJS from "print-js";
 import {
   CodeDescriptionType,
   CompanyType,
@@ -18,6 +19,7 @@ import {
 import {
   convertToDateTimeString,
   encryptString,
+  formatCurrency,
   get,
   getTaxeRateFromId,
   getWithResponse,
@@ -1020,7 +1022,7 @@ export async function generateInvoiceTicketPDF(token: string, invoiceId: number)
     const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
     const file = new Blob([byteArray], { type: "application/pdf" });
     const pdfUrl = URL.createObjectURL(file);
-    printJS(pdfUrl);
+    window.open(pdfUrl);
   }
 }
 
@@ -1032,7 +1034,82 @@ export async function generateWorkingOrderTicketPDF(token: string, invoiceId: nu
     const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
     const file = new Blob([byteArray], { type: "application/pdf" });
     const pdfUrl = URL.createObjectURL(file);
-    printJS(pdfUrl);
+    window.open(pdfUrl);
+  }
+}
+
+export async function printWorkingOrderPendingTickets(companyId: number, branchId: number, printerName: string) {
+  const queryUrl =
+    "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" +
+    companyId +
+    "&idsucursal=" +
+    branchId +
+    "&impresora=" +
+    printerName;
+  const response = await getWithResponse(APP_URL + queryUrl, "");
+  if (response.length > 0) {
+    const tickets = response;
+    const ticket = tickets[0];
+    const lines: { Descripcion: string; Valor: number }[] = JSON.parse(ticket.DetalleTiqueteOrdenServicio).map(
+      (line: { Descripcion: string; Valor: number }) => [line.Descripcion, formatCurrency(line.Valor)]
+    );
+
+    const encoder = new ReceiptPrinterEncoder({ columns: 48, feedBeforeCut: 3 });
+
+    let strDetails = ticket.Descripcion;
+    const detailsLines = [];
+    while (strDetails.length > 0) {
+      if (strDetails.length > 46) {
+        detailsLines.push([strDetails.substring(0, 46)]);
+        strDetails = strDetails.substring(46);
+      } else {
+        detailsLines.push([strDetails]);
+        strDetails = "";
+      }
+    }
+
+    const result: Uint8Array<ArrayBuffer> = encoder
+      .initialize()
+      .align("center")
+      .newline(2)
+      .line(ticket.Etiqueta)
+      .line("PEDIDO EN PROCESO")
+      .newline()
+      .line("DETALLE DE ORDEN")
+      .table(
+        [
+          { width: 34, marginLeft: 1, align: "left" },
+          { width: 12, marginRight: 1, align: "right" },
+        ],
+        lines
+      )
+      .newline()
+      .table([{ width: 46, marginLeft: 1, align: "center" }], detailsLines)
+      .align("center")
+      .newline()
+      .line("FIN DE PEDIDO")
+      .newline()
+      .cut("partial")
+      .encode();
+    //const base64 = btoa(String.fromCharCode.apply(null, result));
+    //window.location.href = "rawbt:base64," + base64;
+    const socket = new WebSocket("ws://127.0.0.1:9102/");
+    socket.binaryType = "arraybuffer";
+
+    socket.onerror = function () {
+      alert("Connection Error:");
+    };
+
+    socket.onopen = function () {
+      alert("Connection success");
+      socket.send(result);
+      socket.close(1000, "Printing complete");
+    };
+
+    /*fetch("http://192.168.0.147:9100/", {
+      method: "POST",
+      body: result,
+    });*/
   }
 }
 

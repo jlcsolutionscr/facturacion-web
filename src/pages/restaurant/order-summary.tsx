@@ -13,7 +13,7 @@ import RevokeOrderDialog from "pages/restaurant/revoke-order-dialog";
 import UpdateProducDialog from "pages/restaurant/update-product-dialog";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { setActiveSection } from "state/ui/reducer";
-import { removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
+import { printWorkingOrderPendingTickets, removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
   getDeliveryDetails,
   getInvoiceId,
@@ -142,14 +142,21 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
           {status !== ORDER_STATUS.CONVERTED ? (
             <>
               {status === ORDER_STATUS.READY && (
-                <Grid>
-                  {total > 0 && (
-                    <Button
-                      label="Facturar"
-                      onClick={() => setDialogStatus({ status: true, id: workingOrderId, type: DialogType.PAYMENT })}
-                    />
-                  )}
-                </Grid>
+                <>
+                  <Button
+                    disabled={buttonDisabled}
+                    label="Imprimir Tiquete"
+                    onClick={() => dispatch(printWorkingOrderPendingTickets({ printerName: "PDFPrinter" }))}
+                  />
+                  <Grid>
+                    {total > 0 && (
+                      <Button
+                        label="Facturar"
+                        onClick={() => setDialogStatus({ status: true, id: workingOrderId, type: DialogType.PAYMENT })}
+                      />
+                    )}
+                  </Grid>
+                </>
               )}
               {status === ORDER_STATUS.ON_PROGRESS && (
                 <Grid>

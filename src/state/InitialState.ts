@@ -17,6 +17,7 @@ import {
   WorkingOrderType,
 } from "types/domain";
 
+import { STORAGE_TICKET_PRINTER } from "utils/constants";
 import {
   defaultCompany,
   defaultCredentials,
@@ -27,6 +28,7 @@ import {
   defaultReceipt,
   defaultWorkingOrder,
 } from "utils/defaults";
+import { readyKeyFromStorage } from "utils/utilities";
 
 type UIStateType = {
   isLoaderOpen: boolean;
@@ -40,6 +42,7 @@ type UIStateType = {
   exonerationNameList: IdDescriptionValueType[];
   message: string;
   messageType: string;
+  ticketPrinterName: string;
 };
 
 type SessionStateType = {
@@ -151,6 +154,7 @@ export const uiInitialState: UIStateType = {
   exonerationNameList: [],
   message: "",
   messageType: "ERROR",
+  ticketPrinterName: readyKeyFromStorage(STORAGE_TICKET_PRINTER) ?? "PDFPrinter",
 };
 
 export const sessionInitialState: SessionStateType = {

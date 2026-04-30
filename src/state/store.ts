@@ -11,6 +11,7 @@ import receiptReducer from "./receipt/reducer";
 import sessionReducer from "./session/reducer";
 import uiReducer from "./ui/reducer";
 import workingOrderReducer from "./working-order/reducer";
+import setupUiListeners from "state/ui/listener";
 
 const store = configureStore({
   reducer: {
@@ -27,6 +28,8 @@ const store = configureStore({
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 });
+
+setupUiListeners();
 
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

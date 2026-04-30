@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import App from "./App.tsx";
+import App from "./App";
 
 import "./assets/fonts/RussoOne-Regular.ttf";
 import "./assets/fonts/Exo2-Italic-VariableFont_wght.ttf";
