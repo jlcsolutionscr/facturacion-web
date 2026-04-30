@@ -45,6 +45,7 @@ import {
 import { convertToDateString, getErrorMessage, roundNumber } from "utils/utilities";
 
 const ROWS_PER_PRODUCT = 25;
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -211,11 +212,6 @@ export const saveWorkingOrder = createAsyncThunk(
         ];
         dispatch(setServicePointList(newList));
       }
-      if (entity.servicePointId > 0) {
-        if (ui.ticketPrinterName !== "") {
-          dispatch(printWorkingOrderPendingTickets({ printerName: ui.ticketPrinterName }));
-        }
-      }
       dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(
         setMessage({
@@ -224,6 +220,13 @@ export const saveWorkingOrder = createAsyncThunk(
         })
       );
       dispatch(stopLoader());
+      if (entity.servicePointId > 0) {
+        if (IS_ANDROID && ui.ticketPrinterName !== "") {
+          dispatch(
+            printWorkingOrderPendingTickets({ orderId: entity.id || ids?.id || 0, printerName: ui.ticketPrinterName })
+          );
+        }
+      }
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
@@ -635,15 +638,17 @@ export const generateWorkingOrderTicket = createAsyncThunk(
 
 export const printWorkingOrderPendingTickets = createAsyncThunk(
   "working-order/printWorkingOrderPendingTickets",
-  async (payload: { printerName: string }, { getState, dispatch }) => {
+  async (payload: { orderId: number; printerName: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    dispatch(startLoader());
     try {
-      await printWorkingOrderPendingTicketsUtil(session.companyId, session.branchId, payload.printerName);
-      dispatch(stopLoader());
+      await printWorkingOrderPendingTicketsUtil(
+        session.companyId,
+        session.branchId,
+        payload.orderId,
+        payload.printerName
+      );
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
     }
   }
 );

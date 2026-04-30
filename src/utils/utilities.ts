@@ -127,7 +127,7 @@ export async function get(endpointURL: string, token: string) {
 export async function getWithResponse(endpointURL: string, token: string) {
   const headers: HeaderType = {
     Accept: "application/json",
-    "Content-Type": "application/json",
+    "Content-Type": "application/json;charset=iso-8859-1",
   };
   if (token !== "") {
     headers.Authorization = "bearer " + token;
