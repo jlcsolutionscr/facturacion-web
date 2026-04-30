@@ -1106,30 +1106,40 @@ export async function printWorkingOrderPendingTickets(companyId: number, branchI
           // Create a new array with total length and merge all source arrays.
           const result = [...header, ...details, ...footer];
           tiketsByteArray.push(result);
-
-          //const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
-          //await get(APP_URL + queryUrl, "");
         } catch (ex: any) {
           alert("Encoding failed:" + ex.message);
         }
       }
+      let mergedArray = new Uint8Array(0);
       try {
         let length = 0;
         tiketsByteArray.forEach(item => {
           length += item.length;
         });
-
         // Create a new array with total length and merge all source arrays.
-        const mergedArray = new Uint8Array(length);
+        mergedArray = new Uint8Array(length);
         let offset = 0;
         tiketsByteArray.forEach(item => {
           mergedArray.set(item, offset);
           offset += item.length;
         });
+      } catch (ex: any) {
+        alert("Merging tickets failed:" + ex.message);
+      }
+      try {
         const base64 = btoa(String.fromCharCode.apply(null, [...mergedArray]));
         window.location.href = "rawbt:base64," + base64;
       } catch (ex: any) {
-        alert("Merging tickets failed:" + ex.message);
+        alert("Printing tickets failed:" + ex.message);
+      }
+      try {
+        for (let i = 0; i < tickets.length; i++) {
+          const ticket = tickets[i];
+          const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
+          await get(APP_URL + queryUrl, "");
+        }
+      } catch (ex: any) {
+        alert("Updating tickets PRINTED status failed:" + ex.message);
       }
     }
   }
