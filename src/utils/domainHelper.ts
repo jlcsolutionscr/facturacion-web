@@ -31,6 +31,7 @@ import {
 const SERVICE_URL = import.meta.env.VITE_APP_SERVER_URL;
 const HACIENDA_SERVER_URL = import.meta.env.VITE_HACIENDA_SERVER_URL;
 const APP_URL = `${SERVICE_URL}/puntoventa`;
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
 
 type DetalleFacturaType = {
   IdFactura: number;
@@ -1039,77 +1040,98 @@ export async function generateWorkingOrderTicketPDF(token: string, invoiceId: nu
 }
 
 export async function printWorkingOrderPendingTickets(companyId: number, branchId: number, printerName: string) {
-  const queryUrl =
-    "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" +
-    companyId +
-    "&idsucursal=" +
-    branchId +
-    "&impresora=" +
-    printerName;
-  const response = await getWithResponse(APP_URL + queryUrl, "");
-  if (response.length > 0) {
-    const tickets = response;
-    const ticket = tickets[0];
-    const lines: { Descripcion: string; Valor: number }[] = JSON.parse(ticket.DetalleTiqueteOrdenServicio).map(
-      (line: { Descripcion: string; Valor: number }) => [line.Descripcion, formatCurrency(line.Valor)]
-    );
+  if (!IS_ANDROID) {
+    alert("Window POS printer not implemented");
+  } else {
+    const queryUrl =
+      "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" +
+      companyId +
+      "&idsucursal=" +
+      branchId +
+      "&impresora=" +
+      printerName;
+    const response = await getWithResponse(APP_URL + queryUrl, "");
+    if (response !== null) {
+      const tickets = response;
+      const tiketsByteArray = [];
+      for (let i = 0; i < tickets.length; i++) {
+        const ticket = tickets[i];
+        const lines: { Descripcion: string; Valor: number }[] = JSON.parse(ticket.DetalleTiqueteOrdenServicio).map(
+          (line: { Descripcion: string; Valor: number }) => [line.Descripcion, formatCurrency(line.Valor)]
+        );
 
-    const encoder = new ReceiptPrinterEncoder({ columns: 48, feedBeforeCut: 3 });
+        const encoder = new ReceiptPrinterEncoder({ columns: 48, feedBeforeCut: 2 });
 
-    let strDetails = ticket.Descripcion;
-    const detailsLines = [];
-    while (strDetails.length > 0) {
-      if (strDetails.length > 46) {
-        detailsLines.push([strDetails.substring(0, 46)]);
-        strDetails = strDetails.substring(46);
-      } else {
-        detailsLines.push([strDetails]);
-        strDetails = "";
+        let strDetails = ticket.Descripcion;
+        const detailsLines = [];
+        while (strDetails.length > 0) {
+          if (strDetails.length > 46) {
+            detailsLines.push([strDetails.substring(0, 46)]);
+            strDetails = strDetails.substring(46);
+          } else {
+            detailsLines.push([strDetails]);
+            strDetails = "";
+          }
+        }
+
+        try {
+          const header = encoder
+            .codepage("cp850")
+            .initialize()
+            .align("center")
+            .newline(2)
+            .line(ticket.Etiqueta)
+            .line("PEDIDO EN PROCESO")
+            .newline()
+            .line("DETALLE DE ORDEN")
+            .line("-".repeat(46))
+            .table(
+              [
+                { width: 34, marginLeft: 1, align: "left" },
+                { width: 12, marginRight: 1, align: "right" },
+              ],
+              lines
+            )
+            .line("-".repeat(46))
+            .newline()
+            .encode();
+          const details = detailsLines.length
+            ? encoder
+                .table([{ width: 46, marginLeft: 1, align: "center" }], detailsLines)
+                .align("center")
+                .newline()
+                .encode()
+            : new Uint8Array(0);
+          const footer = encoder.line("FIN DE PEDIDO").cut("partial").encode();
+          // Create a new array with total length and merge all source arrays.
+          const result = [...header, ...details, ...footer];
+          tiketsByteArray.push(result);
+
+          //const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
+          //await get(APP_URL + queryUrl, "");
+        } catch (ex: any) {
+          alert("Encoding failed:" + ex.message);
+        }
+      }
+      try {
+        let length = 0;
+        tiketsByteArray.forEach(item => {
+          length += item.length;
+        });
+
+        // Create a new array with total length and merge all source arrays.
+        const mergedArray = new Uint8Array(length);
+        let offset = 0;
+        tiketsByteArray.forEach(item => {
+          mergedArray.set(item, offset);
+          offset += item.length;
+        });
+        const base64 = btoa(String.fromCharCode.apply(null, [...mergedArray]));
+        window.location.href = "rawbt:base64," + base64;
+      } catch (ex: any) {
+        alert("Merging tickets failed:" + ex.message);
       }
     }
-
-    const result: Uint8Array<ArrayBuffer> = encoder
-      .initialize()
-      .align("center")
-      .newline(2)
-      .line(ticket.Etiqueta)
-      .line("PEDIDO EN PROCESO")
-      .newline()
-      .line("DETALLE DE ORDEN")
-      .table(
-        [
-          { width: 34, marginLeft: 1, align: "left" },
-          { width: 12, marginRight: 1, align: "right" },
-        ],
-        lines
-      )
-      .newline()
-      .table([{ width: 46, marginLeft: 1, align: "center" }], detailsLines)
-      .align("center")
-      .newline()
-      .line("FIN DE PEDIDO")
-      .newline()
-      .cut("partial")
-      .encode();
-    //const base64 = btoa(String.fromCharCode.apply(null, result));
-    //window.location.href = "rawbt:base64," + base64;
-    const socket = new WebSocket("ws://127.0.0.1:9102/");
-    socket.binaryType = "arraybuffer";
-
-    socket.onerror = function () {
-      alert("Connection Error:");
-    };
-
-    socket.onopen = function () {
-      alert("Connection success");
-      socket.send(result);
-      socket.close(1000, "Printing complete");
-    };
-
-    /*fetch("http://192.168.0.147:9100/", {
-      method: "POST",
-      body: result,
-    });*/
   }
 }
 
