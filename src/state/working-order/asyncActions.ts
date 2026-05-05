@@ -1,7 +1,7 @@
 import { CustomerDetailsType, DetalleProductoType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
+import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
@@ -28,6 +28,7 @@ import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
   getCustomerPrice,
+  getProductCategoryList,
   getProductEntity,
   getProductListCount,
   getProductListPerPage,
@@ -37,7 +38,7 @@ import {
   getWorkingOrderEntity,
   getWorkingOrderListCount,
   getWorkingOrderListPerPage,
-  printWorkingOrderPendingTickets as printWorkingOrderPendingTicketsUtil,
+  printPendingTickets,
   revokeWorkingOrderEntity,
   saveInvoiceEntity,
   saveWorkingOrderEntity,
@@ -45,7 +46,6 @@ import {
 import { convertToDateString, getErrorMessage, roundNumber } from "utils/utilities";
 
 const ROWS_PER_PRODUCT = 25;
-const IS_ANDROID = /Android/i.test(navigator.userAgent);
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -220,12 +220,13 @@ export const saveWorkingOrder = createAsyncThunk(
         })
       );
       dispatch(stopLoader());
-      if (entity.servicePointId > 0) {
-        if (IS_ANDROID && ui.ticketPrinterName !== "") {
-          dispatch(
-            printWorkingOrderPendingTickets({ orderId: entity.id || ids?.id || 0, printerName: ui.ticketPrinterName })
-          );
-        }
+      if (entity.servicePointId > 0 && ui.printerServerAddress !== "") {
+        await printPendingTickets(
+          session.companyId,
+          session.branchId,
+          entity.id || ids?.id || 0,
+          ui.printerServerAddress
+        );
       }
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -418,12 +419,16 @@ export const openServicePoint = createAsyncThunk(
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
     const { token, company, vendorList, branchId, companyId } = session;
-    const { list } = product;
+    const { list, categoryList } = product;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     dispatch(resetWorkingOrder());
     try {
       const servicePoint = await getServicePointEntity(token, payload.id);
+      if (categoryList.length === 0) {
+        const categoryList = await getProductCategoryList(token, companyId);
+        dispatch(setCategoryList(categoryList));
+      }
       if (list.length === 0) {
         const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
         const productList = await getProductListPerPage(
@@ -632,23 +637,6 @@ export const generateWorkingOrderTicket = createAsyncThunk(
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
-    }
-  }
-);
-
-export const printWorkingOrderPendingTickets = createAsyncThunk(
-  "working-order/printWorkingOrderPendingTickets",
-  async (payload: { orderId: number; printerName: string }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    try {
-      await printWorkingOrderPendingTicketsUtil(
-        session.companyId,
-        session.branchId,
-        payload.orderId,
-        payload.printerName
-      );
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
   }
 );

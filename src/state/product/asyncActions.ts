@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setProductDetails as setInvoiceProduct } from "state/invoice/reducer";
 import {
+  setCategory,
   setCategoryList,
   setClasificationList,
   setProduct,
@@ -16,8 +17,9 @@ import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { setProductDetails as setWorkingOrderProduct } from "state/working-order/reducer";
 import { FORM_TYPE } from "utils/constants";
-import { defaultProduct, defaultProductDetails } from "utils/defaults";
+import { defaultCategory, defaultProduct, defaultProductDetails } from "utils/defaults";
 import {
+  getCategoryEntity,
   getCustomerPrice,
   getProductCategoryList,
   getProductClasification,
@@ -26,6 +28,7 @@ import {
   getProductListCount,
   getProductListPerPage,
   getProductProviderList,
+  saveCategoryEntity,
   saveProductEntity,
 } from "utils/domainHelper";
 import { getErrorMessage } from "utils/utilities";
@@ -244,6 +247,69 @@ export const saveProduct = createAsyncThunk("product/saveProduct", async (_paylo
   try {
     const productEntity = { ...entity, IdEmpresa: companyId };
     await saveProductEntity(token, productEntity);
+    dispatch(
+      setMessage({
+        message: "Transacción completada satisfactoriamente",
+        type: "INFO",
+      })
+    );
+    dispatch(stopLoader());
+  } catch (error) {
+    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    dispatch(stopLoader());
+  }
+});
+
+export const getCategoryListFirstPage = createAsyncThunk(
+  "product/getCategoryList",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId } = session;
+    dispatch(startLoader());
+    try {
+      const categoryList = await getProductCategoryList(token, companyId);
+      dispatch(setCategoryList(categoryList));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const openCategory = createAsyncThunk(
+  "product/openCategory",
+  async (payload: { id?: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { companyId, token } = session;
+    dispatch(startLoader());
+    dispatch(setActiveSection(17));
+    try {
+      let category = {
+        ...defaultCategory,
+        IdEmpresa: companyId,
+      };
+      dispatch(setCategory(category));
+      if (payload.id) {
+        category = await getCategoryEntity(token, payload.id);
+        dispatch(setCategory(category));
+      }
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const saveCategory = createAsyncThunk("product/saveCategory", async (_payload, { getState, dispatch }) => {
+  const { product, session } = getState() as RootState;
+  const { token, companyId } = session;
+  const { categoryEntity } = product;
+  dispatch(startLoader());
+  try {
+    const entity = { ...categoryEntity, IdEmpresa: companyId };
+    await saveCategoryEntity(token, entity);
     dispatch(
       setMessage({
         message: "Transacción completada satisfactoriamente",

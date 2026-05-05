@@ -4,6 +4,8 @@ import { makeStyles } from "tss-react/mui";
 
 import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header";
+import CategoryPage from "pages/category/index";
+import CategoryLisPage from "pages/category/list-page";
 import CompanyPage from "pages/company";
 import CustomerPage from "pages/customer";
 import CustomerListPage from "pages/customer/list-page";
@@ -11,6 +13,7 @@ import DocumentListPage from "pages/document";
 import InvoicePage from "pages/invoice";
 import InvoiceListPage from "pages/invoice/invoice-list-page";
 import MenuPage from "pages/menu-page";
+import PrinterServiceConfig from "pages/printer-service-config";
 import ProductPage from "pages/product";
 import ProductListPage from "pages/product/list-page";
 import ProformaListPage from "pages/proforma/proforma-list-page";
@@ -97,7 +100,10 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 13 && <ProductPage />}
         {activeSection === 14 && <ProformaPage />}
         {activeSection === 15 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
+        {activeSection === 16 && <CategoryLisPage />}
+        {activeSection === 17 && <CategoryPage />}
         {activeSection === 20 && <ReportsPage />}
+        {activeSection === 21 && <PrinterServiceConfig />}
       </div>
     </div>
   );

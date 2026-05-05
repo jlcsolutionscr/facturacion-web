@@ -131,15 +131,15 @@ export default function RestaurantOrderPage() {
           </IconButton>
         </div>
         <Tabs className={classes.tabHeader} centered value={value} indicatorColor="secondary" onChange={handleChange}>
-          <Tab label="Detalle" />
-          <Tab label="Generar" disabled={!generateInvoice} />
+          <Tab label="Resumen" disabled={!generateInvoice} />
+          <Tab label="Productos" />
         </Tabs>
         <div className={classes.tabContent}>
           <div style={{ display: value === 0 ? "flex" : "none", width: "100%", maxHeight: "100%" }}>
-            <ProductList value={value} />
+            <OrderSummary isSplitMode={false} value={value} />
           </div>
           <div style={{ display: value === 1 ? "flex" : "none", width: "100%", maxHeight: "100%" }}>
-            <OrderSummary isSplitMode={false} value={value} />
+            <ProductList value={value} />
           </div>
         </div>
       </div>

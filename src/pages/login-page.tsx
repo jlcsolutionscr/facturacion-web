@@ -281,7 +281,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               label="Código usuario"
               name="username"
               value={username}
-              autoComplete="username"
+              autoComplete="section-login-username"
               onChange={handleOnChange("username")}
               autoFocus
             />
@@ -294,7 +294,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               type="password"
               id="password"
               value={password}
-              autoComplete="current-password"
+              autoComplete="section-login-password"
               onChange={handleOnChange("password")}
             />
             <TextField
@@ -304,7 +304,7 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
               name="id"
               label="Identificación"
               id="id"
-              autoComplete="on"
+              autoComplete="section-login-identifier"
               value={id}
               onChange={handleOnChange("id")}
             />

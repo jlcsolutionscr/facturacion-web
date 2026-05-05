@@ -1,4 +1,5 @@
 import {
+  CategoryType,
   CompanyType,
   CustomerDetailsType,
   CustomerType,
@@ -139,6 +140,13 @@ export const defaultProduct: ProductType = {
   PorcDescuento: 0,
   ModificaPrecio: false,
   IndExistencia: 0,
+};
+
+export const defaultCategory: CategoryType = {
+  IdLinea: 0,
+  IdEmpresa: 0,
+  Descripcion: "",
+  ImpresoraTiquete: "",
 };
 
 export const defaultInvoice: InvoiceType = {

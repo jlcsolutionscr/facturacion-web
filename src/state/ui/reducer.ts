@@ -40,8 +40,8 @@ const uiSlice = createSlice({
     setIdTypeList: (state, action) => {
       state.idTypeList = action.payload;
     },
-    setTicketPrinterName: (state, action) => {
-      state.ticketPrinterName = action.payload;
+    setPrinterServerAddress: (state, action) => {
+      state.printerServerAddress = action.payload;
     },
   },
 });
@@ -57,7 +57,7 @@ export const {
   setExonerationTypeList,
   setExonerationNameList,
   setIdTypeList,
-  setTicketPrinterName,
+  setPrinterServerAddress,
 } = uiSlice.actions;
 
 export const getIsLoaderOpen = (state: RootState) => state.ui.isLoaderOpen;
@@ -75,6 +75,6 @@ export const getTaxTypeList = (state: RootState) => state.ui.taxTypeList;
 export const getExonerationTypeList = (state: RootState) => state.ui.exonerationTypeList;
 export const getExonerationNameList = (state: RootState) => state.ui.exonerationNameList;
 export const getIdTypeList = (state: RootState) => state.ui.idTypeList;
-export const getTicketPrinterName = (state: RootState) => state.ui.ticketPrinterName;
+export const getPrinterServerAddress = (state: RootState) => state.ui.printerServerAddress;
 
 export default uiSlice.reducer;

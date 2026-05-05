@@ -195,6 +195,15 @@ export default function MenuPage() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Button
+              disabled={userCode.toUpperCase() !== "ADMIN"}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(16))}
+            >
+              Categorías de producto
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
               disabled={!generateInvoice}
               className={classes.button}
               onClick={() => dispatch(setInvoiceParameters({ id: 6 }))}

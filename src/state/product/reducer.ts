@@ -23,6 +23,9 @@ const productSlice = createSlice({
     setProductTypeList: (state, action) => {
       state.productTypeList = action.payload;
     },
+    setCategory: (state, action) => {
+      state.categoryEntity = action.payload;
+    },
     setCategoryList: (state, action) => {
       state.categoryList = action.payload;
     },
@@ -35,6 +38,12 @@ const productSlice = createSlice({
     setProductAttribute: (state, action) => {
       state.entity = {
         ...state.entity,
+        [action.payload.attribute]: action.payload.value,
+      };
+    },
+    setCategoryAttribute: (state, action) => {
+      state.categoryEntity = {
+        ...state.categoryEntity,
         [action.payload.attribute]: action.payload.value,
       };
     },
@@ -52,10 +61,12 @@ export const {
   setProductList,
   setProduct,
   setProductTypeList,
+  setCategory,
   setCategoryList,
   setProviderList,
   setClasificationList,
   setProductAttribute,
+  setCategoryAttribute,
 } = productSlice.actions;
 
 export const getProductListPage = (state: RootState) => state.product.listPage;
@@ -63,6 +74,7 @@ export const getProductListCount = (state: RootState) => state.product.listCount
 export const getProductList = (state: RootState) => state.product.list;
 export const getProduct = (state: RootState) => state.product.entity;
 export const getProductTypeList = (state: RootState) => state.product.productTypeList;
+export const getCategory = (state: RootState) => state.product.categoryEntity;
 export const getCategoryList = (state: RootState) => state.product.categoryList;
 export const getProviderList = (state: RootState) => state.product.providerList;
 export const getClasificationList = (state: RootState) => state.product.clasificationList;

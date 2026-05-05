@@ -32,6 +32,7 @@ export type IdDescriptionTaxType = {
 
 export type CodeDescriptionType = {
   Id: number;
+  IdLinea: number;
   IdImpuesto: number;
   Codigo: string;
   Descripcion: string;
@@ -130,6 +131,13 @@ export type ProductType = {
   Observacion: string;
   ModificaPrecio: boolean;
   Activo: boolean;
+};
+
+export type CategoryType = {
+  IdEmpresa: number;
+  IdLinea: number;
+  Descripcion: string;
+  ImpresoraTiquete: string;
 };
 
 export type DetalleProductoType = {

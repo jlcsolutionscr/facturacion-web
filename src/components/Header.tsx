@@ -6,14 +6,24 @@ import Typography from "@mui/material/Typography";
 
 import LogoDarkImage from "assets/img/company-logo-dark.webp";
 import { userLogout } from "state/session/asyncActions";
-import { getCompany } from "state/session/reducer";
+import { getCompany, getUserId } from "state/session/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
+import { DarkModeIcon, LightModeIcon, LogOutIcon, PrinterIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
   header: {
     backgroundImage: "linear-gradient(to bottom, rgba(8, 65, 92, 0.6), rgba(8, 65, 92, 0.9), rgba(8, 65, 92, 1))",
     height: "100px",
+  },
+  printerConfig: {
+    position: "absolute",
+    top: "59px",
+    right: "96px",
+    zIndex: 2,
+  },
+  printerIcon: {
+    color: "#fff",
   },
   toogle: {
     position: "absolute",
@@ -112,6 +122,7 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
+  const userId = useSelector(getUserId);
   const title = company?.NombreComercial ?? "";
   const companyIdentifier = company?.Identificacion ?? "";
   const identification =
@@ -128,8 +139,21 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
           "-" +
           companyIdentifier.substring(4)
         : companyIdentifier;
+
   return (
     <div className={classes.header}>
+      {userId === 1 && (
+        <Tooltip title="Configuración de servidor de impresión" aria-label="configuración del servidor de impresión">
+          <IconButton
+            className={classes.printerConfig}
+            aria-label="upload picture"
+            component="span"
+            onClick={() => dispatch(setActiveSection(21))}
+          >
+            <PrinterIcon className={classes.printerIcon} />
+          </IconButton>
+        </Tooltip>
+      )}
       <Tooltip title="Cambiar tema" aria-label="cambiar tema">
         <IconButton
           className={classes.toogle}

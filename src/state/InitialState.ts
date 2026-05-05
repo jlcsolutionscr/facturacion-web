@@ -1,4 +1,5 @@
 import {
+  CategoryType,
   CodeDescriptionType,
   CompanyType,
   CredentialType,
@@ -17,8 +18,9 @@ import {
   WorkingOrderType,
 } from "types/domain";
 
-import { STORAGE_TICKET_PRINTER } from "utils/constants";
+import { STORAGE_TICKET_PRINTER_SERVER_ADDRESS } from "utils/constants";
 import {
+  defaultCategory,
   defaultCompany,
   defaultCredentials,
   defaultCustomer,
@@ -42,7 +44,7 @@ type UIStateType = {
   exonerationNameList: IdDescriptionValueType[];
   message: string;
   messageType: string;
-  ticketPrinterName: string;
+  printerServerAddress: string;
 };
 
 type SessionStateType = {
@@ -89,6 +91,7 @@ type CustomerStateType = {
 
 type ProductStateType = {
   entity: ProductType;
+  categoryEntity: CategoryType;
   listPage: number;
   listCount: number;
   list: CodeDescriptionType[];
@@ -154,7 +157,7 @@ export const uiInitialState: UIStateType = {
   exonerationNameList: [],
   message: "",
   messageType: "ERROR",
-  ticketPrinterName: readyKeyFromStorage(STORAGE_TICKET_PRINTER) ?? "PDFPrinter",
+  printerServerAddress: readyKeyFromStorage(STORAGE_TICKET_PRINTER_SERVER_ADDRESS) ?? "",
 };
 
 export const sessionInitialState: SessionStateType = {
@@ -201,6 +204,7 @@ export const customerInitialState: CustomerStateType = {
 
 export const productInitialState: ProductStateType = {
   entity: defaultProduct,
+  categoryEntity: defaultCategory,
   listPage: 1,
   listCount: 0,
   list: [],
