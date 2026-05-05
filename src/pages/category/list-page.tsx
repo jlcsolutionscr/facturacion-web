@@ -1,11 +1,10 @@
 import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 
-import useUpdateEffect from "hooks/useUpdateEffect";
 import { getCategoryListFirstPage, openCategory } from "state/product/asyncActions";
 import { getCategoryList } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
@@ -90,7 +89,7 @@ export default function CategoryListPage() {
 
   const containeRef = useRef<HTMLDivElement>(null);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (containeRef.current) {
       dispatch(getCategoryListFirstPage());
     }
