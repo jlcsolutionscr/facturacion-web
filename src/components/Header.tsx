@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 
 import LogoDarkImage from "assets/img/company-logo-dark.webp";
 import { userLogout } from "state/session/asyncActions";
-import { getCompany, getUserId } from "state/session/reducer";
+import { getCompany, getPermissions, getUserId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { CashCloseIcon, DarkModeIcon, LightModeIcon, LogOutIcon, PrinterIcon } from "utils/iconsHelper";
@@ -130,6 +130,10 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
   const userId = useSelector(getUserId);
+  const permissions = useSelector(getPermissions);
+
+  const isCashCloseEnabled = permissions.filter(role => role.IdRole === 53).length > 0;
+
   const title = company?.NombreComercial ?? "";
   const companyIdentifier = company?.Identificacion ?? "";
   const identification =
@@ -161,16 +165,18 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
           </IconButton>
         </Tooltip>
       )}
-      <Tooltip title="Procesar el cierre de efectivo" aria-label="Procesar el cierre de efectivo">
-        <IconButton
-          className={classes.cashClose}
-          aria-label="Procesar el cierre de efectivo"
-          component="span"
-          onClick={() => setIsCashCloseDialogOpen(true)}
-        >
-          <CashCloseIcon className={classes.icon} />
-        </IconButton>
-      </Tooltip>
+      {isCashCloseEnabled && (
+        <Tooltip title="Procesar el cierre de efectivo" aria-label="Procesar el cierre de efectivo">
+          <IconButton
+            className={classes.cashClose}
+            aria-label="Procesar el cierre de efectivo"
+            component="span"
+            onClick={() => setIsCashCloseDialogOpen(true)}
+          >
+            <CashCloseIcon className={classes.icon} />
+          </IconButton>
+        </Tooltip>
+      )}
       <Tooltip title="Cambiar tema" aria-label="cambiar tema">
         <IconButton
           className={classes.toogle}
