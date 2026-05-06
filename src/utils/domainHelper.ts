@@ -2,6 +2,7 @@
 import ReceiptPrinterEncoder from "@point-of-sale/receipt-printer-encoder";
 import { saveAs } from "file-saver";
 import {
+  CashCloseType,
   CategoryType,
   CodeDescriptionType,
   CompanyType,
@@ -186,7 +187,6 @@ export async function validateCertificate(token: string, strPin: string, strCert
 export async function getCredentialsEntity(token: string, companyId: number) {
   const data = "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {IdEmpresa: " + companyId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -361,7 +361,6 @@ export async function getCustomerListCount(token: string, companyId: number, str
     strFilter +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -449,7 +448,6 @@ export async function getProductListCount(
     (type === 2 ? filterText : "") +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -667,7 +665,7 @@ export async function saveInvoiceEntity(
   summary: SummaryType,
   comment: string
 ) {
-  let dollarExchange = 0;
+  let dollarExchange = 1;
   if (currency === 2) {
     dollarExchange = await getDollarExchangeValue();
   }
@@ -764,7 +762,6 @@ export async function getProcessedInvoiceListCount(token: string, companyId: num
     branchId +
     ", ExcluyeNulos: true}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -888,7 +885,6 @@ export async function getWorkingOrderListCount(
     bolApplied +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -925,7 +921,6 @@ export async function getDocumentListCount(token: string, companyId: number, bra
     branchId +
     "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -954,7 +949,6 @@ export async function getDocumentListPerPage(
 export async function getDocumentEntity(token: string, idDocument: number) {
   const data = "{NombreMetodo: 'ObtenerDocumentoElectronico', Parametros: {IdDocumento: " + idDocument + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -1214,7 +1208,6 @@ export async function getProformaListCount(token: string, companyId: number, bra
     bolApplied +
     "'}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return null;
   return response;
 }
 
@@ -1240,6 +1233,30 @@ export async function getProformaListPerPage(
     "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (response === null) return [];
+  return response;
+}
+
+export async function getCashCloseDetails(token: string, companyId: number, branchId: number) {
+  const data =
+    "{NombreMetodo: 'GenerarDatosCierreCaja', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return response;
+}
+
+export async function saveCashCloseDetails(token: string, cashCloseEntity: CashCloseType) {
+  const data = "{NombreMetodo: 'GuardarDatosCierreCaja', Entidad: " + JSON.stringify(cashCloseEntity) + "}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return response;
+}
+
+export async function abortCashCloseProcess(token: string, companyId: number, branchId: number) {
+  const data =
+    "{NombreMetodo: 'AbortarCierreCaja', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + "}}";
+  const response = await post(APP_URL + "/ejecutar", token, data);
   return response;
 }
 

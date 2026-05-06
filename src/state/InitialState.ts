@@ -1,4 +1,5 @@
 import {
+  CashCloseType,
   CategoryType,
   CodeDescriptionType,
   CompanyType,
@@ -65,6 +66,7 @@ type SessionStateType = {
   token: string;
   processingToken: { type: string; id: string };
   processingTokenMessage: string;
+  cashCloseEntity: CashCloseType | null;
 };
 
 type CompanyStateType = {
@@ -178,6 +180,7 @@ export const sessionInitialState: SessionStateType = {
   token: "",
   processingToken: { type: "reset", id: "" },
   processingTokenMessage: "",
+  cashCloseEntity: null,
 };
 
 export const companyInitialState: CompanyStateType = {

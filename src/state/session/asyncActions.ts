@@ -3,7 +3,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setPriceTypeList } from "state/customer/reducer";
 import { setProductTypeList } from "state/product/reducer";
-import { login, logout, setProcessingToken, setProcessingTokenMessage, setVendorList } from "state/session/reducer";
+import {
+  login,
+  logout,
+  setCashCloseEntity,
+  setProcessingToken,
+  setProcessingTokenMessage,
+  setVendorList,
+} from "state/session/reducer";
 import { RootState } from "state/store";
 import {
   setActiveSection,
@@ -16,11 +23,14 @@ import {
   stopLoader,
 } from "state/ui/reducer";
 import {
+  abortCashCloseProcess as abortCashCloseProcessRequest,
   authorizeUserEmail as authorizeUserEmailRequest,
+  getCashCloseDetails as getCashCloseDetailsRequest,
   getVendorList,
   requestUserLogin,
   requestUserPasswordReset,
   resetUserPassword as resetUserPasswordRequest,
+  saveCashCloseDetails as saveCashCloseDetailsRequest,
   updateUserEmail,
   validateProcessingToken as validateProcessingTokenRequest,
 } from "utils/domainHelper";
@@ -173,6 +183,68 @@ export const authorizeUserEmail = createAsyncThunk(
     try {
       await authorizeUserEmailRequest(payload.id);
       dispatch(setProcessingTokenMessage("La autorización se realizó satisfactoriamente. . ."));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
+  }
+);
+
+export const getCashCloseDetails = createAsyncThunk(
+  "session/getCashCloseDetails",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    dispatch(startLoader());
+    try {
+      const cashCloseData = await getCashCloseDetailsRequest(token, companyId, branchId);
+      dispatch(setCashCloseEntity(cashCloseData));
+      dispatch(
+        setMessage({
+          message:
+            "La información del cierre de efectivo se generó satisfactoriamente. Por favor procesa a revisar y guardar la información!",
+          type: "INFO",
+        })
+      );
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
+  }
+);
+
+export const saveCashCloseDetails = createAsyncThunk(
+  "session/saveCashCloseDetails",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, cashCloseEntity } = session;
+    if (cashCloseEntity !== null) {
+      dispatch(startLoader());
+      try {
+        await saveCashCloseDetailsRequest(token, cashCloseEntity);
+        dispatch(setMessage({ message: "El cierre de efectivo se guardó satisfactoriamente...", type: "INFO" }));
+      } catch (error) {
+        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+        dispatch(stopLoader());
+      }
+      dispatch(stopLoader());
+    } else {
+      dispatch(setMessage({ message: "No se ha generado la información para el cierre de efectivo!", type: "ERROR" }));
+    }
+  }
+);
+
+export const abortCashCloseProcess = createAsyncThunk(
+  "session/abortCashCloseProcess",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    dispatch(startLoader());
+    try {
+      await abortCashCloseProcessRequest(token, companyId, branchId);
+      dispatch(setMessage({ message: "El cierre de efectivo fue abortado correctamente...", type: "INFO" }));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());

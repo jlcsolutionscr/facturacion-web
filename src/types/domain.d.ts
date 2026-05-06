@@ -326,3 +326,37 @@ export type ProformaType = {
   comment: string;
   successful: boolean;
 };
+
+export type CashCloseType = {
+  IdEmpresa: number;
+  IdSucursal: number;
+  IdCierre: number;
+  FechaCierre: string;
+  FondoInicio: number;
+  AdelantosApartadoEfectivo: number;
+  AdelantosApartadoTarjeta: number;
+  AdelantosApartadoBancos: number;
+  AdelantosOrdenEfectivo: number;
+  AdelantosOrdenTarjeta: number;
+  AdelantosOrdenBancos: number;
+  VentasEfectivo: number;
+  VentasTarjeta: number;
+  VentasBancos: number;
+  IngresosEfectivo: number;
+  PagosCxCEfectivo: number;
+  PagosCxCTarjeta: number;
+  PagosCxCBancos: number;
+  ComprasEfectivo: number;
+  ComprasBancos: number;
+  EgresosEfectivo: number;
+  PagosCxPEfectivo: number;
+  PagosCxPBancos: number;
+  RetencionTarjeta: number;
+  ComisionTarjeta: number;
+  LiquidacionTarjeta: number;
+  VentasCredito: number;
+  ComprasCredito: number;
+  RetiroEfectivo: number;
+  FondoCierre: number;
+  Observaciones: string;
+};

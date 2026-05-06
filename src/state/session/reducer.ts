@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { sessionInitialState } from "state/InitialState";
 import { RootState } from "state/store";
+import { convertToDateTimeString } from "utils/utilities";
 
 export const sessionSlice = createSlice({
   name: "session",
@@ -55,6 +56,39 @@ export const sessionSlice = createSlice({
     setProcessingTokenMessage: (state, action) => {
       state.processingTokenMessage = action.payload;
     },
+    setCashCloseEntity: (state, action) => {
+      state.cashCloseEntity = action.payload;
+      if (state.cashCloseEntity !== null) {
+        state.cashCloseEntity.FechaCierre = convertToDateTimeString(new Date());
+        state.cashCloseEntity.FondoCierre =
+          action.payload.FondoInicio +
+          action.payload.AdelantosApartadoEfectivo +
+          action.payload.AdelantosOrdenEfectivo +
+          action.payload.IngresosEfectivo +
+          action.payload.PagosCxCEfectivo +
+          action.payload.VentasEfectivo -
+          action.payload.ComprasEfectivo -
+          action.payload.EgresosEfectivo -
+          action.payload.PagosCxPEfectivo;
+      }
+    },
+    setWidthawalAmount: (state, action) => {
+      const cashClose = state.cashCloseEntity;
+      if (cashClose !== null) {
+        cashClose.RetiroEfectivo = action.payload;
+        cashClose.FondoCierre =
+          cashClose.FondoInicio +
+          cashClose.AdelantosApartadoEfectivo +
+          cashClose.AdelantosOrdenEfectivo +
+          cashClose.IngresosEfectivo +
+          cashClose.PagosCxCEfectivo +
+          cashClose.VentasEfectivo -
+          cashClose.ComprasEfectivo -
+          cashClose.EgresosEfectivo -
+          cashClose.PagosCxPEfectivo -
+          action.payload;
+      }
+    },
   },
 });
 
@@ -67,6 +101,8 @@ export const {
   setVendorList,
   setProcessingToken,
   setProcessingTokenMessage,
+  setCashCloseEntity,
+  setWidthawalAmount,
 } = sessionSlice.actions;
 
 export const getAuthenticated = (state: RootState) => state.session.authenticated;
@@ -82,5 +118,6 @@ export const getBranchList = (state: RootState) => state.session.branchList;
 export const getReportList = (state: RootState) => state.session.reportList;
 export const getProcessingToken = (state: RootState) => state.session.processingToken;
 export const getProcessingTokenMessage = (state: RootState) => state.session.processingTokenMessage;
+export const getCashCloseEntity = (state: RootState) => state.session.cashCloseEntity;
 
 export default sessionSlice.reducer;

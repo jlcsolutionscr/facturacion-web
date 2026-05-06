@@ -9,7 +9,7 @@ import { userLogout } from "state/session/asyncActions";
 import { getCompany, getUserId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { DarkModeIcon, LightModeIcon, LogOutIcon, PrinterIcon } from "utils/iconsHelper";
+import { CashCloseIcon, DarkModeIcon, LightModeIcon, LogOutIcon, PrinterIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
   header: {
@@ -17,6 +17,12 @@ const useStyles = makeStyles()(theme => ({
     height: "100px",
   },
   printerConfig: {
+    position: "absolute",
+    top: "10px",
+    right: "8px",
+    zIndex: 2,
+  },
+  cashClose: {
     position: "absolute",
     top: "59px",
     right: "96px",
@@ -114,11 +120,12 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface HeaderProps {
+  setIsCashCloseDialogOpen: (value: boolean) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
 }
 
-export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
+export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDarkMode }: HeaderProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
@@ -154,6 +161,16 @@ export default function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
           </IconButton>
         </Tooltip>
       )}
+      <Tooltip title="Procesar el cierre de efectivo" aria-label="Procesar el cierre de efectivo">
+        <IconButton
+          className={classes.cashClose}
+          aria-label="Procesar el cierre de efectivo"
+          component="span"
+          onClick={() => setIsCashCloseDialogOpen(true)}
+        >
+          <CashCloseIcon className={classes.icon} />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Cambiar tema" aria-label="cambiar tema">
         <IconButton
           className={classes.toogle}

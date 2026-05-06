@@ -37,11 +37,6 @@ const useStyles = makeStyles()(theme => ({
   icon: {
     color: theme.palette.text.primary,
   },
-  summary: {
-    flexDirection: "column",
-    maxWidth: "300px",
-    textAlign: "center",
-  },
   summaryDetails: {
     justifyContent: "center",
     width: "100%",
@@ -57,18 +52,6 @@ const useStyles = makeStyles()(theme => ({
     fontWeight: "700",
     textAlign: "center",
     color: theme.palette.text.primary,
-  },
-  columnRight: {
-    textAlign: "right",
-  },
-  summaryRow: {
-    color: theme.palette.text.primary,
-    lineHeight: "normal",
-  },
-  centered: {
-    display: "flex",
-    margin: "auto",
-    justifyContent: "center",
   },
 }));
 
@@ -256,7 +239,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
         ) : dialogStatus.type === DialogType.UPDATE ? (
           <UpdateProducDialog productId={dialogStatus.id} setDialogStatus={setDialogStatus} />
         ) : (
-          <PaymentDialog classes={classes} summary={summary} status={status} setDialogStatus={setDialogStatus} />
+          <PaymentDialog summary={summary} status={status} setDialogStatus={setDialogStatus} />
         )}
       </Dialog>
     </Grid>

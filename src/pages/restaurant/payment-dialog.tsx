@@ -1,6 +1,7 @@
 import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType, SummaryType } from "types/domain";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -31,6 +32,22 @@ import {
 import { FORM_TYPE, ORDER_STATUS } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
+const useStyles = makeStyles()(theme => ({
+  summaryTitle: {
+    marginTop: "0",
+    fontWeight: "700",
+    textAlign: "center",
+    color: theme.palette.text.primary,
+  },
+  columnRight: {
+    textAlign: "right",
+  },
+  summaryRow: {
+    color: theme.palette.text.primary,
+    lineHeight: "normal",
+  },
+}));
+
 const paymentMethods: { id: number; description: string }[] = [
   { id: 1, description: "EFECTIVO" },
   { id: 2, description: "TARJETA" },
@@ -45,10 +62,10 @@ type PaymentDialogProps = {
   summary: SummaryType;
   status: string;
   setDialogStatus: (value: DialogStatus) => void;
-  classes: any;
 };
 
-export default function PaymentDialog({ summary, status, setDialogStatus, classes }: PaymentDialogProps) {
+export default function PaymentDialog({ summary, status, setDialogStatus }: PaymentDialogProps) {
+  const { classes } = useStyles();
   const [filterText, setFilterText] = useState("");
 
   const dispatch = useDispatch();
