@@ -7,6 +7,7 @@ import {
   login,
   logout,
   setCashCloseEntity,
+  setIsCashCloseSaved,
   setProcessingToken,
   setProcessingTokenMessage,
   setVendorList,
@@ -200,13 +201,6 @@ export const getCashCloseDetails = createAsyncThunk(
     try {
       const cashCloseData = await getCashCloseDetailsRequest(token, companyId, branchId);
       dispatch(setCashCloseEntity(cashCloseData));
-      dispatch(
-        setMessage({
-          message:
-            "La información del cierre de efectivo se generó satisfactoriamente. Por favor procesa a revisar y guardar la información!",
-          type: "INFO",
-        })
-      );
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
@@ -224,6 +218,7 @@ export const saveCashCloseDetails = createAsyncThunk(
       dispatch(startLoader());
       try {
         await saveCashCloseDetailsRequest(token, cashCloseEntity);
+        dispatch(setIsCashCloseSaved(true));
         dispatch(setMessage({ message: "El cierre de efectivo se guardó satisfactoriamente...", type: "INFO" }));
       } catch (error) {
         dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -244,7 +239,6 @@ export const abortCashCloseProcess = createAsyncThunk(
     dispatch(startLoader());
     try {
       await abortCashCloseProcessRequest(token, companyId, branchId);
-      dispatch(setMessage({ message: "El cierre de efectivo fue abortado correctamente...", type: "INFO" }));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());

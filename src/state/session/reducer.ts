@@ -70,13 +70,14 @@ export const sessionSlice = createSlice({
           action.payload.ComprasEfectivo -
           action.payload.EgresosEfectivo -
           action.payload.PagosCxPEfectivo;
+        state.isCashCloseSaved = false;
       }
     },
-    setWidthawalAmount: (state, action) => {
+    setNextCashAmount: (state, action) => {
       const cashClose = state.cashCloseEntity;
       if (cashClose !== null) {
-        cashClose.RetiroEfectivo = action.payload;
-        cashClose.FondoCierre =
+        cashClose.FondoCierre = action.payload;
+        cashClose.RetiroEfectivo =
           cashClose.FondoInicio +
           cashClose.AdelantosApartadoEfectivo +
           cashClose.AdelantosOrdenEfectivo +
@@ -88,6 +89,9 @@ export const sessionSlice = createSlice({
           cashClose.PagosCxPEfectivo -
           action.payload;
       }
+    },
+    setIsCashCloseSaved: (state, action) => {
+      state.isCashCloseSaved = action.payload;
     },
   },
 });
@@ -102,7 +106,8 @@ export const {
   setProcessingToken,
   setProcessingTokenMessage,
   setCashCloseEntity,
-  setWidthawalAmount,
+  setNextCashAmount,
+  setIsCashCloseSaved,
 } = sessionSlice.actions;
 
 export const getAuthenticated = (state: RootState) => state.session.authenticated;
@@ -119,5 +124,6 @@ export const getReportList = (state: RootState) => state.session.reportList;
 export const getProcessingToken = (state: RootState) => state.session.processingToken;
 export const getProcessingTokenMessage = (state: RootState) => state.session.processingTokenMessage;
 export const getCashCloseEntity = (state: RootState) => state.session.cashCloseEntity;
+export const getIsCashCloseSaved = (state: RootState) => state.session.isCashCloseSaved;
 
 export default sessionSlice.reducer;

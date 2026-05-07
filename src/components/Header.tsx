@@ -132,7 +132,7 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
   const userId = useSelector(getUserId);
   const permissions = useSelector(getPermissions);
 
-  const isCashCloseEnabled = permissions.filter(role => role.IdRole === 53).length > 0;
+  const isCashCloseEnabled = permissions.filter(role => [1, 53].includes(role.IdRole)).length > 0;
 
   const title = company?.NombreComercial ?? "";
   const companyIdentifier = company?.Identificacion ?? "";

@@ -56,10 +56,14 @@ export function convertToDateString(date: Date | string) {
 
 export function convertToDateTimeString(date: Date | string, includeTime: boolean = false) {
   if (typeof date === "string") date = new Date(date);
-  const dayFormatted = (date.getDate() < 10 ? "0" : "") + date.getDate();
-  const monthFormatted = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
-  if (includeTime)
-    return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  const dayFormatted = date.getDate().toString().padStart(2, "0");
+  const monthFormatted = (date.getMonth() + 1).toString().padStart(2, "0");
+  if (includeTime) {
+    const hoursFormatted = date.getHours().toString().padStart(2, "0");
+    const minutesFormatted = date.getMinutes().toString().padStart(2, "0");
+    const secondsFormatted = date.getSeconds().toString().padStart(2, "0");
+    return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`;
+  }
   return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T23:59:59`;
 }
 

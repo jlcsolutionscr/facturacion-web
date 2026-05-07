@@ -9,5 +9,6 @@ export default function useUpdateEffect(effect: any, dependencies?: DependencyLi
     } else {
       return effect();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 }

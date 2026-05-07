@@ -28,7 +28,7 @@ import UserPage from "pages/user-page";
 import WorkingOrderPage from "pages/working-order";
 import WorkingOrderListPage from "pages/working-order/list-page";
 import { abortCashCloseProcess } from "state/session/asyncActions";
-import { getCompany } from "state/session/reducer";
+import { getCompany, getIsCashCloseSaved } from "state/session/reducer";
 import { getActiveSection, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
@@ -68,6 +68,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
 
   const activeSection = useSelector(getActiveSection);
   const company = useSelector(getCompany);
+  const isCashClosedSaved = useSelector(getIsCashCloseSaved);
 
   useEffect(() => {
     return () => {
@@ -79,8 +80,8 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
     containeRef.current?.scrollTo(0, 0);
   }, [activeSection]);
 
-  const handleCashCloseDialog = () => {
-    dispatch(abortCashCloseProcess());
+  const handleCashCloseDialogCancel = () => {
+    if (!isCashClosedSaved) dispatch(abortCashCloseProcess());
     setIsCashCloseDialogOpen(false);
   };
 
@@ -118,8 +119,8 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 && <PrinterServiceConfig />}
       </div>
-      <Dialog id="revoke-dialog" onClose={handleCashCloseDialog} open={isCashCloseDialogOpen}>
-        <CashCloseDialogPage onDialogClose={handleCashCloseDialog} />
+      <Dialog id="revoke-dialog" onClose={handleCashCloseDialogCancel} open={isCashCloseDialogOpen}>
+        <CashCloseDialogPage onDialogClose={handleCashCloseDialogCancel} />
       </Dialog>
     </div>
   );

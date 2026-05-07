@@ -67,6 +67,7 @@ type SessionStateType = {
   processingToken: { type: string; id: string };
   processingTokenMessage: string;
   cashCloseEntity: CashCloseType | null;
+  isCashCloseSaved: boolean;
 };
 
 type CompanyStateType = {
@@ -181,6 +182,7 @@ export const sessionInitialState: SessionStateType = {
   processingToken: { type: "reset", id: "" },
   processingTokenMessage: "",
   cashCloseEntity: null,
+  isCashCloseSaved: false,
 };
 
 export const companyInitialState: CompanyStateType = {
