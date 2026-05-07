@@ -54,10 +54,12 @@ export function convertToDateString(date: Date | string) {
   return `${dayFormatted}/${monthFormatted}/${date.getFullYear()}`;
 }
 
-export function convertToDateTimeString(date: Date | string) {
+export function convertToDateTimeString(date: Date | string, includeTime: boolean = false) {
   if (typeof date === "string") date = new Date(date);
   const dayFormatted = (date.getDate() < 10 ? "0" : "") + date.getDate();
   const monthFormatted = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
+  if (includeTime)
+    return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
   return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}T23:59:59`;
 }
 

@@ -59,7 +59,7 @@ export const sessionSlice = createSlice({
     setCashCloseEntity: (state, action) => {
       state.cashCloseEntity = action.payload;
       if (state.cashCloseEntity !== null) {
-        state.cashCloseEntity.FechaCierre = convertToDateTimeString(new Date());
+        state.cashCloseEntity.FechaCierre = convertToDateTimeString(new Date(), true);
         state.cashCloseEntity.FondoCierre =
           action.payload.FondoInicio +
           action.payload.AdelantosApartadoEfectivo +
