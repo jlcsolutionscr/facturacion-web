@@ -264,6 +264,8 @@ export type InvoiceType = {
   successful: boolean;
 };
 
+export type WorkingOrderProductDetails = ProductDetailsType & { orderId: number };
+
 export type WorkingOrderType = {
   id: number;
   servicePointId: number;
@@ -274,7 +276,7 @@ export type WorkingOrderType = {
   activityCode: number;
   customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;
-  productDetailsList: ProductDetailsType[];
+  productDetailsList: WorkingOrderProductDetails[];
   paymentDetailsList: PaymentDetailsType[];
   cashAdvance: number;
   vendorId: number;

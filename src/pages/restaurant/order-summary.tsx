@@ -12,7 +12,8 @@ import PaymentDialog from "pages/restaurant/payment-dialog";
 import RevokeOrderDialog from "pages/restaurant/revoke-order-dialog";
 import UpdateProducDialog from "pages/restaurant/update-product-dialog";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
-import { setActiveSection } from "state/ui/reducer";
+import { getBranchId, getCompanyId } from "state/session/reducer";
+import { getPrinterServerAddress, setActiveSection } from "state/ui/reducer";
 import { removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
   getDeliveryDetails,
@@ -25,6 +26,7 @@ import {
   setProductDetails,
 } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
+import { printPendingTickets } from "utils/domainHelper";
 import { BackArrowIcon, EditIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -78,11 +80,14 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
   const myRef = useRef<HTMLDivElement>(null);
 
   const summary = useSelector(getSummary);
+  const companyId = useSelector(getCompanyId);
+  const branchId = useSelector(getBranchId);
   const workingOrderId = useSelector(getWorkingOrderId);
   const productDetailsList = useSelector(getProductDetailsList);
   const status = useSelector(getStatus);
   const invoiceId = useSelector(getInvoiceId);
   const delivery = useSelector(getDeliveryDetails);
+  const printerServerAddress = useSelector(getPrinterServerAddress);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -124,6 +129,12 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
         <Grid container gap={1}>
           {status !== ORDER_STATUS.CONVERTED ? (
             <>
+              <Grid>
+                <Button
+                  label="Imprimir"
+                  onClick={() => printPendingTickets(companyId, branchId, workingOrderId, printerServerAddress)}
+                />
+              </Grid>
               {status === ORDER_STATUS.READY && (
                 <Grid>
                   {total > 0 && (
@@ -190,7 +201,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
       <Grid container xs={12} className={classes.summaryDetails}>
         {productDetailsList.map((row, index) => {
           return (
-            <Grid key={row.id} container xs={12}>
+            <Grid key={`${row.id}-${index}`} container xs={12}>
               <Grid xs={9}>
                 <Typography overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
                   {row.description}

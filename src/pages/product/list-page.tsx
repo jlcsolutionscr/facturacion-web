@@ -1,12 +1,11 @@
 import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
-import useUpdateEffect from "hooks/useUpdateEffect";
 import {
   filterProductList,
   getProductListByPageNumber,
@@ -103,7 +102,7 @@ export default function ProductListPage() {
 
   const containeRef = useRef<HTMLDivElement>(null);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (containeRef.current) {
       const height = containeRef.current.offsetHeight - 192;
       const rowsPerPage = Math.floor(height / 35);

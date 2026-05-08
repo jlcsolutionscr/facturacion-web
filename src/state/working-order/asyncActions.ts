@@ -1,4 +1,3 @@
-import { CustomerDetailsType, DetalleProductoType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
@@ -23,7 +22,7 @@ import {
   setWorkingOrderListPage,
 } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
-import { defaultCustomerDetails, defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
+import { defaultCustomerDetails, defaultPaymentDetails } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
@@ -43,7 +42,8 @@ import {
   saveInvoiceEntity,
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
-import { convertToDateString, getErrorMessage, roundNumber } from "utils/utilities";
+import { parseWorkingOrderEntity } from "utils/store/working-order";
+import { getErrorMessage, roundNumber } from "utils/utilities";
 
 const ROWS_PER_PRODUCT = 25;
 
@@ -109,11 +109,14 @@ export const addDetails = createAsyncThunk(
         let newProducts = null;
         const newItem = {
           id: loadedProductDetails.id,
+          orderId: 0,
           code: loadedProductDetails.code,
           description: loadedProductDetails.description,
           quantity: loadedProductDetails.quantity,
           unit: loadedProductDetails.unit,
-          price: loadedProductDetails.price,
+          price: company.PrecioVentaIncluyeIVA
+            ? loadedProductDetails.price
+            : roundNumber(loadedProductDetails.price * (1 + loadedProductDetails.taxRate / 100), 2),
           taxRate: loadedProductDetails.taxRate,
           costPrice: loadedProductDetails.costPrice,
           disccountRate: loadedProductDetails.disccountRate,
@@ -189,7 +192,13 @@ export const saveWorkingOrder = createAsyncThunk(
     try {
       const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
       if (ids) {
-        dispatch(setWorkingOrder({ ...entity, id: ids.id, consecutive: ids.consecutive }));
+        const savedEntity = {
+          ...entity,
+          id: ids.id,
+          consecutive: ids.consecutive,
+          productDetailsList: entity.productDetailsList.map(details => ({ ...details, orderId: ids.id })),
+        };
+        dispatch(setWorkingOrder(savedEntity));
         const index = servicePointList.findIndex(item => item.Id === entity.servicePointId);
         const newList = [
           ...servicePointList.slice(0, index),
@@ -317,66 +326,17 @@ export const openWorkingOrder = createAsyncThunk(
   "working-order/openWorkingOrder",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token } = session;
+    const { token, vendorList, company } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     try {
       const workingOrder = await getWorkingOrderEntity(token, payload.id);
+      const workingOrderEntity = parseWorkingOrderEntity(workingOrder);
+      dispatch(setWorkingOrder(workingOrderEntity));
       dispatch(setServicePointId(0));
-      const customerDetails: CustomerDetailsType = {
-        id: workingOrder.IdCliente,
-        name: workingOrder.NombreCliente,
-        comercialName: workingOrder.NombreComercial,
-        email: workingOrder.CorreoElectronico,
-        phoneNumber: workingOrder.Telefono,
-        activityCode: workingOrder.Cliente.CodigoActividad,
-        exonerationType: workingOrder.Cliente.IdTipoExoneracion,
-        exoneratedById: workingOrder.Cliente.IdNombreInstExoneracion,
-        exonerationRef: workingOrder.Cliente.NumDocExoneracion,
-        exonerationRef2: workingOrder.Cliente.ArticuloExoneracion,
-        exonerationRef3: workingOrder.Cliente.IncisoExoneracion,
-        exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
-        exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
-        priceTypeId: workingOrder.Cliente.IdTipoPrecio,
-      };
-      const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
-        id: item.IdProducto,
-        quantity: item.Cantidad,
-        code: item.Codigo,
-        description: item.Descripcion,
-        taxRate: item.PorcentajeIVA,
-        unit: "UND",
-        price: item.PrecioVenta,
-        costPrice: item.Producto.PrecioCosto,
-        disccountRate: 0,
-      }));
-      const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
-      dispatch(
-        setWorkingOrder({
-          id: workingOrder.IdOrden,
-          consecutive: workingOrder.ConsecOrdenServicio,
-          date: convertToDateString(workingOrder.Fecha),
-          cashAdvance: workingOrder.MontoAdelanto,
-          invoiceId: 0,
-          status: ORDER_STATUS.READY,
-          activityCode: workingOrder.CodigoActividad,
-          customerDetails,
-          productDetails: defaultProductDetails,
-          productDetailsList,
-          paymentDetailsList: [defaultPaymentDetails],
-          vendorId: workingOrder.IdVendedor,
-          currency: workingOrder.IdTipoMoneda,
-          summary,
-          delivery: {
-            phone: workingOrder.Telefono,
-            address: workingOrder.Direccion,
-            description: workingOrder.Descripcion,
-            date: workingOrder.FechaEntrega,
-            time: workingOrder.HoraEntrega,
-            details: workingOrder.OtrosDetalles,
-          },
-        })
-      );
+      dispatch(setVendorId(vendorList[0].Id));
+      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+      dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -437,64 +397,11 @@ export const openServicePoint = createAsyncThunk(
       }
       const workingOrder = servicePoint.IdOrden > 0 ? await getWorkingOrderEntity(token, servicePoint.IdOrden) : null;
       if (workingOrder !== null) {
-        const customerDetails: CustomerDetailsType = {
-          id: workingOrder.IdCliente,
-          name: workingOrder.NombreCliente,
-          comercialName: workingOrder.NombreComercial,
-          email: workingOrder.CorreoElectronico,
-          phoneNumber: workingOrder.Telefono,
-          activityCode: workingOrder.Cliente.CodigoActividad,
-          exonerationType: workingOrder.Cliente.IdTipoExoneracion,
-          exoneratedById: workingOrder.Cliente.IdNombreInstExoneracion,
-          exonerationRef: workingOrder.Cliente.NumDocExoneracion,
-          exonerationRef2: workingOrder.Cliente.ArticuloExoneracion,
-          exonerationRef3: workingOrder.Cliente.IncisoExoneracion,
-          exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
-          exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
-          priceTypeId: workingOrder.Cliente.IdTipoPrecio,
-        };
-        const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
-          id: item.IdProducto,
-          quantity: item.Cantidad,
-          code: item.Codigo,
-          description: item.Descripcion,
-          taxRate: item.PorcentajeIVA,
-          unit: "UND",
-          price: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
-          costPrice: item.Producto.PrecioCosto,
-        }));
-        const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
-        dispatch(
-          setWorkingOrder({
-            id: workingOrder.IdOrden,
-            consecutive: workingOrder.ConsecOrdenServicio,
-            date: convertToDateString(workingOrder.Fecha),
-            cashAdvance: workingOrder.MontoAdelanto,
-            invoiceId: 0,
-            status: ORDER_STATUS.READY,
-            activityCode: workingOrder.CodigoActividad,
-            customerDetails,
-            productDetails: defaultProductDetails,
-            productDetailsList,
-            paymentDetailsList: [defaultPaymentDetails],
-            vendorId: workingOrder.IdVendedor,
-            currency: workingOrder.IdTipoMoneda,
-            summary,
-            delivery: {
-              phone: workingOrder.Telefono,
-              address: workingOrder.Direccion,
-              description: workingOrder.Descripcion,
-              date: workingOrder.FechaEntrega,
-              time: workingOrder.HoraEntrega,
-              details: workingOrder.OtrosDetalles,
-            },
-          })
-        );
+        const workingOrderEntity = parseWorkingOrderEntity(workingOrder);
+        dispatch(setWorkingOrder(workingOrderEntity));
       }
-      dispatch(setCustomerDetails(defaultCustomerDetails));
       dispatch(setServicePointId(servicePoint.IdPunto));
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(stopLoader());

@@ -602,8 +602,7 @@ export function getCustomerPrice(
       customerPrice = product.PrecioVenta1;
   }
   if (!priceIncludedTaxes) {
-    const taxPercentage = 1 + taxRate / 100;
-    customerPrice = roundNumber(customerPrice / taxPercentage, 2);
+    customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
   }
   return { taxRate, price: customerPrice };
 }

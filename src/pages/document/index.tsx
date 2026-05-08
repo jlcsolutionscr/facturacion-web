@@ -11,7 +11,6 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 
-import useUpdateEffect from "hooks/useUpdateEffect";
 import {
   getDocumentDetails as getDocumentDetailsAction,
   getDocumentListByPageNumber,
@@ -98,7 +97,7 @@ export default function DocumentListPage() {
 
   const containeRef = useRef<HTMLDivElement>(null);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (containeRef.current) {
       const height = containeRef.current.offsetHeight - 122;
       const rowsPerPage = Math.floor(height / 35);

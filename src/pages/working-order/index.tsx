@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
@@ -11,7 +11,7 @@ import ProductDetails from "components//product-details-screen";
 import CustomerDetails from "components/customer-details-screen";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
-import { getProductDetails as getProductDetailsAction } from "state/product/asyncActions";
+import { getProductDetails as getProductDetailsAction, getProductListFirstPage } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage } from "state/product/reducer";
 import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
@@ -111,6 +111,16 @@ export default function WorkingOrderPage() {
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    dispatch(
+      getProductListFirstPage({
+        filterText: "",
+        type: 2,
+        rowsPerPage: 8,
+      })
+    );
+  }, [dispatch]);
 
   return (
     <div className={classes.container}>

@@ -1,5 +1,5 @@
 import { Button, DataGrid } from "jlc-component-library";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
@@ -9,7 +9,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
-import useUpdateEffect from "hooks/useUpdateEffect";
 import { setActiveSection } from "state/ui/reducer";
 import {
   generatePDF,
@@ -81,7 +80,7 @@ export default function WorkingOrderListPage() {
 
   const containeRef = useRef<HTMLDivElement>(null);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (containeRef.current) {
       const height = containeRef.current.offsetHeight - 122;
       const rowsPerPage = Math.floor(height / 35);
