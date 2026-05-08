@@ -1,4 +1,4 @@
-import { Button, LabelField, TextField } from "jlc-component-library";
+import { Button, TextField } from "jlc-component-library";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import DialogActions from "@mui/material/DialogActions";
