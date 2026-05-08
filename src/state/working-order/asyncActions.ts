@@ -118,19 +118,7 @@ export const addDetails = createAsyncThunk(
           costPrice: loadedProductDetails.costPrice,
           disccountRate: loadedProductDetails.disccountRate,
         };
-        const index = productDetailsList.findIndex(item => item.id === newItem.id && item.price === newItem.price);
-        if (index >= 0) {
-          newProducts = [
-            ...productDetailsList.slice(0, index),
-            {
-              ...newItem,
-              quantity: productDetailsList[index].quantity + newItem.quantity,
-            },
-            ...productDetailsList.slice(index + 1),
-          ];
-        } else {
-          newProducts = [...productDetailsList, newItem];
-        }
+        newProducts = [...productDetailsList, newItem];
         dispatch(setProductDetailsList(newProducts));
         const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
         dispatch(setSummary(summary));
@@ -159,6 +147,7 @@ export const updateDetails = createAsyncThunk(
               ...productDetailsList.slice(0, index),
               {
                 ...productDetailsList[index],
+                description: productDetails.description,
                 price: productDetails.price,
                 quantity: productDetails.quantity,
               },

@@ -24,7 +24,7 @@ const workingOrderSlice = createSlice({
       state.entity.productDetails = action.payload;
     },
     setDescription: (state, action) => {
-      state.entity.delivery.description = action.payload;
+      state.entity.productDetails.description = action.payload;
     },
     setQuantity: (state, action) => {
       state.entity.productDetails.quantity = action.payload;

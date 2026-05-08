@@ -1299,7 +1299,7 @@ export async function printPendingTickets(
 
       try {
         const header = encoder
-          .codepage("cp850")
+          .height(2)
           .align("center")
           .newline(2)
           .line(ticket.Etiqueta)
@@ -1324,8 +1324,7 @@ export async function printPendingTickets(
               .newline()
               .encode()
           : new Uint8Array(0);
-        const footer = encoder.line("FIN DE PEDIDO").newline(2).cut("partial").encode();
-        // Create a new array with total length and merge all source arrays.
+        const footer = encoder.line("FIN DE PEDIDO").newline(2).line("-").cut("partial").encode();
         result = [...header, ...details, ...footer];
       } catch (ex: any) {
         alert("Encoding failed:" + ex.message);
@@ -1338,8 +1337,8 @@ export async function printPendingTickets(
       )
         .then(async () => {
           const ticket = tickets[i];
-          const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
-          await get(APP_URL + queryUrl, "");
+          /*const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
+          await get(APP_URL + queryUrl, "");*/
         })
         .catch(error => {
           throw new Error(error);

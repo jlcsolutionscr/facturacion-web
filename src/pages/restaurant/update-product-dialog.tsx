@@ -9,7 +9,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
 import { getPermissions } from "state/session/reducer";
 import { updateDetails } from "state/working-order/asyncActions";
-import { getProductDetails, setPrice, setQuantity } from "state/working-order/reducer";
+import { getProductDetails, setDescription, setPrice, setQuantity } from "state/working-order/reducer";
 import { parseStringToNumber } from "utils/utilities";
 
 type UpdateProducDialogProps = {
@@ -35,7 +35,12 @@ export default function UpdateProducDialog({ productId, setDialogStatus }: Updat
         <Box sx={{ paddingTop: { xs: 1, sm: 2 } }}>
           <Grid container gap={{ xs: 1, sm: 2 }}>
             <Grid xs={12}>
-              <LabelField label="Descripción" id="Descripcion" value={productDetails.description} />
+              <TextField
+                label="Descripción"
+                id="Descripcion"
+                value={productDetails.description}
+                onChange={event => dispatch(setDescription(event.target.value))}
+              />
             </Grid>
             <Grid xs={3}>
               <TextField
