@@ -1337,8 +1337,8 @@ export async function printPendingTickets(
       )
         .then(async () => {
           const ticket = tickets[i];
-          /*const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
-          await get(APP_URL + queryUrl, "");*/
+          const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
+          await get(APP_URL + queryUrl, "");
         })
         .catch(error => {
           throw new Error(error);
