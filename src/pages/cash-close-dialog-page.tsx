@@ -1,4 +1,5 @@
 import { Button, TextField } from "jlc-component-library";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,7 +8,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import useUpdateEffect from "hooks/useUpdateEffect";
 import { getCashCloseDetails, saveCashCloseDetails } from "state/session/asyncActions";
 import { getCashCloseEntity, getIsCashCloseSaved, setNextCashAmount } from "state/session/reducer";
 import { formatCurrency, parseStringToNumber } from "utils/utilities";
@@ -59,7 +59,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
   const cashCloseDetails = useSelector(getCashCloseEntity);
   const isCashClosedSaved = useSelector(getIsCashCloseSaved);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     dispatch(getCashCloseDetails());
   }, [dispatch]);
 
