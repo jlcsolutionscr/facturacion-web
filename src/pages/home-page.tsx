@@ -4,7 +4,7 @@ import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
 
 import BannerImage from "assets/img/home-background.webp";
-import Header from "components/header";
+import Header from "components/header-bar";
 import CashCloseDialogPage from "pages/cash-close-dialog-page";
 import CategoryPage from "pages/category/index";
 import CategoryLisPage from "pages/category/list-page";
