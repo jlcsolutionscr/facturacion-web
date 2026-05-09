@@ -109,6 +109,7 @@ export const defaultProductDetails: ProductDetailsType = {
   id: 0,
   code: "",
   description: "",
+  additionalInformation: "",
   quantity: 1,
   taxRate: 13,
   unit: "UND",

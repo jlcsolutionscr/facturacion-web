@@ -61,6 +61,7 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
         id: productDetails.id,
         code: productDetails.code,
         description: productDetails.description,
+        additionalInformation: "",
         quantity: productDetails.quantity,
         taxRate: productDetails.taxRate,
         unit: "UND",

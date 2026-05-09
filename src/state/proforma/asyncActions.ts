@@ -59,6 +59,7 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
         id: productDetails.id,
         code: productDetails.code,
         description: productDetails.description,
+        additionalInformation: "",
         quantity: productDetails.quantity,
         taxRate: productDetails.taxRate,
         unit: "UND",

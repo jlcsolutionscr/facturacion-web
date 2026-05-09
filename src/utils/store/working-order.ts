@@ -28,6 +28,7 @@ export function parseWorkingOrderEntity(workingOrder: any) {
     quantity: item.Cantidad,
     code: item.Codigo,
     description: item.Descripcion,
+    additionalInformation: item.InformacionAdicional,
     taxRate: item.PorcentajeIVA,
     unit: "UND",
     price: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),

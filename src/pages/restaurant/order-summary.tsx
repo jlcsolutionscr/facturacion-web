@@ -10,10 +10,10 @@ import Grid from "@mui/material/Unstable_Grid2";
 import ClearOrderDialog from "pages/restaurant/clear-order-dialog";
 import PaymentDialog from "pages/restaurant/payment-dialog";
 import RevokeOrderDialog from "pages/restaurant/revoke-order-dialog";
-import UpdateProducDialog from "pages/restaurant/update-product-dialog";
+import TicketsDialog from "pages/restaurant/tickets-dialog";
+import UpdateProductDialog from "pages/restaurant/update-product-dialog";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
-import { getBranchId, getCompanyId } from "state/session/reducer";
-import { getPrinterServerAddress, setActiveSection } from "state/ui/reducer";
+import { setActiveSection } from "state/ui/reducer";
 import { removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
   getDeliveryDetails,
@@ -26,7 +26,6 @@ import {
   setProductDetails,
 } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
-import { printPendingTickets } from "utils/domainHelper";
 import { BackArrowIcon, EditIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
@@ -67,6 +66,7 @@ export enum DialogType {
   REVOKE = "REVOKE",
   UPDATE = "UPDATE",
   PAYMENT = "PAYMENT",
+  TICKETS = "TICKETS",
 }
 
 export type DialogStatus = { status: boolean; id: number; type: string };
@@ -80,14 +80,11 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
   const myRef = useRef<HTMLDivElement>(null);
 
   const summary = useSelector(getSummary);
-  const companyId = useSelector(getCompanyId);
-  const branchId = useSelector(getBranchId);
   const workingOrderId = useSelector(getWorkingOrderId);
   const productDetailsList = useSelector(getProductDetailsList);
   const status = useSelector(getStatus);
   const invoiceId = useSelector(getInvoiceId);
   const delivery = useSelector(getDeliveryDetails);
-  const printerServerAddress = useSelector(getPrinterServerAddress);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -131,8 +128,8 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
             <>
               <Grid>
                 <Button
-                  label="Imprimir"
-                  onClick={() => printPendingTickets(companyId, branchId, workingOrderId, printerServerAddress)}
+                  label="Tiquetes"
+                  onClick={() => setDialogStatus({ status: true, id: workingOrderId, type: DialogType.TICKETS })}
                 />
               </Grid>
               {status === ORDER_STATUS.READY && (
@@ -215,6 +212,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
               </Grid>
               <Grid xs={1.5}>
                 <IconButton
+                  disabled={row.orderId > 0}
                   style={{ padding: 0 }}
                   color="primary"
                   component="span"
@@ -225,6 +223,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
               </Grid>
               <Grid xs={1.5} textAlign="end">
                 <IconButton
+                  disabled={row.orderId > 0}
                   style={{ padding: 0 }}
                   color="secondary"
                   component="span"
@@ -239,7 +238,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
       </Grid>
 
       <Dialog
-        id="revoke-dialog"
+        id="order-summary-dialog"
         onClose={() => setDialogStatus({ status: false, id: 0, type: dialogStatus.type })}
         open={dialogStatus.status}
       >
@@ -248,7 +247,9 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
         ) : dialogStatus.type === DialogType.REVOKE ? (
           <RevokeOrderDialog workingOrderId={workingOrderId} setDialogStatus={setDialogStatus} />
         ) : dialogStatus.type === DialogType.UPDATE ? (
-          <UpdateProducDialog productId={dialogStatus.id} setDialogStatus={setDialogStatus} />
+          <UpdateProductDialog productId={dialogStatus.id} setDialogStatus={setDialogStatus} />
+        ) : dialogStatus.type === DialogType.TICKETS ? (
+          <TicketsDialog setDialogStatus={setDialogStatus} />
         ) : (
           <PaymentDialog summary={summary} status={status} setDialogStatus={setDialogStatus} />
         )}

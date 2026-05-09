@@ -801,6 +801,7 @@ export async function saveWorkingOrderEntity(
       IdProducto: item.id,
       Codigo: item.code,
       Descripcion: item.description,
+      InformacionAdicional: item.additionalInformation,
       Cantidad: item.quantity,
       PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
@@ -837,7 +838,7 @@ export async function saveWorkingOrderEntity(
     MontoPagado: 0,
     Nulo: false,
     DetalleOrdenServicio: workingOrderDetails,
-    IdPuntoServicio: order.servicePointId,
+    IdPuntoDeServicio: order.servicePointId,
   };
   const data =
     "{NombreMetodo: '" +
@@ -1259,24 +1260,33 @@ export async function abortCashCloseProcess(token: string, companyId: number, br
   return response;
 }
 
-export async function printPendingTickets(
+export async function getPrintingTickets(
+  token: string,
   companyId: number,
   branchId: number,
   orderId: number,
-  printerServerAddress: string
+  pendingFiltering: boolean
 ) {
-  const queryUrl =
-    "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" +
+  const data =
+    "{NombreMetodo: 'ObtenerListadoTiqueteOrdenServicio', Parametros: {IdEmpresa: " +
     companyId +
-    "&idsucursal=" +
+    ", IdSucursal: " +
     branchId +
-    "&idorden=" +
-    orderId;
-  const response = await getWithResponse(APP_URL + queryUrl, "");
-  if (response !== null) {
-    const tickets = response;
+    ", IdOrden: " +
+    orderId +
+    ", FiltrarPendientes: " +
+    pendingFiltering +
+    "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return [];
+  return response;
+}
+
+export async function printPendingTickets(tickets: any, printerServerAddress: string) {
+  return new Promise((resolve, reject) => {
+    const promiseParams = [];
     for (let i = 0; i < tickets.length; i++) {
-      let result;
+      let result: any;
       const ticket = tickets[i];
       const ticketLines = JSON.parse(ticket.DetalleTiqueteOrdenServicio);
       const lines = ticketLines.map((line: { Descripcion: string; Valor: number }) => [
@@ -1323,54 +1333,59 @@ export async function printPendingTickets(
               .newline()
               .encode()
           : new Uint8Array(0);
-        const footer = encoder.line("FIN DE PEDIDO").newline(2).line("-").cut("partial").encode();
+        const footer = encoder.line("FIN DE PEDIDO").newline(4).cut("partial").encode();
         result = [...header, ...details, ...footer];
       } catch (ex: any) {
-        alert("Encoding failed:" + ex.message);
-        return;
+        console.error("Encoding failed:" + ex.message);
+        reject("Error al procesar la información del tiquete!");
       }
-      sentBytesToAndroidPrinter(
-        btoa(String.fromCharCode.apply(null, [...result])),
-        printerServerAddress,
-        ticket.Impresora
-      )
-        .then(async () => {
-          const ticket = tickets[i];
-          const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticket.IdTiquete;
-          await get(APP_URL + queryUrl, "");
-        })
-        .catch(error => {
-          throw new Error(error);
-        });
+      promiseParams.push({
+        data: btoa(String.fromCharCode.apply(null, [...result])),
+        address: printerServerAddress,
+        printer: ticket.Impresora,
+        orderId: ticket.IdOrden,
+      });
     }
-  }
+    const printingPromises = promiseParams.map(param =>
+      sentBytesToAndroidPrinter(param.data, param.address, param.printer, param.orderId)
+    );
+    return Promise.all(printingPromises)
+      .then(() => {
+        resolve("Finished");
+      })
+      .catch(() => {
+        reject(new Error("No se logró imprimir los tiquetes de la orden. Por favor intente la reimpresión!"));
+      });
+  });
 }
 
-function sentBytesToAndroidPrinter(base64: string, printerServerAddress: string, printerName: string) {
+function sentBytesToAndroidPrinter(
+  base64: string,
+  printerServerAddress: string,
+  printerName: string,
+  ticketId: number
+) {
   return new Promise((resolve, reject) => {
-    try {
-      const socket = new WebSocket(printerServerAddress);
-      socket.onerror = function (error) {
-        console.error("Unabled to connect to socket", error);
-        reject("Socket connection failed!");
+    const socket = new WebSocket(printerServerAddress);
+    socket.onerror = function (error) {
+      console.error("Unabled to connect to socket", error);
+      reject(new Error("No se logró comunicar con el servidor de impresión. Por favor intente la reimpresión!"));
+    };
+    socket.onopen = function () {
+      const message = {
+        commands: [
+          {
+            command: "sendBytes",
+            base64,
+          },
+        ],
+        printer: printerName,
       };
-      socket.onopen = function () {
-        const message = {
-          commands: [
-            {
-              command: "sendBytes",
-              base64,
-            },
-          ],
-          printer: printerName,
-        };
-        socket.send(JSON.stringify(message));
-        socket.close(1000, "Work complete");
-        resolve("Operation successful!");
-      };
-    } catch (ex) {
-      console.error("Exception on Android printing service", ex);
-      reject("Exepction on websocket printing request!");
-    }
+      socket.send(JSON.stringify(message));
+      socket.close(1000, "Work complete");
+      const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticketId;
+      get(APP_URL + queryUrl, "");
+      resolve("Success!");
+    };
   });
 }

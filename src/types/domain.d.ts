@@ -144,6 +144,7 @@ export type DetalleProductoType = {
   IdProducto: number;
   Codigo: string;
   Descripcion: string;
+  InformacionAdicional: string;
   PrecioCosto: number;
   PrecioVenta: number;
   Excento: boolean;
@@ -213,6 +214,7 @@ export type ProductDetailsType = {
   quantity: number;
   code: string;
   description: string;
+  additionalInformation: string;
   taxRate: number;
   taxRateType?: number;
   unit: string;
@@ -361,4 +363,17 @@ export type CashCloseType = {
   RetiroEfectivo: number;
   FondoCierre: number;
   Observaciones: string;
+};
+
+export type PrintingTicketType = {
+  IdTiquete: number;
+  IdOrden: number;
+  IdEmpresa: number;
+  IdSucursal: number;
+  FechaEmision: string;
+  Etiqueta: string;
+  Descripcion: string;
+  Impresora: string;
+  DetalleTiqueteOrdenServicio: string;
+  Impreso: boolean;
 };

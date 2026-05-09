@@ -10,6 +10,7 @@ import {
   setCustomerDetails,
   setInvoiceId,
   setPaymentDetailsList,
+  setPrintingTicketList,
   setProductDetailsList,
   setServicePointId,
   setServicePointList,
@@ -27,6 +28,7 @@ import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
   getCustomerPrice,
+  getPrintingTickets,
   getProductCategoryList,
   getProductEntity,
   getProductListCount,
@@ -89,6 +91,7 @@ export const addDetails = createAsyncThunk(
         quantity: 1,
         code: "",
         description: product.Descripcion,
+        additionalInformation: "",
         taxRate,
         unit: "UND",
         price,
@@ -110,6 +113,7 @@ export const addDetails = createAsyncThunk(
           orderId: 0,
           code: loadedProductDetails.code,
           description: loadedProductDetails.description,
+          additionalInformation: "",
           quantity: loadedProductDetails.quantity,
           unit: loadedProductDetails.unit,
           price: company.PrecioVentaIncluyeIVA
@@ -148,7 +152,7 @@ export const updateDetails = createAsyncThunk(
               ...productDetailsList.slice(0, index),
               {
                 ...productDetailsList[index],
-                description: productDetails.description,
+                additionalInformation: productDetails.additionalInformation,
                 price: productDetails.price,
                 quantity: productDetails.quantity,
               },
@@ -209,23 +213,92 @@ export const saveWorkingOrder = createAsyncThunk(
         dispatch(setServicePointList(newList));
       }
       dispatch(setStatus(ORDER_STATUS.READY));
-      dispatch(
-        setMessage({
-          message: "Transacción completada satisfactoriamente",
-          type: "INFO",
-        })
-      );
-      dispatch(stopLoader());
-      if (entity.servicePointId > 0 && ui.printerServerAddress !== "") {
-        await printPendingTickets(
-          session.companyId,
-          session.branchId,
-          entity.id || ids?.id || 0,
-          ui.printerServerAddress
-        );
+      let message = {
+        message: "Transacción completada satisfactoriamente",
+        type: "INFO",
+      };
+      if (entity.servicePointId > 0 && entity.id > 0 && ui.printerServerAddress !== "") {
+        try {
+          const pendingTickets = await getPrintingTickets(
+            session.token,
+            session.companyId,
+            session.branchId,
+            entity.id,
+            true
+          );
+          if (pendingTickets.length > 0) {
+            await printPendingTickets(pendingTickets, ui.printerServerAddress);
+          }
+        } catch {
+          message = {
+            message: "No se logró imprimir los tiquetes de la orden. Por favor intente la reimpresión",
+            type: "ERROR",
+          };
+        }
       }
+      dispatch(stopLoader());
+      dispatch(setMessage(message));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getPrintingTicketList = createAsyncThunk(
+  "working-order/printWorkingOrderPendingTickets",
+  async (_payload, { getState, dispatch }) => {
+    const { session, workingOrder } = getState() as RootState;
+    dispatch(startLoader());
+    try {
+      const orderPrintingTickets = await getPrintingTickets(
+        session.token,
+        session.companyId,
+        session.branchId,
+        workingOrder.entity.id,
+        false
+      );
+      dispatch(setPrintingTicketList(orderPrintingTickets));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const printWorkingOrderTicket = createAsyncThunk(
+  "working-order/printWorkingOrderPendingTickets",
+  async (payload: { ticketId: number }, { getState, dispatch }) => {
+    const { ui, workingOrder } = getState() as RootState;
+    dispatch(startLoader());
+    try {
+      const tickets = workingOrder.printingTicketList.filter(ticket => ticket.IdTiquete === payload.ticketId);
+      printPendingTickets(tickets, ui.printerServerAddress)
+        .then(() => {
+          const newPrintingTicketList = workingOrder.printingTicketList.map(ticket => ({
+            ...ticket,
+            Impreso: ticket.IdTiquete === payload.ticketId ? true : ticket.Impreso,
+          }));
+          dispatch(setPrintingTicketList(newPrintingTicketList));
+          dispatch(stopLoader());
+        })
+        .catch((ex: any) => {
+          dispatch(stopLoader());
+          dispatch(
+            setMessage({
+              message: ex.message,
+              type: "ERROR",
+            })
+          );
+        });
+    } catch {
+      dispatch(
+        setMessage({
+          message: "No se logró imprimir los tiquetes de la orden. Por favor intente la reimpresión",
+          type: "ERROR",
+        })
+      );
       dispatch(stopLoader());
     }
   }

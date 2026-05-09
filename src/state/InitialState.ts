@@ -13,6 +13,7 @@ import {
   InvoiceType,
   LlaveDescriptionType,
   PermissionType,
+  PrintingTicketType,
   ProductType,
   ProformaType,
   ReceiptType,
@@ -122,6 +123,7 @@ type WorkingOrderStateType = {
   listCount: number;
   list: InvoiceEntityType[];
   servicePointList: IdDescriptionValueType[];
+  printingTicketList: PrintingTicketType[];
 };
 
 type ProformaStateType = {
@@ -237,6 +239,7 @@ export const workingOrderInitialState: WorkingOrderStateType = {
   listCount: 0,
   list: [],
   servicePointList: [],
+  printingTicketList: [],
 };
 
 export const proformaInitialState: ProformaStateType = {

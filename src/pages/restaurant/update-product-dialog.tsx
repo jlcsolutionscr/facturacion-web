@@ -1,4 +1,4 @@
-import { Button, TextField } from "jlc-component-library";
+import { Button, LabelField, TextField } from "jlc-component-library";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,15 +9,15 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
 import { getPermissions } from "state/session/reducer";
 import { updateDetails } from "state/working-order/asyncActions";
-import { getProductDetails, setDescription, setPrice, setQuantity } from "state/working-order/reducer";
+import { getProductDetails, setAdditionalInformation, setPrice, setQuantity } from "state/working-order/reducer";
 import { parseStringToNumber } from "utils/utilities";
 
-type UpdateProducDialogProps = {
+type UpdateProductDialogProps = {
   productId: number;
   setDialogStatus: (value: DialogStatus) => void;
 };
 
-export default function UpdateProducDialog({ productId, setDialogStatus }: UpdateProducDialogProps) {
+export default function UpdateProductDialog({ productId, setDialogStatus }: UpdateProductDialogProps) {
   const dispatch = useDispatch();
   const productDetails = useSelector(getProductDetails);
   const permissions = useSelector(getPermissions);
@@ -35,13 +35,17 @@ export default function UpdateProducDialog({ productId, setDialogStatus }: Updat
         <Box sx={{ paddingTop: { xs: 1, sm: 2 } }}>
           <Grid container gap={{ xs: 1, sm: 2 }}>
             <Grid xs={12}>
+              <LabelField label="Descripción" id="Descripcion" value={productDetails.description} />
+            </Grid>
+            <Grid xs={12}>
               <TextField
-                label="Descripción"
-                id="Descripcion"
-                value={productDetails.description}
-                onChange={event => dispatch(setDescription(event.target.value))}
+                label="Información adicional"
+                id="InformacionAdicional"
+                value={productDetails.additionalInformation}
+                onChange={event => dispatch(setAdditionalInformation(event.target.value))}
               />
             </Grid>
+
             <Grid xs={3}>
               <TextField
                 label="Cantidad"
