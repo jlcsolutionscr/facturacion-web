@@ -45,8 +45,6 @@ import {
 import { parseWorkingOrderEntity } from "utils/store/working-order";
 import { getErrorMessage, roundNumber } from "utils/utilities";
 
-const ROWS_PER_PRODUCT = 25;
-
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
   async (_payload, { getState, dispatch }) => {
@@ -368,7 +366,7 @@ export const openServicePoint = createAsyncThunk(
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
     const { token, company, vendorList, branchId, companyId } = session;
-    const { list, categoryList } = product;
+    const { categoryList } = product;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     dispatch(resetWorkingOrder());
@@ -378,23 +376,11 @@ export const openServicePoint = createAsyncThunk(
         const categoryList = await getProductCategoryList(token, companyId);
         dispatch(setCategoryList(categoryList));
       }
-      if (list.length === 0) {
-        const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
-        const productList = await getProductListPerPage(
-          token,
-          companyId,
-          branchId,
-          true,
-          1,
-          ROWS_PER_PRODUCT,
-          "",
-          true,
-          1
-        );
-        dispatch(setProductListPage(1));
-        dispatch(setProductListCount(productCount));
-        dispatch(setProductList(productList));
-      }
+      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, productCount, "", true, 1);
+      dispatch(setProductListPage(1));
+      dispatch(setProductListCount(productCount));
+      dispatch(setProductList(productList));
       const workingOrder = servicePoint.IdOrden > 0 ? await getWorkingOrderEntity(token, servicePoint.IdOrden) : null;
       if (workingOrder !== null) {
         const workingOrderEntity = parseWorkingOrderEntity(workingOrder);
@@ -408,37 +394,6 @@ export const openServicePoint = createAsyncThunk(
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
-    }
-  }
-);
-
-export const loadMoreProductsToList = createAsyncThunk(
-  "working-order/loadMoreProductsToList",
-  async (_payload, { getState, dispatch }) => {
-    const { session, product } = getState() as RootState;
-    const { token, branchId, companyId } = session;
-    const { list, listPage, listCount } = product;
-    if (list.length < listCount) {
-      try {
-        dispatch(startLoader());
-        const productList = await getProductListPerPage(
-          token,
-          companyId,
-          branchId,
-          true,
-          listPage + 1,
-          ROWS_PER_PRODUCT,
-          "",
-          true,
-          1
-        );
-        dispatch(setProductListPage(listPage + 1));
-        dispatch(setProductList(list.concat(productList)));
-      } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      } finally {
-        dispatch(stopLoader());
-      }
     }
   }
 );

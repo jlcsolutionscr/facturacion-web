@@ -5,8 +5,8 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import ProductCard from "pages/restaurant/components/product-card";
-import { getCategoryList, getProductList, getProductListCount } from "state/product/reducer";
-import { addDetails, loadMoreProductsToList } from "state/working-order/asyncActions";
+import { getCategoryList, getProductList } from "state/product/reducer";
+import { addDetails } from "state/working-order/asyncActions";
 
 interface ProductListProps {
   value?: number;
@@ -18,29 +18,13 @@ export default function ProductList({ value }: ProductListProps) {
   const [category, setCategory] = useState(-1);
 
   const myRef = useRef<HTMLDivElement>(null);
-  const loader = useRef(null);
 
   const productList = useSelector(getProductList);
-  const productListCount = useSelector(getProductListCount);
   const categoryList = useSelector(getCategoryList);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [value]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting) {
-          if (productListCount > productList.length) dispatch(loadMoreProductsToList());
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (loader.current) observer.observe(loader.current);
-    return () => observer.disconnect();
-  }, [dispatch, productList.length, productListCount]);
 
   const rows = productList
     .filter(product => category === -1 || product.IdLinea === category)
@@ -80,7 +64,6 @@ export default function ProductList({ value }: ProductListProps) {
       >
         {rows}
       </Grid>
-      <div ref={loader} style={{ width: "100%", height: "0" }} />
     </Grid>
   );
 }
