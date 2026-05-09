@@ -671,18 +671,26 @@ export async function saveInvoiceEntity(
   const bankId = await getPaymentBankId(token, companyId, paymentDetailsList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
   productDetailsList.forEach(item => {
-    const detail = {
-      IdFactura: 0,
-      IdProducto: item.id,
-      Descripcion: item.description,
-      Cantidad: item.quantity,
-      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
-      Excento: item.taxRate === 0,
-      PrecioCosto: item.costPrice,
-      PorcentajeIVA: item.taxRate,
-      PorcDescuento: item.disccountRate,
-    };
-    invoiceDetails.push(detail);
+    const priceNoTaxes = roundNumber(item.price / (1 + item.taxRate / 100), 3);
+    const index = invoiceDetails.findIndex(
+      detail => detail.IdProducto === item.id && detail.PrecioVenta === priceNoTaxes
+    );
+    if (index !== -1) {
+      invoiceDetails[index].Cantidad += item.quantity;
+    } else {
+      const detail = {
+        IdFactura: 0,
+        IdProducto: item.id,
+        Descripcion: item.description,
+        Cantidad: item.quantity,
+        PrecioVenta: priceNoTaxes,
+        Excento: item.taxRate === 0,
+        PrecioCosto: item.costPrice,
+        PorcentajeIVA: item.taxRate,
+        PorcDescuento: item.disccountRate,
+      };
+      invoiceDetails.push(detail);
+    }
   });
   const invoicePayments = [
     {
