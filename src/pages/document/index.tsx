@@ -50,10 +50,7 @@ const useStyles = makeStyles()(theme => ({
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "20px",
-    "@media screen and (max-width:959px)": {
-      padding: "15px",
-    },
+    padding: "15px",
     "@media screen and (max-width:599px)": {
       padding: "10px",
     },
@@ -99,7 +96,7 @@ export default function DocumentListPage() {
 
   useEffect(() => {
     if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 122;
+      const height = containeRef.current.offsetHeight - 123;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerPage(rowsPerPage);
       dispatch(getDocumentListFirstPage({ rowsPerPage }));

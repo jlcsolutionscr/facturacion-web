@@ -56,7 +56,7 @@ const useStyles = makeStyles()(theme => ({
   },
   content: {
     overflowY: "scroll",
-    height: "calc(100% - 105px)",
+    height: "calc(100% - 115px)",
     padding: "5px",
     scrollbarWidth: "thin",
   },

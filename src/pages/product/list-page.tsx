@@ -2,10 +2,12 @@ import { Button, DataGrid, TextField, type TextFieldOnChangeEventType } from "jl
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Dialog from "@mui/material/Dialog";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 
+import ProductLoadDialog from "./product-load-dialog";
 import {
   filterProductList,
   getProductListByPageNumber,
@@ -13,6 +15,7 @@ import {
   openProduct,
 } from "state/product/asyncActions";
 import { getProductList, getProductListCount, getProductListPage, setProductList } from "state/product/reducer";
+import { getUserId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
@@ -36,10 +39,7 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   filterContainer: {
-    padding: "20px 20px 0 20px",
-    "@media screen and (max-width:959px)": {
-      padding: "15px 15px 0 15px",
-    },
+    padding: "15px 15px 0 15px",
     "@media screen and (max-width:599px)": {
       padding: "10px 10px 0 10px",
     },
@@ -50,10 +50,7 @@ const useStyles = makeStyles()(theme => ({
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "10px 20px 20px 20px",
-    "@media screen and (max-width:959px)": {
-      padding: "7px 15px 15px 15px",
-    },
+    padding: "7px 15px 15px 15px",
     "@media screen and (max-width:599px)": {
       padding: "5px 10px 10px 10px",
     },
@@ -64,6 +61,7 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
+    gap: "10px",
   },
   icon: {
     padding: 0,
@@ -89,6 +87,7 @@ const useStyles = makeStyles()(theme => ({
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 export default function ProductListPage() {
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [filter, setFilter] = useState("");
   const [filterType, setFilterType] = useState(2);
   const [rowsPerPage, setRowsPerPage] = useState(0);
@@ -97,6 +96,7 @@ export default function ProductListPage() {
   const listPage = useSelector(getProductListPage);
   const listCount = useSelector(getProductListCount);
   const list = useSelector(getProductList);
+  const userId = useSelector(getUserId);
 
   const { classes } = useStyles();
 
@@ -198,8 +198,12 @@ export default function ProductListPage() {
       </div>
       <div className={classes.buttonContainer}>
         <Button label="Agregar" onClick={() => dispatch(openProduct({ id: undefined }))} />
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={handleClose} />
+        <Button label="Regresar" onClick={handleClose} />
+        {userId === 1 && <Button label="Cargar Productos" onClick={() => setDialogOpen(true)} />}
       </div>
+      <Dialog fullScreen id="order-summary-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
+        <ProductLoadDialog setDialogOpen={setDialogOpen} />
+      </Dialog>
     </div>
   );
 }

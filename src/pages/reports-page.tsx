@@ -171,15 +171,13 @@ export default function ReportsPage() {
                 onChange={value => setEndDate(parse(value.substring(0, 10), "yyyy-MM-dd", new Date()))}
               />
             </Grid>
-            <Grid item xs={12} sm={8} container gap={2} justifyContent="center">
+            <Grid item xs={12} container gap={2} justifyContent="center">
               <Button
                 disabled={reportId === 0}
                 label={isMobile ? "Enviar correo" : "Generar"}
                 onClick={() => (isMobile ? processReport(3) : processReport(1))}
               />
               {!isMobile && <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />}
-            </Grid>
-            <Grid item xs={12} sm={4} container gap={2} justifyContent="center">
               <Button label="Regresar" onClick={handleBackButton} />
             </Grid>
           </Grid>

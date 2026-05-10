@@ -260,6 +260,30 @@ export const saveProduct = createAsyncThunk("product/saveProduct", async (_paylo
   }
 });
 
+export const saveProductWithEntity = createAsyncThunk(
+  "product/saveProductWithEntity",
+  async (payload: { list: any }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    try {
+      dispatch(startLoader());
+      for (let i = 0; i < payload.list.length; i++) {
+        const productEntity = payload.list[i];
+        await saveProductEntity(session.token, productEntity);
+      }
+      dispatch(
+        setMessage({
+          message: "Transacción completada satisfactoriamente",
+          type: "INFO",
+        })
+      );
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
 export const getCategoryListFirstPage = createAsyncThunk(
   "product/getCategoryList",
   async (_payload, { getState, dispatch }) => {

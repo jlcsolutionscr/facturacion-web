@@ -14,7 +14,7 @@ const useStyles = makeStyles()(() => ({
     padding: "5px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
-    width: "160px",
+    width: "180px",
     height: "auto",
     fontFamily: "Helvetica",
     transform: "scale(1)",
@@ -24,41 +24,48 @@ const useStyles = makeStyles()(() => ({
       transform: "scale(0.98)",
       transition: ".1s",
     },
-    "@media screen and (min-width:600px)": {
-      padding: "10px",
-      width: "130px",
+    "@media screen and (min-width:414px)": {
+      width: "140px",
     },
   },
   imageContainer: {
     display: "flex",
-    width: "100%",
-    height: "100%",
+    width: "auto",
+    height: "auto",
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
     display: "flex",
     justifyContent: "center",
-    width: "100px",
-    height: "100px",
-    "@media screen and (min-width:600px)": {
-      width: "120px",
-      height: "120px",
-    },
+    width: "100%",
+    height: "130px",
   },
   descriptionContainer: {
     display: "flex",
-    height: "35px",
+    height: "63px",
     overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+    "@media screen and (min-width:414px)": {
+      height: "35px",
+    },
   },
   description: {
-    fontSize: "13px",
+    fontSize: "18px",
+    fontWeight: "bold",
     whiteSpace: "wrap",
     textOverflow: "ellipsis",
+    "@media screen and (min-width:414px)": {
+      fontSize: "16px",
+    },
   },
   price: {
-    fontSize: "16px",
+    fontSize: "18px",
     fontWeight: "bold",
+    "@media screen and (min-width:414px)": {
+      fontSize: "16px",
+    },
   },
 }));
 

@@ -1352,10 +1352,11 @@ export async function printPendingTickets(tickets: any, printerServerAddress: st
         address: printerServerAddress,
         printer: ticket.Impresora,
         orderId: ticket.IdOrden,
+        ticketId: ticket.IdTiquete,
       });
     }
     const printingPromises = promiseParams.map(param =>
-      sentBytesToAndroidPrinter(param.data, param.address, param.printer, param.orderId)
+      sentBytesToAndroidPrinter(param.data, param.address, param.printer, param.ticketId)
     );
     return Promise.all(printingPromises)
       .then(() => {

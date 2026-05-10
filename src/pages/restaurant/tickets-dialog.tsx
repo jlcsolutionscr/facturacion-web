@@ -20,9 +20,6 @@ const useStyles = makeStyles()(() => ({
     display: "flex",
     overflow: "hidden",
     padding: "10px 20px 20px 20px",
-    "@media screen and (max-width:959px)": {
-      padding: "7px 15px 15px 15px",
-    },
     "@media screen and (max-width:599px)": {
       padding: "5px 10px 10px 10px",
     },
@@ -54,6 +51,7 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
   const rows = printingTicketsList.map(row => ({
     id: row.IdTiquete,
     description: row.DetalleTiqueteOrdenServicio,
+    printer: row.Impresora,
     printed: row.Impreso ? "Sí" : "No",
     action1: (
       <IconButton
@@ -69,7 +67,8 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
 
   const columns = [
     { field: "id", headerName: "Id", width: "50px" },
-    { field: "description", width: "260px", headerName: "Nombre" },
+    { field: "description", width: "300px", headerName: "Nombre" },
+    { field: "printer", width: "100px", headerName: "Impresora" },
     { field: "printed", width: "50px", headerName: "Impreso" },
     { field: "action1", headerName: "" },
   ];

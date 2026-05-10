@@ -32,10 +32,7 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   filterContainer: {
-    padding: "20px 20px 0 20px",
-    "@media screen and (max-width:959px)": {
-      padding: "15px 15px 0 15px",
-    },
+    padding: "15px 15px 0 15px",
     "@media screen and (max-width:599px)": {
       padding: "10px 10px 0 10px",
     },
@@ -46,10 +43,7 @@ const useStyles = makeStyles()(theme => ({
   dataContainer: {
     display: "flex",
     overflow: "hidden auto",
-    padding: "10px 20px 20px 20px",
-    "@media screen and (max-width:959px)": {
-      padding: "7px 15px 15px 15px",
-    },
+    padding: "7px 15px 15px 15px",
     "@media screen and (max-width:599px)": {
       padding: "5px 10px 10px 10px",
     },
@@ -60,6 +54,8 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
+    paddingBottom: "10px",
+    gap: "10px",
   },
   icon: {
     padding: 0,
@@ -134,7 +130,7 @@ export default function CategoryListPage() {
       </div>
       <div className={classes.buttonContainer}>
         <Button label="Agregar" onClick={() => dispatch(openCategory({ id: undefined }))} />
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
+        <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
     </div>
   );

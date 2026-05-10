@@ -14,10 +14,13 @@ const useStyles = makeStyles()(() => ({
     padding: "7px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
-    width: "auto",
+    width: "120px",
     height: "50px",
     alignItems: "center",
     justifyContent: "center",
+    "@media screen and (max-width:512px)": {
+      width: "110px",
+    },
   },
   active: {
     backgroundColor: "#08415c !important",

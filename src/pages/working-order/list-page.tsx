@@ -43,10 +43,7 @@ const useStyles = makeStyles()(theme => ({
   dataContainer: {
     display: "flex",
     overflow: "hidden",
-    padding: "20px",
-    "@media screen and (max-width:959px)": {
-      padding: "15px",
-    },
+    padding: "15px",
     "@media screen and (max-width:599px)": {
       padding: "10px",
     },
@@ -57,6 +54,7 @@ const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
+    gap: "10px",
   },
   icon: {
     padding: 0,
@@ -82,7 +80,7 @@ export default function WorkingOrderListPage() {
 
   useEffect(() => {
     if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 122;
+      const height = containeRef.current.offsetHeight - 123;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerPage(rowsPerPage);
       dispatch(getWorkingOrderListFirstPage({ rowsPerPage }));
@@ -191,7 +189,7 @@ export default function WorkingOrderListPage() {
       </div>
       <div className={classes.buttonContainer}>
         <Button label="Nueva Orden" onClick={() => dispatch(setWorkingOrderParameters())} />
-        <Button style={{ marginLeft: "10px" }} label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
+        <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
       <Dialog id="revoke-dialog" onClose={() => setDialogOpen({ open: false, id: 0 })} open={dialogOpen.open}>
         <DialogTitle>Anular orden de servicio</DialogTitle>
