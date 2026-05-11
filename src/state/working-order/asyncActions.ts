@@ -192,15 +192,16 @@ export const saveWorkingOrder = createAsyncThunk(
     const { entity, servicePointList } = workingOrder;
     dispatch(startLoader());
     try {
+      let orderId = entity.id;
+      let savedEntity = { ...entity };
       const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
       if (ids) {
-        const savedEntity = {
-          ...entity,
+        orderId = ids.id;
+        savedEntity = {
+          ...savedEntity,
           id: ids.id,
           consecutive: ids.consecutive,
-          productDetailsList: entity.productDetailsList.map(details => ({ ...details, orderId: ids.id })),
         };
-        dispatch(setWorkingOrder(savedEntity));
         const index = servicePointList.findIndex(item => item.Id === entity.servicePointId);
         const newList = [
           ...servicePointList.slice(0, index),
@@ -212,6 +213,11 @@ export const saveWorkingOrder = createAsyncThunk(
         ];
         dispatch(setServicePointList(newList));
       }
+      savedEntity = {
+        ...savedEntity,
+        productDetailsList: entity.productDetailsList.map(details => ({ ...details, orderId: orderId })),
+      };
+      dispatch(setWorkingOrder(savedEntity));
       dispatch(setStatus(ORDER_STATUS.READY));
       let message = {
         message: "Transacción completada satisfactoriamente",
@@ -402,7 +408,7 @@ export const openWorkingOrder = createAsyncThunk(
     dispatch(setActiveSection(15));
     try {
       const workingOrder = await getWorkingOrderEntity(token, payload.id);
-      const workingOrderEntity = parseWorkingOrderEntity(workingOrder);
+      const workingOrderEntity = parseWorkingOrderEntity(workingOrder, 0);
       dispatch(setWorkingOrder(workingOrderEntity));
       dispatch(setServicePointId(0));
       dispatch(setVendorId(vendorList[0].Id));
@@ -425,6 +431,11 @@ export const getServicePointList = createAsyncThunk(
     dispatch(setActiveSection(11));
     try {
       const servicePointList = await getServicePointListRequest(token, companyId, branchId, true, "");
+      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
+      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, productCount, "", true, 1);
+      dispatch(setProductListPage(1));
+      dispatch(setProductListCount(productCount));
+      dispatch(setProductList(productList));
       dispatch(setServicePointList(servicePointList));
       dispatch(stopLoader());
     } catch (error) {
@@ -438,7 +449,7 @@ export const openServicePoint = createAsyncThunk(
   "working-order/openServicePoint",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
-    const { token, company, vendorList, branchId, companyId } = session;
+    const { token, company, vendorList, companyId } = session;
     const { categoryList } = product;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
@@ -449,14 +460,9 @@ export const openServicePoint = createAsyncThunk(
         const categoryList = await getProductCategoryList(token, companyId);
         dispatch(setCategoryList(categoryList));
       }
-      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, productCount, "", true, 1);
-      dispatch(setProductListPage(1));
-      dispatch(setProductListCount(productCount));
-      dispatch(setProductList(productList));
       const workingOrder = servicePoint.IdOrden > 0 ? await getWorkingOrderEntity(token, servicePoint.IdOrden) : null;
       if (workingOrder !== null) {
-        const workingOrderEntity = parseWorkingOrderEntity(workingOrder);
+        const workingOrderEntity = parseWorkingOrderEntity(workingOrder, servicePoint.IdPunto);
         dispatch(setWorkingOrder(workingOrderEntity));
       }
       dispatch(setServicePointId(servicePoint.IdPunto));

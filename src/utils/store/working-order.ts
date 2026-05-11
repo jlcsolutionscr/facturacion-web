@@ -5,7 +5,7 @@ import { defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
 import { getProductSummary } from "utils/domainHelper";
 import { convertToDateString, roundNumber } from "utils/utilities";
 
-export function parseWorkingOrderEntity(workingOrder: any) {
+export function parseWorkingOrderEntity(workingOrder: any, servicePointId: number) {
   const customerDetails: CustomerDetailsType = {
     id: workingOrder.IdCliente,
     name: workingOrder.NombreCliente,
@@ -38,6 +38,7 @@ export function parseWorkingOrderEntity(workingOrder: any) {
   const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
   return {
     id: workingOrder.IdOrden,
+    servicePointId: servicePointId,
     consecutive: workingOrder.ConsecOrdenServicio,
     date: convertToDateString(workingOrder.Fecha),
     cashAdvance: workingOrder.MontoAdelanto,
