@@ -23,7 +23,7 @@ import {
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
-import { getErrorMessage } from "utils/utilities";
+import { getErrorMessage, roundNumber } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
@@ -65,7 +65,9 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
         quantity: productDetails.quantity,
         taxRate: productDetails.taxRate,
         unit: "UND",
-        price: productDetails.price,
+        price: company.PrecioVentaIncluyeIVA
+          ? productDetails.price
+          : roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
         costPrice: productDetails.costPrice,
         disccountRate: productDetails.disccountRate,
       };
