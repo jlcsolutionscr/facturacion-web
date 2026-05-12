@@ -63,6 +63,7 @@ type SessionStateType = {
   reportList: { IdReporte: number; NombreReporte: string }[];
   vendorList: IdDescriptionType[];
   permissions: PermissionType[];
+  roles: PermissionType[];
   printer: string;
   token: string;
   processingToken: { type: string; id: string };
@@ -179,6 +180,7 @@ export const sessionInitialState: SessionStateType = {
   reportList: [],
   vendorList: [],
   permissions: [],
+  roles: [],
   printer: "",
   token: "",
   processingToken: { type: "reset", id: "" },

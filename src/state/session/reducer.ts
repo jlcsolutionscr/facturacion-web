@@ -25,6 +25,9 @@ export const sessionSlice = createSlice({
         IdUsuario: role.IdUsuario,
         IdRole: role.IdRole,
       }));
+      state.roles = action.payload.RolePorEmpresa.map((role: { IdRole: number }) => ({
+        IdRole: role.IdRole,
+      }));
       state.branchList = action.payload.SucursalPorEmpresa.map(
         (branch: { IdSucursal: number; NombreSucursal: string }) => ({
           Id: branch.IdSucursal,
@@ -120,6 +123,7 @@ export const getBranchId = (state: RootState) => state.session.branchId;
 export const getPrinter = (state: RootState) => state.session.printer;
 export const getVendorList = (state: RootState) => state.session.vendorList;
 export const getPermissions = (state: RootState) => state.session.permissions;
+export const getCompanyRoles = (state: RootState) => state.session.roles;
 export const getBranchList = (state: RootState) => state.session.branchList;
 export const getReportList = (state: RootState) => state.session.reportList;
 export const getProcessingToken = (state: RootState) => state.session.processingToken;
