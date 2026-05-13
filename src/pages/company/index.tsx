@@ -270,6 +270,16 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              id="MontoCierreEfectivo"
+              value={company.MontoCierreEfectivo.toString()}
+              label="Monto de cierre en efectivo"
+              onChange={handleChange}
+            />
+          </Grid>
+
           <Grid item xs={8} md={6} lg={4}>
             <LabelField id="Logotipo" value={logoFilePath} label="Logotipo de empresa" />
           </Grid>

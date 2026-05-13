@@ -1,4 +1,4 @@
-import { Button, TextField } from "jlc-component-library";
+import { Button } from "jlc-component-library";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -8,15 +8,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import { getCashCloseDetails, saveCashCloseDetails } from "state/session/asyncActions";
-import {
-  getCashCloseEntity,
-  getCompanyMode,
-  getCompanyRoles,
-  getIsCashCloseSaved,
-  setNextCashAmount,
-} from "state/session/reducer";
-import { formatCurrency, parseStringToNumber } from "utils/utilities";
+import { generateCashClosePDF, getCashCloseDetails, saveCashCloseDetails } from "state/session/asyncActions";
+import { getCashCloseEntity, getCompanyMode, getCompanyRoles, getIsCashCloseSaved } from "state/session/reducer";
+import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   summary: {
@@ -75,6 +69,14 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
   useEffect(() => {
     dispatch(getCashCloseDetails());
   }, [dispatch]);
+
+  const handleButtonSubmitClick = () => {
+    if (!isCashClosedSaved) {
+      dispatch(saveCashCloseDetails());
+    } else {
+      dispatch(generateCashClosePDF());
+    }
+  };
 
   const cashCloseDate = cashCloseDetails ? new Date(cashCloseDetails.FechaCierre).toLocaleString("es-CR") : "";
 
@@ -189,19 +191,19 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                     </Grid>
                   </>
                 )}
-                <Grid container xs={12} justifyContent="flex-end">
-                  <Grid xs={12} sm={6}>
-                    <TextField
-                      label="Monto para cierre de efectivo"
-                      value={cashCloseDetails.FondoCierre.toString()}
-                      numericFormat
-                      onChange={event => dispatch(setNextCashAmount(parseStringToNumber(event.target.value)))}
-                    />
-                  </Grid>
+                <Grid xs={8}>
+                  <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
+                    Fondo para siguiente inicio de caja
+                  </Typography>
+                </Grid>
+                <Grid xs={4} className={classes.columnRight}>
+                  <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
+                    {formatCurrency(cashCloseDetails.FondoCierre)}
+                  </Typography>
                 </Grid>
                 <Grid xs={8}>
                   <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
-                    Retiro en efectivo
+                    Restante de efectivo en caja
                   </Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>
@@ -256,7 +258,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
       <DialogActions style={{ margin: "0 20px 10px 20px", justifyContent: "center" }}>
         <Grid container spacing={2}>
           <Grid xs={6}>
-            <Button disabled={isCashClosedSaved} label="Guardar" onClick={() => dispatch(saveCashCloseDetails())} />
+            <Button label={!isCashClosedSaved ? "Guardar" : "Imprimir"} onClick={handleButtonSubmitClick} />
           </Grid>
           <Grid xs={6}>
             <Button negative label="Cerrar" onClick={() => onDialogClose()} />

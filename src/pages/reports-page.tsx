@@ -5,7 +5,6 @@ import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import { lastDayOfMonth, parse } from "date-fns";
-import UAParser from "ua-parser-js";
 
 import ReportLayout from "components/report-layout";
 import { exportReport, generateReport, sendReportToEmail } from "state/company/asyncActions";
@@ -60,9 +59,6 @@ const useStyles = makeStyles()(theme => ({
     },
   },
 }));
-
-const result = new UAParser().getResult();
-const isMobile = !!result.device.type;
 
 export default function ReportsPage() {
   const { classes } = useStyles();
@@ -172,12 +168,9 @@ export default function ReportsPage() {
               />
             </Grid>
             <Grid item xs={12} container gap={2} justifyContent="center">
-              <Button
-                disabled={reportId === 0}
-                label={isMobile ? "Enviar correo" : "Generar"}
-                onClick={() => (isMobile ? processReport(3) : processReport(1))}
-              />
-              {!isMobile && <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />}
+              <Button disabled={reportId === 0} label={"Generar"} onClick={() => processReport(1)} />
+              <Button disabled={reportId === 0} label="Exportar" onClick={() => processReport(2)} />
+              {/* <Button disabled={reportId === 0} label="Enviar correo" onClick={() => processReport(3)} /> */}
               <Button label="Regresar" onClick={handleBackButton} />
             </Grid>
           </Grid>

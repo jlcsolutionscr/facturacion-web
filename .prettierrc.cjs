@@ -16,7 +16,6 @@ module.exports = {
     "^@hookform/(.*)$",
     "^@vitejs/(.*)$",
     "^date-fns",
-    "^ua-parser-js",
     "",
     "^[./]",
     "^assets/(.*)$",

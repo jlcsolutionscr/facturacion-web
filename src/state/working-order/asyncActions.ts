@@ -223,7 +223,7 @@ export const saveWorkingOrder = createAsyncThunk(
         message: "Transacción completada satisfactoriamente",
         type: "INFO",
       };
-      if (entity.servicePointId > 0 && entity.id > 0 && ui.printerServerAddress !== "") {
+      if (savedEntity.servicePointId > 0 && savedEntity.id > 0 && ui.printerServerAddress !== "") {
         try {
           const pendingTickets = await getPrintingTickets(
             session.token,

@@ -13,6 +13,7 @@ import RevokeOrderDialog from "pages/restaurant/revoke-order-dialog";
 import TicketsDialog from "pages/restaurant/tickets-dialog";
 import UpdateProductDialog from "pages/restaurant/update-product-dialog";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
+import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { removeDetails, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
@@ -85,6 +86,9 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
   const status = useSelector(getStatus);
   const invoiceId = useSelector(getInvoiceId);
   const delivery = useSelector(getDeliveryDetails);
+  const permissions = useSelector(getPermissions);
+
+  const revokeOrders = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
@@ -151,7 +155,7 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
                   />
                 </Grid>
               )}
-              {workingOrderId > 0 && status !== ORDER_STATUS.CONVERTED && (
+              {workingOrderId > 0 && status !== ORDER_STATUS.CONVERTED && revokeOrders && (
                 <Grid>
                   <Button label="Anular" onClick={handleRevokeButtonClick} />
                 </Grid>

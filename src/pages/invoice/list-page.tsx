@@ -8,7 +8,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
-import UAParser from "ua-parser-js";
 
 import {
   generateInvoiceTicket,
@@ -76,7 +75,6 @@ const useStyles = makeStyles()(theme => ({
 
 export default function InvoiceListPage() {
   const dispatch = useDispatch();
-  const result = new UAParser().getResult();
   const { classes } = useStyles();
   const [invoiceId, setInvoiceId] = useState(0);
   const [dialogOpen, setDialogOpen] = useState({ open: false, id: 0 });
@@ -100,8 +98,6 @@ export default function InvoiceListPage() {
       );
     }
   }, [dispatch]);
-
-  const isMobile = !!result.device.type;
 
   const printReceipt = (id: number) => {
     dispatch(generateInvoiceTicket({ id }));
@@ -167,13 +163,10 @@ export default function InvoiceListPage() {
     { field: "name", headerName: "Nombre", width: "280px" },
     { field: "taxes", headerName: "Impuesto", type: "number" },
     { field: "amount", headerName: "Total", type: "number" },
+    { field: "action1", headerName: "" },
+    { field: "action2", headerName: "" },
+    { field: "action3", headerName: "" },
   ];
-
-  if (!isMobile) {
-    columns.push({ field: "action1", headerName: "" });
-  }
-  columns.push({ field: "action2", headerName: "" });
-  columns.push({ field: "action3", headerName: "" });
 
   return (
     <div className={classes.root} ref={containeRef}>

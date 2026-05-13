@@ -26,6 +26,7 @@ import {
 import {
   abortCashCloseProcess as abortCashCloseProcessRequest,
   authorizeUserEmail as authorizeUserEmailRequest,
+  generateCashClosePDF as generateCashClosePDFRequest,
   getCashCloseDetails as getCashCloseDetailsRequest,
   getVendorList,
   requestUserLogin,
@@ -217,8 +218,8 @@ export const saveCashCloseDetails = createAsyncThunk(
     if (cashCloseEntity !== null) {
       dispatch(startLoader());
       try {
-        await saveCashCloseDetailsRequest(token, cashCloseEntity);
-        dispatch(setIsCashCloseSaved(true));
+        const cashCloseId = await saveCashCloseDetailsRequest(token, cashCloseEntity);
+        dispatch(setIsCashCloseSaved({ cashCloseId, isSaved: true }));
         dispatch(setMessage({ message: "El cierre de efectivo se guardó satisfactoriamente...", type: "INFO" }));
       } catch (error) {
         dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -244,5 +245,21 @@ export const abortCashCloseProcess = createAsyncThunk(
       dispatch(stopLoader());
     }
     dispatch(stopLoader());
+  }
+);
+
+export const generateCashClosePDF = createAsyncThunk(
+  "invoice/generatePDF",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, cashCloseId } = session;
+    dispatch(startLoader());
+    try {
+      await generateCashClosePDFRequest(token, cashCloseId);
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
   }
 );

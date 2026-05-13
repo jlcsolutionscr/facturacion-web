@@ -63,38 +63,12 @@ export const sessionSlice = createSlice({
       state.cashCloseEntity = action.payload;
       if (state.cashCloseEntity !== null) {
         state.cashCloseEntity.FechaCierre = convertToDateTimeString(new Date(), true);
-        state.cashCloseEntity.FondoCierre =
-          action.payload.FondoInicio +
-          action.payload.AdelantosApartadoEfectivo +
-          action.payload.AdelantosOrdenEfectivo +
-          action.payload.IngresosEfectivo +
-          action.payload.PagosCxCEfectivo +
-          action.payload.VentasEfectivo -
-          action.payload.ComprasEfectivo -
-          action.payload.EgresosEfectivo -
-          action.payload.PagosCxPEfectivo;
         state.isCashCloseSaved = false;
       }
     },
-    setNextCashAmount: (state, action) => {
-      const cashClose = state.cashCloseEntity;
-      if (cashClose !== null) {
-        cashClose.FondoCierre = action.payload;
-        cashClose.RetiroEfectivo =
-          cashClose.FondoInicio +
-          cashClose.AdelantosApartadoEfectivo +
-          cashClose.AdelantosOrdenEfectivo +
-          cashClose.IngresosEfectivo +
-          cashClose.PagosCxCEfectivo +
-          cashClose.VentasEfectivo -
-          cashClose.ComprasEfectivo -
-          cashClose.EgresosEfectivo -
-          cashClose.PagosCxPEfectivo -
-          action.payload;
-      }
-    },
     setIsCashCloseSaved: (state, action) => {
-      state.isCashCloseSaved = action.payload;
+      state.cashCloseId = action.payload.cashCloseId;
+      state.isCashCloseSaved = action.payload.isSaved;
     },
   },
 });
@@ -109,7 +83,6 @@ export const {
   setProcessingToken,
   setProcessingTokenMessage,
   setCashCloseEntity,
-  setNextCashAmount,
   setIsCashCloseSaved,
 } = sessionSlice.actions;
 
@@ -130,5 +103,5 @@ export const getProcessingToken = (state: RootState) => state.session.processing
 export const getProcessingTokenMessage = (state: RootState) => state.session.processingTokenMessage;
 export const getCashCloseEntity = (state: RootState) => state.session.cashCloseEntity;
 export const getIsCashCloseSaved = (state: RootState) => state.session.isCashCloseSaved;
-
+export const getCashCloseId = (state: RootState) => state.session.cashCloseId;
 export default sessionSlice.reducer;

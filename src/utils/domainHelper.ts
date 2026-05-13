@@ -149,6 +149,7 @@ export async function getCompanyEntity(token: string, companyId: number) {
     PrecioVentaIncluyeIVA: response.PrecioVentaIncluyeIVA,
     CorreoNotificacion: response.CorreoNotificacion,
     MontoRedondeoDescuento: response.MontoRedondeoDescuento,
+    MontoCierreEfectivo: response.MontoCierreEfectivo,
     LeyendaFactura: response.LeyendaFactura,
     LeyendaProforma: response.LeyendaProforma,
     LeyendaApartado: response.LeyendaApartado,
@@ -1268,6 +1269,18 @@ export async function abortCashCloseProcess(token: string, companyId: number, br
   return response;
 }
 
+export async function generateCashClosePDF(token: string, cashCloseId: number) {
+  const data =
+    "{NombreMetodo: 'GenerarTiqueteCierreCajaPDF', Parametros: {IdCierreCaja: " + cashCloseId + ", LargoLinea: 80}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response.length > 0) {
+    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
+    const file = new Blob([byteArray], { type: "application/pdf" });
+    const pdfUrl = URL.createObjectURL(file);
+    window.open(pdfUrl);
+  }
+}
+
 export async function getPrintingTickets(
   token: string,
   companyId: number,
@@ -1351,12 +1364,11 @@ export async function printPendingTickets(tickets: any, printerServerAddress: st
         data: btoa(String.fromCharCode.apply(null, [...result])),
         address: printerServerAddress,
         printer: ticket.Impresora,
-        orderId: ticket.IdOrden,
         ticketId: ticket.IdTiquete,
       });
     }
     const printingPromises = promiseParams.map(param =>
-      sentBytesToAndroidPrinter(param.data, param.address, param.printer, param.ticketId)
+      sentBytesToWSPrinter(param.data, param.address, param.printer, param.ticketId)
     );
     return Promise.all(printingPromises)
       .then(() => {
@@ -1368,12 +1380,7 @@ export async function printPendingTickets(tickets: any, printerServerAddress: st
   });
 }
 
-function sentBytesToAndroidPrinter(
-  base64: string,
-  printerServerAddress: string,
-  printerName: string,
-  ticketId: number
-) {
+function sentBytesToWSPrinter(base64: string, printerServerAddress: string, printerName: string, ticketId: number) {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(printerServerAddress);
     socket.onerror = function (error) {

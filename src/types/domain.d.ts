@@ -91,6 +91,7 @@ export type CompanyType = {
   PrecioVentaIncluyeIVA: boolean;
   CorreoNotificacion: string;
   MontoRedondeoDescuento: number;
+  MontoCierreEfectivo: number;
   LeyendaFactura: rstring;
   LeyendaProforma: string;
   LeyendaApartado: string;
