@@ -44,6 +44,7 @@ export const defaultCompany: CompanyType = {
   AsignaVendedorPorDefecto: false,
   IngresaPagoCliente: false,
   MontoRedondeoDescuento: 0,
+  MontoCierreEfectivo: 0,
   LeyendaFactura: "",
   LeyendaProforma: "",
   LeyendaApartado: "",
