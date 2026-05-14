@@ -3,9 +3,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
   setAvailableEconomicActivityList,
+  setBranch,
   setCompany,
   setCompanyAttribute,
   setCredentials,
+  setLogo,
   setReportResults,
 } from "state/company/reducer";
 import { setCompany as setSessionCompany } from "state/session/reducer";
@@ -20,15 +22,14 @@ import {
 } from "state/ui/reducer";
 import { defaultCredentials } from "utils/defaults";
 import {
+  getBranchEntity,
   getCantonList,
   getCompanyEntity,
   getCredentialsEntity,
   getDistritoList,
   getReportData,
   saveCompanyEntity,
-  saveCredentialsEntity,
   sendReportEmail,
-  updateCredentialsEntity,
   validateCertificate,
   validateCredentials,
 } from "utils/domainHelper";
@@ -36,13 +37,14 @@ import { ExportDataToXls, getErrorMessage } from "utils/utilities";
 
 export const getCompany = createAsyncThunk("company/getCompany", async (_payload, { getState, dispatch }) => {
   const { session } = getState() as RootState;
-  const { companyId, token } = session;
+  const { companyId, branchId, token } = session;
   dispatch(startLoader());
   dispatch(setAvailableEconomicActivityList([]));
   try {
     dispatch(setActiveSection(1));
     const company = await getCompanyEntity(token, companyId);
     const credentials = await getCredentialsEntity(token, company.IdEmpresa);
+    const branch = await getBranchEntity(token, companyId, branchId);
     const cantonList = await getCantonList(token, company.IdProvincia);
     const distritoList = await getDistritoList(token, company.IdProvincia, company.IdCanton);
     //Disabled Hacienda company information request until service get back online
@@ -58,10 +60,10 @@ export const getCompany = createAsyncThunk("company/getCompany", async (_payload
       );
     }*/
     dispatch(setCompany(company));
+    dispatch(setBranch({ branch, updated: false }));
     dispatch(
       setCredentials({
         credentials: credentials !== null ? credentials : defaultCredentials,
-        newCredentials: credentials === null,
       })
     );
     dispatch(setCantonList(cantonList));
@@ -78,7 +80,7 @@ export const saveCompany = createAsyncThunk(
   async (payload: { certificate: string }, { getState, dispatch }) => {
     const { session, company } = getState() as RootState;
     const { token } = session;
-    const { entity: companyEntity, credentials, newCredentials, credentialsChanged } = company;
+    const { entity: companyEntity, logo, credentials, credentialsChanged, branchUpdated, branchEntity } = company;
     dispatch(startLoader());
     try {
       if (!companyEntity?.RegimenSimplificado) {
@@ -94,30 +96,15 @@ export const saveCompany = createAsyncThunk(
         if (payload.certificate !== "")
           await validateCertificate(token, credentials.PinCertificado, payload.certificate);
       }
-      await saveCompanyEntity(token, companyEntity);
-      if (!companyEntity?.RegimenSimplificado && credentialsChanged) {
-        if (newCredentials)
-          await saveCredentialsEntity(
-            token,
-            companyEntity.IdEmpresa,
-            credentials.UsuarioHacienda,
-            credentials.ClaveHacienda,
-            credentials.NombreCertificado,
-            credentials.PinCertificado,
-            payload.certificate
-          );
-        else
-          await updateCredentialsEntity(
-            token,
-            companyEntity.IdEmpresa,
-            credentials.UsuarioHacienda,
-            credentials.ClaveHacienda,
-            credentials.NombreCertificado,
-            credentials.PinCertificado,
-            payload.certificate
-          );
-      }
+      await saveCompanyEntity(
+        token,
+        companyEntity,
+        logo,
+        branchUpdated ? branchEntity : undefined,
+        credentialsChanged ? credentials : undefined
+      );
       dispatch(setSessionCompany(companyEntity));
+      dispatch(setLogo(undefined));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",

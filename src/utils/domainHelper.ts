@@ -2,10 +2,12 @@
 import ReceiptPrinterEncoder from "@point-of-sale/receipt-printer-encoder";
 import { saveAs } from "file-saver";
 import {
+  BranchType,
   CashCloseType,
   CategoryType,
   CodeDescriptionType,
   CompanyType,
+  CredentialsType,
   CustomerDetailsType,
   CustomerType,
   IdDescriptionValueType,
@@ -122,46 +124,45 @@ export async function authorizeUserEmail(id: string) {
 export async function getCompanyEntity(token: string, companyId: number) {
   const data = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + companyId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  return {
-    IdEmpresa: response.IdEmpresa,
-    NombreEmpresa: response.NombreEmpresa,
-    NombreComercial: response.NombreComercial,
-    IdTipoIdentificacion: response.IdTipoIdentificacion,
-    Identificacion: response.Identificacion,
-    IdProvincia: response.IdProvincia,
-    IdCanton: response.IdCanton,
-    IdDistrito: response.IdDistrito,
-    IdTipoMoneda: response.IdTipoMoneda,
-    Direccion: response.Direccion,
-    Telefono1: response.Telefono1,
-    Telefono2: response.Telefono2,
-    TipoContrato: response.TipoContrato,
-    CantidadDisponible: response.CantidadDisponible,
-    FechaVence: response.FechaVence,
-    LineasPorFactura: response.LineasPorFactura,
-    Contabiliza: response.Contabiliza,
-    AutoCompletaProducto: response.AutoCompletaProducto,
-    RegimenSimplificado: response.RegimenSimplificado,
-    PermiteFacturar: response.PermiteFacturar,
-    RecepcionGastos: response.RecepcionGastos,
-    AsignaVendedorPorDefecto: response.AsignaVendedorPorDefecto,
-    IngresaPagoCliente: response.IngresaPagoCliente,
-    PrecioVentaIncluyeIVA: response.PrecioVentaIncluyeIVA,
-    CorreoNotificacion: response.CorreoNotificacion,
-    MontoRedondeoDescuento: response.MontoRedondeoDescuento,
-    MontoCierreEfectivo: response.MontoCierreEfectivo,
-    LeyendaFactura: response.LeyendaFactura,
-    LeyendaProforma: response.LeyendaProforma,
-    LeyendaApartado: response.LeyendaApartado,
-    LeyendaOrdenServicio: response.LeyendaOrdenServicio,
-    Logotipo: response.Logotipo,
-    Modalidad: response.Modalidad,
-    ActividadEconomicaEmpresa: response.ActividadEconomicaEmpresa,
-  };
+  const { Distrito, ...rest } = response;
+  return rest;
 }
 
-export async function saveCompanyEntity(token: string, company: CompanyType) {
-  const data = "{NombreMetodo: 'ActualizarEmpresa', Entidad: '" + JSON.stringify(company) + "'}";
+export async function getBranchEntity(token: string, companyId: number, branchId: number) {
+  const data =
+    "{NombreMetodo: 'ObtenerSucursalPorEmpresa', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return {
+    IdEmpresa: response.IdEmpresa,
+    IdSucursal: response.IdSucursal,
+    NombreSucursal: response.NombreSucursal,
+    Direccion: response.Direccion,
+    Telefono: response.Telefono,
+    CorreoElectronico: response.CorreoElectronico,
+    MontoCierreEfectivo: response.MontoCierreEfectivo,
+  };
+}
+export async function saveCompanyEntity(
+  token: string,
+  company: CompanyType,
+  logo?: string,
+  branch?: BranchType,
+  credentials?: CredentialsType
+) {
+  const logoData = logo ? ", Logotipo: '" + logo + "'" : "";
+  const branchData = branch ? ", Sucursal: " + JSON.stringify(branch) : "";
+  const credentialsData = credentials ? ", Credenciales: " + JSON.stringify(credentials) : "";
+  const data =
+    "{NombreMetodo: 'ActualizarEmpresa', Parametros: {Empresa: " +
+    JSON.stringify({ ...company, Logotipo: "" }) +
+    logoData +
+    branchData +
+    credentialsData +
+    "}}";
   await post(APP_URL + "/ejecutar", token, data);
 }
 
@@ -198,36 +199,13 @@ export async function saveCredentialsEntity(
   userPass: string,
   strCertificateName: string,
   strPin: string,
-  strCertificate: string
+  strCertificate: string,
+  isInserting: boolean
 ) {
   const data =
-    "{NombreMetodo: 'AgregarCredencialesHacienda', Parametros: {IdEmpresa: " +
-    companyId +
-    ", Usuario: '" +
-    userCode +
-    "', Clave: '" +
-    userPass +
-    "', NombreCertificado: '" +
-    strCertificateName +
-    "', PinCertificado: '" +
-    strPin +
-    "', Certificado: '" +
-    strCertificate +
-    "'}}";
-  await post(APP_URL + "/ejecutar", token, data);
-}
-
-export async function updateCredentialsEntity(
-  token: string,
-  companyId: number,
-  userCode: string,
-  userPass: string,
-  strCertificateName: string,
-  strPin: string,
-  strCertificate: string
-) {
-  const data =
-    "{NombreMetodo: 'ActualizarCredencialesHacienda', Parametros: {IdEmpresa: " +
+    "{NombreMetodo: '" +
+    (isInserting ? "AgregarCredencialesHacienda" : "ActualizarCredencialesHacienda") +
+    "', Parametros: {IdEmpresa: " +
     companyId +
     ", Usuario: '" +
     userCode +

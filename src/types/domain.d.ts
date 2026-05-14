@@ -91,7 +91,6 @@ export type CompanyType = {
   PrecioVentaIncluyeIVA: boolean;
   CorreoNotificacion: string;
   MontoRedondeoDescuento: number;
-  MontoCierreEfectivo: number;
   LeyendaFactura: rstring;
   LeyendaProforma: string;
   LeyendaApartado: string;
@@ -102,7 +101,17 @@ export type CompanyType = {
   Usuario: { Token: string };
 };
 
-export type CredentialType = {
+export type BranchType = {
+  IdEmpresa: number;
+  IdSucursal: number;
+  NombreSucursal: string;
+  Direccion: string;
+  Telefono: string;
+  CorreoElectronico: string;
+  MontoCierreEfectivo: number;
+};
+
+export type CredentialsType = {
   UsuarioHacienda: string;
   ClaveHacienda: string;
   NombreCertificado: string;
@@ -338,6 +347,7 @@ export type CashCloseType = {
   IdCierre: number;
   FechaCierre: string;
   FondoInicio: number;
+  EfectivoCierreAnterior: number;
   AdelantosApartadoEfectivo: number;
   AdelantosApartadoTarjeta: number;
   AdelantosApartadoBancos: number;
@@ -361,6 +371,7 @@ export type CashCloseType = {
   LiquidacionTarjeta: number;
   VentasCredito: number;
   ComprasCredito: number;
+  EfectivoCierreSiguiente: number;
   RetiroEfectivo: number;
   FondoCierre: number;
   Observaciones: string;

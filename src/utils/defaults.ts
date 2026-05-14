@@ -1,4 +1,5 @@
 import {
+  BranchType,
   CategoryType,
   CompanyType,
   CustomerDetailsType,
@@ -44,12 +45,21 @@ export const defaultCompany: CompanyType = {
   AsignaVendedorPorDefecto: false,
   IngresaPagoCliente: false,
   MontoRedondeoDescuento: 0,
-  MontoCierreEfectivo: 0,
   LeyendaFactura: "",
   LeyendaProforma: "",
   LeyendaApartado: "",
   LeyendaOrdenServicio: "",
   Usuario: { Token: "" },
+};
+
+export const defaultBranch: BranchType = {
+  IdEmpresa: 0,
+  IdSucursal: 0,
+  NombreSucursal: "",
+  Direccion: "",
+  Telefono: "",
+  CorreoElectronico: "",
+  MontoCierreEfectivo: 0,
 };
 
 export const defaultCredentials = {

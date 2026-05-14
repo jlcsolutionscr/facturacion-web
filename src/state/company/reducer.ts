@@ -11,10 +11,18 @@ const companySlice = createSlice({
     setCompany: (state, action) => {
       state.entity = action.payload;
     },
+    setLogo: (state, action) => {
+      state.logo = action.payload;
+      if (action.payload) state.entity.Logotipo = action.payload;
+    },
+    setBranch: (state, action) => {
+      const { branch, updated } = action.payload;
+      state.branchEntity = branch;
+      state.branchUpdated = updated;
+    },
     setCredentials: (state, action) => {
-      const { credentials, newCredentials } = action.payload;
+      const { credentials } = action.payload;
       state.credentialsChanged = false;
-      state.newCredentials = newCredentials;
       state.credentials.UsuarioHacienda = credentials.UsuarioHacienda;
       state.credentials.ClaveHacienda = credentials.ClaveHacienda;
       state.credentials.NombreCertificado = credentials.NombreCertificado;
@@ -50,14 +58,17 @@ const companySlice = createSlice({
 
 export const {
   setCompany,
+  setLogo,
   setCredentials,
   setAvailableEconomicActivityList,
   setCompanyAttribute,
   setCredentialsAttribute,
   setReportResults,
+  setBranch,
 } = companySlice.actions;
 
 export const getCompany = (state: RootState) => state.company.entity;
+export const getBranch = (state: RootState) => state.company.branchEntity;
 export const getCredentials = (state: RootState) => state.company.credentials;
 export const getAvailableEconomicActivityList = (state: RootState) => state.company.availableEconomicActivityList;
 export const getReportResults = (state: RootState) => state.company.reportResults;

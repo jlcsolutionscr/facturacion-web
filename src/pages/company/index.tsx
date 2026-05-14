@@ -18,10 +18,13 @@ import Typography from "@mui/material/Typography";
 import { addActivity, removeActivity, saveCompany } from "state/company/asyncActions";
 import {
   getAvailableEconomicActivityList,
+  getBranch,
   getCompany,
   getCredentials,
+  setBranch,
   setCompanyAttribute,
   setCredentialsAttribute,
+  setLogo,
 } from "state/company/reducer";
 import { updateCantonList, updateDistritoList } from "state/ui/asyncActions";
 import { getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
@@ -73,6 +76,7 @@ export default function CompanyPage() {
 
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
+  const branch = useSelector(getBranch);
   const credentials = useSelector(getCredentials);
   const cantonList = useSelector(getCantonList);
   const distritoList = useSelector(getDistritoList);
@@ -108,6 +112,18 @@ export default function CompanyPage() {
     );
   };
 
+  const handleBranchChange = (event: TextFieldOnChangeEventType) => {
+    dispatch(
+      setBranch({
+        branch: {
+          ...branch,
+          [event.target.id as string]: event.target.value,
+        },
+        updated: true,
+      })
+    );
+  };
+
   const handleSelectChange = (id: string, value: number) => {
     if (id === "IdProvincia") {
       dispatch(updateCantonList({ id: value }));
@@ -131,7 +147,7 @@ export default function CompanyPage() {
       setLogoFilePath(file.name);
       reader.onloadend = () => {
         const logoBase64 = (reader.result as string).substring((reader.result as string).indexOf(",") + 1);
-        dispatch(setCompanyAttribute({ attribute: "Logotipo", value: logoBase64 }));
+        dispatch(setLogo(logoBase64));
       };
       reader.readAsDataURL(file);
     }
@@ -271,51 +287,26 @@ export default function CompanyPage() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              required
-              id="MontoCierreEfectivo"
-              value={company.MontoCierreEfectivo.toString()}
-              label="Monto de cierre en efectivo"
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid item xs={8} md={6} lg={4}>
-            <LabelField id="Logotipo" value={logoFilePath} label="Logotipo de empresa" />
-          </Grid>
-          <Grid item xs={4}>
-            <input
-              accept="image/*"
-              style={{ display: "none" }}
-              id="logo-image-upload-button-input"
-              ref={logoFileRef}
-              multiple
-              type="file"
-              onChange={handleLogoFileChange}
-            />
-            <Button label="Cargar" onClick={() => logoFileRef.current?.click()} />
-          </Grid>
-          <Grid item xs={12} display="flex" justifyContent="center">
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                width: "350px",
-                paddingX: "auto",
-                height: "150px",
-                alignItems: "center",
-                marginY: "20px",
+            <FormControlLabel
+              componentsProps={{
+                typography: { variant: "body1", color: "text.primary" },
               }}
-            >
-              {company.Logotipo !== "" && (
-                <Box
-                  sx={{ width: "inherit", height: "inherit" }}
-                  component="img"
-                  alt="Comapny logo image."
-                  src={`data:image/png;base64,${company.Logotipo}`}
+              control={
+                <Checkbox
+                  checked={company.PrecioVentaIncluyeIVA}
+                  onChange={() =>
+                    dispatch(
+                      setCompanyAttribute({
+                        attribute: "PrecioVentaIncluyeIVA",
+                        value: !company.PrecioVentaIncluyeIVA,
+                      })
+                    )
+                  }
+                  name="PrecioVentaIncluyeIVA"
                 />
-              )}
-            </Box>
+              }
+              label="IVA incluido en precio de venta"
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -352,6 +343,90 @@ export default function CompanyPage() {
               label="Leyenda Orden de Servicio"
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              id="NombreSucursal"
+              value={branch.NombreSucursal}
+              label="Nombre de la Sucursal"
+              onChange={handleBranchChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              id="Direccion"
+              value={branch.Direccion}
+              label="Dirección de la Sucursal"
+              onChange={handleBranchChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              id="CorreoElectronico"
+              value={branch.CorreoElectronico}
+              label="Correo Electrónico de la Sucursal"
+              onChange={handleBranchChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="Telefono"
+              value={branch.Telefono}
+              label="Teléfono de la Sucursal"
+              numericFormat
+              onChange={handleBranchChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="MontoCierreEfectivo"
+              value={branch.MontoCierreEfectivo.toString()}
+              label="Monto de Cierre en Efectivo"
+              numericFormat
+              onChange={handleBranchChange}
+            />
+          </Grid>
+          <Grid item xs={8} md={6} lg={4}>
+            <LabelField id="Logotipo" value={logoFilePath} label="Logotipo de empresa" />
+          </Grid>
+          <Grid item xs={4}>
+            <input
+              accept="image/*"
+              style={{ display: "none" }}
+              id="logo-image-upload-button-input"
+              ref={logoFileRef}
+              multiple
+              type="file"
+              onChange={handleLogoFileChange}
+            />
+            <Button label="Cargar" onClick={() => logoFileRef.current?.click()} />
+          </Grid>
+          <Grid item xs={12} display="flex" justifyContent="center">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "350px",
+                paddingX: "auto",
+                height: "150px",
+                alignItems: "center",
+                marginY: "20px",
+              }}
+            >
+              {company.Logotipo !== "" && (
+                <Box
+                  sx={{ width: "inherit", height: "inherit" }}
+                  component="img"
+                  alt="Comapny logo image."
+                  src={`data:image/png;base64,${company.Logotipo}`}
+                />
+              )}
+            </Box>
           </Grid>
           {!company.RegimenSimplificado && (
             <>
@@ -417,28 +492,6 @@ export default function CompanyPage() {
               </Grid>
             </>
           )}
-          <Grid item xs={12}>
-            <FormControlLabel
-              componentsProps={{
-                typography: { variant: "body1", color: "text.primary" },
-              }}
-              control={
-                <Checkbox
-                  checked={company.PrecioVentaIncluyeIVA}
-                  onChange={() =>
-                    dispatch(
-                      setCompanyAttribute({
-                        attribute: "PrecioVentaIncluyeIVA",
-                        value: !company.PrecioVentaIncluyeIVA,
-                      })
-                    )
-                  }
-                  name="PrecioVentaIncluyeIVA"
-                />
-              }
-              label="IVA incluido en precio de venta"
-            />
-          </Grid>
           {!company.RegimenSimplificado && (
             <>
               <Grid item xs={10} md={8}>

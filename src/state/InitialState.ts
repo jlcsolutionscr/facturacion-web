@@ -1,9 +1,10 @@
 import {
+  BranchType,
   CashCloseType,
   CategoryType,
   CodeDescriptionType,
   CompanyType,
-  CredentialType,
+  CredentialsType,
   CustomerType,
   DeviceType,
   IdDescriptionTaxType,
@@ -22,6 +23,7 @@ import {
 
 import { STORAGE_TICKET_PRINTER_SERVER_ADDRESS } from "utils/constants";
 import {
+  defaultBranch,
   defaultCategory,
   defaultCompany,
   defaultCredentials,
@@ -76,8 +78,10 @@ type SessionStateType = {
 type CompanyStateType = {
   entity: CompanyType;
   availableEconomicActivityList: LlaveDescriptionType[];
-  credentials: CredentialType;
-  newCredentials: boolean;
+  logo: string | undefined;
+  branchEntity: BranchType;
+  branchUpdated: boolean;
+  credentials: CredentialsType;
   credentialsChanged: boolean;
   reportResults: object[];
   reportSummary: {
@@ -194,8 +198,10 @@ export const sessionInitialState: SessionStateType = {
 export const companyInitialState: CompanyStateType = {
   entity: defaultCompany,
   availableEconomicActivityList: [],
+  logo: undefined,
+  branchEntity: defaultBranch,
+  branchUpdated: false,
   credentials: defaultCredentials,
-  newCredentials: true,
   credentialsChanged: false,
   reportResults: [],
   reportSummary: {

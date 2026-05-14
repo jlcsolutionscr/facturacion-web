@@ -1,15 +1,23 @@
 import { Button } from "jlc-component-library";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
+import Checkbox from "@mui/material/Checkbox";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { generateCashClosePDF, getCashCloseDetails, saveCashCloseDetails } from "state/session/asyncActions";
-import { getCashCloseEntity, getCompanyMode, getCompanyRoles, getIsCashCloseSaved } from "state/session/reducer";
+import {
+  getCashCloseEntity,
+  getCompanyMode,
+  getCompanyRoles,
+  getIsCashCloseSaved,
+  setCashCloseMethod,
+} from "state/session/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -53,6 +61,7 @@ type RevokeOrderDialogProps = {
 };
 
 export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogProps) {
+  const [widthdrawalOptions, setWidthdrawalOptions] = useState(true);
   const { classes } = useStyles();
   const dispatch = useDispatch();
 
@@ -69,6 +78,11 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
   useEffect(() => {
     dispatch(getCashCloseDetails());
   }, [dispatch]);
+
+  const handleCheckboxChange = () => {
+    setWidthdrawalOptions(!widthdrawalOptions);
+    dispatch(setCashCloseMethod(!widthdrawalOptions));
+  };
 
   const handleButtonSubmitClick = () => {
     if (!isCashClosedSaved) {
@@ -97,12 +111,22 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                 </Grid>
                 <Grid xs={8}>
                   <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
-                    Fondo de inicio
+                    Efectivo de inicio:
                   </Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>
                   <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
                     {formatCurrency(cashCloseDetails.FondoInicio)}
+                  </Typography>
+                </Grid>
+                <Grid xs={8}>
+                  <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
+                    Efectivo del cierre anterior:
+                  </Typography>
+                </Grid>
+                <Grid xs={4} className={classes.columnRight}>
+                  <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
+                    {formatCurrency(cashCloseDetails.EfectivoCierreAnterior)}
                   </Typography>
                 </Grid>
                 <Grid xs={12}>
@@ -111,7 +135,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                 {generateLayaway && (
                   <>
                     <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Adelanto de apartados</Typography>
+                      <Typography className={classes.summaryRow}>Adelanto de apartados:</Typography>
                     </Grid>
                     <Grid xs={4} className={classes.columnRight}>
                       <Typography className={classes.summaryRow}>
@@ -123,7 +147,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                 {generateWorkingOrder && companyMode === 1 && (
                   <>
                     <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Adelanto de ordenes de servicio</Typography>
+                      <Typography className={classes.summaryRow}>Adelanto de ordenes de servicio:</Typography>
                     </Grid>
                     <Grid xs={4} className={classes.columnRight}>
                       <Typography className={classes.summaryRow}>
@@ -135,7 +159,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                 {cxcPayments && (
                   <>
                     <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Pagos a CxC en efectivo</Typography>
+                      <Typography className={classes.summaryRow}>Pagos a CxC en efectivo:</Typography>
                     </Grid>
                     <Grid xs={4} className={classes.columnRight}>
                       <Typography className={classes.summaryRow}>
@@ -145,7 +169,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                   </>
                 )}
                 <Grid xs={8}>
-                  <Typography className={classes.summaryRow}>Ventas en efectivo</Typography>
+                  <Typography className={classes.summaryRow}>Ventas en efectivo:</Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>
                   <Typography className={classes.summaryRow}>
@@ -164,7 +188,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                   <Typography className={classes.summaryTitle}>DETALLE DE EGRESOS</Typography>
                 </Grid>
                 <Grid xs={8}>
-                  <Typography className={classes.summaryRow}>Compras en efectivo</Typography>
+                  <Typography className={classes.summaryRow}>Compras en efectivo:</Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>
                   <Typography className={classes.summaryRow}>
@@ -172,7 +196,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                   </Typography>
                 </Grid>
                 <Grid xs={8}>
-                  <Typography className={classes.summaryRow}>Otros egresos en efectivo</Typography>
+                  <Typography className={classes.summaryRow}>Otros egresos en efectivo:</Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>
                   <Typography className={classes.summaryRow}>
@@ -182,7 +206,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                 {cxpPayments && (
                   <>
                     <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Pagos a CxP en efectivo</Typography>
+                      <Typography className={classes.summaryRow}>Pagos a CxP en efectivo:</Typography>
                     </Grid>
                     <Grid xs={4} className={classes.columnRight}>
                       <Typography className={classes.summaryRow}>
@@ -193,7 +217,7 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                 )}
                 <Grid xs={8}>
                   <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
-                    Fondo para siguiente inicio de caja
+                    Efectivo para iniciar el siguiente cierre:
                   </Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>
@@ -201,9 +225,34 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
                     {formatCurrency(cashCloseDetails.FondoCierre)}
                   </Typography>
                 </Grid>
+                <Grid xs={12}>
+                  <FormControlLabel
+                    componentsProps={{
+                      typography: { variant: "body1", color: "text.primary" },
+                    }}
+                    control={
+                      <Checkbox
+                        checked={widthdrawalOptions}
+                        onChange={handleCheckboxChange}
+                        name="cierreRetiroEfectivo"
+                      />
+                    }
+                    label="Cierre con retiro de efectivo:"
+                  />
+                </Grid>
                 <Grid xs={8}>
                   <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
-                    Restante de efectivo en caja
+                    Monto en efectivo para el cierre siguiente:
+                  </Typography>
+                </Grid>
+                <Grid xs={4} className={classes.columnRight}>
+                  <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
+                    {formatCurrency(cashCloseDetails.EfectivoCierreSiguiente)}
+                  </Typography>
+                </Grid>
+                <Grid xs={8}>
+                  <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
+                    Monto para retiro de efectivo:
                   </Typography>
                 </Grid>
                 <Grid xs={4} className={classes.columnRight}>

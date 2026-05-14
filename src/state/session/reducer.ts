@@ -66,6 +66,29 @@ export const sessionSlice = createSlice({
         state.isCashCloseSaved = false;
       }
     },
+    setCashCloseMethod: (state, action) => {
+      const entity = state.cashCloseEntity;
+      if (entity) {
+        const amount =
+          entity.FondoInicio +
+          entity.EfectivoCierreAnterior +
+          entity.AdelantosApartadoEfectivo +
+          entity.AdelantosOrdenEfectivo +
+          entity.PagosCxCEfectivo +
+          entity.VentasEfectivo -
+          entity.ComprasEfectivo -
+          entity.EgresosEfectivo -
+          entity.PagosCxPEfectivo -
+          entity.FondoCierre;
+        if (action.payload) {
+          entity.EfectivoCierreSiguiente = 0;
+          entity.RetiroEfectivo = amount;
+        } else {
+          entity.EfectivoCierreSiguiente = amount;
+          entity.RetiroEfectivo = 0;
+        }
+      }
+    },
     setIsCashCloseSaved: (state, action) => {
       state.cashCloseId = action.payload.cashCloseId;
       state.isCashCloseSaved = action.payload.isSaved;
@@ -83,6 +106,7 @@ export const {
   setProcessingToken,
   setProcessingTokenMessage,
   setCashCloseEntity,
+  setCashCloseMethod,
   setIsCashCloseSaved,
 } = sessionSlice.actions;
 
