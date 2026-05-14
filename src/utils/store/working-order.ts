@@ -1,7 +1,7 @@
 import { CustomerDetailsType, DetalleProductoType } from "types/domain";
 
 import { ORDER_STATUS } from "utils/constants";
-import { defaultPaymentDetails, defaultProductDetails } from "utils/defaults";
+import { defaultProductDetails } from "utils/defaults";
 import { getProductSummary } from "utils/domainHelper";
 import { convertToDateString, roundNumber } from "utils/utilities";
 
@@ -48,7 +48,7 @@ export function parseWorkingOrderEntity(workingOrder: any, servicePointId: numbe
     customerDetails,
     productDetails: defaultProductDetails,
     productDetailsList,
-    paymentDetailsList: [defaultPaymentDetails],
+    paymentDetailsList: [],
     vendorId: workingOrder.IdVendedor,
     currency: workingOrder.IdTipoMoneda,
     summary,

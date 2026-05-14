@@ -28,7 +28,7 @@ import {
   validateProcessingToken,
 } from "state/session/asyncActions";
 import { getProcessingToken, getProcessingTokenMessage } from "state/session/reducer";
-import { readSessionFromStorage } from "utils/utilities";
+import { LOGIN_INPUT_ID, readSessionFromStorage, readyKeyFromStorage } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -123,6 +123,8 @@ export default function LoginPage({ isDarkMode, toggleDarkMode }: LoginPageProps
           if (key === "id")
             dispatch(validateProcessingToken({ type: window.location.pathname.substring(1), id: value }));
         }
+      } else {
+        setId(readyKeyFromStorage(LOGIN_INPUT_ID) || "");
       }
     }
   }, [dispatch]);

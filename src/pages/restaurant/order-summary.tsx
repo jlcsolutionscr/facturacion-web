@@ -242,9 +242,9 @@ export default function OrderSummary({ isSplitMode, value }: OrderSummaryProps) 
       </Grid>
 
       <Dialog
+        disableEscapeKeyDown
         maxWidth={dialogStatus.type === DialogType.TICKETS ? "md" : "sm"}
         id="order-summary-dialog"
-        onClose={() => setDialogStatus({ status: false, id: 0, type: dialogStatus.type })}
         open={dialogStatus.status}
       >
         {dialogStatus.type === DialogType.CLEAR ? (

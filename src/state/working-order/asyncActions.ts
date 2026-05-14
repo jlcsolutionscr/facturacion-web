@@ -466,6 +466,7 @@ export const openServicePoint = createAsyncThunk(
         dispatch(setWorkingOrder(workingOrderEntity));
       }
       dispatch(setServicePointId(servicePoint.IdPunto));
+      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(setStatus(ORDER_STATUS.READY));

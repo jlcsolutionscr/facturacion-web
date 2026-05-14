@@ -246,3 +246,5 @@ export function getErrorMessage(error: unknown) {
 export function parseStringToNumber(value: string) {
   return value !== "" ? parseFloat(value) : "";
 }
+
+export const LOGIN_INPUT_ID = "JLC:login-input-id";
