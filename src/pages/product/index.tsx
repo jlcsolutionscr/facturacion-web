@@ -488,7 +488,7 @@ export default function ProductPage() {
             >
               {product.Imagen !== "" && (
                 <Box
-                  sx={{ width: "inherit", height: "inherit" }}
+                  sx={{ width: "auto", height: "auto" }}
                   component="img"
                   alt="Comapny logo image."
                   src={`data:image/png;base64,${product.Imagen}`}

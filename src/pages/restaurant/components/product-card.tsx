@@ -31,15 +31,15 @@ const useStyles = makeStyles()(() => ({
   imageContainer: {
     display: "flex",
     width: "auto",
-    height: "auto",
+    height: "130px",
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
     display: "flex",
     justifyContent: "center",
-    width: "100%",
-    height: "130px",
+    width: "auto",
+    height: "auto",
   },
   descriptionContainer: {
     display: "flex",

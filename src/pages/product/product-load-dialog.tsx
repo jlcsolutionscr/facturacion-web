@@ -1,4 +1,4 @@
-import { Button, DataGrid, Select } from "jlc-component-library";
+import { Button, DataGrid, Select, TextField } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DialogActions from "@mui/material/DialogActions";
@@ -18,6 +18,7 @@ type ProductLoadDialogProps = {
 export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogProps) {
   const [productList, setProductList] = useState<{ description: string; price: number; image: string }[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
+  const [codeInit, setCodeInit] = useState<string>("");
 
   const dispatch = useDispatch();
   const companyId = useSelector(getCompanyId);
@@ -57,14 +58,11 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
     const productDataList = [];
     for (let i = 0; i < productList.length; i++) {
       const product = productList[i];
-      const code = `${categoryList
-        .find(c => c.Id === parseInt(categoryId))
-        ?.Descripcion.substring(0, 2)
-        .toUpperCase()}-${i + 1}`;
+      const code = `${codeInit.trim().toUpperCase()}-${i + 1}`;
       const productData = {
         IdProducto: 0,
         IdEmpresa: companyId,
-        Tipo: 1,
+        Tipo: 3,
         IdLinea: categoryId ? parseInt(categoryId) : 0,
         Codigo: code,
         CodigoProveedor: code,
@@ -90,6 +88,12 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
     dispatch(saveProductWithEntity({ list: productDataList }));
   };
 
+  const handleClean = () => {
+    setProductList([]);
+    setCategoryId("");
+    setCodeInit("");
+  };
+
   const rows = productList.map(row => ({
     description: row.description,
     price: row.price,
@@ -99,6 +103,8 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
     { field: "description", width: "235px", headerName: "Nombre" },
     { field: "price", width: "75px", headerName: "Precio" },
   ];
+
+  const disabled = productList.length === 0 || categoryId === "" || codeInit.trim() === "";
 
   const categories = categoryList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -138,6 +144,13 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
             </Select>
           </Grid>
           <Grid item>
+            <TextField
+              label="Siglas iniciales del código"
+              value={codeInit}
+              onChange={event => setCodeInit(event.target.value)}
+            />
+          </Grid>
+          <Grid item>
             <div style={{ height: "calc(100vh - 251px)", overflowY: "auto" }}>
               <DataGrid showHeader dense columns={columns} rows={rows} rowsPerPage={rows.length} />
             </div>
@@ -145,7 +158,8 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
         </Grid>
       </DialogContent>
       <DialogActions style={{ margin: "0 20px 10px 20px" }}>
-        <Button label="Importar" autoFocus onClick={handleUpdate} />
+        <Button disabled={disabled} label="Importar" autoFocus onClick={handleUpdate} />
+        <Button disabled={disabled} label="Limpiar" autoFocus onClick={handleClean} />
         <Button negative label="Cerrar" onClick={() => setDialogOpen(false)} />
       </DialogActions>
     </>

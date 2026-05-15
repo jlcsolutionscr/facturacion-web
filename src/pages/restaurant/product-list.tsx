@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -40,8 +41,10 @@ export default function ProductList({ value }: ProductListProps) {
     ));
 
   const categories = categoryList.map(category => (
-    <Button key={category.Id} onClick={() => setCategory(category.Id)}>
-      {category.Descripcion}
+    <Button sx={{ maxWidth: "150px" }} key={category.Id} onClick={() => setCategory(category.Id)}>
+      <Typography variant="body2" noWrap>
+        {category.Descripcion}
+      </Typography>
     </Button>
   ));
 
