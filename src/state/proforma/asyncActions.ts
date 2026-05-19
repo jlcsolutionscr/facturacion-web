@@ -50,8 +50,8 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
     company &&
     productDetails.id !== 0 &&
     productDetails.description !== "" &&
-    productDetails.quantity > 0 &&
-    productDetails.price > 0
+    !["0", ""].includes(productDetails.quantity) &&
+    !["0", ""].includes(productDetails.price)
   ) {
     try {
       let newProducts = null;
@@ -65,7 +65,7 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
         unit: "UND",
         price: company.PrecioVentaIncluyeIVA
           ? productDetails.price
-          : roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
+          : roundNumber(parseFloat(productDetails.price) * (1 + productDetails.taxRate / 100), 2).toString(),
 
         costPrice: productDetails.costPrice,
         disccountRate: productDetails.disccountRate,

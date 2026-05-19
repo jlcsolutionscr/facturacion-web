@@ -12,6 +12,7 @@ import {
   setPaymentDetailsList,
   setPrintingTicketList,
   setProductDetailsList,
+  setServicePointEntity,
   setServicePointId,
   setServicePointList,
   setStatus,
@@ -23,7 +24,7 @@ import {
   setWorkingOrderListPage,
 } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
-import { defaultCustomerDetails, defaultPaymentDetails } from "utils/defaults";
+import { defaultCustomerDetails, defaultPaymentDetails, defaultServicePoint } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
@@ -42,6 +43,7 @@ import {
   printPendingTickets,
   revokeWorkingOrderEntity,
   saveInvoiceEntity,
+  saveServicePointEntity,
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
 import { parseWorkingOrderEntity } from "utils/store/working-order";
@@ -88,13 +90,13 @@ export const addDetails = createAsyncThunk(
       );
       loadedProductDetails = {
         id: product.IdProducto,
-        quantity: 1,
+        quantity: "1",
         code: "",
         description: product.Descripcion,
         additionalInformation: "",
         taxRate,
         unit: "UND",
-        price,
+        price: price.toString(),
         costPrice: 0,
         disccountRate: 0,
       };
@@ -103,8 +105,8 @@ export const addDetails = createAsyncThunk(
       company &&
       loadedProductDetails.id !== 0 &&
       loadedProductDetails.description !== "" &&
-      loadedProductDetails.quantity > 0 &&
-      loadedProductDetails.price > 0
+      !["0", ""].includes(loadedProductDetails.quantity) &&
+      !["0", ""].includes(loadedProductDetails.price)
     ) {
       try {
         let newProducts = null;
@@ -118,7 +120,10 @@ export const addDetails = createAsyncThunk(
           unit: loadedProductDetails.unit,
           price: company.PrecioVentaIncluyeIVA
             ? loadedProductDetails.price
-            : roundNumber(loadedProductDetails.price * (1 + loadedProductDetails.taxRate / 100), 2),
+            : roundNumber(
+                parseFloat(loadedProductDetails.price) * (1 + loadedProductDetails.taxRate / 100),
+                2
+              ).toString(),
           taxRate: loadedProductDetails.taxRate,
           costPrice: loadedProductDetails.costPrice,
           disccountRate: loadedProductDetails.disccountRate,
@@ -142,7 +147,7 @@ export const updateDetails = createAsyncThunk(
     const { company } = session;
     const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
     if (company && productDetails.id) {
-      if (company && productDetails.quantity > 0 && productDetails.price > 0) {
+      if (company && !["0", ""].includes(productDetails.quantity) && !["0", ""].includes(productDetails.price)) {
         try {
           const index = productDetailsList.findIndex(
             (item, index) => item.id === productDetails.id && index === payload.pos
@@ -424,19 +429,88 @@ export const openWorkingOrder = createAsyncThunk(
 
 export const getServicePointList = createAsyncThunk(
   "working-order/getServicePointList",
-  async (_payload, { getState, dispatch }) => {
+  async (payload: { activeFilter: boolean }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
+    ``;
     dispatch(startLoader());
     dispatch(setActiveSection(11));
     try {
-      const servicePointList = await getServicePointListRequest(token, companyId, branchId, true, "");
+      const servicePointList = await getServicePointListRequest(token, companyId, branchId, payload.activeFilter, "");
       const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
       const productList = await getProductListPerPage(token, companyId, branchId, true, 1, productCount, "", true, 1);
       dispatch(setProductListPage(1));
       dispatch(setProductListCount(productCount));
       dispatch(setProductList(productList));
       dispatch(setServicePointList(servicePointList));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getServicePointMaintenance = createAsyncThunk(
+  "working-order/getServicePointMaintenance",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    ``;
+    dispatch(startLoader());
+    try {
+      const servicePointList = await getServicePointListRequest(token, companyId, branchId, false, "");
+      dispatch(setServicePointList(servicePointList));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getServicePoint = createAsyncThunk(
+  "working-order/getServicePoint",
+  async (payload: { id?: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    dispatch(startLoader());
+    dispatch(setActiveSection(19));
+    dispatch(resetWorkingOrder());
+    try {
+      let servicePoint = {
+        ...defaultServicePoint,
+        IdEmpresa: companyId,
+        IdSucursal: branchId,
+      };
+      if (payload.id) {
+        servicePoint = await getServicePointEntity(token, payload.id);
+      }
+      dispatch(setServicePointEntity(servicePoint));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const saveServicePoint = createAsyncThunk(
+  "working-order/saveServicePoint",
+  async (_payload, { getState, dispatch }) => {
+    const { workingOrder, session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    const { servicePointEntity } = workingOrder;
+    dispatch(startLoader());
+    try {
+      const entity = { ...servicePointEntity, IdEmpresa: companyId, IdSucursal: branchId };
+      await saveServicePointEntity(token, entity);
+      dispatch(
+        setMessage({
+          message: "Transacción completada satisfactoriamente",
+          type: "INFO",
+        })
+      );
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

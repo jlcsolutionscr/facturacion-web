@@ -5,9 +5,9 @@ import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 
-import { getCategoryList as getCategoryListAction, openCategory } from "state/product/asyncActions";
-import { getCategoryList } from "state/product/reducer";
 import { setActiveSection } from "state/ui/reducer";
+import { getServicePoint, getServicePointMaintenance } from "state/working-order/asyncActions";
+import { getServicePointList } from "state/working-order/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { EditIcon } from "utils/iconsHelper";
 
@@ -75,11 +75,11 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function CategoryListPage() {
+export default function ServicePointListPage() {
   const [filter, setFilter] = useState("");
 
   const dispatch = useDispatch();
-  const list = useSelector(getCategoryList);
+  const list = useSelector(getServicePointList);
 
   const { classes } = useStyles();
 
@@ -87,7 +87,7 @@ export default function CategoryListPage() {
 
   useEffect(() => {
     if (containeRef.current) {
-      dispatch(getCategoryListAction());
+      dispatch(getServicePointMaintenance());
     }
   }, [dispatch]);
 
@@ -105,7 +105,7 @@ export default function CategoryListPage() {
           className={classes.icon}
           color="primary"
           component="span"
-          onClick={() => dispatch(openCategory({ id: row.Id }))}
+          onClick={() => dispatch(getServicePoint({ id: row.Id }))}
         >
           <EditIcon className={classes.icon} />
         </IconButton>
@@ -114,7 +114,7 @@ export default function CategoryListPage() {
 
   const columns = [
     { field: "id", headerName: "Id", hidden: true },
-    { field: "name", width: "310px", headerName: "Nombre" },
+    { field: "name", width: "310px", headerName: "Descripción" },
     { field: "action1", headerName: "" },
   ];
 
@@ -122,14 +122,19 @@ export default function CategoryListPage() {
     <div className={classes.root} ref={containeRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
-          <TextField id="text-filter-id" value={filter} label="Filtro por nombre" onChange={handleOnFilterChange} />
+          <TextField
+            id="text-filter-id"
+            value={filter}
+            label="Filtro por descripción"
+            onChange={handleOnFilterChange}
+          />
         </Grid>
       </Grid>
       <div className={classes.dataContainer}>
         <DataGrid showHeader dense columns={columns} rows={rows} rowsPerPage={rows.length} />
       </div>
       <div className={classes.buttonContainer}>
-        <Button label="Agregar" onClick={() => dispatch(openCategory({ id: undefined }))} />
+        <Button label="Agregar" onClick={() => dispatch(getServicePoint({ id: undefined }))} />
         <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
       </div>
     </div>

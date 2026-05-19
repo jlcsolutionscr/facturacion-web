@@ -1,14 +1,10 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Children, cloneElement, isValidElement, ReactNode, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import OrderSummary from "./order-summary";
 import ProductList from "./product-list";
-import { getPermissions } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
@@ -109,47 +105,61 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function RestaurantOrderPage() {
-  const { classes } = useStyles();
-  const dispatch = useDispatch();
-  const [value, setValue] = useState(0);
+type TouchWorkingOrderPageProps = {
+  addProductDetails: (value: number) => void;
+  handleClose: () => void;
+  children: ReactNode;
+};
 
-  const permissions = useSelector(getPermissions);
+export default function TouchScreenSalesPage({ addProductDetails, handleClose, children }: TouchWorkingOrderPageProps) {
+  const { classes } = useStyles();
+  const [value, setValue] = useState(0);
 
   const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
   };
 
-  const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
-
   return (
     <div className={classes.container}>
       <div className={classes.mobileView}>
         <div className={classes.backButton}>
-          <IconButton aria-label="back-button" component="span" onClick={() => dispatch(setActiveSection(11))}>
+          <IconButton aria-label="back-button" component="span" onClick={() => handleClose()}>
             <BackArrowIcon className={classes.icon} />
           </IconButton>
         </div>
         <Tabs className={classes.tabHeader} centered value={value} indicatorColor="secondary" onChange={handleChange}>
-          <Tab label="Resumen" disabled={!generateInvoice} />
+          <Tab label="Resumen" />
           <Tab label="Productos" />
         </Tabs>
         <div className={classes.tabContent}>
           <div style={{ display: value === 0 ? "flex" : "none", width: "100%", maxHeight: "100%" }}>
-            <OrderSummary isSplitMode={false} value={value} />
+            {Children.map(children, child => {
+              if (isValidElement(child)) {
+                return cloneElement(child as React.ReactElement<{ isSplitMode: boolean; value: number }>, {
+                  isSplitMode: false,
+                  value: value,
+                });
+              }
+              return child;
+            })}
           </div>
           <div style={{ display: value === 1 ? "flex" : "none", width: "100%", maxHeight: "100%" }}>
-            <ProductList value={value} />
+            <ProductList value={value} addDetails={id => addProductDetails(id)} />
           </div>
         </div>
       </div>
       <div className={classes.desktopView}>
         <div className={classes.desktopContent}>
           <div className={classes.desktopSummary}>
-            <OrderSummary isSplitMode />
+            {Children.map(children, child => {
+              if (isValidElement(child)) {
+                return cloneElement(child as React.ReactElement<{ isSplitMode: boolean }>, { isSplitMode: true });
+              }
+              return child;
+            })}
           </div>
           <div className={classes.desktopProductList}>
-            <ProductList />
+            <ProductList addDetails={id => addProductDetails(id)} />
           </div>
         </div>
       </div>

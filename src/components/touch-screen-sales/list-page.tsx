@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 
-import Tab from "pages/restaurant/components/point-of-service-card";
+import Tab from "components/touch-screen-sales/point-of-service-card";
 import { setActiveSection } from "state/ui/reducer";
 import { openServicePoint } from "state/working-order/asyncActions";
 import { getServicePointList } from "state/working-order/reducer";
@@ -26,14 +26,14 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   dataContainer: {
-    display: "flex",
+    display: "inline-flex",
     overflowX: "hidden",
     overflowY: "auto",
-    margin: "20px 0",
+    margin: "20px",
     maxHeight: "calc(100% - 80px)",
-
+    alignItems: "flex-start",
     "@media screen and (max-width:959px)": {
-      margin: "15px 0",
+      margin: "15px",
     },
   },
   buttonContainer: {

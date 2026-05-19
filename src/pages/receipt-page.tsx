@@ -44,7 +44,7 @@ import {
 import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon, SearchIcon } from "utils/iconsHelper";
-import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
+import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -121,7 +121,7 @@ export default function ReceiptPage() {
   const exonerationNameList = useSelector(getExonerationNameList);
   const clasificationList = useSelector(getClasificationList);
   const exoneration = useSelector(getExonerationDetails);
-  const productDetail = useSelector(getProductDetails);
+  const productDetails = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
   const summary = useSelector(getSummary);
   const currency = useSelector(getCurrency);
@@ -218,11 +218,11 @@ export default function ReceiptPage() {
   ];
 
   const addDisabled =
-    productDetail.code.length < 13 ||
-    productDetail.description === "" ||
-    productDetail.unit === "" ||
-    productDetail.quantity === 0 ||
-    productDetail.price === 0;
+    productDetails.code.length < 13 ||
+    productDetails.description === "" ||
+    productDetails.unit === "" ||
+    ["0", ""].includes(productDetails.quantity) ||
+    ["0", ""].includes(productDetails.price);
 
   const saveDisabled =
     summary.total === 0 ||
@@ -420,7 +420,7 @@ export default function ReceiptPage() {
               label="Código CABYS"
               id="Codigo"
               inputProps={{ maxLength: 13 }}
-              value={productDetail.code}
+              value={productDetails.code}
               onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
             />
           </Grid>
@@ -435,14 +435,14 @@ export default function ReceiptPage() {
             </IconButton>
           </Grid>
           <Grid item xs={4}>
-            <LabelField id="TasaIva" value={productDetail.taxRate.toString()} label="Tasa del IVA" />
+            <LabelField id="TasaIva" value={productDetails.taxRate.toString()} label="Tasa del IVA" />
           </Grid>
           <Grid item xs={12}>
             <TextField
               disabled={successful}
               label="Descripción"
               id="Descripcion"
-              value={productDetail.description}
+              value={productDetails.description}
               onChange={event => dispatch(setProductDetails({ attribute: "description", value: event.target.value }))}
             />
           </Grid>
@@ -451,7 +451,7 @@ export default function ReceiptPage() {
               disabled
               label="Unidad"
               id="Unidad"
-              value={productDetail.unit}
+              value={productDetails.unit}
               onChange={event => dispatch(setProductDetails({ attribute: "unit", value: event.target.value }))}
             />
           </Grid>
@@ -461,10 +461,8 @@ export default function ReceiptPage() {
               label="Cantidad"
               id="Cantidad"
               numericFormat
-              value={productDetail.quantity.toString()}
-              onChange={event =>
-                dispatch(setProductDetails({ attribute: "quantity", value: parseStringToNumber(event.target.value) }))
-              }
+              value={productDetails.quantity}
+              onChange={event => dispatch(setProductDetails({ attribute: "quantity", value: event.target.value }))}
             />
           </Grid>
           <Grid item xs={4}>
@@ -472,10 +470,8 @@ export default function ReceiptPage() {
               disabled={successful}
               label="Precio"
               numericFormat
-              value={productDetail.price.toString()}
-              onChange={event =>
-                dispatch(setProductDetails({ attribute: "price", value: parseStringToNumber(event.target.value) }))
-              }
+              value={productDetails.price}
+              onChange={event => dispatch(setProductDetails({ attribute: "price", value: event.target.value }))}
             />
           </Grid>
           <Grid item xs={2}>
@@ -506,7 +502,9 @@ export default function ReceiptPage() {
                     <TableCell>{row.code}</TableCell>
                     <TableCell>{row.description}</TableCell>
                     <TableCell align="right">{row.quantity}</TableCell>
-                    <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(roundNumber(parseFloat(row.quantity) * parseFloat(row.price), 2), 2)}
+                    </TableCell>
                     <TableCell align="right">
                       <IconButton
                         disabled={successful}

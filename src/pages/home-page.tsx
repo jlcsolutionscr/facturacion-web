@@ -15,6 +15,8 @@ import DocumentListPage from "pages/document";
 import InvoicePage from "pages/invoice";
 import InvoiceListPage from "pages/invoice/list-page";
 import MenuPage from "pages/menu-page";
+import ServicePointPage from "pages/point-of-service";
+import ServicePointListPage from "pages/point-of-service/list-page";
 import PrinterServiceConfig from "pages/printer-service-config-page";
 import ProductPage from "pages/product";
 import ProductListPage from "pages/product/list-page";
@@ -22,13 +24,11 @@ import ProformaPage from "pages/proforma";
 import ProformaListPage from "pages/proforma/list-page";
 import ReceiptPage from "pages/receipt-page";
 import ReportsPage from "pages/reports-page";
-import RestaurantOrderPage from "pages/restaurant";
-import RestaurantOrderListPage from "pages/restaurant/list-page";
 import UserPage from "pages/user-page";
 import WorkingOrderPage from "pages/working-order";
-import WorkingOrderListPage from "pages/working-order/list-page";
+import WorkingOrderListPage from "pages/working-order/list";
 import { abortCashCloseProcess } from "state/session/asyncActions";
-import { getCompany, getIsCashCloseSaved } from "state/session/reducer";
+import { getIsCashCloseSaved } from "state/session/reducer";
 import { getActiveSection, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
@@ -67,7 +67,6 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
   const dispatch = useDispatch();
 
   const activeSection = useSelector(getActiveSection);
-  const company = useSelector(getCompany);
   const isCashClosedSaved = useSelector(getIsCashCloseSaved);
 
   useEffect(() => {
@@ -103,19 +102,15 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 8 && <InvoiceListPage />}
         {activeSection === 9 && <DocumentListPage />}
         {activeSection === 10 && <ProformaListPage />}
-        {activeSection === 11 ? (
-          company?.Modalidad === 1 ? (
-            <WorkingOrderListPage />
-          ) : (
-            <RestaurantOrderListPage />
-          )
-        ) : null}
+        {activeSection === 11 && <WorkingOrderListPage />}
         {activeSection === 12 && <CustomerPage />}
         {activeSection === 13 && <ProductPage />}
         {activeSection === 14 && <ProformaPage />}
-        {activeSection === 15 ? company?.Modalidad === 1 ? <WorkingOrderPage /> : <RestaurantOrderPage /> : null}
+        {activeSection === 15 && <WorkingOrderPage />}
         {activeSection === 16 && <CategoryLisPage />}
         {activeSection === 17 && <CategoryPage />}
+        {activeSection === 18 && <ServicePointListPage />}
+        {activeSection === 19 && <ServicePointPage />}
         {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 && <PrinterServiceConfig />}
       </div>

@@ -1,21 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import ProductCard from "pages/restaurant/components/product-card";
+import ProductCard from "components/touch-screen-sales/product-card";
 import { getCategoryList, getProductList } from "state/product/reducer";
-import { addDetails } from "state/working-order/asyncActions";
 
 interface ProductListProps {
+  addDetails: (value: number) => void;
   value?: number;
 }
 
-export default function ProductList({ value }: ProductListProps) {
-  const dispatch = useDispatch();
-
+export default function ProductList({ addDetails, value }: ProductListProps) {
   const [category, setCategory] = useState(-1);
 
   const myRef = useRef<HTMLDivElement>(null);
@@ -35,7 +33,7 @@ export default function ProductList({ value }: ProductListProps) {
           description={row.Descripcion}
           price={row.PrecioVenta1}
           image={row.Imagen}
-          action={() => dispatch(addDetails({ id: row.Id }))}
+          action={() => addDetails(row.Id)}
         />
       </Grid>
     ));

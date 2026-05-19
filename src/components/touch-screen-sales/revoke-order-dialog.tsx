@@ -1,33 +1,28 @@
 import { Button } from "jlc-component-library";
-import { useDispatch } from "react-redux";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
-import { revokeWorkingOrder } from "state/working-order/asyncActions";
+import { DialogStatus, DialogType } from "./order-summary";
 
 type RevokeOrderDialogProps = {
-  workingOrderId: number;
+  alertMessage: string;
   setDialogStatus: (value: DialogStatus) => void;
+  handleRevoke: () => void;
 };
 
-export default function RevokeOrderDialog({ workingOrderId, setDialogStatus }: RevokeOrderDialogProps) {
-  const dispatch = useDispatch();
-
+export default function RevokeOrderDialog({ alertMessage, setDialogStatus, handleRevoke }: RevokeOrderDialogProps) {
   const handleConfirmButtonClick = () => {
     setDialogStatus({ status: false, id: 0, type: DialogType.REVOKE });
-    dispatch(revokeWorkingOrder({ id: workingOrderId }));
+    handleRevoke();
   };
 
   return (
     <>
-      <DialogTitle>Anular orden de servicio</DialogTitle>
+      <DialogTitle>Anulación de registro</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          {`Desea proceder con la anulación de la orden para la ${workingOrderId}?`}
-        </DialogContentText>
+        <DialogContentText id="alert-dialog-description">{alertMessage}</DialogContentText>
       </DialogContent>
       <DialogActions style={{ margin: "0 20px 10px 20px" }}>
         <Button label="Anular" autoFocus onClick={handleConfirmButtonClick} />

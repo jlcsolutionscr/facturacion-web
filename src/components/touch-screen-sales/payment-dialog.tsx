@@ -9,7 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
+import { DialogStatus, DialogType } from "./order-summary";
 import {
   filterCustomerList,
   getCustomerDetails as getCustomerDetailsAction,

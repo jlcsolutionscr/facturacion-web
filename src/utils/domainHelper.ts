@@ -16,6 +16,7 @@ import {
   ProductType,
   ProformaType,
   ReceiptType,
+  ServicePointType,
   SummaryType,
   WorkingOrderType,
 } from "types/domain";
@@ -504,6 +505,17 @@ export async function saveCategoryEntity(token: string, category: CategoryType) 
   await post(APP_URL + "/ejecutar", token, data);
 }
 
+export async function saveServicePointEntity(token: string, servicePoint: ServicePointType) {
+  const entidad = JSON.stringify(servicePoint);
+  const data =
+    "{NombreMetodo: '" +
+    (servicePoint.IdPunto ? "ActualizarPuntoDeServicio" : "AgregarPuntoDeServicio") +
+    "', Entidad: " +
+    entidad +
+    "}";
+  await post(APP_URL + "/ejecutar", token, data);
+}
+
 export async function getExonerationTypeList(token: string) {
   const data = "{NombreMetodo: 'ObtenerListadoTipoExoneracion'}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
@@ -595,8 +607,8 @@ export function getProductSummary(products: ProductDetailsType[], exonerationPer
   let total = 0;
   const totalCost = 0;
   products.forEach(item => {
-    const priceNoTaxes = roundNumber(item.price / (1 + item.taxRate / 100), 3);
-    const subtotal = priceNoTaxes * item.quantity;
+    const priceNoTaxes = roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3);
+    const subtotal = priceNoTaxes * parseFloat(item.quantity);
     if (item.taxRate > 0) {
       let taxesAmount = (subtotal * item.taxRate) / 100;
       let taxedAmount = subtotal;
@@ -650,18 +662,18 @@ export async function saveInvoiceEntity(
   const bankId = await getPaymentBankId(token, companyId, paymentDetailsList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
   productDetailsList.forEach(item => {
-    const priceNoTaxes = roundNumber(item.price / (1 + item.taxRate / 100), 3);
+    const priceNoTaxes = roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3);
     const index = invoiceDetails.findIndex(
       detail => detail.IdProducto === item.id && detail.PrecioVenta === priceNoTaxes
     );
     if (index !== -1) {
-      invoiceDetails[index].Cantidad += item.quantity;
+      invoiceDetails[index].Cantidad += parseFloat(item.quantity);
     } else {
       const detail = {
         IdFactura: 0,
         IdProducto: item.id,
         Descripcion: item.description,
-        Cantidad: item.quantity,
+        Cantidad: parseFloat(item.quantity),
         PrecioVenta: priceNoTaxes,
         Excento: item.taxRate === 0,
         PrecioCosto: item.costPrice,
@@ -789,8 +801,8 @@ export async function saveWorkingOrderEntity(
       Codigo: item.code,
       Descripcion: item.description,
       InformacionAdicional: item.additionalInformation,
-      Cantidad: item.quantity,
-      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
+      Cantidad: parseFloat(item.quantity),
+      PrecioVenta: roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3),
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,
       PorcDescuento: item.disccountRate,
@@ -1049,13 +1061,13 @@ export async function saveReceiptEntity(
   receipt.productDetailsList.forEach((item, index) => {
     const detail = {
       Linea: index + 1,
-      Cantidad: item.quantity,
+      Cantidad: parseFloat(item.quantity),
       Codigo: item.code,
       Descripcion: item.description,
       IdImpuesto: item.taxRateType ?? 13,
       PorcentajeIVA: item.taxRate,
       UnidadMedida: item.unit,
-      PrecioVenta: item.price,
+      PrecioVenta: parseFloat(item.price),
     };
     receiptDetails.push(detail);
   });
@@ -1131,8 +1143,8 @@ export async function saveProformaEntity(
       IdProducto: item.id,
       Codigo: item.code,
       Descripcion: item.description,
-      Cantidad: item.quantity,
-      PrecioVenta: roundNumber(item.price / (1 + item.taxRate / 100), 3),
+      Cantidad: parseFloat(item.quantity),
+      PrecioVenta: roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3),
       PrecioCosto: item.costPrice,
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,

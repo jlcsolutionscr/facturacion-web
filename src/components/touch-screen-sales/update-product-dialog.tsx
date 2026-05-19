@@ -1,33 +1,36 @@
 import { Button, LabelField, TextField } from "jlc-component-library";
-import { useDispatch, useSelector } from "react-redux";
+import { ProductDetailsType } from "types/domain";
 import Box from "@mui/material/Box";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
-import { getPermissions } from "state/session/reducer";
-import { updateDetails } from "state/working-order/asyncActions";
-import { getProductDetails, setAdditionalInformation, setPrice, setQuantity } from "state/working-order/reducer";
-import { parseStringToNumber } from "utils/utilities";
+import { DialogStatus, DialogType } from "./order-summary";
 
 type UpdateProductDialogProps = {
-  productId: number;
+  id: number;
+  isPriceChangeEnabled: boolean;
+  productDetails: ProductDetailsType;
   setDialogStatus: (value: DialogStatus) => void;
+  setProductDetails: (value: ProductDetailsType) => void;
+  handleSubmit: (value: number) => void;
 };
 
-export default function UpdateProductDialog({ productId, setDialogStatus }: UpdateProductDialogProps) {
-  const dispatch = useDispatch();
-  const productDetails = useSelector(getProductDetails);
-  const permissions = useSelector(getPermissions);
-
-  const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
-
+export default function UpdateProductDialog({
+  id,
+  isPriceChangeEnabled,
+  productDetails,
+  setDialogStatus,
+  setProductDetails,
+  handleSubmit,
+}: UpdateProductDialogProps) {
   const handleUpdate = () => {
-    dispatch(updateDetails({ pos: productId }));
+    handleSubmit(id);
     setDialogStatus({ status: false, id: 0, type: DialogType.UPDATE });
   };
+
+  const buttonDisabled = ["0", ""].includes(productDetails.quantity) || ["0", ""].includes(productDetails.price);
   return (
     <>
       <DialogTitle>Actualizar producto</DialogTitle>
@@ -40,9 +43,9 @@ export default function UpdateProductDialog({ productId, setDialogStatus }: Upda
             <Grid xs={12}>
               <TextField
                 label="Información adicional"
-                id="InformacionAdicional"
+                id="additionalInformation"
                 value={productDetails.additionalInformation}
-                onChange={event => dispatch(setAdditionalInformation(event.target.value))}
+                onChange={event => setProductDetails({ ...productDetails, additionalInformation: event.target.value })}
               />
             </Grid>
 
@@ -50,30 +53,25 @@ export default function UpdateProductDialog({ productId, setDialogStatus }: Upda
               <TextField
                 label="Cantidad"
                 id="Cantidad"
-                value={productDetails.quantity.toString()}
+                value={productDetails.quantity}
                 numericFormat
-                onChange={event => dispatch(setQuantity(parseStringToNumber(event.target.value)))}
+                onChange={event => setProductDetails({ ...productDetails, quantity: event.target.value })}
               />
             </Grid>
             <Grid xs={6}>
               <TextField
                 readOnly={!isPriceChangeEnabled}
                 label="Precio"
-                value={productDetails.price.toString()}
+                value={productDetails.price}
                 numericFormat
-                onChange={event => dispatch(setPrice(parseStringToNumber(event.target.value)))}
+                onChange={event => setProductDetails({ ...productDetails, price: event.target.value })}
               />
             </Grid>
           </Grid>
         </Box>
       </DialogContent>
       <DialogActions style={{ margin: "0 20px 10px 20px" }}>
-        <Button
-          disabled={productDetails.quantity == 0 || productDetails.price == 0}
-          label="Aplicar"
-          autoFocus
-          onClick={handleUpdate}
-        />
+        <Button disabled={buttonDisabled} label="Aplicar" autoFocus onClick={handleUpdate} />
         <Button
           negative
           label="Cerrar"

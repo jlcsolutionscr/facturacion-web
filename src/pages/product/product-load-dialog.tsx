@@ -7,7 +7,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 
-import { getCategoryListFirstPage, saveProductWithEntity } from "state/product/asyncActions";
+import { getCategoryList as getCategoryListAction, saveProductWithEntity } from "state/product/asyncActions";
 import { getCategoryList } from "state/product/reducer";
 import { getCompanyId } from "state/session/reducer";
 
@@ -28,7 +28,7 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
 
   useEffect(() => {
     if (categoryList.length === 0) {
-      dispatch(getCategoryListFirstPage());
+      dispatch(getCategoryListAction());
     }
   }, [dispatch, categoryList.length]);
 

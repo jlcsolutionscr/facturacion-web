@@ -11,16 +11,13 @@ const useStyles = makeStyles()(() => ({
     color: "#444",
     boxShadow: "2px 2px 4px #777",
     cursor: "pointer",
-    padding: "7px",
+    padding: "10px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
-    width: "120px",
+    minWidth: "50px",
     height: "50px",
     alignItems: "center",
     justifyContent: "center",
-    "@media screen and (max-width:512px)": {
-      width: "110px",
-    },
   },
   active: {
     backgroundColor: "#08415c !important",
@@ -35,6 +32,11 @@ const useStyles = makeStyles()(() => ({
     margin: "5px",
     maxHeight: "20px",
     overflow: "hidden",
+
+    "& span": {
+      display: "inline-block",
+      whiteSpace: "nowrap",
+    },
   },
   actions: {
     display: "flex",

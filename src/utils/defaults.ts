@@ -10,6 +10,7 @@ import {
   ProductType,
   ProformaType,
   ReceiptType,
+  ServicePointType,
   WorkingOrderType,
 } from "types/domain";
 
@@ -121,10 +122,10 @@ export const defaultProductDetails: ProductDetailsType = {
   code: "",
   description: "",
   additionalInformation: "",
-  quantity: 1,
+  quantity: "1",
   taxRate: 13,
   unit: "UND",
-  price: 0,
+  price: "0",
   costPrice: 0,
   disccountRate: 0,
 };
@@ -282,4 +283,12 @@ export const defaultProforma: ProformaType = {
   },
   comment: "",
   successful: false,
+};
+
+export const defaultServicePoint: ServicePointType = {
+  IdPunto: 0,
+  IdEmpresa: 0,
+  IdSucursal: 0,
+  Descripcion: "",
+  Activo: true,
 };

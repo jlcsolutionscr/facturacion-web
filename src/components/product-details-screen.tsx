@@ -15,7 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import { filterProductList, getProductListByPageNumber } from "state/product/asyncActions";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
-import { formatCurrency, parseStringToNumber, roundNumber } from "utils/utilities";
+import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   container: {
@@ -130,8 +130,8 @@ export default function StepTwoScreen({
   const buttonEnabled =
     productDetails.id !== 0 &&
     productDetails.description !== "" &&
-    productDetails.quantity > 0 &&
-    productDetails.price > 0 &&
+    !["0", ""].includes(productDetails.quantity) &&
+    !["0", ""].includes(productDetails.price) &&
     stepDisabled === false;
   const display = value !== index ? "none" : "flex";
 
@@ -179,18 +179,18 @@ export default function StepTwoScreen({
               disabled={stepDisabled}
               label="Cantidad"
               id="Cantidad"
-              value={productDetails.quantity.toString()}
+              value={productDetails.quantity}
               numericFormat
-              onChange={event => setProductDetails("quantity", parseStringToNumber(event.target.value))}
+              onChange={event => setProductDetails("quantity", event.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
             <TextField
               disabled={stepDisabled || !isPriceChangeEnabled}
               label="Precio"
-              value={productDetails.price.toString()}
+              value={productDetails.price}
               numericFormat
-              onChange={event => setProductDetails("price", parseStringToNumber(event.target.value))}
+              onChange={event => setProductDetails("price", event.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
@@ -222,7 +222,9 @@ export default function StepTwoScreen({
                     <TableRow key={row.id}>
                       <TableCell>{row.quantity}</TableCell>
                       <TableCell>{`${row.code} - ${row.description}`}</TableCell>
-                      <TableCell align="right">{formatCurrency(roundNumber(row.quantity * row.price, 2), 2)}</TableCell>
+                      <TableCell align="right">
+                        {formatCurrency(roundNumber(parseFloat(row.quantity) * parseFloat(row.price), 2), 2)}
+                      </TableCell>
                       <TableCell align="right">
                         <IconButton
                           className={classes.innerButton}

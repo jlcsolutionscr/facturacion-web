@@ -18,6 +18,7 @@ import {
   ProductType,
   ProformaType,
   ReceiptType,
+  ServicePointType,
   WorkingOrderType,
 } from "types/domain";
 
@@ -32,6 +33,7 @@ import {
   defaultProduct,
   defaultProforma,
   defaultReceipt,
+  defaultServicePoint,
   defaultWorkingOrder,
 } from "utils/defaults";
 import { readyKeyFromStorage } from "utils/utilities";
@@ -130,6 +132,7 @@ type WorkingOrderStateType = {
   list: InvoiceEntityType[];
   servicePointList: IdDescriptionValueType[];
   printingTicketList: PrintingTicketType[];
+  servicePointEntity: ServicePointType;
 };
 
 type ProformaStateType = {
@@ -250,6 +253,7 @@ export const workingOrderInitialState: WorkingOrderStateType = {
   list: [],
   servicePointList: [],
   printingTicketList: [],
+  servicePointEntity: defaultServicePoint,
 };
 
 export const proformaInitialState: ProformaStateType = {

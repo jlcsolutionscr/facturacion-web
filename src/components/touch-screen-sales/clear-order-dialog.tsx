@@ -1,23 +1,20 @@
 import { Button } from "jlc-component-library";
-import { useDispatch } from "react-redux";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
-import { resetWorkingOrder } from "state/working-order/reducer";
+import { DialogStatus, DialogType } from "./order-summary";
 
 type ClearOrderDialogProps = {
   setDialogStatus: (value: DialogStatus) => void;
+  handleReset: () => void;
 };
 
-export default function ClearOrderDialog({ setDialogStatus }: ClearOrderDialogProps) {
-  const dispatch = useDispatch();
-
+export default function ClearOrderDialog({ setDialogStatus, handleReset }: ClearOrderDialogProps) {
   const handleConfirmButtonClick = () => {
     setDialogStatus({ status: false, id: 0, type: DialogType.CLEAR });
-    dispatch(resetWorkingOrder());
+    handleReset();
   };
 
   return (

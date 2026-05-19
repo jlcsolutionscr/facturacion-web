@@ -71,8 +71,8 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
     company &&
     productDetails.code !== "" &&
     productDetails.description !== "" &&
-    productDetails.quantity > 0 &&
-    productDetails.price > 0
+    !["0", ""].includes(productDetails.quantity) &&
+    !["0", ""].includes(productDetails.price)
   ) {
     if (productDetailsList.findIndex(item => item.code === productDetails.code) >= 0) {
       dispatch(

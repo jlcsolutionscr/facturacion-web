@@ -101,6 +101,15 @@ const workingOrderSlice = createSlice({
     setPrintingTicketList: (state, action) => {
       state.printingTicketList = action.payload;
     },
+    setServicePointEntity: (state, action) => {
+      state.servicePointEntity = action.payload;
+    },
+    setServicePointAttribute: (state, action) => {
+      state.servicePointEntity = {
+        ...state.servicePointEntity,
+        [action.payload.attribute]: action.payload.value,
+      };
+    },
   },
   extraReducers: builder => {
     builder.addCase(logout, () => {
@@ -135,6 +144,8 @@ export const {
   resetWorkingOrder,
   setServicePointId,
   setPrintingTicketList,
+  setServicePointEntity,
+  setServicePointAttribute,
 } = workingOrderSlice.actions;
 
 export const getCustomerDetails = (state: RootState) => state.workingOrder.entity.customerDetails;
@@ -156,5 +167,6 @@ export const getWorkingOrderListCount = (state: RootState) => state.workingOrder
 export const getWorkingOrderList = (state: RootState) => state.workingOrder.list;
 export const getServicePointList = (state: RootState) => state.workingOrder.servicePointList;
 export const getPrintingTicketList = (state: RootState) => state.workingOrder.printingTicketList;
+export const getServicePointEntity = (state: RootState) => state.workingOrder.servicePointEntity;
 
 export default workingOrderSlice.reducer;

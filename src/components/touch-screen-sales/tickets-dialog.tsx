@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
-import { DialogStatus, DialogType } from "pages/restaurant/order-summary";
+import { DialogStatus, DialogType } from "./order-summary";
 import {
   getPrintingTicketList as getPrintingTicketListAction,
   printWorkingOrderTicket,

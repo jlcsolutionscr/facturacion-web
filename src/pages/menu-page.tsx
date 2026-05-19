@@ -67,29 +67,25 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   buttonContainer: {
-    height: "calc(100% - 35px)",
+    height: "calc(100% - 55px)",
     overflowY: "auto",
     scrollbarWidth: "thin",
     maxWidth: "600px",
     marginInline: "auto",
-    "@media screen and (min-width:430px)": {
-      height: "calc(100% - 38px)",
-      marginBottom: "10px",
-    },
     "@media screen and (min-width:600px)": {
-      height: "calc(100% - 75px)",
-      marginBottom: "0",
+      height: "calc(100% - 95px)",
+      marginTop: "0",
     },
   },
   button: {
     backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
     color: "rgba(255,255,255,0.85)",
+    boxShadow: "2px 2px 4px #777",
     width: "100%",
     marginBottom: "2px",
     border: "none",
-    borderRadius: "2px",
-    boxShadow: "none",
-    padding: "10px 0",
+    height: "55px",
+    borderRadius: "7px",
     "&:hover": {
       color: "#FFF",
       backgroundColor: theme.palette.mode === "dark" ? "#4d4949" : "#27546c",
@@ -97,24 +93,7 @@ const useStyles = makeStyles()(theme => ({
     },
     "&.Mui-disabled": {
       color: "rgba(255,255,255,0.65)",
-      backgroundColor: theme.palette.mode === "dark" ? "#333" : "#08415c",
-    },
-    "@media screen and (min-width:430px)": {
-      width: "280px",
-      padding: "8px",
-      borderRadius: "25px",
-      border: "1px solid #FFFFFF",
-      marginBottom: "8px",
-      boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
-      transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
-      "&:hover": {
-        boxShadow: "4px 4px 6px rgba(0,0,0,0.55)",
-      },
-    },
-    "@media screen and (min-width:600px)": {
-      width: "270px",
-      padding: "13px",
-      marginBottom: "12px",
+      opacity: 0.6,
     },
   },
 }));
@@ -166,45 +145,56 @@ export default function MenuPage() {
         )}
       </Grid>
       <div className={classes.buttonContainer}>
-        <Grid container item xs={12} justifyContent="center">
-          <Grid item xs={12} sm={6}>
+        <Grid container item xs={12} gap={{ xs: 1.5, sm: 3 }} justifyContent="center">
+          <Grid item xs={5} sm={3}>
             <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getCompany())}>
-              Actualizar empresa
+              Mant. Empresa
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={5} sm={3}>
             <Button
               className={classes.button}
               disabled={["ADMIN", "CONTADOR"].includes(userCode)}
               onClick={() => dispatch(setActiveSection(2))}
             >
-              Actualizar usuario
+              Recuperar clave
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={5} sm={3}>
             <Button
               disabled={!manageCustomers}
               className={classes.button}
               onClick={() => dispatch(setActiveSection(4))}
             >
-              Catálogo de clientes
+              Listado Clientes
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={5} sm={3}>
             <Button disabled={!manageProducts} className={classes.button} onClick={() => dispatch(setActiveSection(5))}>
-              Catálogo de productos
+              Listado Productos
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={5} sm={3}>
             <Button
               disabled={userCode.toUpperCase() !== "ADMIN"}
               className={classes.button}
               onClick={() => dispatch(setActiveSection(16))}
             >
-              Categorías de producto
+              Categorías
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {companyMode === 2 && (
+            <Grid item xs={5} sm={3}>
+              <Button
+                disabled={!generateWorkingOrder}
+                className={classes.button}
+                onClick={() => dispatch(setActiveSection(18))}
+              >
+                Puntos de servicio
+              </Button>
+            </Grid>
+          )}
+          <Grid item xs={5} sm={3}>
             <Button
               disabled={!generateInvoice}
               className={classes.button}
@@ -213,43 +203,7 @@ export default function MenuPage() {
               Facturar
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Button
-              disabled={!generateReceipt}
-              className={classes.button}
-              onClick={() => dispatch(setReceiptParameters({ id: 7 }))}
-            >
-              Factura de compra
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Button
-              disabled={!generateInvoice}
-              className={classes.button}
-              onClick={() => dispatch(setActiveSection(8))}
-            >
-              Facturas electrónicas
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Button
-              disabled={!manageDocuments}
-              className={classes.button}
-              onClick={() => dispatch(setActiveSection(9))}
-            >
-              Documentos electrónicos
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Button
-              disabled={!generateProforma}
-              className={classes.button}
-              onClick={() => dispatch(setActiveSection(10))}
-            >
-              Factura proforma
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={5} sm={3}>
             <Button
               disabled={!generateWorkingOrder}
               className={classes.button}
@@ -257,16 +211,52 @@ export default function MenuPage() {
                 if (companyMode === 1) {
                   dispatch(setActiveSection(11));
                 } else {
-                  dispatch(getServicePointList());
+                  dispatch(getServicePointList({ activeFilter: true }));
                 }
               }}
             >
-              {companyMode === 1 ? "Ordenes de servicio" : "Puntos de servicio"}
+              Listado Ordenes
             </Button>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={5} sm={3}>
+            <Button
+              disabled={!generateReceipt}
+              className={classes.button}
+              onClick={() => dispatch(setReceiptParameters({ id: 7 }))}
+            >
+              Registrar Compra
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
+            <Button
+              disabled={!generateInvoice}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(8))}
+            >
+              Listado Facturas
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
+            <Button
+              disabled={!manageDocuments}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(9))}
+            >
+              Listado Documentos
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
+            <Button
+              disabled={!generateProforma}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(10))}
+            >
+              Proforma
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
             <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
-              Menu de reportes
+              Reportes
             </Button>
           </Grid>
         </Grid>

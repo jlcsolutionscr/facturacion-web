@@ -221,14 +221,14 @@ export type CustomerDetailsType = {
 
 export type ProductDetailsType = {
   id: number;
-  quantity: number;
+  quantity: string;
   code: string;
   description: string;
   additionalInformation: string;
   taxRate: number;
   taxRateType?: number;
   unit: string;
-  price: number;
+  price: string;
   costPrice: number;
   disccountRate: number;
 };
@@ -276,7 +276,7 @@ export type InvoiceType = {
   successful: boolean;
 };
 
-export type WorkingOrderProductDetails = ProductDetailsType & { orderId: number };
+export type WorkingOrderProductDetails = ProductDetailsType & { orderId?: number };
 
 export type WorkingOrderType = {
   id: number;
@@ -388,4 +388,12 @@ export type PrintingTicketType = {
   Impresora: string;
   DetalleTiqueteOrdenServicio: string;
   Impreso: boolean;
+};
+
+export type ServicePointType = {
+  IdPunto: number;
+  IdEmpresa: number;
+  IdSucursal: number;
+  Descripcion: string;
+  Activo: boolean;
 };

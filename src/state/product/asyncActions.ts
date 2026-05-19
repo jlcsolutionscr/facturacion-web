@@ -284,22 +284,19 @@ export const saveProductWithEntity = createAsyncThunk(
   }
 );
 
-export const getCategoryListFirstPage = createAsyncThunk(
-  "product/getCategoryList",
-  async (_payload, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { token, companyId } = session;
-    dispatch(startLoader());
-    try {
-      const categoryList = await getProductCategoryList(token, companyId);
-      dispatch(setCategoryList(categoryList));
-      dispatch(stopLoader());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
-      dispatch(stopLoader());
-    }
+export const getCategoryList = createAsyncThunk("product/getCategoryList", async (_payload, { getState, dispatch }) => {
+  const { session } = getState() as RootState;
+  const { token, companyId } = session;
+  dispatch(startLoader());
+  try {
+    const categoryList = await getProductCategoryList(token, companyId);
+    dispatch(setCategoryList(categoryList));
+    dispatch(stopLoader());
+  } catch (error) {
+    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    dispatch(stopLoader());
   }
-);
+});
 
 export const openCategory = createAsyncThunk(
   "product/openCategory",
@@ -313,11 +310,10 @@ export const openCategory = createAsyncThunk(
         ...defaultCategory,
         IdEmpresa: companyId,
       };
-      dispatch(setCategory(category));
       if (payload.id) {
         category = await getCategoryEntity(token, payload.id);
-        dispatch(setCategory(category));
       }
+      dispatch(setCategory(category));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

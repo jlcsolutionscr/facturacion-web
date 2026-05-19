@@ -52,8 +52,8 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
     company &&
     productDetails.id !== 0 &&
     productDetails.description !== "" &&
-    productDetails.quantity > 0 &&
-    productDetails.price > 0
+    !["0", ""].includes(productDetails.quantity) &&
+    !["0", ""].includes(productDetails.price)
   ) {
     try {
       let newProducts = null;
@@ -67,7 +67,7 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
         unit: "UND",
         price: company.PrecioVentaIncluyeIVA
           ? productDetails.price
-          : roundNumber(productDetails.price * (1 + productDetails.taxRate / 100), 2),
+          : roundNumber(parseFloat(productDetails.price) * (1 + productDetails.taxRate / 100), 2).toString(),
         costPrice: productDetails.costPrice,
         disccountRate: productDetails.disccountRate,
       };
@@ -79,7 +79,7 @@ export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload
           ...productDetailsList.slice(0, index),
           {
             ...item,
-            quantity: productDetailsList[index].quantity + item.quantity,
+            quantity: (parseFloat(productDetailsList[index].quantity) + parseFloat(item.quantity)).toString(),
           },
           ...productDetailsList.slice(index + 1),
         ];

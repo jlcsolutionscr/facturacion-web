@@ -31,7 +31,7 @@ const useStyles = makeStyles()(theme => ({
   printerIcon: {
     color: "#fff",
   },
-  toogle: {
+  toggle: {
     position: "absolute",
     top: "59px",
     right: "52px",
@@ -96,7 +96,7 @@ const useStyles = makeStyles()(theme => ({
     justifyContent: "center",
     alignContent: "end",
     "@media screen and (min-width:900px)": {
-      maxWidth: "450px",
+      maxWidth: "500px",
     },
     "@media screen and (min-width:1040px)": {
       maxWidth: "600px",
@@ -110,8 +110,10 @@ const useStyles = makeStyles()(theme => ({
     fontWeight: 600,
     textShadow: "4px 4px 6px rgba(0,0,0,0.45)",
     marginBottom: 0,
+    paddingInline: "10%",
     "@media screen and (min-width:600px)": {
       fontSize: theme.typography.pxToRem(23),
+      paddingInline: "0",
     },
   },
   icon: {
@@ -179,7 +181,7 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
       )}
       <Tooltip title="Cambiar tema" aria-label="cambiar tema">
         <IconButton
-          className={classes.toogle}
+          className={classes.toggle}
           aria-label="upload picture"
           component="span"
           onClick={() => toggleDarkMode()}
