@@ -200,7 +200,7 @@ export default function OrderSummary({
             <Grid>
               <Button
                 disabled={total === 0}
-                label="Pagar"
+                label="Facturar"
                 onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.PAYMENT })}
               />
             </Grid>
