@@ -1,20 +1,19 @@
 import { CodeDescriptionType, IdDescriptionValueType, ProductDetailsType } from "types/domain";
 
 import { getProductEntity } from "utils/domainHelper";
-import { getTaxeRateFromId, roundNumber } from "utils/utilities";
+import { getTaxeRateFromId } from "utils/utilities";
 
 export async function getNewProductItem(
   token: string,
   branchId: number,
   priceTypeId: number,
-  priceIncludedTaxes: boolean,
   product: ProductDetailsType,
   taxTypeList: IdDescriptionValueType[],
   productId?: number
 ) {
   if (productId) {
     const productEntity = await getProductEntity(token, productId, branchId);
-    const { price, taxRate } = getCustomerPrice(priceTypeId, productEntity, priceIncludedTaxes, taxTypeList);
+    const { price, taxRate } = getCustomerPrice(priceTypeId, productEntity, taxTypeList);
     product = {
       ...product,
       id: productEntity.IdProducto,
@@ -31,9 +30,7 @@ export async function getNewProductItem(
     quantity: product.quantity,
     taxRate: product.taxRate,
     unit: "UND",
-    price: priceIncludedTaxes
-      ? product.price
-      : roundNumber(parseFloat(product.price) * (1 + product.taxRate / 100), 2).toString(),
+    price: product.price,
     costPrice: product.costPrice,
     disccountRate: product.disccountRate,
   };
@@ -42,7 +39,6 @@ export async function getNewProductItem(
 function getCustomerPrice(
   customerPriceType: number,
   product: CodeDescriptionType,
-  priceIncludedTaxes: boolean,
   taxRateTypeList: IdDescriptionValueType[]
 ) {
   let customerPrice = 0;
@@ -65,9 +61,6 @@ function getCustomerPrice(
       break;
     default:
       customerPrice = product.PrecioVenta1;
-  }
-  if (!priceIncludedTaxes) {
-    customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
   }
   return { taxRate, price: customerPrice };
 }

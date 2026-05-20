@@ -201,7 +201,7 @@ export const getCustomerDetails = createAsyncThunk(
           priceTypeId: customer.IdTipoPrecio,
         })
       );
-      if (!company?.RegimenSimplificado && customer.CodigoActividad === "")
+      if (!company?.RegimenSimplificado && customer.IdCliente > 1 && customer.CodigoActividad === "")
         dispatch(
           setMessage({
             message:

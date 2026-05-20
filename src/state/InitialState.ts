@@ -135,6 +135,7 @@ type WorkingOrderStateType = {
   list: InvoiceEntityType[];
   servicePointList: IdDescriptionValueType[];
   printingTicketList: PrintingTicketType[];
+  savedOrderTotal: number;
   paymentTotal: number;
   paymentInfo: PaymentInfoType;
 };
@@ -258,6 +259,7 @@ export const workingOrderInitialState: WorkingOrderStateType = {
   list: [],
   servicePointList: [],
   printingTicketList: [],
+  savedOrderTotal: 0,
   paymentTotal: 0,
   paymentInfo: defaultPaymentList,
 };

@@ -88,7 +88,6 @@ export type CompanyType = {
   RecepcionGastos: boolean;
   AsignaVendedorPorDefecto: boolean;
   IngresaPagoCliente: boolean;
-  PrecioVentaIncluyeIVA: boolean;
   CorreoNotificacion: string;
   MontoRedondeoDescuento: number;
   LeyendaFactura: rstring;
@@ -285,7 +284,6 @@ export type WorkingOrderType = {
   invoiceId: number;
   date: string;
   status: string;
-  activityCode: number;
   productDetails: ProductDetailsType;
   productDetailsList: WorkingOrderProductDetails[];
   cashAdvance: number;
@@ -398,6 +396,7 @@ export type ServicePointType = {
 
 export type PaymentInfoType = {
   customerDetails: CustomerDetailsType;
+  activityCode: number;
   pendingProductList: ProductDetailsType[];
   summaryProductList: ProductDetailsType[];
   paymentMethodList: PaymentMethodType[];

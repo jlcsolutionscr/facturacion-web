@@ -39,7 +39,7 @@ export const getProductListFirstPage = createAsyncThunk(
     payload: {
       filterText: string;
       type: number;
-      rowsPerPage: number;
+      rowsPerPage?: number;
     },
     { getState, dispatch }
   ) => {
@@ -64,7 +64,7 @@ export const getProductListFirstPage = createAsyncThunk(
           branchId,
           false,
           1,
-          payload.rowsPerPage,
+          payload.rowsPerPage ?? recordCount,
           payload.filterText,
           false,
           payload.type
@@ -260,8 +260,8 @@ export const saveProduct = createAsyncThunk("product/saveProduct", async (_paylo
   }
 });
 
-export const saveProductWithEntity = createAsyncThunk(
-  "product/saveProductWithEntity",
+export const importProductList = createAsyncThunk(
+  "product/importProductList",
   async (payload: { list: any }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     try {
@@ -362,7 +362,6 @@ export const getProductDetails = createAsyncThunk(
           token,
           branchId,
           invoice.entity.customerDetails.priceTypeId,
-          company.PrecioVentaIncluyeIVA,
           invoice.entity.productDetails,
           ui.taxTypeList,
           payload.id

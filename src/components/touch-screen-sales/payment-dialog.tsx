@@ -1,5 +1,12 @@
-import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
-import { useEffect, useState } from "react";
+import {
+  Button,
+  LabelField,
+  ListDropDown,
+  ListDropdownOnChangeEventType,
+  Select,
+  TextField,
+} from "jlc-component-library";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { CustomerDetailsType, IdDescriptionType, PaymentMethodType, SummaryType } from "types/domain";
@@ -10,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { DialogStatus, DialogType } from "./order-summary";
-import { filterCustomerList, getCustomerListByPageNumber, getCustomerListFirstPage } from "state/customer/asyncActions";
+import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { getCompany } from "state/session/reducer";
@@ -83,10 +90,6 @@ export default function PaymentDialog({
   const customerListPage = useSelector(getCustomerListPage);
   const customerList = useSelector(getCustomerList);
 
-  useEffect(() => {
-    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: ROWS_PER_CUSTOMER }));
-  }, [dispatch]);
-
   const { taxed, exonerated, exempt, subTotal, taxes, total, cashAmount } = summary;
 
   const customerEditDisabled = invoiceId > 0;
@@ -155,18 +158,6 @@ export default function PaymentDialog({
               onChange={event => handleCustomerNameChange(event.target.value)}
             />
           </Grid>
-          {activityItems.length > 1 && (
-            <Grid xs={12} sm={7} md={6} justifyContent="center">
-              <Select
-                id="codigo-actividad-select-id"
-                label="Seleccione la Actividad Económica"
-                value={activityCode.toString()}
-                onChange={event => setActivityCode(event.target.value)}
-              >
-                {activityItems}
-              </Select>
-            </Grid>
-          )}
           <Grid container xs={12}>
             <Grid container xs={12} sm={6}>
               <Grid container>
@@ -212,6 +203,26 @@ export default function PaymentDialog({
               </Grid>
             </Grid>
             <Grid container xs={12} sm={6} justifyContent="center">
+              {!company?.RegimenSimplificado && (
+                <>
+                  {activityItems.length > 1 ? (
+                    <Grid xs={12} sm={7} md={6} justifyContent="center">
+                      <Select
+                        id="codigo-actividad-select-id"
+                        label="Seleccione la Actividad Económica"
+                        value={activityCode.toString()}
+                        onChange={event => setActivityCode(event.target.value)}
+                      >
+                        {activityItems}
+                      </Select>
+                    </Grid>
+                  ) : (
+                    <Grid xs={12} justifyContent="center">
+                      <LabelField label="Actividad económica" value={activityCode.toString()} />
+                    </Grid>
+                  )}
+                </>
+              )}
               <Grid xs={7} sm={12}>
                 <Select
                   id="forma-pago-select-id"

@@ -1,7 +1,9 @@
 import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
+import { getCustomerListFirstPage } from "state/customer/asyncActions";
+import { getProductListFirstPage } from "state/product/asyncActions";
+import { setCategoryList } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
@@ -13,6 +15,7 @@ import {
   setPaymentTotal,
   setPrintingTicketList,
   setProductDetailsList,
+  setSavedOrderTotal,
   setServicePointEntity,
   setServicePointId,
   setServicePointList,
@@ -32,8 +35,6 @@ import {
   generateWorkingOrderTicketPDF,
   getPrintingTickets,
   getProductCategoryList,
-  getProductListCount,
-  getProductListPerPage,
   getProductSummary,
   getServicePointEntity,
   getServicePointList as getServicePointListRequest,
@@ -57,6 +58,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
     const { company, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
+    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
     dispatch(resetWorkingOrder());
     try {
       dispatch(setCustomerDetails(defaultCustomerDetails));
@@ -99,7 +101,6 @@ export const addDetails = createAsyncThunk(
         token,
         branchId,
         customerDetails.priceTypeId,
-        company.PrecioVentaIncluyeIVA,
         productDetails,
         ui.taxTypeList,
         payload.id
@@ -227,6 +228,7 @@ export const saveWorkingOrder = createAsyncThunk(
         productDetailsList: entity.productDetailsList.map(details => ({ ...details, orderId: orderId })),
       };
       dispatch(setWorkingOrder(savedEntity));
+      dispatch(setSavedOrderTotal(paymentInfo.summary.total));
       dispatch(setStatus(ORDER_STATUS.READY));
       let message = {
         message: "Transacción completada satisfactoriamente",
@@ -416,13 +418,15 @@ export const openWorkingOrder = createAsyncThunk(
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     try {
+      const activityCode = company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0;
+
       const entity = await getWorkingOrderEntity(token, payload.id);
       const { workingOrder, paymentInfo } = parseWorkingOrderEntity(entity, 0);
       dispatch(setWorkingOrder(workingOrder));
-      dispatch(updatePaymentInfo(paymentInfo));
+      dispatch(updatePaymentInfo({ ...paymentInfo, activityCode }));
       dispatch(setServicePointId(0));
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+      dispatch(setSavedOrderTotal(paymentInfo.summary.total));
       dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(stopLoader());
     } catch (error) {
@@ -435,18 +439,16 @@ export const openWorkingOrder = createAsyncThunk(
 export const getServicePointList = createAsyncThunk(
   "working-order/getServicePointList",
   async (payload: { activeFilter: boolean }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+    const { session, product } = getState() as RootState;
     const { token, companyId, branchId } = session;
     ``;
     dispatch(startLoader());
     dispatch(setActiveSection(11));
     try {
       const servicePointList = await getServicePointListRequest(token, companyId, branchId, payload.activeFilter, "");
-      const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
-      const productList = await getProductListPerPage(token, companyId, branchId, true, 1, productCount, "", true, 1);
-      dispatch(setProductListPage(1));
-      dispatch(setProductListCount(productCount));
-      dispatch(setProductList(productList));
+      if (product.list.length === 0) {
+        dispatch(getProductListFirstPage({ filterText: "", type: 2 }));
+      }
       dispatch(setServicePointList(servicePointList));
       dispatch(stopLoader());
     } catch (error) {
@@ -541,14 +543,14 @@ export const openServicePoint = createAsyncThunk(
       }
       const entity = servicePoint.IdOrden > 0 ? await getWorkingOrderEntity(token, servicePoint.IdOrden) : null;
       if (entity !== null) {
+        const activityCode = company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0;
         const { workingOrder, paymentInfo } = parseWorkingOrderEntity(entity, 0);
         dispatch(setWorkingOrder(workingOrder));
-        dispatch(updatePaymentInfo(paymentInfo));
+        dispatch(updatePaymentInfo({ ...paymentInfo, activityCode }));
+        dispatch(setSavedOrderTotal(paymentInfo.summary.total));
       }
       dispatch(setServicePointId(servicePoint.IdPunto));
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -563,8 +565,8 @@ export const generateInvoice = createAsyncThunk(
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
     const { servicePointList, entity, paymentInfo, paymentTotal } = workingOrder;
-    const { id, activityCode, vendorId, currency, total, servicePointId } = entity;
-    const { customerDetails, summaryProductList, summary, paymentMethodList } = paymentInfo;
+    const { id, vendorId, currency, total, servicePointId } = entity;
+    const { customerDetails, activityCode, summaryProductList, summary, paymentMethodList } = paymentInfo;
     dispatch(startLoader());
     try {
       const references = await saveInvoiceEntity(

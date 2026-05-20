@@ -33,10 +33,11 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   branches: {
+    display: "flex",
     backgroundColor: "transparent",
     borderRadius: theme.shape.borderRadius,
     margin: "10px 0",
-    height: "35px",
+    height: "40px",
     alignContent: "center",
     justifyContent: "center",
     padding: "0",
@@ -121,14 +122,14 @@ export default function MenuPage() {
 
   return (
     <Grid className={classes.root} container>
-      <Grid item xs={12} alignItems="center" className={classes.branches}>
+      <Grid item xs={12} justifyContent="center" className={classes.branches}>
         {branchList.length > 1 && switchBrand ? (
           <Select
             id="sucursal-select-id"
             label="Seleccione la sucursal:"
             value={branchId.toString()}
             onChange={event => dispatch(setBranchId(event.target.value))}
-            maxWidth="570px"
+            maxWidth="300px"
           >
             {branchItems}
           </Select>

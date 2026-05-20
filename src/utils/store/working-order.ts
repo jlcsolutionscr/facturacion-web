@@ -44,7 +44,6 @@ export function parseWorkingOrderEntity(entity: any, servicePointId: number) {
     cashAdvance: entity.MontoAdelanto,
     invoiceId: 0,
     status: ORDER_STATUS.READY,
-    activityCode: entity.CodigoActividad,
     productDetails: defaultProductDetails,
     productDetailsList,
     vendorId: entity.IdVendedor,
@@ -61,6 +60,7 @@ export function parseWorkingOrderEntity(entity: any, servicePointId: number) {
   };
   const paymentInfo: PaymentInfoType = {
     customerDetails,
+    activityCode: entity.CodigoActividad,
     paymentMethodList: [defaultPaymentMethod],
     pendingProductList: [],
     summaryProductList: productDetailsList,

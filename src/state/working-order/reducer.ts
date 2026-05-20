@@ -48,8 +48,7 @@ const workingOrderSlice = createSlice({
       state.entity.total = action.payload.total;
     },
     setActivityCode: (state, action) => {
-      state.entity.status = ORDER_STATUS.ON_PROGRESS;
-      state.entity.activityCode = action.payload;
+      state.paymentInfo.activityCode = action.payload;
     },
     setVendorId: (state, action) => {
       state.entity.vendorId = action.payload;
@@ -92,10 +91,10 @@ const workingOrderSlice = createSlice({
       state.entity = {
         ...defaultWorkingOrder,
         vendorId: state.entity.vendorId,
-        activityCode: state.entity.activityCode,
         servicePointId: state.entity.servicePointId,
       };
       state.paymentInfo = defaultPaymentList;
+      state.savedOrderTotal = 0;
       state.paymentTotal = 0;
     },
     setServicePointId: (state, action) => {
@@ -121,6 +120,9 @@ const workingOrderSlice = createSlice({
         ...state.paymentInfo.summary,
         cashAmount: action.payload,
       };
+    },
+    setSavedOrderTotal: (state, action) => {
+      state.savedOrderTotal = action.payload;
     },
     setPaymentTotal: (state, action) => {
       state.paymentTotal = action.payload;
@@ -163,6 +165,7 @@ export const {
   setServicePointAttribute,
   updatePaymentInfo,
   setCashAmount,
+  setSavedOrderTotal,
   setPaymentTotal,
 } = workingOrderSlice.actions;
 
@@ -170,7 +173,7 @@ export const getCustomerDetails = (state: RootState) => state.workingOrder.payme
 export const getProductDetails = (state: RootState) => state.workingOrder.entity.productDetails;
 export const getProductDetailsList = (state: RootState) => state.workingOrder.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.workingOrder.paymentInfo.summary;
-export const getActivityCode = (state: RootState) => state.workingOrder.entity.activityCode;
+export const getActivityCode = (state: RootState) => state.workingOrder.paymentInfo.activityCode;
 export const getPaymentMethodList = (state: RootState) => state.workingOrder.paymentInfo.paymentMethodList;
 export const getVendorId = (state: RootState) => state.workingOrder.entity.vendorId;
 export const getCurrency = (state: RootState) => state.workingOrder.entity.currency;
@@ -186,6 +189,7 @@ export const getWorkingOrderList = (state: RootState) => state.workingOrder.list
 export const getServicePointList = (state: RootState) => state.workingOrder.servicePointList;
 export const getPrintingTicketList = (state: RootState) => state.workingOrder.printingTicketList;
 export const getServicePointEntity = (state: RootState) => state.workingOrder.servicePointEntity;
+export const getSavedOrderTotal = (state: RootState) => state.workingOrder.savedOrderTotal;
 export const getPaymentTotal = (state: RootState) => state.workingOrder.paymentTotal;
 
 export default workingOrderSlice.reducer;

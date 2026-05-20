@@ -1,6 +1,7 @@
 import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { getCustomerListFirstPage } from "state/customer/asyncActions";
 import {
   resetInvoice,
   resetProductDetails,
@@ -15,7 +16,8 @@ import {
   setSummary,
   setVendorId,
 } from "state/invoice/reducer";
-import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
+import { getProductListFirstPage } from "state/product/asyncActions";
+import { setCategoryList } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { defaultPaymentMethod } from "utils/defaults";
@@ -25,8 +27,6 @@ import {
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
   getProductCategoryList,
-  getProductListCount,
-  getProductListPerPage,
   getProductSummary,
   revokeInvoiceEntity,
   saveInvoiceEntity,
@@ -38,33 +38,22 @@ export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
-    const { token, company, companyId, branchId, vendorList } = session;
+    const { token, company, companyId, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(payload.id));
+    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
     dispatch(resetInvoice());
     try {
       if (company?.Modalidad === 2) {
         if (product.list.length === 0) {
-          const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
-          const productList = await getProductListPerPage(
-            token,
-            companyId,
-            branchId,
-            true,
-            1,
-            productCount,
-            "",
-            true,
-            1
-          );
-          dispatch(setProductListPage(1));
-          dispatch(setProductListCount(productCount));
-          dispatch(setProductList(productList));
+          dispatch(getProductListFirstPage({ filterText: "", type: 2 }));
         }
         if (product.categoryList.length === 0) {
           const categoryList = await getProductCategoryList(token, companyId);
           dispatch(setCategoryList(categoryList));
         }
+      } else {
+        dispatch(getProductListFirstPage({ filterText: "", type: 2, rowsPerPage: 8 }));
       }
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
@@ -104,7 +93,6 @@ export const addDetails = createAsyncThunk(
         token,
         branchId,
         customerDetails.priceTypeId,
-        company.PrecioVentaIncluyeIVA,
         productDetails,
         ui.taxTypeList,
         payload.id

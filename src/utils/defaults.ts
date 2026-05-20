@@ -38,7 +38,6 @@ export const defaultCompany: CompanyType = {
   FechaVence: "",
   RegimenSimplificado: false,
   ActividadEconomicaEmpresa: [],
-  PrecioVentaIncluyeIVA: false,
   CantidadDisponible: 0,
   LineasPorFactura: 16,
   Contabiliza: false,
@@ -200,7 +199,6 @@ export const defaultWorkingOrder: WorkingOrderType = {
   cashAdvance: 0,
   invoiceId: 0,
   status: ORDER_STATUS.READY,
-  activityCode: 0,
   productDetails: defaultProductDetails,
   productDetailsList: [],
   vendorId: 0,
@@ -288,6 +286,7 @@ export const defaultServicePoint: ServicePointType = {
 
 export const defaultPaymentList: PaymentInfoType = {
   customerDetails: defaultCustomerDetails,
+  activityCode: 0,
   pendingProductList: [],
   summaryProductList: [],
   paymentMethodList: [defaultPaymentMethod],

@@ -24,7 +24,7 @@ import {
   saveProformaEntity,
   sendProformaEmail,
 } from "utils/domainHelper";
-import { getErrorMessage, roundNumber } from "utils/utilities";
+import { getErrorMessage } from "utils/utilities";
 
 export const setProformaParameters = createAsyncThunk(
   "proforma/setProformaParameters",
@@ -80,10 +80,7 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
         quantity: productDetails.quantity,
         taxRate: productDetails.taxRate,
         unit: "UND",
-        price: company.PrecioVentaIncluyeIVA
-          ? productDetails.price
-          : roundNumber(parseFloat(productDetails.price) * (1 + productDetails.taxRate / 100), 2).toString(),
-
+        price: productDetails.price,
         costPrice: productDetails.costPrice,
         disccountRate: productDetails.disccountRate,
       };

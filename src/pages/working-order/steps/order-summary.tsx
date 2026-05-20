@@ -24,7 +24,7 @@ const useStyles = makeStyles()(theme => ({
     flex: 1,
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
-    padding: "15px 20px 20px 20px",
+    padding: "15px 20px 0 20px",
     transition: `background-color ${TRANSITION_ANIMATION}`,
     "@media screen and (max-width:959px)": {
       padding: "15px",
@@ -78,6 +78,7 @@ interface OrderSummaryProps {
   workingOrderId: number;
   vendorList: IdDescriptionType[];
   cashAdvance: number;
+  savedOrderTotal: number;
   status: string;
   invoiceId: number;
   setValue: (id: number) => void;
@@ -96,6 +97,7 @@ export default function OrderSummary({
   workingOrderId,
   vendorList,
   cashAdvance,
+  savedOrderTotal,
   status,
   invoiceId,
   setValue,
@@ -110,7 +112,6 @@ export default function OrderSummary({
   }, [value]);
 
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
-  const buttonDisabled = total === 0 || status === ORDER_STATUS.READY || status === ORDER_STATUS.CONVERTED;
   const paymentMethods: { id: number; description: string }[] = [
     { id: 1, description: "EFECTIVO" },
     { id: 2, description: "TARJETA" },
@@ -124,7 +125,7 @@ export default function OrderSummary({
   ));
 
   const handleOnPrintClick = () => {
-    if (status === ORDER_STATUS.CONVERTED) {
+    if (invoiceId > 0) {
       dispatch(generateInvoiceTicket({ id: invoiceId }));
     } else {
       dispatch(generateWorkingOrderTicket({ id: workingOrderId }));
@@ -151,35 +152,7 @@ export default function OrderSummary({
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
-        {activityItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="codigo-actividad-select-id"
-                label="Seleccione la Actividad Económica"
-                value={activityCode.toString()}
-                onChange={event => dispatch(setActivityCode(event.target.value))}
-              >
-                {activityItems}
-              </Select>
-            </Grid>
-          </Grid>
-        )}
-        {vendorItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="id-vendedor-select-id"
-                label="Seleccione el Vendedor"
-                value={vendorId.toString()}
-                onChange={event => dispatch(setVendorId(event.target.value))}
-              >
-                {vendorItems}
-              </Select>
-            </Grid>
-          </Grid>
-        )}
-        <Grid item xs={12}>
+        <Grid item container xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
             <InputLabel className={classes.summaryTitle}>RESUMEN DE ORDEN DE SERVICIO</InputLabel>
             <Grid container className={classes.details}>
@@ -228,70 +201,95 @@ export default function OrderSummary({
             </Grid>
           </Grid>
         </Grid>
-        {status === ORDER_STATUS.READY && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="forma-pago-select-id"
-                label="Seleccione la forma de pago:"
-                value={paymentMethod[0] ? paymentMethod[0].paymentId.toString() : ""}
-                onChange={event =>
-                  dispatch(
-                    setPaymentMethodList([
-                      {
-                        paymentId: event.target.value,
-                        description:
-                          paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                          "NO ESPECIFICADO",
-                        amount: total,
-                      },
-                    ])
-                  )
-                }
-              >
-                {paymentItems}
-              </Select>
+        {invoiceId === 0 && (
+          <>
+            {activityItems.length > 1 && (
+              <Grid item xs={12} className={classes.centered}>
+                <Grid item xs={10} sm={6} md={4}>
+                  <Select
+                    id="codigo-actividad-select-id"
+                    label="Seleccione la Actividad Económica"
+                    value={activityCode.toString()}
+                    onChange={event => dispatch(setActivityCode(event.target.value))}
+                  >
+                    {activityItems}
+                  </Select>
+                </Grid>
+              </Grid>
+            )}
+            {vendorItems.length > 1 && (
+              <Grid item xs={12} className={classes.centered}>
+                <Grid item xs={10} sm={6} md={4}>
+                  <Select
+                    id="id-vendedor-select-id"
+                    label="Seleccione el Vendedor"
+                    value={vendorId.toString()}
+                    onChange={event => dispatch(setVendorId(event.target.value))}
+                  >
+                    {vendorItems}
+                  </Select>
+                </Grid>
+              </Grid>
+            )}
+            <Grid item xs={12} className={classes.centered}>
+              <Grid item xs={10} sm={6} md={4}>
+                <Select
+                  id="forma-pago-select-id"
+                  label="Seleccione la forma de pago:"
+                  value={paymentMethod[0] ? paymentMethod[0].paymentId.toString() : ""}
+                  onChange={event =>
+                    dispatch(
+                      setPaymentMethodList([
+                        {
+                          paymentId: event.target.value,
+                          description:
+                            paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
+                            "NO ESPECIFICADO",
+                          amount: total,
+                        },
+                      ])
+                    )
+                  }
+                >
+                  {paymentItems}
+                </Select>
+              </Grid>
             </Grid>
-          </Grid>
+            <Grid item xs={12} className={classes.centered}>
+              <Grid item xs={10} sm={6} md={4}>
+                <Select
+                  id="currenty-type-select-id"
+                  label="Seleccione la moneda de la transacción"
+                  value={currency.toString()}
+                  onChange={event => dispatch(setCurrency(event.target.value))}
+                >
+                  <MenuItem value={1}>COLONES</MenuItem>
+                  <MenuItem value={2}>DOLARES</MenuItem>
+                </Select>
+              </Grid>
+            </Grid>
+          </>
         )}
-        <Grid item xs={12} className={classes.centered}>
-          <Grid item xs={10} sm={6} md={4}>
-            <Select
-              id="currenty-type-select-id"
-              label="Seleccione la moneda de la transacción"
-              value={currency.toString()}
-              onChange={event => dispatch(setCurrency(event.target.value))}
-            >
-              <MenuItem value={1}>COLONES</MenuItem>
-              <MenuItem value={2}>DOLARES</MenuItem>
-            </Select>
-          </Grid>
-        </Grid>
-        <Grid item container gap={2} justifyContent="center">
-          {status === ORDER_STATUS.ON_PROGRESS && (
-            <Grid item>
-              <Button
-                disabled={buttonDisabled}
-                label={workingOrderId > 0 ? "Actualizar" : "Agregar"}
-                onClick={() => dispatch(saveWorkingOrder())}
-              />
+        <Grid item xs={12} container gap={2} justifyContent="center">
+          {(savedOrderTotal < summary.total || status === ORDER_STATUS.ON_PROGRESS) && (
+            <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
+              <Button label="Guardar" onClick={() => dispatch(saveWorkingOrder())} />
             </Grid>
           )}
-          <Grid item>
+          <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
             <Button label="Nueva Orden" onClick={handleNewRecord} />
           </Grid>
+          {savedOrderTotal === summary.total && summary.total > 0 && status === ORDER_STATUS.READY && (
+            <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
+              <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
+            </Grid>
+          )}
+          {savedOrderTotal === summary.total && (invoiceId > 0 || workingOrderId > 0) && (
+            <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
+              <Button label={invoiceId === 0 ? "Imprimir Orden" : "Imprimir Factura"} onClick={handleOnPrintClick} />
+            </Grid>
+          )}
         </Grid>
-        <Grid item xs={12} className={classes.centered}>
-          {status === ORDER_STATUS.READY && <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />}
-        </Grid>
-        {(status === ORDER_STATUS.READY || status === ORDER_STATUS.CONVERTED) && (
-          <Grid item xs={12} className={classes.centered}>
-            <Button
-              label={status === ORDER_STATUS.READY ? "Imprimir Orden" : "Imprimir Factura"}
-              onClick={handleOnPrintClick}
-            />
-          </Grid>
-        )}
       </Grid>
     </div>
   );

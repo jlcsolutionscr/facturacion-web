@@ -26,6 +26,7 @@ import {
   getPaymentMethodList,
   getProductDetails,
   getProductDetailsList,
+  getSavedOrderTotal,
   getStatus,
   getSummary,
   getVendorId,
@@ -33,7 +34,7 @@ import {
   setCustomerAttribute,
   setProductDetails,
 } from "state/working-order/reducer";
-import { FORM_TYPE, ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
+import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
@@ -107,6 +108,7 @@ export default function WorkingOrderPage() {
   const cashAdvance = useSelector(getCashAdvance);
   const status = useSelector(getStatus);
   const invoiceId = useSelector(getInvoiceId);
+  const savedOrderTotal = useSelector(getSavedOrderTotal);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -143,7 +145,7 @@ export default function WorkingOrderPage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={status === ORDER_STATUS.CONVERTED}
+        listDisabled={invoiceId > 0}
         getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
@@ -157,7 +159,7 @@ export default function WorkingOrderPage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={status === ORDER_STATUS.CONVERTED}
+        stepDisabled={invoiceId > 0}
         getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
@@ -165,7 +167,7 @@ export default function WorkingOrderPage() {
         addDetails={() => dispatch(addDetails({ id: undefined }))}
         removeDetails={(pos: number) => dispatch(removeDetails({ pos }))}
       />
-      <OtherDetails className={classes.tab} value={value} index={2} delivery={delivery} status={status} />
+      <OtherDetails className={classes.tab} value={value} index={2} delivery={delivery} invoiceId={invoiceId} />
       <OrderSummary
         className={classes.tab}
         value={value}
@@ -180,6 +182,7 @@ export default function WorkingOrderPage() {
         currency={currency}
         cashAdvance={cashAdvance}
         status={status}
+        savedOrderTotal={savedOrderTotal}
         invoiceId={invoiceId}
         setValue={setValue}
       />

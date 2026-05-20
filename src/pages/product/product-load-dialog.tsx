@@ -7,7 +7,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 
-import { getCategoryList as getCategoryListAction, saveProductWithEntity } from "state/product/asyncActions";
+import { getCategoryList as getCategoryListAction, importProductList } from "state/product/asyncActions";
 import { getCategoryList } from "state/product/reducer";
 import { getCompanyId } from "state/session/reducer";
 
@@ -85,7 +85,7 @@ export default function ProductLoadDialog({ setDialogOpen }: ProductLoadDialogPr
       };
       productDataList.push(productData);
     }
-    dispatch(saveProductWithEntity({ list: productDataList }));
+    dispatch(importProductList({ list: productDataList }));
   };
 
   const handleClean = () => {

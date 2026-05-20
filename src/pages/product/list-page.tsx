@@ -199,7 +199,7 @@ export default function ProductListPage() {
       <div className={classes.buttonContainer}>
         <Button label="Agregar" onClick={() => dispatch(openProduct({ id: undefined }))} />
         <Button label="Regresar" onClick={handleClose} />
-        {userId === 1 && <Button label="Cargar Productos" onClick={() => setDialogOpen(true)} />}
+        {userId === 1 && <Button label="Importar" onClick={() => setDialogOpen(true)} />}
       </div>
       <Dialog fullScreen id="order-summary-dialog" onClose={() => setDialogOpen(false)} open={dialogOpen}>
         <ProductLoadDialog setDialogOpen={setDialogOpen} />
