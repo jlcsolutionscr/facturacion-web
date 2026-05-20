@@ -1,13 +1,15 @@
+import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
   resetInvoice,
   resetProductDetails,
   setActivityCode,
+  setCustomerDetails,
   setInvoiceList,
   setInvoiceListCount,
   setInvoiceListPage,
-  setPaymentDetailsList,
+  setPaymentMethodList,
   setProductDetailsList,
   setSuccessful,
   setSummary,
@@ -16,7 +18,7 @@ import {
 import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { defaultPaymentDetails } from "utils/defaults";
+import { defaultPaymentMethod } from "utils/defaults";
 import {
   generateInvoicePDF,
   generateInvoiceTicketPDF,
@@ -66,11 +68,26 @@ export const setInvoiceParameters = createAsyncThunk(
       }
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
+      dispatch(setPaymentMethodList([defaultPaymentMethod]));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
+    }
+  }
+);
+
+export const selectCustomer = createAsyncThunk(
+  "invoice/selectCustomer",
+  async (payload: CustomerDetailsType, { getState, dispatch }) => {
+    const { workingOrder } = getState() as RootState;
+    const { productDetailsList } = workingOrder.entity;
+    try {
+      dispatch(setCustomerDetails(payload));
+      const summary = getProductSummary(productDetailsList, payload.exonerationPercentage);
+      dispatch(setSummary(summary));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
   }
 );
@@ -180,16 +197,8 @@ export const removeDetails = createAsyncThunk(
 export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_payload, { getState, dispatch }) => {
   const { session, invoice } = getState() as RootState;
   const { token, userId, branchId, companyId } = session;
-  const {
-    activityCode,
-    paymentDetailsList,
-    vendorId,
-    customerDetails,
-    productDetailsList,
-    summary,
-    comment,
-    currency,
-  } = invoice.entity;
+  const { activityCode, paymentMethodList, vendorId, customerDetails, productDetailsList, summary, comment, currency } =
+    invoice.entity;
 
   dispatch(startLoader());
   try {
@@ -199,7 +208,7 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
       companyId,
       branchId,
       activityCode,
-      paymentDetailsList,
+      paymentMethodList,
       currency,
       vendorId,
       0,

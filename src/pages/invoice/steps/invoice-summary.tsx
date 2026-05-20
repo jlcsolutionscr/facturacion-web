@@ -2,7 +2,7 @@ import { Button, Select, TextField } from "jlc-component-library";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { CompanyType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
+import { CompanyType, IdDescriptionType, PaymentMethodType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,7 +13,7 @@ import {
   setActivityCode,
   setComment,
   setCurrency,
-  setPaymentDetailsList,
+  setPaymentMethodList,
   setVendorId,
 } from "state/invoice/reducer";
 import { formatCurrency } from "utils/utilities";
@@ -71,7 +71,7 @@ interface InvoiceSummaryProps {
   company: CompanyType | null;
   summary: SummaryType;
   activityCode: number;
-  paymentDetails: PaymentDetailsType[];
+  paymentDetails: PaymentMethodType[];
   vendorId: number;
   currency: number;
   comment: string;
@@ -231,7 +231,7 @@ export default function InvoiceSummary({
                 value={paymentDetails[0].paymentId.toString()}
                 onChange={event =>
                   dispatch(
-                    setPaymentDetailsList([
+                    setPaymentMethodList([
                       {
                         paymentId: event.target.value,
                         description:

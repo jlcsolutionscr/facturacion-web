@@ -106,12 +106,18 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 type TouchWorkingOrderPageProps = {
+  disabledAddProduct: boolean;
   addProductDetails: (id: number) => void;
   handleClose: () => void;
   children: ReactNode;
 };
 
-export default function TouchScreenSalesPage({ addProductDetails, handleClose, children }: TouchWorkingOrderPageProps) {
+export default function TouchScreenSalesPage({
+  disabledAddProduct,
+  addProductDetails,
+  handleClose,
+  children,
+}: TouchWorkingOrderPageProps) {
   const { classes } = useStyles();
   const [value, setValue] = useState(0);
 
@@ -144,7 +150,11 @@ export default function TouchScreenSalesPage({ addProductDetails, handleClose, c
             })}
           </div>
           <div style={{ display: value === 1 ? "flex" : "none", width: "100%", maxHeight: "100%" }}>
-            <ProductList value={value} addDetails={id => addProductDetails(id)} />
+            <ProductList
+              disabledAddProduct={disabledAddProduct}
+              value={value}
+              addDetails={id => addProductDetails(id)}
+            />
           </div>
         </div>
       </div>
@@ -159,7 +169,7 @@ export default function TouchScreenSalesPage({ addProductDetails, handleClose, c
             })}
           </div>
           <div className={classes.desktopProductList}>
-            <ProductList addDetails={id => addProductDetails(id)} />
+            <ProductList disabledAddProduct={disabledAddProduct} addDetails={id => addProductDetails(id)} />
           </div>
         </div>
       </div>

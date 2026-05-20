@@ -2,7 +2,7 @@ import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { CustomerDetailsType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
+import { CustomerDetailsType, IdDescriptionType, PaymentMethodType, SummaryType } from "types/domain";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,7 +13,6 @@ import { DialogStatus, DialogType } from "./order-summary";
 import { filterCustomerList, getCustomerListByPageNumber, getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
-import { getInvoiceId } from "state/invoice/reducer";
 import { getCompany } from "state/session/reducer";
 import { formatCurrency } from "utils/utilities";
 
@@ -44,29 +43,33 @@ const ROWS_PER_CUSTOMER = 8;
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 type PaymentDialogProps = {
+  invoiceId: number;
   summary: SummaryType;
   customerDetails: CustomerDetailsType;
-  paymentDetailsList: PaymentDetailsType[];
+  paymentMethodList: PaymentMethodType[];
   activityCode: number;
+  paymentTotal: number;
   getCustomerDetails: (customerId: number) => void;
   setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
   setActivityCode: (value: string) => void;
-  setPaymentDetailsList: (list: PaymentDetailsType[]) => void;
-  setSummary: (value: SummaryType) => void;
+  setPaymentMethodList: (list: PaymentMethodType[]) => void;
+  setCashAmount: (value: number) => void;
   generateInvoice: () => void;
   setDialogStatus: (value: DialogStatus) => void;
 };
 
 export default function PaymentDialog({
+  invoiceId,
   summary,
   customerDetails,
-  paymentDetailsList,
+  paymentMethodList,
   activityCode,
+  paymentTotal,
   getCustomerDetails,
   setCustomerAttribute,
   setActivityCode,
-  setPaymentDetailsList,
-  setSummary,
+  setPaymentMethodList,
+  setCashAmount,
   generateInvoice,
   setDialogStatus,
 }: PaymentDialogProps) {
@@ -75,7 +78,6 @@ export default function PaymentDialog({
 
   const dispatch = useDispatch();
 
-  const invoiceId = useSelector(getInvoiceId);
   const company = useSelector(getCompany);
   const customerListCount = useSelector(getCustomerListCount);
   const customerListPage = useSelector(getCustomerListPage);
@@ -214,10 +216,10 @@ export default function PaymentDialog({
                 <Select
                   id="forma-pago-select-id"
                   label="Seleccione la forma de pago:"
-                  value={paymentDetailsList[0] ? paymentDetailsList[0].paymentId.toString() : ""}
+                  value={paymentMethodList[0] ? paymentMethodList[0].paymentId.toString() : ""}
                   onChange={event =>
                     dispatch(
-                      setPaymentDetailsList([
+                      setPaymentMethodList([
                         {
                           paymentId: parseInt(event.target.value),
                           description:
@@ -238,12 +240,7 @@ export default function PaymentDialog({
                   value={cashAmount.toString()}
                   label="Monto de pago:"
                   onChange={event =>
-                    dispatch(
-                      setSummary({
-                        ...summary,
-                        cashAmount: event.target.value !== "" ? parseFloat(event.target.value) : 0,
-                      })
-                    )
+                    dispatch(setCashAmount(event.target.value !== "" ? parseFloat(event.target.value) : 0))
                   }
                 />
               </Grid>
@@ -266,6 +263,7 @@ export default function PaymentDialog({
         )}
         <Button
           negative
+          disabled={paymentTotal > 0 && paymentTotal < total}
           label="Cerrar"
           onClick={() => setDialogStatus({ status: false, id: 0, type: DialogType.PAYMENT })}
         />

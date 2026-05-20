@@ -39,11 +39,17 @@ const invoiceSlice = createSlice({
     setSummary: (state, action) => {
       state.entity.summary = action.payload;
     },
+    setCashAmount: (state, action) => {
+      state.entity.summary = {
+        ...state.entity.summary,
+        cashAmount: action.payload,
+      };
+    },
     setActivityCode: (state, action) => {
       state.entity.activityCode = action.payload;
     },
-    setPaymentDetailsList: (state, action) => {
-      state.entity.paymentDetailsList = action.payload;
+    setPaymentMethodList: (state, action) => {
+      state.entity.paymentMethodList = action.payload;
     },
     setVendorId: (state, action) => {
       state.entity.vendorId = action.payload;
@@ -89,8 +95,9 @@ export const {
   resetProductDetails,
   setProductDetailsList,
   setSummary,
+  setCashAmount,
   setActivityCode,
-  setPaymentDetailsList,
+  setPaymentMethodList,
   setVendorId,
   setComment,
   setCurrency,
@@ -107,7 +114,7 @@ export const getProductDetails = (state: RootState) => state.invoice.entity.prod
 export const getProductDetailsList = (state: RootState) => state.invoice.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.invoice.entity.summary;
 export const getActivityCode = (state: RootState) => state.invoice.entity.activityCode;
-export const getPaymentDetailsList = (state: RootState) => state.invoice.entity.paymentDetailsList;
+export const getPaymentMethodList = (state: RootState) => state.invoice.entity.paymentMethodList;
 export const getVendorId = (state: RootState) => state.invoice.entity.vendorId;
 export const getComment = (state: RootState) => state.invoice.entity.comment;
 export const getCurrency = (state: RootState) => state.invoice.entity.currency;

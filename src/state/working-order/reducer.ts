@@ -4,19 +4,19 @@ import { workingOrderInitialState } from "state/InitialState";
 import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { ORDER_STATUS } from "utils/constants";
-import { defaultProductDetails, defaultWorkingOrder } from "utils/defaults";
+import { defaultPaymentList, defaultProductDetails, defaultWorkingOrder } from "utils/defaults";
 
 const workingOrderSlice = createSlice({
   name: "working-order",
   initialState: workingOrderInitialState,
   reducers: {
     setCustomerDetails: (state, action) => {
-      state.entity.customerDetails = action.payload;
+      state.paymentInfo.customerDetails = action.payload;
     },
     setCustomerAttribute: (state, action) => {
       state.entity.status = ORDER_STATUS.ON_PROGRESS;
-      state.entity.customerDetails = {
-        ...state.entity.customerDetails,
+      state.paymentInfo.customerDetails = {
+        ...state.paymentInfo.customerDetails,
         [action.payload.attribute]: action.payload.value,
       };
     },
@@ -41,16 +41,15 @@ const workingOrderSlice = createSlice({
     setProductDetailsList: (state, action) => {
       state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.productDetailsList = action.payload;
+      state.paymentInfo.summaryProductList = action.payload;
     },
     setSummary: (state, action) => {
-      state.entity.summary = action.payload;
+      state.paymentInfo.summary = action.payload;
+      state.entity.total = action.payload.total;
     },
     setActivityCode: (state, action) => {
       state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.activityCode = action.payload;
-    },
-    setPaymentDetailsList: (state, action) => {
-      state.entity.paymentDetailsList = action.payload;
     },
     setVendorId: (state, action) => {
       state.entity.vendorId = action.payload;
@@ -64,6 +63,9 @@ const workingOrderSlice = createSlice({
         ...state.entity.delivery,
         [action.payload.attribute]: action.payload.value,
       };
+    },
+    setPaymentMethodList: (state, action) => {
+      state.paymentInfo.paymentMethodList = action.payload;
     },
     setWorkingOrder: (state, action) => {
       state.entity = action.payload;
@@ -91,9 +93,10 @@ const workingOrderSlice = createSlice({
         ...defaultWorkingOrder,
         vendorId: state.entity.vendorId,
         activityCode: state.entity.activityCode,
-        paymentDetailsList: state.entity.paymentDetailsList,
         servicePointId: state.entity.servicePointId,
       };
+      state.paymentInfo = defaultPaymentList;
+      state.paymentTotal = 0;
     },
     setServicePointId: (state, action) => {
       state.entity.servicePointId = action.payload;
@@ -109,6 +112,18 @@ const workingOrderSlice = createSlice({
         ...state.servicePointEntity,
         [action.payload.attribute]: action.payload.value,
       };
+    },
+    updatePaymentInfo: (state, action) => {
+      state.paymentInfo = action.payload;
+    },
+    setCashAmount: (state, action) => {
+      state.paymentInfo.summary = {
+        ...state.paymentInfo.summary,
+        cashAmount: action.payload,
+      };
+    },
+    setPaymentTotal: (state, action) => {
+      state.paymentTotal = action.payload;
     },
   },
   extraReducers: builder => {
@@ -130,10 +145,10 @@ export const {
   setProductDetailsList,
   setSummary,
   setActivityCode,
-  setPaymentDetailsList,
   setVendorId,
   setCurrency,
   setDeliveryAttribute,
+  setPaymentMethodList,
   setWorkingOrder,
   setInvoiceId,
   setStatus,
@@ -146,14 +161,17 @@ export const {
   setPrintingTicketList,
   setServicePointEntity,
   setServicePointAttribute,
+  updatePaymentInfo,
+  setCashAmount,
+  setPaymentTotal,
 } = workingOrderSlice.actions;
 
-export const getCustomerDetails = (state: RootState) => state.workingOrder.entity.customerDetails;
+export const getCustomerDetails = (state: RootState) => state.workingOrder.paymentInfo.customerDetails;
 export const getProductDetails = (state: RootState) => state.workingOrder.entity.productDetails;
 export const getProductDetailsList = (state: RootState) => state.workingOrder.entity.productDetailsList;
-export const getSummary = (state: RootState) => state.workingOrder.entity.summary;
+export const getSummary = (state: RootState) => state.workingOrder.paymentInfo.summary;
 export const getActivityCode = (state: RootState) => state.workingOrder.entity.activityCode;
-export const getPaymentDetailsList = (state: RootState) => state.workingOrder.entity.paymentDetailsList;
+export const getPaymentMethodList = (state: RootState) => state.workingOrder.paymentInfo.paymentMethodList;
 export const getVendorId = (state: RootState) => state.workingOrder.entity.vendorId;
 export const getCurrency = (state: RootState) => state.workingOrder.entity.currency;
 export const getDeliveryDetails = (state: RootState) => state.workingOrder.entity.delivery;
@@ -168,5 +186,6 @@ export const getWorkingOrderList = (state: RootState) => state.workingOrder.list
 export const getServicePointList = (state: RootState) => state.workingOrder.servicePointList;
 export const getPrintingTicketList = (state: RootState) => state.workingOrder.printingTicketList;
 export const getServicePointEntity = (state: RootState) => state.workingOrder.servicePointEntity;
+export const getPaymentTotal = (state: RootState) => state.workingOrder.paymentTotal;
 
 export default workingOrderSlice.reducer;

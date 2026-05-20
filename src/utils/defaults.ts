@@ -3,14 +3,16 @@ import {
   CategoryType,
   CompanyType,
   CustomerDetailsType,
-  CustomerType,
+  CustomerEntityType,
   InvoiceType,
-  PaymentDetailsType,
+  PaymentInfoType,
+  PaymentMethodType,
   ProductDetailsType,
   ProductType,
   ProformaType,
   ReceiptType,
   ServicePointType,
+  SummaryType,
   WorkingOrderType,
 } from "types/domain";
 
@@ -70,6 +72,17 @@ export const defaultCredentials = {
   PinCertificado: "",
 };
 
+export const defaultSummary: SummaryType = {
+  taxed: 0,
+  exonerated: 0,
+  exempt: 0,
+  subTotal: 0,
+  taxes: 0,
+  total: 0,
+  totalCost: 0,
+  cashAmount: 0,
+};
+
 export const defaultCustomerDetails: CustomerDetailsType = {
   id: 1,
   name: "CLIENTE DE CONTADO",
@@ -87,7 +100,7 @@ export const defaultCustomerDetails: CustomerDetailsType = {
   priceTypeId: 1,
 };
 
-export const defaultCustomer: CustomerType = {
+export const defaultCustomer: CustomerEntityType = {
   IdEmpresa: 0,
   IdCliente: 0,
   IdTipoIdentificacion: 0,
@@ -111,7 +124,7 @@ export const defaultCustomer: CustomerType = {
   CodigoActividad: "",
 };
 
-export const defaultPaymentDetails: PaymentDetailsType = {
+export const defaultPaymentMethod: PaymentMethodType = {
   paymentId: 1,
   description: "EFECTIVO",
   amount: 0,
@@ -170,18 +183,9 @@ export const defaultInvoice: InvoiceType = {
   customerDetails: defaultCustomerDetails,
   productDetails: defaultProductDetails,
   productDetailsList: [],
-  paymentDetailsList: [defaultPaymentDetails],
+  paymentMethodList: [defaultPaymentMethod],
   vendorId: 0,
-  summary: {
-    taxed: 0,
-    exonerated: 0,
-    exempt: 0,
-    subTotal: 0,
-    taxes: 0,
-    total: 0,
-    totalCost: 0,
-    cashAmount: 0,
-  },
+  summary: defaultSummary,
   comment: "",
   successful: false,
   cashAdvance: 0,
@@ -197,22 +201,11 @@ export const defaultWorkingOrder: WorkingOrderType = {
   invoiceId: 0,
   status: ORDER_STATUS.READY,
   activityCode: 0,
-  customerDetails: defaultCustomerDetails,
   productDetails: defaultProductDetails,
   productDetailsList: [],
-  paymentDetailsList: [],
   vendorId: 0,
   currency: 1,
-  summary: {
-    taxed: 0,
-    exonerated: 0,
-    exempt: 0,
-    subTotal: 0,
-    taxes: 0,
-    total: 0,
-    totalCost: 0,
-    cashAmount: 0,
-  },
+  total: 0,
   delivery: {
     phone: "",
     address: "",
@@ -291,4 +284,12 @@ export const defaultServicePoint: ServicePointType = {
   IdSucursal: 0,
   Descripcion: "",
   Activo: true,
+};
+
+export const defaultPaymentList: PaymentInfoType = {
+  customerDetails: defaultCustomerDetails,
+  pendingProductList: [],
+  summaryProductList: [],
+  paymentMethodList: [defaultPaymentMethod],
+  summary: defaultSummary,
 };

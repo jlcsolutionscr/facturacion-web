@@ -1,8 +1,10 @@
+import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
   resetProductDetails,
   resetProforma,
+  setCustomerDetails,
   setProductDetailsList,
   setProformaList,
   setProformaListCount,
@@ -38,6 +40,21 @@ export const setProformaParameters = createAsyncThunk(
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
+    }
+  }
+);
+
+export const selectCustomer = createAsyncThunk(
+  "proforma/selectCustomer",
+  async (payload: CustomerDetailsType, { getState, dispatch }) => {
+    const { workingOrder } = getState() as RootState;
+    const { productDetailsList } = workingOrder.entity;
+    try {
+      dispatch(setCustomerDetails(payload));
+      const summary = getProductSummary(productDetailsList, payload.exonerationPercentage);
+      dispatch(setSummary(summary));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
   }
 );

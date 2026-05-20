@@ -2,7 +2,7 @@ import { Button, Select } from "jlc-component-library";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { CompanyType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
+import { CompanyType, IdDescriptionType, PaymentMethodType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,7 +13,7 @@ import {
   resetWorkingOrder,
   setActivityCode,
   setCurrency,
-  setPaymentDetailsList,
+  setPaymentMethodList,
   setVendorId,
 } from "state/working-order/reducer";
 import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
@@ -72,7 +72,7 @@ interface OrderSummaryProps {
   company: CompanyType | null;
   summary: SummaryType;
   activityCode: number;
-  paymentDetails: PaymentDetailsType[];
+  paymentMethod: PaymentMethodType[];
   vendorId: number;
   currency: number;
   workingOrderId: number;
@@ -90,7 +90,7 @@ export default function OrderSummary({
   company,
   summary,
   activityCode,
-  paymentDetails,
+  paymentMethod,
   vendorId,
   currency,
   workingOrderId,
@@ -234,10 +234,10 @@ export default function OrderSummary({
               <Select
                 id="forma-pago-select-id"
                 label="Seleccione la forma de pago:"
-                value={paymentDetails[0] ? paymentDetails[0].paymentId.toString() : ""}
+                value={paymentMethod[0] ? paymentMethod[0].paymentId.toString() : ""}
                 onChange={event =>
                   dispatch(
-                    setPaymentDetailsList([
+                    setPaymentMethodList([
                       {
                         paymentId: event.target.value,
                         description:

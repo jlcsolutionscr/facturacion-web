@@ -1,30 +1,30 @@
-import { CustomerDetailsType, DetalleProductoType } from "types/domain";
+import { CustomerDetailsType, DetalleProductoType, PaymentInfoType, WorkingOrderType } from "types/domain";
 
 import { ORDER_STATUS } from "utils/constants";
-import { defaultProductDetails } from "utils/defaults";
+import { defaultPaymentMethod, defaultProductDetails } from "utils/defaults";
 import { getProductSummary } from "utils/domainHelper";
 import { convertToDateString, roundNumber } from "utils/utilities";
 
-export function parseWorkingOrderEntity(workingOrder: any, servicePointId: number) {
+export function parseWorkingOrderEntity(entity: any, servicePointId: number) {
   const customerDetails: CustomerDetailsType = {
-    id: workingOrder.IdCliente,
-    name: workingOrder.NombreCliente,
-    comercialName: workingOrder.NombreComercial,
-    email: workingOrder.CorreoElectronico,
-    phoneNumber: workingOrder.Telefono,
-    activityCode: workingOrder.Cliente.CodigoActividad,
-    exonerationType: workingOrder.Cliente.IdTipoExoneracion,
-    exoneratedById: workingOrder.Cliente.IdNombreInstExoneracion,
-    exonerationRef: workingOrder.Cliente.NumDocExoneracion,
-    exonerationRef2: workingOrder.Cliente.ArticuloExoneracion,
-    exonerationRef3: workingOrder.Cliente.IncisoExoneracion,
-    exonerationPercentage: workingOrder.Cliente.PorcentajeExoneracion,
-    exonerationDate: workingOrder.Cliente.FechaEmisionDoc,
-    priceTypeId: workingOrder.Cliente.IdTipoPrecio,
+    id: entity.IdCliente,
+    name: entity.NombreCliente,
+    comercialName: entity.NombreComercial,
+    email: entity.CorreoElectronico,
+    phoneNumber: entity.Telefono,
+    activityCode: entity.Cliente.CodigoActividad,
+    exonerationType: entity.Cliente.IdTipoExoneracion,
+    exoneratedById: entity.Cliente.IdNombreInstExoneracion,
+    exonerationRef: entity.Cliente.NumDocExoneracion,
+    exonerationRef2: entity.Cliente.ArticuloExoneracion,
+    exonerationRef3: entity.Cliente.IncisoExoneracion,
+    exonerationPercentage: entity.Cliente.PorcentajeExoneracion,
+    exonerationDate: entity.Cliente.FechaEmisionDoc,
+    priceTypeId: entity.Cliente.IdTipoPrecio,
   };
-  const productDetailsList = workingOrder.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
+  const productDetailsList = entity.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
     id: item.IdProducto,
-    orderId: workingOrder.IdOrden,
+    orderId: entity.IdOrden,
     quantity: item.Cantidad,
     code: item.Codigo,
     description: item.Descripcion,
@@ -36,29 +36,35 @@ export function parseWorkingOrderEntity(workingOrder: any, servicePointId: numbe
     disccountRate: 0,
   }));
   const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
-  return {
-    id: workingOrder.IdOrden,
+  const workingOrder: WorkingOrderType = {
+    id: entity.IdOrden,
     servicePointId: servicePointId,
-    consecutive: workingOrder.ConsecOrdenServicio,
-    date: convertToDateString(workingOrder.Fecha),
-    cashAdvance: workingOrder.MontoAdelanto,
+    consecutive: entity.ConsecOrdenServicio,
+    date: convertToDateString(entity.Fecha),
+    cashAdvance: entity.MontoAdelanto,
     invoiceId: 0,
     status: ORDER_STATUS.READY,
-    activityCode: workingOrder.CodigoActividad,
-    customerDetails,
+    activityCode: entity.CodigoActividad,
     productDetails: defaultProductDetails,
     productDetailsList,
-    paymentDetailsList: [],
-    vendorId: workingOrder.IdVendedor,
-    currency: workingOrder.IdTipoMoneda,
-    summary,
+    vendorId: entity.IdVendedor,
+    currency: entity.IdTipoMoneda,
     delivery: {
-      phone: workingOrder.Telefono,
-      address: workingOrder.Direccion,
-      description: workingOrder.Descripcion,
-      date: workingOrder.FechaEntrega,
-      time: workingOrder.HoraEntrega,
-      details: workingOrder.OtrosDetalles,
+      phone: entity.Telefono,
+      address: entity.Direccion,
+      description: entity.Descripcion,
+      date: entity.FechaEntrega,
+      time: entity.HoraEntrega,
+      details: entity.OtrosDetalles,
     },
+    total: 0,
   };
+  const paymentInfo: PaymentInfoType = {
+    customerDetails,
+    paymentMethodList: [defaultPaymentMethod],
+    pendingProductList: [],
+    summaryProductList: productDetailsList,
+    summary,
+  };
+  return { workingOrder, paymentInfo };
 }

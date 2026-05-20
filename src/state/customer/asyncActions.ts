@@ -1,13 +1,13 @@
-import { CustomerType } from "types/domain";
+import { CustomerEntityType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setAvailableEconomicActivityList } from "state/company/reducer";
 import { setCustomer, setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
-import { setCustomerDetails as setInvoiceCustomer } from "state/invoice/reducer";
-import { setCustomerDetails as setProformaCustomer } from "state/proforma/reducer";
+import { selectCustomer as setInvoiceCustomer } from "state/invoice/asyncActions";
+import { selectCustomer as setProformaCustomer } from "state/proforma/asyncActions";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { setCustomerDetails as setWorkingOrderCustomer } from "state/working-order/reducer";
+import { selectCustomer as setWorkingOrderCustomer } from "state/working-order/asyncActions";
 import { FORM_TYPE } from "utils/constants";
 import { defaultCustomer, defaultCustomerDetails } from "utils/defaults";
 import {
@@ -106,7 +106,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
       (payload.idType > 1 && payload.identifier.length >= 11)
     ) {
       dispatch(startLoader());
-      const customer: CustomerType = await getCustomerByIdentifier(token, companyId, payload.identifier);
+      const customer: CustomerEntityType = await getCustomerByIdentifier(token, companyId, payload.identifier);
       if (customer?.IdCliente > 0) {
         dispatch(setCustomer(customer));
         dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));

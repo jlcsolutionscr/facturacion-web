@@ -9,11 +9,12 @@ import ProductCard from "components/touch-screen-sales/product-card";
 import { getCategoryList, getProductList } from "state/product/reducer";
 
 interface ProductListProps {
+  disabledAddProduct: boolean;
   addDetails: (value: number) => void;
   value?: number;
 }
 
-export default function ProductList({ addDetails, value }: ProductListProps) {
+export default function ProductList({ disabledAddProduct, addDetails, value }: ProductListProps) {
   const [category, setCategory] = useState(-1);
 
   const myRef = useRef<HTMLDivElement>(null);
@@ -33,7 +34,7 @@ export default function ProductList({ addDetails, value }: ProductListProps) {
           description={row.Descripcion}
           price={row.PrecioVenta1}
           image={row.Imagen}
-          action={() => addDetails(row.Id)}
+          action={() => !disabledAddProduct && addDetails(row.Id)}
         />
       </Grid>
     ));

@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import {
   CustomerDetailsType,
-  PaymentDetailsType,
+  PaymentMethodType,
   ProductDetailsType,
   SummaryType,
   WorkingOrderProductDetails,
 } from "types/domain";
+import MuiButton from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -18,17 +19,31 @@ import PaymentDialog from "./payment-dialog";
 import RevokeOrderDialog from "./revoke-order-dialog";
 import TicketsDialog from "./tickets-dialog";
 import UpdateProductDialog from "./update-product-dialog";
-import { BackArrowIcon, EditIcon, RemoveCircleIcon } from "utils/iconsHelper";
+import { TRANSITION_ANIMATION } from "utils/constants";
+import { BackArrowIcon, EditIcon, PrinterIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
-  backButton: {
-    position: "absolute",
-    left: "20px",
-    zIndex: "10",
+  button: {
+    padding: "5px 15px",
+    backgroundColor: theme.palette.mode === "dark" ? "rgb(144, 202, 249)" : "#08415c",
+    color: theme.palette.mode === "dark" ? "#000" : "rgba(255,255,255,0.85)",
+    boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
+    transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
+    "&:hover": {
+      backgroundColor: theme.palette.mode === "dark" ? "rgb(66, 165, 245)" : "#27546c",
+      boxShadow: "4px 4px 6px rgba(0,0,0,0.55)",
+    },
+    "&:disabled": {
+      backgroundColor: theme.palette.mode === "dark" ? "rgb(144, 202, 249)" : "#08415c",
+      color: theme.palette.mode === "dark" ? "#000" : "rgba(255,255,255,0.85)",
+      opacity: theme.palette.mode === "dark" ? 0.5 : 0.7,
+    },
   },
   icon: {
-    color: theme.palette.text.primary,
+    path: {
+      color: "#FFF",
+    },
   },
   summaryDetails: {
     justifyContent: "center",
@@ -49,13 +64,15 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface OrderSummaryProps {
-  id: number;
+  orderId: number;
+  invoiceId: number;
   summary: SummaryType;
   productDetails: WorkingOrderProductDetails;
   productDetailsList: WorkingOrderProductDetails[];
   customerDetails: CustomerDetailsType;
-  paymentDetailsList: PaymentDetailsType[];
+  paymentMethodList: PaymentMethodType[];
   activityCode: number;
+  paymentTotal: number;
   revokeAlertMessage: string;
   isPriceChangeEnabled: boolean;
   ticketsButtonEnabled: boolean;
@@ -63,16 +80,14 @@ interface OrderSummaryProps {
   saveButtonEnabled: boolean;
   revokeButtonEnabled: boolean;
   resetButtonEnabled: boolean;
-  printButtonEnabled: boolean;
   getCustomerDetails: (customerId: number) => void;
   setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
   setActivityCode: (value: string) => void;
-  setPaymentDetailsList: (list: PaymentDetailsType[]) => void;
-  setSummary: (value: SummaryType) => void;
+  setPaymentMethodList: (list: PaymentMethodType[]) => void;
+  setCashAmount: (value: number) => void;
   setProductDetails: (value: ProductDetailsType) => void;
   updateProductDetailsList: (value: number) => void;
   handleProductRemove: (value: number) => void;
-  handlePrintTicket: () => void;
   handleReset: () => void;
   handleRevoke: () => void;
   generateInvoice: () => void;
@@ -95,14 +110,16 @@ export enum DialogType {
 export type DialogStatus = { status: boolean; id: number; type: string };
 
 export default function OrderSummary({
-  id,
+  orderId,
+  invoiceId,
   summary,
   extraDetails,
   productDetails,
   productDetailsList,
   customerDetails,
-  paymentDetailsList,
+  paymentMethodList,
   activityCode,
+  paymentTotal,
   revokeAlertMessage,
   isPriceChangeEnabled,
   ticketsButtonEnabled,
@@ -110,16 +127,14 @@ export default function OrderSummary({
   saveButtonEnabled,
   revokeButtonEnabled,
   resetButtonEnabled,
-  printButtonEnabled,
   getCustomerDetails,
   setCustomerAttribute,
-  setPaymentDetailsList,
+  setPaymentMethodList,
   setActivityCode,
-  setSummary,
+  setCashAmount,
   setProductDetails,
   updateProductDetailsList,
   handleProductRemove,
-  handlePrintTicket,
   handleClose,
   handleSave,
   setExtraDetails,
@@ -142,7 +157,7 @@ export default function OrderSummary({
   const buttonDisabled = total === 0;
 
   const openRevokeDialog = () => {
-    setDialogStatus({ status: true, id: id, type: DialogType.REVOKE });
+    setDialogStatus({ status: true, id: orderId, type: DialogType.REVOKE });
   };
 
   const handleProductUpdate = (index: number) => {
@@ -161,42 +176,38 @@ export default function OrderSummary({
       gap={1}
       justifyContent="center"
     >
-      {isSplitMode && (
-        <Grid>
-          <div className={classes.backButton}>
-            <IconButton aria-label="back-button" component="span" onClick={handleClose}>
-              <BackArrowIcon className={classes.icon} />
-            </IconButton>
-          </div>
-        </Grid>
-      )}
       <Grid container xs={12} sx={{ height: "35px" }} justifyContent="center">
         <Grid container gap={1}>
-          {ticketsButtonEnabled && (
+          {isSplitMode && (
             <Grid>
-              <Button
-                label="Tiquetes"
-                onClick={() => setDialogStatus({ status: true, id: id, type: DialogType.TICKETS })}
-              />
+              <MuiButton variant="contained" className={classes.button} onClick={handleClose}>
+                <BackArrowIcon className={classes.icon} />
+              </MuiButton>
             </Grid>
           )}
-          {invoiceButtonEnabled && id === 0 && (
+          {ticketsButtonEnabled && (
+            <Grid>
+              <MuiButton
+                variant="contained"
+                className={classes.button}
+                onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.TICKETS })}
+              >
+                <PrinterIcon className={classes.icon} />
+              </MuiButton>
+            </Grid>
+          )}
+          {invoiceButtonEnabled && invoiceId === 0 && (
             <Grid>
               <Button
                 disabled={total === 0}
-                label="Facturar"
-                onClick={() => setDialogStatus({ status: true, id: id, type: DialogType.PAYMENT })}
+                label="Pagar"
+                onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.PAYMENT })}
               />
             </Grid>
           )}
           {saveButtonEnabled && handleSave && (
             <Grid>
-              <Button disabled={buttonDisabled} label={id > 0 ? "Actualizar" : "Guardar"} onClick={handleSave} />
-            </Grid>
-          )}
-          {revokeButtonEnabled && (
-            <Grid>
-              <Button label="Anular" onClick={openRevokeDialog} />
+              <Button disabled={buttonDisabled} label="Guardar" onClick={handleSave} />
             </Grid>
           )}
           {resetButtonEnabled && (
@@ -208,9 +219,9 @@ export default function OrderSummary({
               />
             </Grid>
           )}
-          {printButtonEnabled && (
-            <Grid xs="auto">
-              <Button label="Imprimir Factura" onClick={handlePrintTicket} />
+          {revokeButtonEnabled && (
+            <Grid>
+              <Button label="Anular" onClick={openRevokeDialog} />
             </Grid>
           )}
         </Grid>
@@ -303,15 +314,17 @@ export default function OrderSummary({
           <TicketsDialog setDialogStatus={setDialogStatus} />
         ) : (
           <PaymentDialog
+            invoiceId={invoiceId}
             summary={summary}
             customerDetails={customerDetails}
-            paymentDetailsList={paymentDetailsList}
+            paymentMethodList={paymentMethodList}
             activityCode={activityCode}
+            paymentTotal={paymentTotal}
             getCustomerDetails={getCustomerDetails}
             setCustomerAttribute={setCustomerAttribute}
             setActivityCode={setActivityCode}
-            setPaymentDetailsList={setPaymentDetailsList}
-            setSummary={setSummary}
+            setPaymentMethodList={setPaymentMethodList}
+            setCashAmount={setCashAmount}
             generateInvoice={generateInvoice}
             setDialogStatus={setDialogStatus}
           />

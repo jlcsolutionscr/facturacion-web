@@ -1,3 +1,4 @@
+import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
@@ -9,7 +10,7 @@ import {
   setActivityCode,
   setCustomerDetails,
   setInvoiceId,
-  setPaymentDetailsList,
+  setPaymentTotal,
   setPrintingTicketList,
   setProductDetailsList,
   setServicePointEntity,
@@ -22,9 +23,10 @@ import {
   setWorkingOrderList,
   setWorkingOrderListCount,
   setWorkingOrderListPage,
+  updatePaymentInfo,
 } from "state/working-order/reducer";
 import { ORDER_STATUS } from "utils/constants";
-import { defaultCustomerDetails, defaultPaymentDetails, defaultServicePoint } from "utils/defaults";
+import { defaultCustomerDetails, defaultServicePoint } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
@@ -59,7 +61,6 @@ export const setWorkingOrderParameters = createAsyncThunk(
     try {
       dispatch(setCustomerDetails(defaultCustomerDetails));
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(stopLoader());
     } catch (error) {
@@ -69,12 +70,29 @@ export const setWorkingOrderParameters = createAsyncThunk(
   }
 );
 
+export const selectCustomer = createAsyncThunk(
+  "working-order/selectCustomer",
+  async (payload: CustomerDetailsType, { getState, dispatch }) => {
+    const { workingOrder } = getState() as RootState;
+    const { productDetailsList } = workingOrder.entity;
+    try {
+      dispatch(setCustomerDetails(payload));
+      const summary = getProductSummary(productDetailsList, payload.exonerationPercentage);
+      dispatch(setSummary(summary));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+    }
+  }
+);
+
 export const addDetails = createAsyncThunk(
   "working-order/addDetails",
   async (payload: { id?: number }, { getState, dispatch }) => {
     const { session, workingOrder, ui } = getState() as RootState;
     const { company, branchId, token } = session;
-    const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
+    const { entity, paymentInfo } = workingOrder;
+    const { productDetails, productDetailsList } = entity;
+    const { customerDetails } = paymentInfo;
     if (company) {
       if (payload.id) dispatch(startLoader());
       const newProduct = await getNewProductItem(
@@ -127,7 +145,9 @@ export const updateDetails = createAsyncThunk(
   async (payload: { pos: number }, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { company } = session;
-    const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
+    const { entity, paymentInfo } = workingOrder;
+    const { productDetails, productDetailsList } = entity;
+    const { customerDetails } = paymentInfo;
     if (company && productDetails.id) {
       if (company && !["0", ""].includes(productDetails.quantity) && !["0", ""].includes(productDetails.price)) {
         try {
@@ -162,7 +182,9 @@ export const removeDetails = createAsyncThunk(
   "working-order/removeDetails",
   async (payload: { pos: number }, { getState, dispatch }) => {
     const { workingOrder } = getState() as RootState;
-    const { customerDetails, productDetailsList } = workingOrder.entity;
+    const { entity, paymentInfo } = workingOrder;
+    const { productDetailsList } = entity;
+    const { customerDetails } = paymentInfo;
     const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
@@ -176,12 +198,12 @@ export const saveWorkingOrder = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder, ui } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { entity, servicePointList } = workingOrder;
+    const { entity, paymentInfo, servicePointList } = workingOrder;
     dispatch(startLoader());
     try {
       let orderId = entity.id;
       let savedEntity = { ...entity };
-      const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity);
+      const ids = await saveWorkingOrderEntity(token, userId, branchId, companyId, entity, paymentInfo);
       if (ids) {
         orderId = ids.id;
         savedEntity = {
@@ -394,9 +416,10 @@ export const openWorkingOrder = createAsyncThunk(
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     try {
-      const workingOrder = await getWorkingOrderEntity(token, payload.id);
-      const workingOrderEntity = parseWorkingOrderEntity(workingOrder, 0);
-      dispatch(setWorkingOrder(workingOrderEntity));
+      const entity = await getWorkingOrderEntity(token, payload.id);
+      const { workingOrder, paymentInfo } = parseWorkingOrderEntity(entity, 0);
+      dispatch(setWorkingOrder(workingOrder));
+      dispatch(updatePaymentInfo(paymentInfo));
       dispatch(setServicePointId(0));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
@@ -516,13 +539,13 @@ export const openServicePoint = createAsyncThunk(
         const categoryList = await getProductCategoryList(token, companyId);
         dispatch(setCategoryList(categoryList));
       }
-      const workingOrder = servicePoint.IdOrden > 0 ? await getWorkingOrderEntity(token, servicePoint.IdOrden) : null;
-      if (workingOrder !== null) {
-        const workingOrderEntity = parseWorkingOrderEntity(workingOrder, servicePoint.IdPunto);
-        dispatch(setWorkingOrder(workingOrderEntity));
+      const entity = servicePoint.IdOrden > 0 ? await getWorkingOrderEntity(token, servicePoint.IdOrden) : null;
+      if (entity !== null) {
+        const { workingOrder, paymentInfo } = parseWorkingOrderEntity(entity, 0);
+        dispatch(setWorkingOrder(workingOrder));
+        dispatch(updatePaymentInfo(paymentInfo));
       }
       dispatch(setServicePointId(servicePoint.IdPunto));
-      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(setStatus(ORDER_STATUS.READY));
@@ -539,18 +562,9 @@ export const generateInvoice = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
-    const { servicePointList, entity } = workingOrder;
-    const {
-      id,
-      activityCode,
-      paymentDetailsList,
-      vendorId,
-      currency,
-      customerDetails,
-      productDetailsList,
-      summary,
-      servicePointId,
-    } = entity;
+    const { servicePointList, entity, paymentInfo, paymentTotal } = workingOrder;
+    const { id, activityCode, vendorId, currency, total, servicePointId } = entity;
+    const { customerDetails, summaryProductList, summary, paymentMethodList } = paymentInfo;
     dispatch(startLoader());
     try {
       const references = await saveInvoiceEntity(
@@ -559,28 +573,32 @@ export const generateInvoice = createAsyncThunk(
         companyId,
         branchId,
         activityCode,
-        paymentDetailsList,
+        paymentMethodList,
         currency,
         vendorId,
         id,
         customerDetails,
-        productDetailsList,
+        summaryProductList,
         summary,
         ""
       );
       dispatch(setInvoiceId(references.id));
-      dispatch(setStatus(ORDER_STATUS.CONVERTED));
-      if (servicePointId > 0) {
-        const index = servicePointList.findIndex(item => item.Id === servicePointId);
-        const newList = [
-          ...servicePointList.slice(0, index),
-          {
-            ...servicePointList[index],
-            Valor: 0,
-          },
-          ...servicePointList.slice(index + 1),
-        ];
-        dispatch(setServicePointList(newList));
+      const newTotal = paymentTotal + summary.total;
+      dispatch(setPaymentTotal(newTotal));
+      if (newTotal === total) {
+        dispatch(setStatus(ORDER_STATUS.CONVERTED));
+        if (servicePointId > 0) {
+          const index = servicePointList.findIndex(item => item.Id === servicePointId);
+          const newList = [
+            ...servicePointList.slice(0, index),
+            {
+              ...servicePointList[index],
+              Valor: 0,
+            },
+            ...servicePointList.slice(index + 1),
+          ];
+          dispatch(setServicePointList(newList));
+        }
       }
       dispatch(
         setMessage({

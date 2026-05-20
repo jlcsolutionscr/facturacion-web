@@ -3,28 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import TouchScreenSalesPage from "components/touch-screen-sales";
 import OrderSummary from "components/touch-screen-sales/order-summary";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
-import {
-  addDetails,
-  generateInvoiceTicket,
-  removeDetails,
-  revokeInvoice,
-  saveInvoice,
-  updateDetails,
-} from "state/invoice/asyncActions";
+import { addDetails, removeDetails, revokeInvoice, saveInvoice, updateDetails } from "state/invoice/asyncActions";
 import {
   getActivityCode,
   getCustomerDetails,
   getInvoiceId,
-  getPaymentDetailsList,
+  getPaymentMethodList,
   getProductDetails,
   getProductDetailsList,
   getSummary,
   resetInvoice,
   setActivityCode,
+  setCashAmount,
   setCustomerAttribute,
-  setPaymentDetailsList,
+  setPaymentMethodList,
   setProductDetails,
-  setSummary,
 } from "state/invoice/reducer";
 import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
@@ -40,7 +33,7 @@ export default function TouchScreenWorkingOrderPage() {
   const productDetailsList = useSelector(getProductDetailsList);
 
   const customerDetails = useSelector(getCustomerDetails);
-  const paymentDetailsList = useSelector(getPaymentDetailsList);
+  const paymentMethodList = useSelector(getPaymentMethodList);
   const activityCode = useSelector(getActivityCode);
 
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
@@ -52,17 +45,20 @@ export default function TouchScreenWorkingOrderPage() {
 
   return (
     <TouchScreenSalesPage
+      disabledAddProduct={invoiceId > 0}
       addProductDetails={id => dispatch(addDetails({ id }))}
       handleClose={() => dispatch(setActiveSection(0))}
     >
       <OrderSummary
-        id={invoiceId}
+        orderId={0}
+        invoiceId={invoiceId}
         summary={summary}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         customerDetails={customerDetails}
-        paymentDetailsList={paymentDetailsList}
+        paymentMethodList={paymentMethodList}
         activityCode={activityCode}
+        paymentTotal={0}
         revokeAlertMessage={`Desea proceder con la anulación de la factura: ${invoiceId}?`}
         isPriceChangeEnabled={isPriceChangeEnabled}
         ticketsButtonEnabled={false}
@@ -70,18 +66,16 @@ export default function TouchScreenWorkingOrderPage() {
         saveButtonEnabled={false}
         revokeButtonEnabled={false}
         resetButtonEnabled={invoiceId === 0}
-        printButtonEnabled={invoiceId > 0}
         getCustomerDetails={customerId =>
           dispatch(getCustomerDetailsAction({ id: customerId, type: FORM_TYPE.INVOICE }))
         }
         setCustomerAttribute={attribute => dispatch(setCustomerAttribute(attribute))}
         setActivityCode={value => dispatch(setActivityCode(value))}
-        setPaymentDetailsList={list => dispatch(setPaymentDetailsList(list))}
-        setSummary={value => dispatch(setSummary(value))}
+        setPaymentMethodList={list => dispatch(setPaymentMethodList(list))}
+        setCashAmount={value => dispatch(setCashAmount(value))}
         setProductDetails={details => dispatch(setProductDetails(details))}
         updateProductDetailsList={value => dispatch(updateDetails({ pos: value }))}
         handleProductRemove={value => dispatch(removeDetails({ pos: value }))}
-        handlePrintTicket={() => dispatch(generateInvoiceTicket({ id: invoiceId }))}
         generateInvoice={() => dispatch(saveInvoice())}
         handleReset={() => dispatch(resetInvoice())}
         handleRevoke={() => dispatch(revokeInvoice({ id: invoiceId }))}

@@ -23,7 +23,7 @@ import {
   getCustomerDetails,
   getDeliveryDetails,
   getInvoiceId,
-  getPaymentDetailsList,
+  getPaymentMethodList,
   getProductDetails,
   getProductDetailsList,
   getStatus,
@@ -99,7 +99,7 @@ export default function WorkingOrderPage() {
   const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
   const activityCode = useSelector(getActivityCode);
-  const paymentDetails = useSelector(getPaymentDetailsList);
+  const paymentMethod = useSelector(getPaymentMethodList);
   const vendorId = useSelector(getVendorId);
   const currency = useSelector(getCurrency);
   const workingOrderId = useSelector(getWorkingOrderId);
@@ -173,7 +173,7 @@ export default function WorkingOrderPage() {
         company={company}
         summary={summary}
         activityCode={activityCode}
-        paymentDetails={paymentDetails}
+        paymentMethod={paymentMethod}
         vendorId={vendorId}
         workingOrderId={workingOrderId}
         vendorList={vendorList}

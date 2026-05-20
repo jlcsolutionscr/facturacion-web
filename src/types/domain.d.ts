@@ -178,7 +178,7 @@ export type DetallePagoType = {
   TipoDeCambio: number;
 };
 
-export type CustomerType = {
+export type CustomerEntityType = {
   IdEmpresa: number;
   IdCliente: number;
   IdTipoIdentificacion: number;
@@ -233,7 +233,7 @@ export type ProductDetailsType = {
   disccountRate: number;
 };
 
-type PaymentDetailsType = {
+type PaymentMethodType = {
   paymentId: number;
   description: string;
   amount: number;
@@ -267,7 +267,7 @@ export type InvoiceType = {
   customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
-  paymentDetailsList: PaymentDetailsType[];
+  paymentMethodList: PaymentMethodType[];
   vendorId: number;
   summary: SummaryType;
   comment: string;
@@ -286,14 +286,12 @@ export type WorkingOrderType = {
   date: string;
   status: string;
   activityCode: number;
-  customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;
   productDetailsList: WorkingOrderProductDetails[];
-  paymentDetailsList: PaymentDetailsType[];
   cashAdvance: number;
   vendorId: number;
   currency: number;
-  summary: SummaryType;
+  total: number;
   delivery: DeliveryType;
 };
 
@@ -396,4 +394,12 @@ export type ServicePointType = {
   IdSucursal: number;
   Descripcion: string;
   Activo: boolean;
+};
+
+export type PaymentInfoType = {
+  customerDetails: CustomerDetailsType;
+  pendingProductList: ProductDetailsType[];
+  summaryProductList: ProductDetailsType[];
+  paymentMethodList: PaymentMethodType[];
+  summary: SummaryType;
 };

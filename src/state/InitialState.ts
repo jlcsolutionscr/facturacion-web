@@ -5,7 +5,7 @@ import {
   CodeDescriptionType,
   CompanyType,
   CredentialsType,
-  CustomerType,
+  CustomerEntityType,
   DeviceType,
   IdDescriptionTaxType,
   IdDescriptionType,
@@ -13,6 +13,7 @@ import {
   InvoiceEntityType,
   InvoiceType,
   LlaveDescriptionType,
+  PaymentInfoType,
   PermissionType,
   PrintingTicketType,
   ProductType,
@@ -30,6 +31,7 @@ import {
   defaultCredentials,
   defaultCustomer,
   defaultInvoice,
+  defaultPaymentList,
   defaultProduct,
   defaultProforma,
   defaultReceipt,
@@ -93,7 +95,7 @@ type CompanyStateType = {
 };
 
 type CustomerStateType = {
-  entity: CustomerType;
+  entity: CustomerEntityType;
   listPage: number;
   listCount: number;
   list: IdDescriptionType[];
@@ -127,12 +129,14 @@ type ReceiptStateType = {
 
 type WorkingOrderStateType = {
   entity: WorkingOrderType;
+  servicePointEntity: ServicePointType;
   listPage: number;
   listCount: number;
   list: InvoiceEntityType[];
   servicePointList: IdDescriptionValueType[];
   printingTicketList: PrintingTicketType[];
-  servicePointEntity: ServicePointType;
+  paymentTotal: number;
+  paymentInfo: PaymentInfoType;
 };
 
 type ProformaStateType = {
@@ -248,12 +252,14 @@ export const receiptInitialState: ReceiptStateType = {
 
 export const workingOrderInitialState: WorkingOrderStateType = {
   entity: defaultWorkingOrder,
+  servicePointEntity: defaultServicePoint,
   listPage: 1,
   listCount: 0,
   list: [],
   servicePointList: [],
   printingTicketList: [],
-  servicePointEntity: defaultServicePoint,
+  paymentTotal: 0,
+  paymentInfo: defaultPaymentList,
 };
 
 export const proformaInitialState: ProformaStateType = {

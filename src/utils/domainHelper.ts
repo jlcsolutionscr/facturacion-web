@@ -8,8 +8,9 @@ import {
   CompanyType,
   CredentialsType,
   CustomerDetailsType,
-  CustomerType,
-  PaymentDetailsType,
+  CustomerEntityType,
+  PaymentInfoType,
+  PaymentMethodType,
   ProductDetailsType,
   ProductType,
   ProformaType,
@@ -380,7 +381,7 @@ export async function getCustomerByIdentifier(token: string, companyId: number, 
   return response;
 }
 
-export async function saveCustomerEntity(token: string, customer: CustomerType) {
+export async function saveCustomerEntity(token: string, customer: CustomerEntityType) {
   const entidad = JSON.stringify(customer);
   const data =
     "{NombreMetodo: '" + (customer.IdCliente ? "ActualizarCliente" : "AgregarCliente") + "', Entidad: " + entidad + "}";
@@ -610,7 +611,7 @@ export async function saveInvoiceEntity(
   companyId: number,
   branchId: number,
   activityCode: number,
-  paymentDetailsList: PaymentDetailsType[],
+  paymentMethodList: PaymentMethodType[],
   currency: number,
   vendorId: number,
   orderId: number,
@@ -623,7 +624,7 @@ export async function saveInvoiceEntity(
   if (currency === 2) {
     dollarExchange = await getDollarExchangeValue();
   }
-  const bankId = await getPaymentBankId(token, companyId, paymentDetailsList[0].paymentId);
+  const bankId = await getPaymentBankId(token, companyId, paymentMethodList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
   productDetailsList.forEach(item => {
     const priceNoTaxes = roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3);
@@ -651,7 +652,7 @@ export async function saveInvoiceEntity(
     {
       IdConsecutivo: 0,
       IdFactura: 0,
-      IdFormaPago: paymentDetailsList[0].paymentId,
+      IdFormaPago: paymentMethodList[0].paymentId,
       IdTipoMoneda: currency,
       IdCuentaBanco: bankId,
       TipoTarjeta: "",
@@ -755,7 +756,8 @@ export async function saveWorkingOrderEntity(
   userId: number,
   branchId: number,
   companyId: number,
-  order: WorkingOrderType
+  order: WorkingOrderType,
+  paymentInfo: PaymentInfoType
 ) {
   const workingOrderDetails: DetalleOrdenServicioType[] = [];
   order.productDetailsList.forEach(item => {
@@ -782,8 +784,8 @@ export async function saveWorkingOrderEntity(
     ConsecOrdenServicio: order?.consecutive,
     IdUsuario: userId,
     IdTipoMoneda: order.currency,
-    IdCliente: order.customerDetails.id,
-    NombreCliente: order.customerDetails.name,
+    IdCliente: paymentInfo.customerDetails.id,
+    NombreCliente: paymentInfo.customerDetails.name,
     Fecha: workingOrderDate,
     IdVendedor: order.vendorId,
     Telefono: order.delivery.phone,
@@ -792,11 +794,11 @@ export async function saveWorkingOrderEntity(
     FechaEntrega: order.delivery.date,
     HoraEntrega: order.delivery.time,
     OtrosDetalles: order.delivery.details,
-    Excento: order.summary.exempt,
-    Gravado: order.summary.taxed,
-    Exonerado: order.summary.exonerated,
+    Excento: paymentInfo.summary.exempt,
+    Gravado: paymentInfo.summary.taxed,
+    Exonerado: paymentInfo.summary.exonerated,
     Descuento: 0,
-    Impuesto: order.summary.taxes,
+    Impuesto: paymentInfo.summary.taxes,
     MontoAdelanto: order.cashAdvance,
     MontoPagado: 0,
     Nulo: false,
