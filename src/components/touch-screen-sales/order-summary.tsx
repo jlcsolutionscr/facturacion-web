@@ -36,15 +36,9 @@ const useStyles = makeStyles()(theme => ({
     height: "auto",
     maxHeight: "calc(100% - 84px)",
     overflow: "hidden auto",
-    "@media screen and (min-width:414px)": {
-      maxHeight: "calc(100% - 94px)",
-    },
   },
   withExtraDetails: {
-    maxHeight: "calc(100% - 110px)",
-    "@media screen and (min-width:414px)": {
-      maxHeight: "calc(100% - 120px)",
-    },
+    maxHeight: "calc(100% - 154px)",
   },
   summaryTitle: {
     marginTop: "0",
