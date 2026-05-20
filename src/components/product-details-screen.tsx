@@ -138,73 +138,93 @@ export default function StepTwoScreen({
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} style={{ display: display }}>
       <div className={classes.body}>
-        <Grid container spacing={2}>
-          <Grid item xs={10} sm={10.5} md={11}>
-            <ListDropDown
-              disabled={stepDisabled}
-              label="Seleccione un producto"
-              page={productListPage - 1}
-              rowsCount={productListCount}
-              rows={products}
-              value={filter}
-              rowsPerPage={ROWS_PER_PRODUCT}
-              onItemSelected={handleItemSelected}
-              onChange={handleOnFilterChange}
-              onPageChange={pageNumber =>
-                dispatch(
-                  getProductListByPageNumber({
-                    pageNumber: pageNumber + 1,
-                    filterText: filter,
-                    type: filterType,
-                    rowsPerPage: ROWS_PER_PRODUCT,
-                  })
-                )
-              }
-            />
+        <form
+          noValidate
+          onSubmit={ev => {
+            addDetails();
+            ev.preventDefault();
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={10} sm={10.5} md={11}>
+              <ListDropDown
+                disabled={stepDisabled}
+                label="Seleccione un producto"
+                page={productListPage - 1}
+                rowsCount={productListCount}
+                rows={products}
+                value={filter}
+                rowsPerPage={ROWS_PER_PRODUCT}
+                onItemSelected={handleItemSelected}
+                onChange={handleOnFilterChange}
+                onPageChange={pageNumber =>
+                  dispatch(
+                    getProductListByPageNumber({
+                      pageNumber: pageNumber + 1,
+                      filterText: filter,
+                      type: filterType,
+                      rowsPerPage: ROWS_PER_PRODUCT,
+                    })
+                  )
+                }
+              />
+            </Grid>
+            <Grid item xs={2} sm={1.5} md={1}>
+              <Switch value={filterType === 1} onChange={handleFilterTypeChange} />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                disabled={stepDisabled || !isDescriptionChangeEnabled}
+                label="Descripción"
+                id="Descripcion"
+                value={productDetails.description}
+                onChange={event => setProductDetails("description", event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                disabled={stepDisabled}
+                label="Cantidad"
+                id="Cantidad"
+                value={productDetails.quantity}
+                numericFormat
+                onChange={event => setProductDetails("quantity", event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                disabled={stepDisabled || !isPriceChangeEnabled}
+                label="Precio"
+                value={productDetails.price}
+                numericFormat
+                onChange={event => setProductDetails("price", event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  margin: "0",
+                  padding: "0",
+                  width: "auto",
+                  height: "auto",
+                }}
+              >
+                <IconButton
+                  className={classes.outerButton}
+                  color="primary"
+                  disabled={!buttonEnabled}
+                  component="span"
+                  onClick={() => addDetails()}
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              </button>
+            </Grid>
           </Grid>
-          <Grid item xs={2} sm={1.5} md={1}>
-            <Switch value={filterType === 1} onChange={handleFilterTypeChange} />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              disabled={stepDisabled || !isDescriptionChangeEnabled}
-              label="Descripción"
-              id="Descripcion"
-              value={productDetails.description}
-              onChange={event => setProductDetails("description", event.target.value)}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              disabled={stepDisabled}
-              label="Cantidad"
-              id="Cantidad"
-              value={productDetails.quantity}
-              numericFormat
-              onChange={event => setProductDetails("quantity", event.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              disabled={stepDisabled || !isPriceChangeEnabled}
-              label="Precio"
-              value={productDetails.price}
-              numericFormat
-              onChange={event => setProductDetails("price", event.target.value)}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <IconButton
-              className={classes.outerButton}
-              color="primary"
-              disabled={!buttonEnabled}
-              component="span"
-              onClick={() => addDetails()}
-            >
-              <AddCircleIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
+        </form>
         <div className={classes.bottom}>
           <Grid container style={{ overflowY: "auto" }}>
             <Grid item xs={12}>

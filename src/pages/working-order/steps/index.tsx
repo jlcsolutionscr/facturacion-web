@@ -7,8 +7,8 @@ import Tabs from "@mui/material/Tabs";
 
 import OrderSummary from "./order-summary";
 import OtherDetails from "./other-details";
-import ProductDetails from "components//product-details-screen";
 import CustomerDetails from "components/customer-details-screen";
+import ProductDetails from "components/product-details-screen";
 import { getCustomerDetails as getCustomerDetailsAction } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { getProductDetails as getProductDetailsAction, getProductListFirstPage } from "state/product/asyncActions";
