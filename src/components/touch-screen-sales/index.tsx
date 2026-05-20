@@ -106,7 +106,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 type TouchWorkingOrderPageProps = {
-  addProductDetails: (value: number) => void;
+  addProductDetails: (id: number) => void;
   handleClose: () => void;
   children: ReactNode;
 };

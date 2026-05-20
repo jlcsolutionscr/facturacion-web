@@ -20,7 +20,6 @@ import { FORM_TYPE } from "utils/constants";
 import { defaultCategory, defaultProduct, defaultProductDetails } from "utils/defaults";
 import {
   getCategoryEntity,
-  getCustomerPrice,
   getProductCategoryList,
   getProductClasification,
   getProductClasificationList,
@@ -31,6 +30,7 @@ import {
   saveCategoryEntity,
   saveProductEntity,
 } from "utils/domainHelper";
+import { getNewProductItem } from "utils/store/product";
 import { getErrorMessage } from "utils/utilities";
 
 export const getProductListFirstPage = createAsyncThunk(
@@ -348,7 +348,6 @@ export const getProductDetails = createAsyncThunk(
   async (payload: { id: number; type: string }, { getState, dispatch }) => {
     const { session, invoice, ui } = getState() as RootState;
     const { token, branchId, company } = session;
-    const { taxTypeList } = ui;
     if (company) {
       dispatch(startLoader());
       const action =
@@ -358,29 +357,18 @@ export const getProductDetails = createAsyncThunk(
             ? setProformaProduct
             : setWorkingOrderProduct;
       try {
-        const product = await getProductEntity(token, payload.id, branchId);
-        if (product) {
-          const { price, taxRate } = getCustomerPrice(
-            invoice.entity.customerDetails.priceTypeId,
-            product,
-            company.PrecioVentaIncluyeIVA,
-            taxTypeList
-          );
-          dispatch(
-            action({
-              id: product.IdProducto,
-              quantity: 1,
-              code: product.Codigo,
-              description: product.Descripcion,
-              taxRate,
-              unit: "UND",
-              price,
-              costPrice: product.PrecioCosto,
-              instalationPrice: 0,
-              disccountRate: 0,
-            })
-          );
-        }
+        if (payload.id) dispatch(startLoader());
+        const newProduct = await getNewProductItem(
+          token,
+          branchId,
+          invoice.entity.customerDetails.priceTypeId,
+          company.PrecioVentaIncluyeIVA,
+          invoice.entity.productDetails,
+          ui.taxTypeList,
+          payload.id
+        );
+        if (payload.id) dispatch(stopLoader());
+        dispatch(action(newProduct));
         dispatch(stopLoader());
       } catch (error) {
         dispatch(stopLoader());

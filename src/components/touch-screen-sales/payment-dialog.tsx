@@ -1,8 +1,8 @@
 import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { IdDescriptionType, SummaryType } from "types/domain";
+import { CustomerDetailsType, IdDescriptionType, PaymentDetailsType, SummaryType } from "types/domain";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,26 +10,11 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { DialogStatus, DialogType } from "./order-summary";
-import {
-  filterCustomerList,
-  getCustomerDetails as getCustomerDetailsAction,
-  getCustomerListByPageNumber,
-} from "state/customer/asyncActions";
+import { filterCustomerList, getCustomerListByPageNumber, getCustomerListFirstPage } from "state/customer/asyncActions";
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
+import { getInvoiceId } from "state/invoice/reducer";
 import { getCompany } from "state/session/reducer";
-import { generateInvoice } from "state/working-order/asyncActions";
-import {
-  getActivityCode,
-  getCustomerDetails,
-  getInvoiceId,
-  getPaymentDetailsList,
-  setActivityCode,
-  setCustomerAttribute,
-  setPaymentDetailsList,
-  setSummary,
-} from "state/working-order/reducer";
-import { FORM_TYPE, ORDER_STATUS } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -60,28 +45,49 @@ let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
 type PaymentDialogProps = {
   summary: SummaryType;
-  status: string;
+  customerDetails: CustomerDetailsType;
+  paymentDetailsList: PaymentDetailsType[];
+  activityCode: number;
+  getCustomerDetails: (customerId: number) => void;
+  setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
+  setActivityCode: (value: string) => void;
+  setPaymentDetailsList: (list: PaymentDetailsType[]) => void;
+  setSummary: (value: SummaryType) => void;
+  generateInvoice: () => void;
   setDialogStatus: (value: DialogStatus) => void;
 };
 
-export default function PaymentDialog({ summary, status, setDialogStatus }: PaymentDialogProps) {
+export default function PaymentDialog({
+  summary,
+  customerDetails,
+  paymentDetailsList,
+  activityCode,
+  getCustomerDetails,
+  setCustomerAttribute,
+  setActivityCode,
+  setPaymentDetailsList,
+  setSummary,
+  generateInvoice,
+  setDialogStatus,
+}: PaymentDialogProps) {
   const { classes } = useStyles();
   const [filterText, setFilterText] = useState("");
 
   const dispatch = useDispatch();
 
-  const customerDetails = useSelector(getCustomerDetails);
-  const paymentDetails = useSelector(getPaymentDetailsList);
   const invoiceId = useSelector(getInvoiceId);
-  const activityCode = useSelector(getActivityCode);
   const company = useSelector(getCompany);
   const customerListCount = useSelector(getCustomerListCount);
   const customerListPage = useSelector(getCustomerListPage);
   const customerList = useSelector(getCustomerList);
 
+  useEffect(() => {
+    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: ROWS_PER_CUSTOMER }));
+  }, [dispatch]);
+
   const { taxed, exonerated, exempt, subTotal, taxes, total, cashAmount } = summary;
 
-  const customerEditDisabled = status === ORDER_STATUS.CONVERTED;
+  const customerEditDisabled = invoiceId > 0;
 
   const activityItems = company
     ? company.ActividadEconomicaEmpresa.map(item => (
@@ -112,12 +118,12 @@ export default function PaymentDialog({ summary, status, setDialogStatus }: Paym
   };
 
   const handleItemSelected = (item: IdDescriptionType) => {
-    dispatch(getCustomerDetailsAction({ id: item.Id, type: FORM_TYPE.ORDER }));
+    getCustomerDetails(item.Id);
     setFilterText("");
   };
 
   const handleCustomerNameChange = (value: string) => {
-    dispatch(setCustomerAttribute({ attribute: "name", value }));
+    setCustomerAttribute({ attribute: "name", value });
   };
 
   return (
@@ -208,12 +214,12 @@ export default function PaymentDialog({ summary, status, setDialogStatus }: Paym
                 <Select
                   id="forma-pago-select-id"
                   label="Seleccione la forma de pago:"
-                  value={paymentDetails[0] ? paymentDetails[0].paymentId.toString() : ""}
+                  value={paymentDetailsList[0] ? paymentDetailsList[0].paymentId.toString() : ""}
                   onChange={event =>
                     dispatch(
                       setPaymentDetailsList([
                         {
-                          paymentId: event.target.value,
+                          paymentId: parseInt(event.target.value),
                           description:
                             paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
                             "NO ESPECIFICADO",
@@ -235,7 +241,7 @@ export default function PaymentDialog({ summary, status, setDialogStatus }: Paym
                     dispatch(
                       setSummary({
                         ...summary,
-                        cashAmount: event.target.value !== "" ? parseFloat(event.target.value) : "",
+                        cashAmount: event.target.value !== "" ? parseFloat(event.target.value) : 0,
                       })
                     )
                   }
@@ -251,8 +257,8 @@ export default function PaymentDialog({ summary, status, setDialogStatus }: Paym
         </Grid>
       </DialogContent>
       <DialogActions style={{ margin: "0 20px 10px 20px", justifyContent: "center" }}>
-        {status === ORDER_STATUS.READY ? (
-          <Button label="Facturar" autoFocus onClick={() => dispatch(generateInvoice())} />
+        {invoiceId === 0 ? (
+          <Button label="Facturar" autoFocus onClick={() => generateInvoice()} />
         ) : (
           <Grid xs="auto">
             <Button label="Imprimir Factura" onClick={() => dispatch(generateInvoiceTicket({ id: invoiceId }))} />

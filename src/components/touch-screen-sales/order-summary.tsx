@@ -1,7 +1,13 @@
 import { Button, TextField } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import { ProductDetailsType, SummaryType, WorkingOrderProductDetails } from "types/domain";
+import {
+  CustomerDetailsType,
+  PaymentDetailsType,
+  ProductDetailsType,
+  SummaryType,
+  WorkingOrderProductDetails,
+} from "types/domain";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -28,10 +34,16 @@ const useStyles = makeStyles()(theme => ({
     justifyContent: "center",
     width: "100%",
     height: "auto",
-    maxHeight: "calc(100% - 186px)",
+    maxHeight: "calc(100% - 84px)",
     overflow: "hidden auto",
-    "@media screen and (min-width:900px)": {
-      maxHeight: "calc(100% - 194px)",
+    "@media screen and (min-width:414px)": {
+      maxHeight: "calc(100% - 94px)",
+    },
+  },
+  withExtraDetails: {
+    maxHeight: "calc(100% - 110px)",
+    "@media screen and (min-width:414px)": {
+      maxHeight: "calc(100% - 120px)",
     },
   },
   summaryTitle: {
@@ -45,10 +57,11 @@ const useStyles = makeStyles()(theme => ({
 interface OrderSummaryProps {
   id: number;
   summary: SummaryType;
-  status: string;
-  extraDetails: string;
   productDetails: WorkingOrderProductDetails;
   productDetailsList: WorkingOrderProductDetails[];
+  customerDetails: CustomerDetailsType;
+  paymentDetailsList: PaymentDetailsType[];
+  activityCode: number;
   revokeAlertMessage: string;
   isPriceChangeEnabled: boolean;
   ticketsButtonEnabled: boolean;
@@ -57,17 +70,24 @@ interface OrderSummaryProps {
   revokeButtonEnabled: boolean;
   resetButtonEnabled: boolean;
   printButtonEnabled: boolean;
+  getCustomerDetails: (customerId: number) => void;
+  setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
+  setActivityCode: (value: string) => void;
+  setPaymentDetailsList: (list: PaymentDetailsType[]) => void;
+  setSummary: (value: SummaryType) => void;
   setProductDetails: (value: ProductDetailsType) => void;
   updateProductDetailsList: (value: number) => void;
   handleProductRemove: (value: number) => void;
   handlePrintTicket: () => void;
-  handleSubmit: () => void;
-  setExtraDetails: (value: string) => void;
   handleReset: () => void;
   handleRevoke: () => void;
+  generateInvoice: () => void;
+  handleClose: () => void;
   isSplitMode?: boolean;
   value?: number;
-  handleClose?: () => void;
+  extraDetails?: string;
+  setExtraDetails?: (value: string) => void;
+  handleSave?: () => void;
 }
 
 export enum DialogType {
@@ -83,10 +103,12 @@ export type DialogStatus = { status: boolean; id: number; type: string };
 export default function OrderSummary({
   id,
   summary,
-  status,
   extraDetails,
   productDetails,
   productDetailsList,
+  customerDetails,
+  paymentDetailsList,
+  activityCode,
   revokeAlertMessage,
   isPriceChangeEnabled,
   ticketsButtonEnabled,
@@ -95,15 +117,21 @@ export default function OrderSummary({
   revokeButtonEnabled,
   resetButtonEnabled,
   printButtonEnabled,
+  getCustomerDetails,
+  setCustomerAttribute,
+  setPaymentDetailsList,
+  setActivityCode,
+  setSummary,
   setProductDetails,
   updateProductDetailsList,
   handleProductRemove,
   handlePrintTicket,
   handleClose,
-  handleSubmit,
+  handleSave,
   setExtraDetails,
   handleReset,
   handleRevoke,
+  generateInvoice,
   isSplitMode,
   value,
 }: OrderSummaryProps) {
@@ -124,7 +152,7 @@ export default function OrderSummary({
   };
 
   const handleProductUpdate = (index: number) => {
-    updateProductDetailsList(index);
+    setProductDetails(productDetailsList[index]);
     setDialogStatus({ status: true, id: index, type: DialogType.UPDATE });
   };
 
@@ -148,7 +176,7 @@ export default function OrderSummary({
           </div>
         </Grid>
       )}
-      <Grid container xs={12} justifyContent="center">
+      <Grid container xs={12} sx={{ height: "35px" }} justifyContent="center">
         <Grid container gap={1}>
           {ticketsButtonEnabled && (
             <Grid>
@@ -158,19 +186,18 @@ export default function OrderSummary({
               />
             </Grid>
           )}
-          {invoiceButtonEnabled && (
+          {invoiceButtonEnabled && id === 0 && (
             <Grid>
-              {total > 0 && (
-                <Button
-                  label="Facturar"
-                  onClick={() => setDialogStatus({ status: true, id: id, type: DialogType.PAYMENT })}
-                />
-              )}
+              <Button
+                disabled={total === 0}
+                label="Facturar"
+                onClick={() => setDialogStatus({ status: true, id: id, type: DialogType.PAYMENT })}
+              />
             </Grid>
           )}
-          {saveButtonEnabled && (
+          {saveButtonEnabled && handleSave && (
             <Grid>
-              <Button disabled={buttonDisabled} label={id > 0 ? "Actualizar" : "Guardar"} onClick={handleSubmit} />
+              <Button disabled={buttonDisabled} label={id > 0 ? "Actualizar" : "Guardar"} onClick={handleSave} />
             </Grid>
           )}
           {revokeButtonEnabled && (
@@ -194,22 +221,25 @@ export default function OrderSummary({
           )}
         </Grid>
       </Grid>
-      <Grid xs={12} textAlign="center">
-        <TextField
-          multiline
-          rows={2}
-          value={extraDetails}
-          label="Observaciones:"
-          onChange={event => setExtraDetails(event.target.value)}
-        />
-      </Grid>
-      <Grid xs={12} textAlign="center">
+      {extraDetails !== undefined && setExtraDetails && (
+        <Grid xs={12} textAlign="center">
+          <TextField
+            multiline
+            rows={2}
+            value={extraDetails}
+            label="Observaciones:"
+            onChange={event => setExtraDetails(event.target.value)}
+          />
+        </Grid>
+      )}
+      <Grid xs={12} style={{ height: "33px" }} textAlign="center">
         <Typography style={{ fontWeight: "bold", fontSize: 22 }}>{`Total: ${formatCurrency(total)}`}</Typography>
       </Grid>
-      <Grid xs={12} textAlign="center">
-        <Typography className={classes.summaryTitle}>LINEAS DE DETALLE</Typography>
-      </Grid>
-      <Grid container xs={12} className={classes.summaryDetails}>
+      <Grid
+        container
+        xs={12}
+        className={`${classes.summaryDetails} ${extraDetails !== undefined && classes.withExtraDetails}`}
+      >
         {productDetailsList.map((row, index) => {
           return (
             <Grid key={`${row.id}-${index}`} container xs={12}>
@@ -228,7 +258,7 @@ export default function OrderSummary({
               </Grid>
               <Grid xs={1.5}>
                 <IconButton
-                  disabled={(row.orderId ?? 1) > 0}
+                  disabled={(row.orderId ?? 0) > 0}
                   style={{ padding: 0 }}
                   color="primary"
                   component="span"
@@ -239,7 +269,7 @@ export default function OrderSummary({
               </Grid>
               <Grid xs={1.5} textAlign="end">
                 <IconButton
-                  disabled={(row.orderId ?? 1) > 0}
+                  disabled={(row.orderId ?? 0) > 0}
                   style={{ padding: 0 }}
                   color="secondary"
                   component="span"
@@ -252,7 +282,6 @@ export default function OrderSummary({
           );
         })}
       </Grid>
-
       <Dialog
         disableEscapeKeyDown
         maxWidth={dialogStatus.type === DialogType.TICKETS ? "md" : "sm"}
@@ -273,13 +302,25 @@ export default function OrderSummary({
             productDetails={productDetails}
             isPriceChangeEnabled={isPriceChangeEnabled}
             setProductDetails={setProductDetails}
-            handleSubmit={handleProductUpdate}
+            applyChanges={updateProductDetailsList}
             setDialogStatus={setDialogStatus}
           />
         ) : dialogStatus.type === DialogType.TICKETS ? (
           <TicketsDialog setDialogStatus={setDialogStatus} />
         ) : (
-          <PaymentDialog summary={summary} status={status} setDialogStatus={setDialogStatus} />
+          <PaymentDialog
+            summary={summary}
+            customerDetails={customerDetails}
+            paymentDetailsList={paymentDetailsList}
+            activityCode={activityCode}
+            getCustomerDetails={getCustomerDetails}
+            setCustomerAttribute={setCustomerAttribute}
+            setActivityCode={setActivityCode}
+            setPaymentDetailsList={setPaymentDetailsList}
+            setSummary={setSummary}
+            generateInvoice={generateInvoice}
+            setDialogStatus={setDialogStatus}
+          />
         )}
       </Dialog>
     </Grid>

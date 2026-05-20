@@ -92,7 +92,7 @@ export const defaultCustomer: CustomerType = {
   IdCliente: 0,
   IdTipoIdentificacion: 0,
   Identificacion: "",
-  Nombre: "",
+  Nombre: "CLIENTE DE CONTADO",
   NombreComercial: "",
   Direccion: "",
   Telefono: "",

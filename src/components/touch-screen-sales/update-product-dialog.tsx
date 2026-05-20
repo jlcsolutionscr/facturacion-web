@@ -14,7 +14,7 @@ type UpdateProductDialogProps = {
   productDetails: ProductDetailsType;
   setDialogStatus: (value: DialogStatus) => void;
   setProductDetails: (value: ProductDetailsType) => void;
-  handleSubmit: (value: number) => void;
+  applyChanges: (value: number) => void;
 };
 
 export default function UpdateProductDialog({
@@ -23,10 +23,10 @@ export default function UpdateProductDialog({
   productDetails,
   setDialogStatus,
   setProductDetails,
-  handleSubmit,
+  applyChanges,
 }: UpdateProductDialogProps) {
   const handleUpdate = () => {
-    handleSubmit(id);
+    applyChanges(id);
     setDialogStatus({ status: false, id: 0, type: DialogType.UPDATE });
   };
 

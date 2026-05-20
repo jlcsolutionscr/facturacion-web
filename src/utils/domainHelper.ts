@@ -5,12 +5,10 @@ import {
   BranchType,
   CashCloseType,
   CategoryType,
-  CodeDescriptionType,
   CompanyType,
   CredentialsType,
   CustomerDetailsType,
   CustomerType,
-  IdDescriptionValueType,
   PaymentDetailsType,
   ProductDetailsType,
   ProductType,
@@ -26,7 +24,6 @@ import {
   encryptString,
   formatCurrency,
   get,
-  getTaxeRateFromId,
   getWithResponse,
   post,
   postWithResponse,
@@ -563,39 +560,6 @@ export async function getServicePointEntity(token: string, id: number) {
   const servicePoint = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (servicePoint === null) return null;
   return servicePoint;
-}
-
-export function getCustomerPrice(
-  customerPriceType: number,
-  product: CodeDescriptionType,
-  priceIncludedTaxes: boolean,
-  taxRateTypeList: IdDescriptionValueType[]
-) {
-  let customerPrice = 0;
-  const taxRate = getTaxeRateFromId(taxRateTypeList, product.IdImpuesto);
-  switch (customerPriceType) {
-    case 1:
-      customerPrice = product.PrecioVenta1;
-      break;
-    case 2:
-      customerPrice = product.PrecioVenta2;
-      break;
-    case 3:
-      customerPrice = product.PrecioVenta3;
-      break;
-    case 4:
-      customerPrice = product.PrecioVenta4;
-      break;
-    case 5:
-      customerPrice = product.PrecioVenta5;
-      break;
-    default:
-      customerPrice = product.PrecioVenta1;
-  }
-  if (!priceIncludedTaxes) {
-    customerPrice = roundNumber(customerPrice / (1 + taxRate / 100), 3);
-  }
-  return { taxRate, price: customerPrice };
 }
 
 export function getProductSummary(products: ProductDetailsType[], exonerationPercentage: number) {

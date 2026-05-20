@@ -260,7 +260,7 @@ export type DeliveryType = {
 };
 
 export type InvoiceType = {
-  invoiceId: number | null;
+  invoiceId: number;
   consecutive: number;
   date: string;
   activityCode: number;

@@ -24,12 +24,11 @@ import { TRANSITION_ANIMATION } from "utils/constants";
 const useStyles = makeStyles()(theme => ({
   root: {
     display: "flex",
-    textAlign: "center",
     height: "100%",
     margin: "0",
     padding: "0 5px 5px 5px",
     overflow: "hidden",
-    "@media screen and (min-width:430px)": {
+    "@media screen and (min-width:414px)": {
       padding: "0",
     },
   },
@@ -41,13 +40,6 @@ const useStyles = makeStyles()(theme => ({
     alignContent: "center",
     justifyContent: "center",
     padding: "0",
-    "@media screen and (min-width:430px)": {
-      height: "38px",
-    },
-    "@media screen and (min-width:600px)": {
-      margin: "0",
-      height: "75px",
-    },
   },
   branchText: {
     fontFamily: '"Exo 2", sans-serif',
@@ -67,13 +59,12 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   buttonContainer: {
-    height: "calc(100% - 55px)",
+    height: "calc(100% - 35px)",
     overflowY: "auto",
     scrollbarWidth: "thin",
     maxWidth: "600px",
     marginInline: "auto",
     "@media screen and (min-width:600px)": {
-      height: "calc(100% - 95px)",
       marginTop: "0",
     },
   },
@@ -84,7 +75,7 @@ const useStyles = makeStyles()(theme => ({
     width: "100%",
     marginBottom: "2px",
     border: "none",
-    height: "55px",
+    height: "50px",
     borderRadius: "7px",
     "&:hover": {
       color: "#FFF",
@@ -94,6 +85,9 @@ const useStyles = makeStyles()(theme => ({
     "&.Mui-disabled": {
       color: "rgba(255,255,255,0.65)",
       opacity: 0.6,
+    },
+    "@media screen and (min-width:414px)": {
+      height: "60px",
     },
   },
 }));
@@ -145,7 +139,16 @@ export default function MenuPage() {
         )}
       </Grid>
       <div className={classes.buttonContainer}>
-        <Grid container item xs={12} gap={{ xs: 1.5, sm: 3 }} justifyContent="center">
+        <Grid container item xs={12} gap={{ xs: 1.5, sm: 2 }} justifyContent="center">
+          <Grid item xs={5} sm={3}>
+            <Button
+              className={classes.button}
+              disabled={["ADMIN", "CONTADOR"].includes(userCode)}
+              onClick={() => dispatch(setActiveSection(2))}
+            >
+              Mant. Usuario
+            </Button>
+          </Grid>
           <Grid item xs={5} sm={3}>
             <Button disabled={!updateCompanyInfo} className={classes.button} onClick={() => dispatch(getCompany())}>
               Mant. Empresa
@@ -153,11 +156,20 @@ export default function MenuPage() {
           </Grid>
           <Grid item xs={5} sm={3}>
             <Button
+              disabled={userCode.toUpperCase() !== "ADMIN"}
               className={classes.button}
-              disabled={["ADMIN", "CONTADOR"].includes(userCode)}
-              onClick={() => dispatch(setActiveSection(2))}
+              onClick={() => dispatch(setActiveSection(16))}
             >
-              Recuperar clave
+              Categorías
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
+            <Button
+              disabled={companyMode === 1}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(18))}
+            >
+              Puntos de servicio
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
@@ -176,31 +188,13 @@ export default function MenuPage() {
           </Grid>
           <Grid item xs={5} sm={3}>
             <Button
-              disabled={userCode.toUpperCase() !== "ADMIN"}
-              className={classes.button}
-              onClick={() => dispatch(setActiveSection(16))}
-            >
-              Categorías
-            </Button>
-          </Grid>
-          {companyMode === 2 && (
-            <Grid item xs={5} sm={3}>
-              <Button
-                disabled={!generateWorkingOrder}
-                className={classes.button}
-                onClick={() => dispatch(setActiveSection(18))}
-              >
-                Puntos de servicio
-              </Button>
-            </Grid>
-          )}
-          <Grid item xs={5} sm={3}>
-            <Button
               disabled={!generateInvoice}
               className={classes.button}
-              onClick={() => dispatch(setInvoiceParameters({ id: 6 }))}
+              onClick={() => {
+                dispatch(setInvoiceParameters({ id: 6 }));
+              }}
             >
-              Facturar
+              Facturación
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
@@ -215,16 +209,16 @@ export default function MenuPage() {
                 }
               }}
             >
-              Listado Ordenes
+              Orden de servicio
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
             <Button
-              disabled={!generateReceipt}
+              disabled={!generateProforma}
               className={classes.button}
-              onClick={() => dispatch(setReceiptParameters({ id: 7 }))}
+              onClick={() => dispatch(setActiveSection(10))}
             >
-              Registrar Compra
+              Proforma
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
@@ -246,17 +240,17 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
-            <Button
-              disabled={!generateProforma}
-              className={classes.button}
-              onClick={() => dispatch(setActiveSection(10))}
-            >
-              Proforma
+            <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
+              Reportes
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
-            <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
-              Reportes
+            <Button
+              disabled={!generateReceipt}
+              className={classes.button}
+              onClick={() => dispatch(setReceiptParameters({ id: 7 }))}
+            >
+              Registrar Compra
             </Button>
           </Grid>
         </Grid>

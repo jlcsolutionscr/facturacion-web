@@ -11,7 +11,7 @@ const useStyles = makeStyles()(() => ({
     backgroundColor: "#FFF",
     color: "black",
     cursor: "pointer",
-    padding: "1px",
+    padding: "5px 1px",
     border: "solid 1px lightgray",
     borderRadius: "5px",
     width: "160px",
@@ -30,42 +30,41 @@ const useStyles = makeStyles()(() => ({
   },
   imageContainer: {
     display: "flex",
-    width: "auto",
-    height: "130px",
+    width: "95%",
+    height: "80px",
     justifyContent: "center",
     alignItems: "center",
+    "@media screen and (min-width:414px)": {
+      height: "70px",
+    },
   },
   image: {
     display: "flex",
     justifyContent: "center",
     width: "auto",
-    height: "auto",
+    height: "100%",
   },
   descriptionContainer: {
     display: "flex",
-    height: "63px",
-    overflow: "hidden",
+    height: "auto",
+    maxHeight: "42px",
+    width: "95%",
+    margin: "0 auto",
     justifyContent: "center",
-    alignItems: "end",
-    "@media screen and (min-width:414px)": {
-      height: "35px",
-    },
+    alignItems: "center",
   },
   description: {
-    fontSize: "18px",
+    display: "flex",
+    overflow: "hidden",
+    fontSize: "16px",
     fontWeight: "bold",
-    whiteSpace: "wrap",
+    whiteSpace: "no-wrap",
     textOverflow: "ellipsis",
-    "@media screen and (min-width:414px)": {
-      fontSize: "16px",
-    },
   },
   price: {
-    fontSize: "18px",
+    height: "16px",
+    fontSize: "16px",
     fontWeight: "bold",
-    "@media screen and (min-width:414px)": {
-      fontSize: "16px",
-    },
   },
 }));
 
@@ -94,7 +93,7 @@ function ProductCard({ description, price, image, action }: ProductVardProps) {
         )}
       </div>
       <div className={classes.descriptionContainer}>
-        <span className={classes.description}>{description}</span>
+        <p className={classes.description}>{description}</p>
       </div>
       <span className={classes.price}>{formatCurrency(price, 2)}</span>
     </div>

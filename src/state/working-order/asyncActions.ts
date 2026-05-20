@@ -28,10 +28,8 @@ import { defaultCustomerDetails, defaultPaymentDetails, defaultServicePoint } fr
 import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
-  getCustomerPrice,
   getPrintingTickets,
   getProductCategoryList,
-  getProductEntity,
   getProductListCount,
   getProductListPerPage,
   getProductSummary,
@@ -46,8 +44,9 @@ import {
   saveServicePointEntity,
   saveWorkingOrderEntity,
 } from "utils/domainHelper";
+import { getNewProductItem } from "utils/store/product";
 import { parseWorkingOrderEntity } from "utils/store/working-order";
-import { getErrorMessage, roundNumber } from "utils/utilities";
+import { getErrorMessage } from "utils/utilities";
 
 export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
@@ -74,67 +73,50 @@ export const addDetails = createAsyncThunk(
   "working-order/addDetails",
   async (payload: { id?: number }, { getState, dispatch }) => {
     const { session, workingOrder, ui } = getState() as RootState;
-    const { taxTypeList } = ui;
     const { company, branchId, token } = session;
     const { customerDetails, productDetails, productDetailsList } = workingOrder.entity;
-    let loadedProductDetails = productDetails;
-    if (company && payload.id) {
-      dispatch(startLoader());
-      const product = await getProductEntity(token, payload.id, branchId);
-      dispatch(stopLoader());
-      const { price, taxRate } = getCustomerPrice(
+    if (company) {
+      if (payload.id) dispatch(startLoader());
+      const newProduct = await getNewProductItem(
+        token,
+        branchId,
         customerDetails.priceTypeId,
-        product,
         company.PrecioVentaIncluyeIVA,
-        taxTypeList
+        productDetails,
+        ui.taxTypeList,
+        payload.id
       );
-      loadedProductDetails = {
-        id: product.IdProducto,
-        quantity: "1",
-        code: "",
-        description: product.Descripcion,
-        additionalInformation: "",
-        taxRate,
-        unit: "UND",
-        price: price.toString(),
-        costPrice: 0,
-        disccountRate: 0,
-      };
-    }
-    if (
-      company &&
-      loadedProductDetails.id !== 0 &&
-      loadedProductDetails.description !== "" &&
-      !["0", ""].includes(loadedProductDetails.quantity) &&
-      !["0", ""].includes(loadedProductDetails.price)
-    ) {
-      try {
-        let newProducts = null;
-        const newItem = {
-          id: loadedProductDetails.id,
-          orderId: 0,
-          code: loadedProductDetails.code,
-          description: loadedProductDetails.description,
-          additionalInformation: "",
-          quantity: loadedProductDetails.quantity,
-          unit: loadedProductDetails.unit,
-          price: company.PrecioVentaIncluyeIVA
-            ? loadedProductDetails.price
-            : roundNumber(
-                parseFloat(loadedProductDetails.price) * (1 + loadedProductDetails.taxRate / 100),
-                2
-              ).toString(),
-          taxRate: loadedProductDetails.taxRate,
-          costPrice: loadedProductDetails.costPrice,
-          disccountRate: loadedProductDetails.disccountRate,
-        };
-        newProducts = [...productDetailsList, newItem];
-        dispatch(setProductDetailsList(newProducts));
-        const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
-        dispatch(setSummary(summary));
-        dispatch(resetProductDetails());
-      } catch (error) {
-        dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      if (payload.id) dispatch(stopLoader());
+      if (
+        newProduct.id !== 0 &&
+        newProduct.description !== "" &&
+        !["0", ""].includes(newProduct.quantity) &&
+        !["0", ""].includes(newProduct.price)
+      ) {
+        try {
+          let newProducts = null;
+          const index = productDetailsList.findIndex(
+            item => item.id === newProduct.id && item.price === newProduct.price
+          );
+          if (index >= 0) {
+            newProducts = [
+              ...productDetailsList.slice(0, index),
+              {
+                ...newProduct,
+                quantity: (parseFloat(productDetailsList[index].quantity) + parseFloat(newProduct.quantity)).toString(),
+              },
+              ...productDetailsList.slice(index + 1),
+            ];
+          } else {
+            newProducts = [...productDetailsList, newProduct];
+          }
+          dispatch(setProductDetailsList(newProducts));
+          const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+          dispatch(setSummary(summary));
+          dispatch(resetProductDetails());
+        } catch (error) {
+          dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+        }
       }
     }
   }

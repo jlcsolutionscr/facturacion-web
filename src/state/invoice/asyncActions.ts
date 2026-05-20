@@ -7,35 +7,66 @@ import {
   setInvoiceList,
   setInvoiceListCount,
   setInvoiceListPage,
+  setPaymentDetailsList,
   setProductDetailsList,
   setSuccessful,
   setSummary,
   setVendorId,
 } from "state/invoice/reducer";
+import { setCategoryList, setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
+import { defaultPaymentDetails } from "utils/defaults";
 import {
   generateInvoicePDF,
   generateInvoiceTicketPDF,
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
+  getProductCategoryList,
+  getProductListCount,
+  getProductListPerPage,
   getProductSummary,
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
-import { getErrorMessage, roundNumber } from "utils/utilities";
+import { getNewProductItem } from "utils/store/product";
+import { getErrorMessage } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
   async (payload: { id: number }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
-    const { company, vendorList } = session;
+    const { session, product } = getState() as RootState;
+    const { token, company, companyId, branchId, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(payload.id));
     dispatch(resetInvoice());
     try {
+      if (company?.Modalidad === 2) {
+        if (product.list.length === 0) {
+          const productCount = await getProductListCount(token, companyId, branchId, true, "", 1);
+          const productList = await getProductListPerPage(
+            token,
+            companyId,
+            branchId,
+            true,
+            1,
+            productCount,
+            "",
+            true,
+            1
+          );
+          dispatch(setProductListPage(1));
+          dispatch(setProductListCount(productCount));
+          dispatch(setProductList(productList));
+        }
+        if (product.categoryList.length === 0) {
+          const categoryList = await getProductCategoryList(token, companyId);
+          dispatch(setCategoryList(categoryList));
+        }
+      }
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+      dispatch(setPaymentDetailsList([defaultPaymentDetails]));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -44,57 +75,94 @@ export const setInvoiceParameters = createAsyncThunk(
   }
 );
 
-export const addDetails = createAsyncThunk("invoice/addDetails", async (_payload, { getState, dispatch }) => {
-  const { session, invoice } = getState() as RootState;
-  const { company } = session;
-  const { customerDetails, productDetails, productDetailsList } = invoice.entity;
-  if (
-    company &&
-    productDetails.id !== 0 &&
-    productDetails.description !== "" &&
-    !["0", ""].includes(productDetails.quantity) &&
-    !["0", ""].includes(productDetails.price)
-  ) {
-    try {
-      let newProducts = null;
-      const item = {
-        id: productDetails.id,
-        code: productDetails.code,
-        description: productDetails.description,
-        additionalInformation: "",
-        quantity: productDetails.quantity,
-        taxRate: productDetails.taxRate,
-        unit: "UND",
-        price: company.PrecioVentaIncluyeIVA
-          ? productDetails.price
-          : roundNumber(parseFloat(productDetails.price) * (1 + productDetails.taxRate / 100), 2).toString(),
-        costPrice: productDetails.costPrice,
-        disccountRate: productDetails.disccountRate,
-      };
-      const index = productDetailsList.findIndex(
-        item => item.id === productDetails.id && item.price === productDetails.price
+export const addDetails = createAsyncThunk(
+  "invoice/addDetails",
+  async (payload: { id?: number }, { getState, dispatch }) => {
+    const { session, invoice, ui } = getState() as RootState;
+    const { token, company, branchId } = session;
+    const { customerDetails, productDetails, productDetailsList } = invoice.entity;
+    if (company) {
+      if (payload.id) dispatch(startLoader());
+      const newProduct = await getNewProductItem(
+        token,
+        branchId,
+        customerDetails.priceTypeId,
+        company.PrecioVentaIncluyeIVA,
+        productDetails,
+        ui.taxTypeList,
+        payload.id
       );
-      if (index >= 0) {
-        newProducts = [
-          ...productDetailsList.slice(0, index),
-          {
-            ...item,
-            quantity: (parseFloat(productDetailsList[index].quantity) + parseFloat(item.quantity)).toString(),
-          },
-          ...productDetailsList.slice(index + 1),
-        ];
-      } else {
-        newProducts = [...productDetailsList, item];
+      if (payload.id) dispatch(stopLoader());
+      if (
+        newProduct.id !== 0 &&
+        newProduct.description !== "" &&
+        !["0", ""].includes(newProduct.quantity) &&
+        !["0", ""].includes(newProduct.price)
+      ) {
+        try {
+          let newProducts = null;
+          const index = productDetailsList.findIndex(
+            item => item.id === newProduct.id && item.price === newProduct.price
+          );
+          if (index >= 0) {
+            newProducts = [
+              ...productDetailsList.slice(0, index),
+              {
+                ...newProduct,
+                quantity: (parseFloat(productDetailsList[index].quantity) + parseFloat(newProduct.quantity)).toString(),
+              },
+              ...productDetailsList.slice(index + 1),
+            ];
+          } else {
+            newProducts = [...productDetailsList, newProduct];
+          }
+          dispatch(setProductDetailsList(newProducts));
+          const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+          dispatch(setSummary(summary));
+          dispatch(resetProductDetails());
+        } catch (error) {
+          dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+        }
       }
-      dispatch(setProductDetailsList(newProducts));
-      const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
-      dispatch(setSummary(summary));
-      dispatch(resetProductDetails());
-    } catch (error) {
-      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
   }
-});
+);
+
+export const updateDetails = createAsyncThunk(
+  "invoice/updateDetails",
+  async (payload: { pos: number }, { getState, dispatch }) => {
+    const { session, invoice } = getState() as RootState;
+    const { company } = session;
+    const { customerDetails, productDetails, productDetailsList } = invoice.entity;
+    if (company && productDetails.id) {
+      if (company && !["0", ""].includes(productDetails.quantity) && !["0", ""].includes(productDetails.price)) {
+        try {
+          const index = productDetailsList.findIndex(
+            (item, index) => item.id === productDetails.id && index === payload.pos
+          );
+          if (index >= 0) {
+            const newProducts = [
+              ...productDetailsList.slice(0, index),
+              {
+                ...productDetailsList[index],
+                additionalInformation: productDetails.additionalInformation,
+                price: productDetails.price,
+                quantity: productDetails.quantity,
+              },
+              ...productDetailsList.slice(index + 1),
+            ];
+            dispatch(setProductDetailsList(newProducts));
+            const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+            dispatch(setSummary(summary));
+            dispatch(resetProductDetails());
+          }
+        } catch (error) {
+          dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+        }
+      }
+    }
+  }
+);
 
 export const removeDetails = createAsyncThunk(
   "invoice/removeDetails",
@@ -204,13 +272,15 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
 
 export const revokeInvoice = createAsyncThunk(
   "invoice/revokeInvoice",
-  async (payload: { id: number; rowsPerPage: number }, { getState, dispatch }) => {
+  async (payload: { id: number; rowsPerPage?: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, userId } = session;
     dispatch(startLoader());
     try {
       await revokeInvoiceEntity(token, payload.id, userId);
-      dispatch(getInvoiceListFirstPage({ rowsPerPage: payload.rowsPerPage }));
+      if (payload.rowsPerPage) {
+        dispatch(getInvoiceListFirstPage({ rowsPerPage: payload.rowsPerPage }));
+      }
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",

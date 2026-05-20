@@ -30,8 +30,8 @@ export const getCustomerListFirstPage = createAsyncThunk(
       const recordCount = await getCustomerListCount(token, companyId, payload.filterText);
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(token, companyId, 1, payload.rowsPerPage, payload.filterText);
-        dispatch(setCustomerList(newList));
+        const newList = await getCustomerListPerPage(token, companyId, 1, payload.rowsPerPage - 1, payload.filterText);
+        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
       } else {
         dispatch(setCustomerList([]));
       }
@@ -54,11 +54,11 @@ export const getCustomerListByPageNumber = createAsyncThunk(
         token,
         companyId,
         payload.pageNumber,
-        payload.rowsPerPage,
+        payload.rowsPerPage - 1,
         payload.filterText
       );
       dispatch(setCustomerListPage(payload.pageNumber));
-      dispatch(setCustomerList(newList));
+      dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -173,7 +173,7 @@ export const getCustomerDetails = createAsyncThunk(
   "customer/getCustomerDetails",
   async (payload: { id: number; type: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token } = session;
+    const { token, company } = session;
     dispatch(startLoader());
     const action =
       payload.type === FORM_TYPE.INVOICE
@@ -201,7 +201,7 @@ export const getCustomerDetails = createAsyncThunk(
           priceTypeId: customer.IdTipoPrecio,
         })
       );
-      if (customer.CodigoActividad === "")
+      if (!company?.RegimenSimplificado && customer.CodigoActividad === "")
         dispatch(
           setMessage({
             message:
