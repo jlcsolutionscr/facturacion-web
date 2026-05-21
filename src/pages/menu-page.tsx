@@ -105,6 +105,7 @@ export default function MenuPage() {
 
   const updateCompanyInfo = permissions.filter(role => [1, 61].includes(role.IdRole)).length > 0;
   const manageCustomers = permissions.filter(role => [1, 100].includes(role.IdRole)).length > 0;
+  const manageServicePoint = permissions.filter(role => [1, 110].includes(role.IdRole)).length > 0;
   const manageProducts = permissions.filter(role => [1, 103].includes(role.IdRole)).length > 0;
   const generateInvoice = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
   const generateReceipt = permissions.filter(role => [1, 400].includes(role.IdRole)).length > 0;
@@ -166,7 +167,7 @@ export default function MenuPage() {
           </Grid>
           <Grid item xs={5} sm={3}>
             <Button
-              disabled={companyMode === 1}
+              disabled={companyMode === 1 || !manageServicePoint}
               className={classes.button}
               onClick={() => dispatch(setActiveSection(18))}
             >
