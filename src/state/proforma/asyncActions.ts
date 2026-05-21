@@ -1,6 +1,8 @@
 import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { getCustomerListFirstPage } from "state/customer/asyncActions";
+import { getProductListFirstPage } from "state/product/asyncActions";
 import {
   resetProductDetails,
   resetProforma,
@@ -33,6 +35,8 @@ export const setProformaParameters = createAsyncThunk(
     const { vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(14));
+    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
+    dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: false, rowsPerPage: 8 }));
     dispatch(resetProforma());
     try {
       dispatch(setVendorId(vendorList[0].Id));
@@ -47,8 +51,8 @@ export const setProformaParameters = createAsyncThunk(
 export const selectCustomer = createAsyncThunk(
   "proforma/selectCustomer",
   async (payload: CustomerDetailsType, { getState, dispatch }) => {
-    const { workingOrder } = getState() as RootState;
-    const { productDetailsList } = workingOrder.entity;
+    const { proforma } = getState() as RootState;
+    const { productDetailsList } = proforma.entity;
     try {
       dispatch(setCustomerDetails(payload));
       const summary = getProductsSummary(productDetailsList, payload.exonerationPercentage);

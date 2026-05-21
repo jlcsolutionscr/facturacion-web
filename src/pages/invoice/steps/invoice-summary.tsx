@@ -258,18 +258,20 @@ export default function InvoiceSummary({
                 <MenuItem value={2}>DOLARES</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} className={classes.centered}>
-              <Button
-                disabled={buttonDisabled}
-                label={successful ? "Nueva factura" : "Guardar"}
-                onClick={handleOnPress}
-              />
-            </Grid>
-            {successful && (
-              <Grid item xs={12} className={classes.centered}>
-                <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
+            <Grid item container xs={12} gap={1} justifyContent="center">
+              <Grid item>
+                <Button
+                  disabled={buttonDisabled}
+                  label={successful ? "Nueva factura" : "Guardar"}
+                  onClick={handleOnPress}
+                />
               </Grid>
-            )}
+              {successful && (
+                <Grid item>
+                  <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
+                </Grid>
+              )}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

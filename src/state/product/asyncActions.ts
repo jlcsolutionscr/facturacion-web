@@ -39,6 +39,7 @@ export const getProductListFirstPage = createAsyncThunk(
     payload: {
       filterText: string;
       type: number;
+      includeImages: boolean;
       rowsPerPage?: number;
     },
     { getState, dispatch }
@@ -66,7 +67,7 @@ export const getProductListFirstPage = createAsyncThunk(
           1,
           payload.rowsPerPage ?? recordCount,
           payload.filterText,
-          false,
+          payload.includeImages,
           payload.type
         );
         dispatch(setProductList(newList));

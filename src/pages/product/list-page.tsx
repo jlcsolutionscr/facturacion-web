@@ -111,6 +111,7 @@ export default function ProductListPage() {
         getProductListFirstPage({
           filterText: "",
           type: 2,
+          includeImages: false,
           rowsPerPage,
         })
       );

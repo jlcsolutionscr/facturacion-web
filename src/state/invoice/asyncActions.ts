@@ -43,22 +43,21 @@ export const setInvoiceParameters = createAsyncThunk(
     dispatch(setActiveSection(payload.id));
     dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
     dispatch(resetInvoice());
+    dispatch(setVendorId(vendorList[0].Id));
+    dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+    dispatch(setPaymentMethodList([defaultPaymentMethod]));
     try {
       if (company?.Modalidad === 2) {
-        if (product.list.length === 0) {
-          dispatch(getProductListFirstPage({ filterText: "", type: 2 }));
-        }
         if (product.categoryList.length === 0) {
           const categoryList = await getProductCategoryList(token, companyId);
           dispatch(setCategoryList(categoryList));
         }
+        if (product.list.length <= 8) {
+          dispatch(getProductListFirstPage({ filterText: "", includeImages: true, type: 2 }));
+        }
       } else {
-        dispatch(getProductListFirstPage({ filterText: "", type: 2, rowsPerPage: 8 }));
+        dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: false, rowsPerPage: 8 }));
       }
-      dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      dispatch(setPaymentMethodList([defaultPaymentMethod]));
-      dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
@@ -69,8 +68,8 @@ export const setInvoiceParameters = createAsyncThunk(
 export const selectCustomer = createAsyncThunk(
   "invoice/selectCustomer",
   async (payload: CustomerDetailsType, { getState, dispatch }) => {
-    const { workingOrder } = getState() as RootState;
-    const { productDetailsList } = workingOrder.entity;
+    const { invoice } = getState() as RootState;
+    const { productDetailsList } = invoice.entity;
     try {
       dispatch(setCustomerDetails(payload));
       const summary = getProductsSummary(productDetailsList, payload.exonerationPercentage);

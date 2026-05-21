@@ -57,6 +57,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
+    dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: false, rowsPerPage: 8 }));
     dispatch(resetWorkingOrder());
     try {
       dispatch(setCustomerDetails(defaultCustomerDetails));
@@ -460,8 +461,8 @@ export const getServicePointList = createAsyncThunk(
     dispatch(setActiveSection(11));
     try {
       const servicePointList = await getServicePointListRequest(token, companyId, branchId, payload.activeFilter, "");
-      if (product.list.length === 0) {
-        dispatch(getProductListFirstPage({ filterText: "", type: 2 }));
+      if (product.list.length <= 8) {
+        dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: true }));
       }
       dispatch(setServicePointList(servicePointList));
       dispatch(stopLoader());
