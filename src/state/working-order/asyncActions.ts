@@ -456,7 +456,6 @@ export const getServicePointList = createAsyncThunk(
   async (payload: { activeFilter: boolean }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
     const { token, companyId, branchId } = session;
-    ``;
     dispatch(startLoader());
     dispatch(setActiveSection(11));
     try {

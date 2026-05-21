@@ -221,6 +221,15 @@ export async function saveCredentialsEntity(
   await post(APP_URL + "/ejecutar", token, data);
 }
 
+export async function saveUserPassword(token: string, userId: number, newPassword: string) {
+  const ecryptedPass = encryptString(newPassword);
+  const data =
+    "{NombreMetodo: 'ActualizarClaveUsuario', Parametros: {IdUsuario: " + userId + ", Clave: '" + ecryptedPass + "'}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return [];
+  return response;
+}
+
 export async function getCantonList(token: string, provinceId: number) {
   const data = "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " + provinceId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);

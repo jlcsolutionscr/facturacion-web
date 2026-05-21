@@ -8,6 +8,7 @@ import { setActiveSection } from "state/ui/reducer";
 import {
   addDetails,
   generateInvoice,
+  getServicePointList,
   removeDetails,
   revokeWorkingOrder,
   saveWorkingOrder,
@@ -46,11 +47,16 @@ export default function TouchScreenWorkingOrderPage() {
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
   const revokeEnabled = workingOrderId > 0 && invoiceId === 0 && paymentInfo.totalPaid === 0 && revokeOrders;
 
+  const handleClosing = () => {
+    dispatch(getServicePointList({ activeFilter: true }));
+    dispatch(setActiveSection(11));
+  };
+
   return (
     <TouchScreenSalesPage
       disabledAddProduct={paymentInfo.totalPaid > 0}
       addProductDetails={value => dispatch(addDetails({ id: value }))}
-      handleClose={() => dispatch(setActiveSection(11))}
+      handleClose={handleClosing}
     >
       <OrderSummary
         orderId={workingOrderId}
@@ -80,7 +86,7 @@ export default function TouchScreenWorkingOrderPage() {
         handleProductRemove={value => dispatch(removeDetails({ pos: value }))}
         handleSave={() => dispatch(saveWorkingOrder())}
         generateInvoice={() => dispatch(generateInvoice())}
-        handleClose={() => dispatch(setActiveSection(11))}
+        handleClose={handleClosing}
         setExtraDetails={value =>
           dispatch(
             setDeliveryAttribute({

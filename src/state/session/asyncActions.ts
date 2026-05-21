@@ -33,6 +33,7 @@ import {
   requestUserPasswordReset,
   resetUserPassword as resetUserPasswordRequest,
   saveCashCloseDetails as saveCashCloseDetailsRequest,
+  saveUserPassword,
   updateUserEmail,
   validateProcessingToken as validateProcessingTokenRequest,
 } from "utils/domainHelper";
@@ -134,6 +135,24 @@ export const validateProcessingToken = createAsyncThunk(
           "La sesión se encuentra expirada. Por favor reinicie la solicitud de cambio de contraseña. . ."
         )
       );
+      dispatch(stopLoader());
+    }
+    dispatch(stopLoader());
+  }
+);
+
+export const updateSecurityUserInfo = createAsyncThunk(
+  "session/updateSecurityUserInfo",
+  async (payload: { password: string; email: string }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, userId } = session;
+    dispatch(startLoader());
+    try {
+      if (payload.password !== "") await saveUserPassword(token, userId, payload.password);
+      if (payload.email) await updateUserEmail(token, userId, payload.email);
+      dispatch(setMessage({ message: "Se actualizó la información del usuario satisfactoriamente . .", type: "INFO" }));
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
     }
     dispatch(stopLoader());

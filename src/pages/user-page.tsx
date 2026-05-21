@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import { saveUserEmail } from "state/session/asyncActions";
+import { updateSecurityUserInfo } from "state/session/asyncActions";
 import { getUserCode, getUserId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
@@ -43,6 +43,8 @@ const useStyles = makeStyles()(theme => ({
 export default function CompanyPage() {
   const { classes } = useStyles();
   const [userEmail, setUserEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const dispatch = useDispatch();
   const userId = useSelector(getUserId);
@@ -72,11 +74,37 @@ export default function CompanyPage() {
             />
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              type="password"
+              name="newPassword"
+              label="Nueva contraseña"
+              id="newPassword"
+              autoComplete="on"
+              value={newPassword}
+              onChange={event => setNewPassword(event.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              type="password"
+              name="confirmNewPassword"
+              label="Confirme su contraseña"
+              id="confirmNewPassword"
+              autoComplete="on"
+              value={confirmNewPassword}
+              onChange={event => setConfirmNewPassword(event.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Grid container justifyContent="center" gap={1}>
               <Button
-                disabled={!validateEmail(userEmail)}
+                disabled={!validateEmail(userEmail) && newPassword !== confirmNewPassword}
                 label="Actualizar"
-                onClick={() => dispatch(saveUserEmail({ email: userEmail }))}
+                onClick={() => dispatch(updateSecurityUserInfo({ password: newPassword, email: userEmail }))}
               />
               <Button label="Regresar" onClick={() => dispatch(setActiveSection(0))} />
             </Grid>
