@@ -9,7 +9,7 @@ import { userLogout } from "state/session/asyncActions";
 import { getCompany, getPermissions, getUserId } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { CashCloseIcon, DarkModeIcon, LightModeIcon, LogOutIcon, PrinterIcon } from "utils/iconsHelper";
+import { CashierIcon, ConfigIcon, DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
   header: {
@@ -163,7 +163,7 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
             component="span"
             onClick={() => dispatch(setActiveSection(21))}
           >
-            <PrinterIcon className={classes.printerIcon} />
+            <ConfigIcon className={classes.printerIcon} />
           </IconButton>
         </Tooltip>
       )}
@@ -175,7 +175,7 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
             component="span"
             onClick={() => setIsCashCloseDialogOpen(true)}
           >
-            <CashCloseIcon className={classes.icon} />
+            <CashierIcon className={classes.icon} />
           </IconButton>
         </Tooltip>
       )}
