@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { PaymentInfoType } from "types/domain";
 
 import TouchScreenSalesPage from "components/touch-screen-sales";
 import OrderSummary from "components/touch-screen-sales/order-summary";
@@ -31,10 +32,18 @@ export default function TouchScreenWorkingOrderPage() {
   const invoiceId = useSelector(getInvoiceId);
   const productDetails = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
-
   const customerDetails = useSelector(getCustomerDetails);
   const paymentMethodList = useSelector(getPaymentMethodList);
   const activityCode = useSelector(getActivityCode);
+
+  const paymentInfo: PaymentInfoType = {
+    totalSaved: summary.total,
+    totalPaid: 0,
+    customerDetails,
+    summary,
+    paymentMethodList,
+    activityCode,
+  };
 
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
 
@@ -52,13 +61,14 @@ export default function TouchScreenWorkingOrderPage() {
       <OrderSummary
         orderId={0}
         invoiceId={invoiceId}
-        summary={summary}
         productDetails={productDetails}
-        productDetailsList={productDetailsList}
-        customerDetails={customerDetails}
-        paymentMethodList={paymentMethodList}
-        activityCode={activityCode}
-        paymentTotal={0}
+        productDetailsList={productDetailsList.map(product => ({
+          ...product,
+          orderId: 0,
+          paid: false,
+          inSummary: true,
+        }))}
+        paymentInfo={paymentInfo}
         revokeAlertMessage={`Desea proceder con la anulación de la factura: ${invoiceId}?`}
         isPriceChangeEnabled={isPriceChangeEnabled}
         ticketsButtonEnabled={false}

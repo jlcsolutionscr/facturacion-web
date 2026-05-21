@@ -123,6 +123,7 @@ export async function authorizeUserEmail(id: string) {
 export async function getCompanyEntity(token: string, companyId: number) {
   const data = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + companyId + "}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  // eslint-disable-next-line
   const { Distrito, ...rest } = response;
   return rest;
 }
@@ -563,7 +564,7 @@ export async function getServicePointEntity(token: string, id: number) {
   return servicePoint;
 }
 
-export function getProductSummary(products: ProductDetailsType[], exonerationPercentage: number) {
+export function getProductsSummary(products: ProductDetailsType[], exonerationPercentage: number) {
   let taxed = 0;
   let exonerated = 0;
   let exempt = 0;
@@ -618,7 +619,8 @@ export async function saveInvoiceEntity(
   customerDetails: CustomerDetailsType,
   productDetailsList: ProductDetailsType[],
   summary: SummaryType,
-  comment: string
+  comment: string,
+  closeOrder: boolean
 ) {
   let dollarExchange = 1;
   if (currency === 2) {
@@ -699,6 +701,7 @@ export async function saveInvoiceEntity(
     IdAsiento: 0,
     IdMovBanco: 0,
     IdOrdenServicio: orderId,
+    CerrarOrdenServicio: closeOrder,
     IdProforma: 0,
     DetalleFactura: invoiceDetails,
     DesglosePagoFactura: invoicePayments,
@@ -772,6 +775,7 @@ export async function saveWorkingOrderEntity(
       Excento: item.taxRate === 0,
       PorcentajeIVA: item.taxRate,
       PorcDescuento: item.disccountRate,
+      Pagado: item.paid,
     };
     workingOrderDetails.push(detail);
   });

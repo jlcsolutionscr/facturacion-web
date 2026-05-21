@@ -203,7 +203,6 @@ export const defaultWorkingOrder: WorkingOrderType = {
   productDetailsList: [],
   vendorId: 0,
   currency: 1,
-  total: 0,
   delivery: {
     phone: "",
     address: "",
@@ -284,11 +283,11 @@ export const defaultServicePoint: ServicePointType = {
   Activo: true,
 };
 
-export const defaultPaymentList: PaymentInfoType = {
-  customerDetails: defaultCustomerDetails,
+export const defaultPaymentInfo: PaymentInfoType = {
+  totalSaved: 0,
+  totalPaid: 0,
   activityCode: 0,
-  pendingProductList: [],
-  summaryProductList: [],
+  customerDetails: defaultCustomerDetails,
   paymentMethodList: [defaultPaymentMethod],
   summary: defaultSummary,
 };

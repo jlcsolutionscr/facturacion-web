@@ -1,13 +1,7 @@
 import { Button, TextField } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import {
-  CustomerDetailsType,
-  PaymentMethodType,
-  ProductDetailsType,
-  SummaryType,
-  WorkingOrderProductDetails,
-} from "types/domain";
+import { PaymentInfoType, PaymentMethodType, ProductDetailsType, WorkingOrderProductDetailsType } from "types/domain";
 import MuiButton from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
@@ -66,13 +60,9 @@ const useStyles = makeStyles()(theme => ({
 interface OrderSummaryProps {
   orderId: number;
   invoiceId: number;
-  summary: SummaryType;
-  productDetails: WorkingOrderProductDetails;
-  productDetailsList: WorkingOrderProductDetails[];
-  customerDetails: CustomerDetailsType;
-  paymentMethodList: PaymentMethodType[];
-  activityCode: number;
-  paymentTotal: number;
+  productDetails: ProductDetailsType;
+  productDetailsList: WorkingOrderProductDetailsType[];
+  paymentInfo: PaymentInfoType;
   revokeAlertMessage: string;
   isPriceChangeEnabled: boolean;
   ticketsButtonEnabled: boolean;
@@ -97,6 +87,7 @@ interface OrderSummaryProps {
   extraDetails?: string;
   setExtraDetails?: (value: string) => void;
   handleSave?: () => void;
+  setSummaryProductList?: (payload: { inSummary: boolean; index?: number }) => void;
 }
 
 export enum DialogType {
@@ -112,14 +103,9 @@ export type DialogStatus = { status: boolean; id: number; type: string };
 export default function OrderSummary({
   orderId,
   invoiceId,
-  summary,
-  extraDetails,
   productDetails,
   productDetailsList,
-  customerDetails,
-  paymentMethodList,
-  activityCode,
-  paymentTotal,
+  paymentInfo,
   revokeAlertMessage,
   isPriceChangeEnabled,
   ticketsButtonEnabled,
@@ -136,25 +122,24 @@ export default function OrderSummary({
   updateProductDetailsList,
   handleProductRemove,
   handleClose,
-  handleSave,
-  setExtraDetails,
   handleReset,
   handleRevoke,
   generateInvoice,
   isSplitMode,
   value,
+  extraDetails,
+  setExtraDetails,
+  handleSave,
+  setSummaryProductList,
 }: OrderSummaryProps) {
   const { classes } = useStyles();
-
+  const [splitPayment, setSplitPayment] = useState(false);
   const [dialogStatus, setDialogStatus] = useState<DialogStatus>({ status: false, id: 0, type: DialogType.CLEAR });
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     myRef.current?.scrollTo(0, 0);
   }, [value]);
-
-  const { total } = summary;
-  const buttonDisabled = total === 0;
 
   const openRevokeDialog = () => {
     setDialogStatus({ status: true, id: orderId, type: DialogType.REVOKE });
@@ -196,10 +181,10 @@ export default function OrderSummary({
               </MuiButton>
             </Grid>
           )}
-          {invoiceButtonEnabled && invoiceId === 0 && (
+          {invoiceButtonEnabled && (
             <Grid>
               <Button
-                disabled={total === 0}
+                disabled={paymentInfo.totalPaid === paymentInfo.totalSaved}
                 label="Facturar"
                 onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.PAYMENT })}
               />
@@ -207,13 +192,13 @@ export default function OrderSummary({
           )}
           {saveButtonEnabled && handleSave && (
             <Grid>
-              <Button disabled={buttonDisabled} label="Guardar" onClick={handleSave} />
+              <Button label="Guardar" onClick={handleSave} />
             </Grid>
           )}
           {resetButtonEnabled && (
             <Grid xs="auto">
               <Button
-                disabled={total === 0}
+                disabled={paymentInfo.summary.total === 0}
                 label="Limpiar"
                 onClick={() => setDialogStatus({ status: true, id: 0, type: DialogType.CLEAR })}
               />
@@ -238,7 +223,9 @@ export default function OrderSummary({
         </Grid>
       )}
       <Grid xs={12} style={{ height: "33px" }} textAlign="center">
-        <Typography style={{ fontWeight: "bold", fontSize: 22 }}>{`Total: ${formatCurrency(total)}`}</Typography>
+        <Typography
+          style={{ fontWeight: "bold", fontSize: 22 }}
+        >{`Total: ${formatCurrency(paymentInfo.totalSaved)}`}</Typography>
       </Grid>
       <Grid
         container
@@ -263,7 +250,7 @@ export default function OrderSummary({
               </Grid>
               <Grid xs={1.5}>
                 <IconButton
-                  disabled={(row.orderId ?? 0) > 0}
+                  disabled={(row.orderId ?? 0) > 0 || invoiceId > 0}
                   style={{ padding: 0 }}
                   color="primary"
                   component="span"
@@ -274,7 +261,7 @@ export default function OrderSummary({
               </Grid>
               <Grid xs={1.5} textAlign="end">
                 <IconButton
-                  disabled={(row.orderId ?? 0) > 0}
+                  disabled={(row.orderId ?? 0) > 0 || invoiceId > 0}
                   style={{ padding: 0 }}
                   color="secondary"
                   component="span"
@@ -289,7 +276,13 @@ export default function OrderSummary({
       </Grid>
       <Dialog
         disableEscapeKeyDown
-        maxWidth={dialogStatus.type === DialogType.TICKETS ? "md" : "sm"}
+        maxWidth={
+          dialogStatus.type === DialogType.TICKETS
+            ? "md"
+            : dialogStatus.type === DialogType.PAYMENT && splitPayment
+              ? "lg"
+              : "sm"
+        }
         id="order-summary-dialog"
         open={dialogStatus.status}
       >
@@ -315,11 +308,12 @@ export default function OrderSummary({
         ) : (
           <PaymentDialog
             invoiceId={invoiceId}
-            summary={summary}
-            customerDetails={customerDetails}
-            paymentMethodList={paymentMethodList}
-            activityCode={activityCode}
-            paymentTotal={paymentTotal}
+            orderId={orderId}
+            summaryProductDetailsList={productDetailsList}
+            paymentInfo={paymentInfo}
+            splitPayment={splitPayment}
+            setSplitPayment={setSplitPayment}
+            setSummaryProductList={setSummaryProductList}
             getCustomerDetails={getCustomerDetails}
             setCustomerAttribute={setCustomerAttribute}
             setActivityCode={setActivityCode}

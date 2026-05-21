@@ -17,18 +17,15 @@ import { getCompany, getPermissions, getVendorList } from "state/session/reducer
 import { setActiveSection } from "state/ui/reducer";
 import { addDetails, removeDetails } from "state/working-order/asyncActions";
 import {
-  getActivityCode,
   getCashAdvance,
   getCurrency,
   getCustomerDetails,
   getDeliveryDetails,
   getInvoiceId,
-  getPaymentMethodList,
+  getPaymentInfo,
   getProductDetails,
   getProductDetailsList,
-  getSavedOrderTotal,
   getStatus,
-  getSummary,
   getVendorId,
   getWorkingOrderId,
   setCustomerAttribute,
@@ -98,9 +95,7 @@ export default function WorkingOrderPage() {
   const productDetailsList = useSelector(getProductDetailsList);
   const delivery = useSelector(getDeliveryDetails);
   const company = useSelector(getCompany);
-  const summary = useSelector(getSummary);
-  const activityCode = useSelector(getActivityCode);
-  const paymentMethod = useSelector(getPaymentMethodList);
+  const paymentInfo = useSelector(getPaymentInfo);
   const vendorId = useSelector(getVendorId);
   const currency = useSelector(getCurrency);
   const workingOrderId = useSelector(getWorkingOrderId);
@@ -108,7 +103,6 @@ export default function WorkingOrderPage() {
   const cashAdvance = useSelector(getCashAdvance);
   const status = useSelector(getStatus);
   const invoiceId = useSelector(getInvoiceId);
-  const savedOrderTotal = useSelector(getSavedOrderTotal);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -173,16 +167,13 @@ export default function WorkingOrderPage() {
         value={value}
         index={3}
         company={company}
-        summary={summary}
-        activityCode={activityCode}
-        paymentMethod={paymentMethod}
+        paymentInfo={paymentInfo}
         vendorId={vendorId}
         workingOrderId={workingOrderId}
         vendorList={vendorList}
         currency={currency}
         cashAdvance={cashAdvance}
         status={status}
-        savedOrderTotal={savedOrderTotal}
         invoiceId={invoiceId}
         setValue={setValue}
       />

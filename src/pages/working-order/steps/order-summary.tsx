@@ -2,7 +2,7 @@ import { Button, Select } from "jlc-component-library";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { CompanyType, IdDescriptionType, PaymentMethodType, SummaryType } from "types/domain";
+import { CompanyType, IdDescriptionType, PaymentInfoType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -70,15 +70,12 @@ interface OrderSummaryProps {
   index: number;
   value: number;
   company: CompanyType | null;
-  summary: SummaryType;
-  activityCode: number;
-  paymentMethod: PaymentMethodType[];
+  paymentInfo: PaymentInfoType;
   vendorId: number;
   currency: number;
   workingOrderId: number;
   vendorList: IdDescriptionType[];
   cashAdvance: number;
-  savedOrderTotal: number;
   status: string;
   invoiceId: number;
   setValue: (id: number) => void;
@@ -89,15 +86,12 @@ export default function OrderSummary({
   value,
   index,
   company,
-  summary,
-  activityCode,
-  paymentMethod,
+  paymentInfo,
   vendorId,
   currency,
   workingOrderId,
   vendorList,
   cashAdvance,
-  savedOrderTotal,
   status,
   invoiceId,
   setValue,
@@ -111,7 +105,7 @@ export default function OrderSummary({
     if (value === 3) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
-  const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
+  const { taxed, exonerated, exempt, subTotal, taxes, total } = paymentInfo.summary;
   const paymentMethods: { id: number; description: string }[] = [
     { id: 1, description: "EFECTIVO" },
     { id: 2, description: "TARJETA" },
@@ -209,7 +203,7 @@ export default function OrderSummary({
                   <Select
                     id="codigo-actividad-select-id"
                     label="Seleccione la Actividad Económica"
-                    value={activityCode.toString()}
+                    value={paymentInfo.activityCode.toString()}
                     onChange={event => dispatch(setActivityCode(event.target.value))}
                   >
                     {activityItems}
@@ -236,7 +230,7 @@ export default function OrderSummary({
                 <Select
                   id="forma-pago-select-id"
                   label="Seleccione la forma de pago:"
-                  value={paymentMethod[0] ? paymentMethod[0].paymentId.toString() : ""}
+                  value={paymentInfo.paymentMethodList[0] ? paymentInfo.paymentMethodList[0].paymentId.toString() : ""}
                   onChange={event =>
                     dispatch(
                       setPaymentMethodList([
@@ -271,7 +265,7 @@ export default function OrderSummary({
           </>
         )}
         <Grid item xs={12} container gap={2} justifyContent="center">
-          {(savedOrderTotal < summary.total || status === ORDER_STATUS.ON_PROGRESS) && (
+          {(paymentInfo.totalSaved < paymentInfo.summary.total || status === ORDER_STATUS.ON_PROGRESS) && (
             <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
               <Button label="Guardar" onClick={() => dispatch(saveWorkingOrder())} />
             </Grid>
@@ -279,12 +273,14 @@ export default function OrderSummary({
           <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
             <Button label="Nueva Orden" onClick={handleNewRecord} />
           </Grid>
-          {savedOrderTotal === summary.total && summary.total > 0 && status === ORDER_STATUS.READY && (
-            <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
-              <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
-            </Grid>
-          )}
-          {savedOrderTotal === summary.total && (invoiceId > 0 || workingOrderId > 0) && (
+          {paymentInfo.totalSaved === paymentInfo.summary.total &&
+            paymentInfo.summary.total > 0 &&
+            status === ORDER_STATUS.READY && (
+              <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
+                <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
+              </Grid>
+            )}
+          {paymentInfo.totalSaved === paymentInfo.summary.total && (invoiceId > 0 || workingOrderId > 0) && (
             <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
               <Button label={invoiceId === 0 ? "Imprimir Orden" : "Imprimir Factura"} onClick={handleOnPrintClick} />
             </Grid>

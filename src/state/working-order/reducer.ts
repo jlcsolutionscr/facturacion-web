@@ -4,7 +4,7 @@ import { workingOrderInitialState } from "state/InitialState";
 import { logout } from "state/session/reducer";
 import { RootState } from "state/store";
 import { ORDER_STATUS } from "utils/constants";
-import { defaultPaymentList, defaultProductDetails, defaultWorkingOrder } from "utils/defaults";
+import { defaultPaymentInfo, defaultProductDetails, defaultSummary, defaultWorkingOrder } from "utils/defaults";
 
 const workingOrderSlice = createSlice({
   name: "working-order",
@@ -41,11 +41,9 @@ const workingOrderSlice = createSlice({
     setProductDetailsList: (state, action) => {
       state.entity.status = ORDER_STATUS.ON_PROGRESS;
       state.entity.productDetailsList = action.payload;
-      state.paymentInfo.summaryProductList = action.payload;
     },
     setSummary: (state, action) => {
       state.paymentInfo.summary = action.payload;
-      state.entity.total = action.payload.total;
     },
     setActivityCode: (state, action) => {
       state.paymentInfo.activityCode = action.payload;
@@ -70,7 +68,8 @@ const workingOrderSlice = createSlice({
       state.entity = action.payload;
     },
     setInvoiceId: (state, action) => {
-      state.entity.invoiceId = action.payload;
+      state.entity.invoiceId = action.payload.id;
+      state.paymentInfo.totalPaid = action.payload.amount;
     },
     setStatus: (state, action) => {
       state.entity.status = action.payload;
@@ -93,9 +92,7 @@ const workingOrderSlice = createSlice({
         vendorId: state.entity.vendorId,
         servicePointId: state.entity.servicePointId,
       };
-      state.paymentInfo = defaultPaymentList;
-      state.savedOrderTotal = 0;
-      state.paymentTotal = 0;
+      state.paymentInfo = defaultPaymentInfo;
     },
     setServicePointId: (state, action) => {
       state.entity.servicePointId = action.payload;
@@ -121,11 +118,14 @@ const workingOrderSlice = createSlice({
         cashAmount: action.payload,
       };
     },
-    setSavedOrderTotal: (state, action) => {
-      state.savedOrderTotal = action.payload;
-    },
-    setPaymentTotal: (state, action) => {
-      state.paymentTotal = action.payload;
+    resetPaymentInfo: state => {
+      state.entity.productDetailsList = state.entity.productDetailsList.map(product => ({
+        ...product,
+        paid: product.paid ? true : product.inSummary,
+        inSummary: false,
+      }));
+      state.paymentInfo = { ...state.paymentInfo, summary: defaultSummary };
+      state.entity.invoiceId = 0;
     },
   },
   extraReducers: builder => {
@@ -165,16 +165,12 @@ export const {
   setServicePointAttribute,
   updatePaymentInfo,
   setCashAmount,
-  setSavedOrderTotal,
-  setPaymentTotal,
+  resetPaymentInfo,
 } = workingOrderSlice.actions;
 
 export const getCustomerDetails = (state: RootState) => state.workingOrder.paymentInfo.customerDetails;
 export const getProductDetails = (state: RootState) => state.workingOrder.entity.productDetails;
 export const getProductDetailsList = (state: RootState) => state.workingOrder.entity.productDetailsList;
-export const getSummary = (state: RootState) => state.workingOrder.paymentInfo.summary;
-export const getActivityCode = (state: RootState) => state.workingOrder.paymentInfo.activityCode;
-export const getPaymentMethodList = (state: RootState) => state.workingOrder.paymentInfo.paymentMethodList;
 export const getVendorId = (state: RootState) => state.workingOrder.entity.vendorId;
 export const getCurrency = (state: RootState) => state.workingOrder.entity.currency;
 export const getDeliveryDetails = (state: RootState) => state.workingOrder.entity.delivery;
@@ -189,7 +185,6 @@ export const getWorkingOrderList = (state: RootState) => state.workingOrder.list
 export const getServicePointList = (state: RootState) => state.workingOrder.servicePointList;
 export const getPrintingTicketList = (state: RootState) => state.workingOrder.printingTicketList;
 export const getServicePointEntity = (state: RootState) => state.workingOrder.servicePointEntity;
-export const getSavedOrderTotal = (state: RootState) => state.workingOrder.savedOrderTotal;
-export const getPaymentTotal = (state: RootState) => state.workingOrder.paymentTotal;
+export const getPaymentInfo = (state: RootState) => state.workingOrder.paymentInfo;
 
 export default workingOrderSlice.reducer;

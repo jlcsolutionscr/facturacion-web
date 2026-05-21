@@ -11,19 +11,15 @@ import {
   removeDetails,
   revokeWorkingOrder,
   saveWorkingOrder,
+  setSummaryProductList,
   updateDetails,
 } from "state/working-order/asyncActions";
 import {
-  getActivityCode,
-  getCustomerDetails,
   getDeliveryDetails,
   getInvoiceId,
-  getPaymentMethodList,
-  getPaymentTotal,
+  getPaymentInfo,
   getProductDetails,
   getProductDetailsList,
-  getSavedOrderTotal,
-  getSummary,
   getWorkingOrderId,
   resetWorkingOrder,
   setActivityCode,
@@ -39,45 +35,39 @@ export default function TouchScreenWorkingOrderPage() {
   const dispatch = useDispatch();
 
   const permissions = useSelector(getPermissions);
-  const summary = useSelector(getSummary);
   const workingOrderId = useSelector(getWorkingOrderId);
   const productDetails = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
   const invoiceId = useSelector(getInvoiceId);
   const delivery = useSelector(getDeliveryDetails);
-  const customerDetails = useSelector(getCustomerDetails);
-  const paymentMethodList = useSelector(getPaymentMethodList);
-  const activityCode = useSelector(getActivityCode);
-  const savedOrderTotal = useSelector(getSavedOrderTotal);
-  const paymentTotal = useSelector(getPaymentTotal);
+  const paymentInfo = useSelector(getPaymentInfo);
 
   const revokeOrders = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
-
-  const revokeEnabled = workingOrderId > 0 && invoiceId === 0 && revokeOrders;
+  const revokeEnabled = workingOrderId > 0 && invoiceId === 0 && paymentInfo.totalPaid === 0 && revokeOrders;
 
   return (
     <TouchScreenSalesPage
-      disabledAddProduct={invoiceId > 0}
+      disabledAddProduct={paymentInfo.totalPaid > 0}
       addProductDetails={value => dispatch(addDetails({ id: value }))}
       handleClose={() => dispatch(setActiveSection(11))}
     >
       <OrderSummary
         orderId={workingOrderId}
         invoiceId={invoiceId}
-        summary={summary}
         extraDetails={delivery.details}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        customerDetails={customerDetails}
-        paymentMethodList={paymentMethodList}
-        activityCode={activityCode}
-        paymentTotal={paymentTotal}
+        paymentInfo={paymentInfo}
         revokeAlertMessage={`Desea proceder con la anulación de la orden para la ${workingOrderId}?`}
         isPriceChangeEnabled={isPriceChangeEnabled}
-        ticketsButtonEnabled={workingOrderId > 0 && invoiceId === 0}
-        invoiceButtonEnabled={summary.total === savedOrderTotal && summary.total > 0}
-        saveButtonEnabled={savedOrderTotal !== summary.total}
+        ticketsButtonEnabled={workingOrderId > 0 && paymentInfo.totalPaid === 0}
+        invoiceButtonEnabled={
+          invoiceId === 0 &&
+          paymentInfo.totalSaved > 0 &&
+          paymentInfo.totalSaved - paymentInfo.totalPaid === paymentInfo.summary.total
+        }
+        saveButtonEnabled={paymentInfo.totalPaid === 0 && paymentInfo.totalSaved !== paymentInfo.summary.total}
         revokeButtonEnabled={revokeEnabled}
         resetButtonEnabled={workingOrderId === 0}
         getCustomerDetails={customerId => dispatch(getCustomerDetailsAction({ id: customerId, type: FORM_TYPE.ORDER }))}
@@ -101,6 +91,9 @@ export default function TouchScreenWorkingOrderPage() {
         }
         handleReset={() => dispatch(resetWorkingOrder())}
         handleRevoke={() => dispatch(revokeWorkingOrder({ id: workingOrderId }))}
+        setSummaryProductList={payload =>
+          dispatch(setSummaryProductList({ inSummary: payload.inSummary, index: payload.index }))
+        }
       />
     </TouchScreenSalesPage>
   );

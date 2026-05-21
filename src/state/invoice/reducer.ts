@@ -75,7 +75,7 @@ const invoiceSlice = createSlice({
       state.list = action.payload;
     },
     resetInvoice: state => {
-      state.entity = defaultInvoice;
+      state.entity = { ...defaultInvoice, vendorId: state.entity.vendorId, activityCode: state.entity.activityCode };
     },
   },
   extraReducers: builder => {

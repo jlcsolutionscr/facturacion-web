@@ -155,7 +155,7 @@ export const addActivity = createAsyncThunk(
 
 export const removeActivity = createAsyncThunk(
   "company/removeActivity",
-  async (payload: { id: string }, { getState, dispatch }) => {
+  async (payload: { id: number }, { getState, dispatch }) => {
     const { company } = getState() as RootState;
     const { entity } = company;
 

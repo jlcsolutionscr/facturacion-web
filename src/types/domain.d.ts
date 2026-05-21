@@ -46,7 +46,7 @@ export type CodeDescriptionType = {
 
 export type EconomicActivityType = {
   IdEmpresa: number;
-  CodigoActividad: string;
+  CodigoActividad: number;
   Descripcion: string;
 };
 
@@ -160,6 +160,7 @@ export type DetalleProductoType = {
   PorcentajeIVA: number;
   PorcDescuento: number;
   Cantidad: number;
+  Pagado: boolean;
   Producto: {
     PrecioCosto: number;
   };
@@ -275,7 +276,11 @@ export type InvoiceType = {
   successful: boolean;
 };
 
-export type WorkingOrderProductDetails = ProductDetailsType & { orderId?: number };
+export type WorkingOrderProductDetailsType = ProductDetailsType & {
+  paid: boolean;
+  inSummary: boolean;
+  orderId: number;
+};
 
 export type WorkingOrderType = {
   id: number;
@@ -285,11 +290,10 @@ export type WorkingOrderType = {
   date: string;
   status: string;
   productDetails: ProductDetailsType;
-  productDetailsList: WorkingOrderProductDetails[];
+  productDetailsList: WorkingOrderProductDetailsType[];
   cashAdvance: number;
   vendorId: number;
   currency: number;
-  total: number;
   delivery: DeliveryType;
 };
 
@@ -395,10 +399,10 @@ export type ServicePointType = {
 };
 
 export type PaymentInfoType = {
-  customerDetails: CustomerDetailsType;
+  totalSaved: number;
+  totalPaid: number;
   activityCode: number;
-  pendingProductList: ProductDetailsType[];
-  summaryProductList: ProductDetailsType[];
+  customerDetails: CustomerDetailsType;
   paymentMethodList: PaymentMethodType[];
   summary: SummaryType;
 };

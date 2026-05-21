@@ -11,7 +11,7 @@ import {
 } from "state/receipt/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
-import { getProductClasification, getProductSummary, saveReceiptEntity } from "utils/domainHelper";
+import { getProductClasification, getProductsSummary, saveReceiptEntity } from "utils/domainHelper";
 import { getErrorMessage, getIdFromRateValue } from "utils/utilities";
 
 export const setReceiptParameters = createAsyncThunk(
@@ -96,7 +96,7 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
       };
       const newProducts = [...productDetailsList, item];
       dispatch(setProductDetailsList(newProducts));
-      const summary = getProductSummary(newProducts, exoneration.percentage);
+      const summary = getProductsSummary(newProducts, exoneration.percentage);
       dispatch(setSummary(summary));
       dispatch(resetProductDetails());
     }
@@ -111,7 +111,7 @@ export const removeDetails = createAsyncThunk(
     const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
-    const summary = getProductSummary(newProducts, exoneration.percentage);
+    const summary = getProductsSummary(newProducts, exoneration.percentage);
     dispatch(setSummary(summary));
   }
 );

@@ -1,11 +1,18 @@
-import { CustomerDetailsType, DetalleProductoType, PaymentInfoType, WorkingOrderType } from "types/domain";
+import {
+  CompanyType,
+  CustomerDetailsType,
+  DetalleProductoType,
+  PaymentInfoType,
+  WorkingOrderProductDetailsType,
+  WorkingOrderType,
+} from "types/domain";
 
 import { ORDER_STATUS } from "utils/constants";
 import { defaultPaymentMethod, defaultProductDetails } from "utils/defaults";
-import { getProductSummary } from "utils/domainHelper";
+import { getProductsSummary } from "utils/domainHelper";
 import { convertToDateString, roundNumber } from "utils/utilities";
 
-export function parseWorkingOrderEntity(entity: any, servicePointId: number) {
+export function parseWorkingOrderEntity(entity: any, company: CompanyType | null, servicePointId: number) {
   const customerDetails: CustomerDetailsType = {
     id: entity.IdCliente,
     name: entity.NombreCliente,
@@ -22,20 +29,34 @@ export function parseWorkingOrderEntity(entity: any, servicePointId: number) {
     exonerationDate: entity.Cliente.FechaEmisionDoc,
     priceTypeId: entity.Cliente.IdTipoPrecio,
   };
-  const productDetailsList = entity.DetalleOrdenServicio.map((item: DetalleProductoType) => ({
-    id: item.IdProducto,
-    orderId: entity.IdOrden,
-    quantity: item.Cantidad,
-    code: item.Codigo,
-    description: item.Descripcion,
-    additionalInformation: item.InformacionAdicional,
-    taxRate: item.PorcentajeIVA,
-    unit: "UND",
-    price: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2),
-    costPrice: item.Producto.PrecioCosto,
-    disccountRate: 0,
-  }));
-  const summary = getProductSummary(productDetailsList, customerDetails.exonerationPercentage);
+  const productDetailsList: WorkingOrderProductDetailsType[] = [];
+  let totalSaved = 0;
+  let totalPaid = 0;
+  entity.DetalleOrdenServicio.forEach((item: DetalleProductoType) => {
+    const orderItem = {
+      id: item.IdProducto,
+      orderId: entity.IdOrden,
+      quantity: item.Cantidad.toString(),
+      code: item.Codigo,
+      description: item.Descripcion,
+      additionalInformation: item.InformacionAdicional,
+      taxRate: item.PorcentajeIVA,
+      unit: "UND",
+      price: roundNumber(item.PrecioVenta * (1 + item.PorcentajeIVA / 100), 2).toString(),
+      costPrice: item.Producto.PrecioCosto,
+      disccountRate: 0,
+      paid: item.Pagado,
+      inSummary: item.Pagado ? false : true,
+    };
+    productDetailsList.push(orderItem);
+    const total = parseFloat(orderItem.quantity) * parseFloat(orderItem.price);
+    totalSaved += total;
+    totalPaid += item.Pagado ? total : 0;
+  });
+  const summary = getProductsSummary(
+    productDetailsList.filter(product => !product.paid && product.inSummary),
+    customerDetails.exonerationPercentage
+  );
   const workingOrder: WorkingOrderType = {
     id: entity.IdOrden,
     servicePointId: servicePointId,
@@ -56,14 +77,13 @@ export function parseWorkingOrderEntity(entity: any, servicePointId: number) {
       time: entity.HoraEntrega,
       details: entity.OtrosDetalles,
     },
-    total: 0,
   };
   const paymentInfo: PaymentInfoType = {
     customerDetails,
-    activityCode: entity.CodigoActividad,
+    totalSaved,
+    totalPaid,
+    activityCode: company?.ActividadEconomicaEmpresa[0] ? company?.ActividadEconomicaEmpresa[0].CodigoActividad : 0,
     paymentMethodList: [defaultPaymentMethod],
-    pendingProductList: [],
-    summaryProductList: productDetailsList,
     summary,
   };
   return { workingOrder, paymentInfo };

@@ -17,7 +17,7 @@ import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
   generateProformaPDF,
-  getProductSummary,
+  getProductsSummary,
   getProformaListCount,
   getProformaListPerPage,
   revokeProformaEntity,
@@ -51,7 +51,7 @@ export const selectCustomer = createAsyncThunk(
     const { productDetailsList } = workingOrder.entity;
     try {
       dispatch(setCustomerDetails(payload));
-      const summary = getProductSummary(productDetailsList, payload.exonerationPercentage);
+      const summary = getProductsSummary(productDetailsList, payload.exonerationPercentage);
       dispatch(setSummary(summary));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -100,7 +100,7 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
         newProducts = [...productDetailsList, item];
       }
       dispatch(setProductDetailsList(newProducts));
-      const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+      const summary = getProductsSummary(newProducts, customerDetails.exonerationPercentage);
       dispatch(setSummary(summary));
       dispatch(resetProductDetails());
     } catch (error) {
@@ -117,7 +117,7 @@ export const removeDetails = createAsyncThunk(
     const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
-    const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+    const summary = getProductsSummary(newProducts, customerDetails.exonerationPercentage);
     dispatch(setSummary(summary));
   }
 );

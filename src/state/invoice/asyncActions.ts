@@ -27,7 +27,7 @@ import {
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
   getProductCategoryList,
-  getProductSummary,
+  getProductsSummary,
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
@@ -73,7 +73,7 @@ export const selectCustomer = createAsyncThunk(
     const { productDetailsList } = workingOrder.entity;
     try {
       dispatch(setCustomerDetails(payload));
-      const summary = getProductSummary(productDetailsList, payload.exonerationPercentage);
+      const summary = getProductsSummary(productDetailsList, payload.exonerationPercentage);
       dispatch(setSummary(summary));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -122,7 +122,7 @@ export const addDetails = createAsyncThunk(
             newProducts = [...productDetailsList, newProduct];
           }
           dispatch(setProductDetailsList(newProducts));
-          const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+          const summary = getProductsSummary(newProducts, customerDetails.exonerationPercentage);
           dispatch(setSummary(summary));
           dispatch(resetProductDetails());
         } catch (error) {
@@ -157,7 +157,7 @@ export const updateDetails = createAsyncThunk(
               ...productDetailsList.slice(index + 1),
             ];
             dispatch(setProductDetailsList(newProducts));
-            const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+            const summary = getProductsSummary(newProducts, customerDetails.exonerationPercentage);
             dispatch(setSummary(summary));
             dispatch(resetProductDetails());
           }
@@ -177,7 +177,7 @@ export const removeDetails = createAsyncThunk(
     const index = productDetailsList.findIndex((_item, index) => index === payload.pos);
     const newProducts = [...productDetailsList.slice(0, index), ...productDetailsList.slice(index + 1)];
     dispatch(setProductDetailsList(newProducts));
-    const summary = getProductSummary(newProducts, customerDetails.exonerationPercentage);
+    const summary = getProductsSummary(newProducts, customerDetails.exonerationPercentage);
     dispatch(setSummary(summary));
   }
 );
@@ -203,7 +203,8 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
       customerDetails,
       productDetailsList,
       summary,
-      comment
+      comment,
+      false
     );
     dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));
     dispatch(
