@@ -75,6 +75,7 @@ export const sessionSlice = createSlice({
           entity.AdelantosApartadoEfectivo +
           entity.AdelantosOrdenEfectivo +
           entity.PagosCxCEfectivo +
+          entity.IngresosEfectivo +
           entity.VentasEfectivo -
           entity.ComprasEfectivo -
           entity.EgresosEfectivo -
