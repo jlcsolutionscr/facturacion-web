@@ -150,6 +150,11 @@ export default function OrderSummary({
     setDialogStatus({ status: true, id: index, type: DialogType.UPDATE });
   };
 
+  const orderTotal = productDetailsList.reduce(
+    (accumulator, product) => accumulator + parseFloat(product.quantity) * parseFloat(product.price),
+    0
+  );
+
   return (
     <Grid
       ref={myRef}
@@ -223,9 +228,7 @@ export default function OrderSummary({
         </Grid>
       )}
       <Grid xs={12} style={{ height: "33px" }} textAlign="center">
-        <Typography
-          style={{ fontWeight: "bold", fontSize: 22 }}
-        >{`Total: ${formatCurrency(paymentInfo.totalSaved)}`}</Typography>
+        <Typography style={{ fontWeight: "bold", fontSize: 22 }}>{`Total: ${formatCurrency(orderTotal)}`}</Typography>
       </Grid>
       <Grid
         container
@@ -321,6 +324,7 @@ export default function OrderSummary({
             setCashAmount={setCashAmount}
             generateInvoice={generateInvoice}
             setDialogStatus={setDialogStatus}
+            handleClose={handleClose}
           />
         )}
       </Dialog>

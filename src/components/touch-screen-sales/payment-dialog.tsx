@@ -70,6 +70,7 @@ type PaymentDialogProps = {
   generateInvoice: () => void;
   setDialogStatus: (value: DialogStatus) => void;
   setSplitPayment: (value: boolean) => void;
+  handleClose: () => void;
   setSummaryProductList?: (payload: { inSummary: boolean; index?: number }) => void;
 };
 
@@ -87,6 +88,7 @@ export default function PaymentDialog({
   generateInvoice,
   setDialogStatus,
   setSplitPayment,
+  handleClose,
   setSummaryProductList,
 }: PaymentDialogProps) {
   const { classes } = useStyles();
@@ -343,9 +345,13 @@ export default function PaymentDialog({
           negative
           label="Cerrar"
           onClick={() => {
-            setSplitPayment(false);
-            setSummaryProductList && setSummaryProductList({ inSummary: true });
-            setDialogStatus({ status: false, id: 0, type: DialogType.PAYMENT });
+            if (invoiceId > 0) {
+              handleClose();
+            } else {
+              setSplitPayment(false);
+              setSummaryProductList && setSummaryProductList({ inSummary: true });
+              setDialogStatus({ status: false, id: 0, type: DialogType.PAYMENT });
+            }
           }}
         />
       </DialogActions>
