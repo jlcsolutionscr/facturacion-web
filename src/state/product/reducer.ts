@@ -17,6 +17,9 @@ const productSlice = createSlice({
     setProductList: (state, action) => {
       state.list = action.payload;
     },
+    setTouchScreenProductList: (state, action) => {
+      state.touchScreenProductList = action.payload;
+    },
     setProduct: (state, action) => {
       state.entity = action.payload;
     },
@@ -59,6 +62,7 @@ export const {
   setProductListPage,
   setProductListCount,
   setProductList,
+  setTouchScreenProductList,
   setProduct,
   setProductTypeList,
   setCategory,
@@ -72,6 +76,7 @@ export const {
 export const getProductListPage = (state: RootState) => state.product.listPage;
 export const getProductListCount = (state: RootState) => state.product.listCount;
 export const getProductList = (state: RootState) => state.product.list;
+export const getTouchScreenProductList = (state: RootState) => state.product.touchScreenProductList;
 export const getProduct = (state: RootState) => state.product.entity;
 export const getProductTypeList = (state: RootState) => state.product.productTypeList;
 export const getCategory = (state: RootState) => state.product.categoryEntity;

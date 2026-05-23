@@ -659,19 +659,17 @@ export async function saveInvoiceEntity(
       invoiceDetails.push(detail);
     }
   });
-  const invoicePayments = [
-    {
-      IdConsecutivo: 0,
-      IdFactura: 0,
-      IdFormaPago: paymentMethodList[0].paymentId,
-      IdTipoMoneda: currency,
-      IdCuentaBanco: bankId,
-      TipoTarjeta: "",
-      NroMovimiento: "",
-      MontoLocal: summary.total,
-      TipoDeCambio: dollarExchange,
-    },
-  ];
+  const invoicePayments = paymentMethodList.map(item => ({
+    IdConsecutivo: 0,
+    IdFactura: 0,
+    IdFormaPago: item.paymentId,
+    IdTipoMoneda: currency,
+    IdCuentaBanco: bankId,
+    TipoTarjeta: "",
+    NroMovimiento: "",
+    MontoLocal: item.amount,
+    TipoDeCambio: dollarExchange,
+  }));
   const invoiceDate = convertToDateTimeString(new Date());
   const invoice = {
     IdFactura: 0,

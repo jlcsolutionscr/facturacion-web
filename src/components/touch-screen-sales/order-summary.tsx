@@ -1,8 +1,8 @@
-import { Button, TextField } from "jlc-component-library";
+import { TextField } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { PaymentInfoType, PaymentMethodType, ProductDetailsType, WorkingOrderProductDetailsType } from "types/domain";
-import MuiButton from "@mui/material/Button";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -12,9 +12,20 @@ import ClearOrderDialog from "./clear-order-dialog";
 import PaymentDialog from "./payment-dialog";
 import RevokeOrderDialog from "./revoke-order-dialog";
 import TicketsDialog from "./tickets-dialog";
+import TranslateOrderDialog from "./translate-order-dialog";
 import UpdateProductDialog from "./update-product-dialog";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { BackArrowIcon, EditIcon, PrinterIcon, RemoveCircleIcon } from "utils/iconsHelper";
+import {
+  BackArrowIcon,
+  ClearIcon,
+  DeleteIcon,
+  EditIcon,
+  InvoiceIcon,
+  MoveIcon,
+  PrinterIcon,
+  RemoveCircleIcon,
+  SaveDiskIcon,
+} from "utils/iconsHelper";
 import { formatCurrency, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -24,6 +35,7 @@ const useStyles = makeStyles()(theme => ({
     color: theme.palette.mode === "dark" ? "#000" : "rgba(255,255,255,0.85)",
     boxShadow: "3px 3px 6px rgba(0,0,0,0.55)",
     transition: `background-color ${TRANSITION_ANIMATION}, color ${TRANSITION_ANIMATION}`,
+    minWidth: "54px",
     "&:hover": {
       backgroundColor: theme.palette.mode === "dark" ? "rgb(66, 165, 245)" : "#27546c",
       boxShadow: "4px 4px 6px rgba(0,0,0,0.55)",
@@ -59,6 +71,7 @@ const useStyles = makeStyles()(theme => ({
 
 interface OrderSummaryProps {
   orderId: number;
+  servicePointId: number;
   invoiceId: number;
   productDetails: ProductDetailsType;
   productDetailsList: WorkingOrderProductDetailsType[];
@@ -74,7 +87,7 @@ interface OrderSummaryProps {
   setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
   setActivityCode: (value: string) => void;
   setPaymentMethodList: (list: PaymentMethodType[]) => void;
-  setCashAmount: (value: number) => void;
+  setCashAmount: (value: string) => void;
   setProductDetails: (value: ProductDetailsType) => void;
   updateProductDetailsList: (value: number) => void;
   handleProductRemove: (value: number) => void;
@@ -87,6 +100,7 @@ interface OrderSummaryProps {
   extraDetails?: string;
   setExtraDetails?: (value: string) => void;
   handleSave?: () => void;
+  handleTranslate?: (newServicePointId: number) => void;
   setSummaryProductList?: (payload: { inSummary: boolean; index?: number }) => void;
 }
 
@@ -96,12 +110,14 @@ export enum DialogType {
   UPDATE = "UPDATE",
   PAYMENT = "PAYMENT",
   TICKETS = "TICKETS",
+  TRANSLATE = "TRANSLATE",
 }
 
 export type DialogStatus = { status: boolean; id: number; type: string };
 
 export default function OrderSummary({
   orderId,
+  servicePointId,
   invoiceId,
   productDetails,
   productDetailsList,
@@ -130,6 +146,7 @@ export default function OrderSummary({
   extraDetails,
   setExtraDetails,
   handleSave,
+  handleTranslate,
   setSummaryProductList,
 }: OrderSummaryProps) {
   const { classes } = useStyles();
@@ -170,48 +187,65 @@ export default function OrderSummary({
         <Grid container gap={1}>
           {isSplitMode && (
             <Grid>
-              <MuiButton variant="contained" className={classes.button} onClick={handleClose}>
+              <Button variant="contained" className={classes.button} onClick={handleClose}>
                 <BackArrowIcon className={classes.icon} />
-              </MuiButton>
-            </Grid>
-          )}
-          {ticketsButtonEnabled && (
-            <Grid>
-              <MuiButton
-                variant="contained"
-                className={classes.button}
-                onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.TICKETS })}
-              >
-                <PrinterIcon className={classes.icon} />
-              </MuiButton>
+              </Button>
             </Grid>
           )}
           {invoiceButtonEnabled && (
             <Grid>
               <Button
-                disabled={paymentInfo.totalPaid === paymentInfo.totalSaved}
-                label="Facturar"
+                variant="contained"
+                className={classes.button}
                 onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.PAYMENT })}
-              />
+              >
+                <InvoiceIcon className={classes.icon} />
+              </Button>
             </Grid>
           )}
           {saveButtonEnabled && handleSave && (
+            <Button variant="contained" className={classes.button} onClick={handleSave}>
+              <SaveDiskIcon className={classes.icon} />
+            </Button>
+          )}
+          {ticketsButtonEnabled && (
             <Grid>
-              <Button label="Guardar" onClick={handleSave} />
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.TICKETS })}
+              >
+                <PrinterIcon className={classes.icon} />
+              </Button>
             </Grid>
           )}
           {resetButtonEnabled && (
             <Grid xs="auto">
               <Button
-                disabled={paymentInfo.summary.total === 0}
-                label="Limpiar"
+                variant="contained"
+                className={classes.button}
                 onClick={() => setDialogStatus({ status: true, id: 0, type: DialogType.CLEAR })}
-              />
+              >
+                <ClearIcon className={classes.icon} />
+              </Button>
             </Grid>
           )}
           {revokeButtonEnabled && (
             <Grid>
-              <Button label="Anular" onClick={openRevokeDialog} />
+              <Button variant="contained" className={classes.button} onClick={openRevokeDialog}>
+                <DeleteIcon className={classes.icon} />
+              </Button>
+            </Grid>
+          )}
+          {orderId > 0 && handleTranslate && (
+            <Grid>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={() => setDialogStatus({ status: true, id: orderId, type: DialogType.TRANSLATE })}
+              >
+                <MoveIcon className={classes.icon} />
+              </Button>
             </Grid>
           )}
         </Grid>
@@ -308,7 +342,7 @@ export default function OrderSummary({
           />
         ) : dialogStatus.type === DialogType.TICKETS ? (
           <TicketsDialog setDialogStatus={setDialogStatus} />
-        ) : (
+        ) : dialogStatus.type === DialogType.PAYMENT ? (
           <PaymentDialog
             invoiceId={invoiceId}
             orderId={orderId}
@@ -325,6 +359,13 @@ export default function OrderSummary({
             generateInvoice={generateInvoice}
             setDialogStatus={setDialogStatus}
             handleClose={handleClose}
+          />
+        ) : (
+          <TranslateOrderDialog
+            orderId={orderId}
+            servicePointId={servicePointId}
+            setDialogStatus={setDialogStatus}
+            handleTranslate={newServicePointId => handleTranslate && handleTranslate(newServicePointId)}
           />
         )}
       </Dialog>

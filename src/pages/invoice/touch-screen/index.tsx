@@ -60,6 +60,7 @@ export default function TouchScreenWorkingOrderPage() {
     >
       <OrderSummary
         orderId={0}
+        servicePointId={0}
         invoiceId={invoiceId}
         productDetails={productDetails}
         productDetailsList={productDetailsList.map(product => ({

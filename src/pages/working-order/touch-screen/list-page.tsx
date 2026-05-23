@@ -54,7 +54,7 @@ export default function RestaurantOrderListPage() {
 
   const rows = servicePointList.map(row => (
     <Grid item key={row.Id} xs={4} sm={3} md={2} justifyItems="center">
-      <Tab title={row.Descripcion} active={row.Valor > 0} edit={() => handleOpenOrderClick(row.Id)} />
+      <Tab title={row.Descripcion} selected={false} active={row.Valor > 0} edit={() => handleOpenOrderClick(row.Id)} />
     </Grid>
   ));
 

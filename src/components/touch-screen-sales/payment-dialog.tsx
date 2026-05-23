@@ -1,11 +1,4 @@
-import {
-  Button,
-  LabelField,
-  ListDropDown,
-  ListDropdownOnChangeEventType,
-  Select,
-  TextField,
-} from "jlc-component-library";
+import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -46,12 +39,6 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-const paymentMethods: { id: number; description: string }[] = [
-  { id: 1, description: "EFECTIVO" },
-  { id: 2, description: "TARJETA" },
-  { id: 4, description: "TRANSFERENCIA" },
-];
-
 const ROWS_PER_CUSTOMER = 8;
 
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
@@ -66,7 +53,7 @@ type PaymentDialogProps = {
   setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
   setActivityCode: (value: string) => void;
   setPaymentMethodList: (list: PaymentMethodType[]) => void;
-  setCashAmount: (value: number) => void;
+  setCashAmount: (value: string) => void;
   generateInvoice: () => void;
   setDialogStatus: (value: DialogStatus) => void;
   setSplitPayment: (value: boolean) => void;
@@ -93,6 +80,9 @@ export default function PaymentDialog({
 }: PaymentDialogProps) {
   const { classes } = useStyles();
   const [filterText, setFilterText] = useState("");
+  const [cashPayment, setCashPayment] = useState<string>(paymentInfo.summary.total.toString());
+  const [cardPayment, setCardPayment] = useState("0");
+  const [transferPayment, setTransferPayment] = useState("0");
 
   const dispatch = useDispatch();
 
@@ -136,11 +126,47 @@ export default function PaymentDialog({
       ))
     : [];
 
-  const paymentItems = paymentMethods.map(item => (
-    <MenuItem key={item.id} value={item.id}>
-      {item.description}
-    </MenuItem>
-  ));
+  const handlePaymentOptionChange = (type: string, value: string) => {
+    const floatValue = value === "" ? 0 : parseFloat(value);
+    if (type === "CASH") {
+      setCashPayment(value);
+      setCardPayment((total - floatValue).toString());
+      setTransferPayment("0");
+    } else if (type === "CARD") {
+      setCardPayment(value);
+      setTransferPayment((total - parseFloat(cashPayment) - floatValue).toString());
+    } else {
+      if (floatValue === 0) setCashPayment(total.toString());
+      setTransferPayment(value);
+    }
+  };
+
+  const handleSbumitButtonClick = () => {
+    const paymentList = [];
+    if (cashPayment !== "0") {
+      paymentList.push({
+        paymentId: 1,
+        description: "EFECTIVO",
+        amount: parseFloat(cashPayment),
+      });
+    }
+    if (cardPayment !== "0") {
+      paymentList.push({
+        paymentId: 2,
+        description: "TARJETA",
+        amount: parseFloat(cardPayment),
+      });
+    }
+    if (transferPayment !== "0") {
+      paymentList.push({
+        paymentId: 4,
+        description: "TRANSFERENCIA",
+        amount: parseFloat(transferPayment),
+      });
+    }
+    setPaymentMethodList(paymentList);
+    generateInvoice();
+  };
 
   return (
     <>
@@ -190,7 +216,7 @@ export default function PaymentDialog({
           <Grid container xs={splitPayment ? 5 : 12} spacing={1.5}>
             <Grid xs={12}>
               <ListDropDown
-                disabled={customerEditDisabled}
+                disabled={customerEditDisabled || invoiceId > 0}
                 label="Seleccione un cliente"
                 page={customerListPage - 1}
                 rowsCount={customerListCount}
@@ -255,12 +281,13 @@ export default function PaymentDialog({
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid container xs={12} sm={6} justifyContent="center">
+              <Grid container xs={12} sm={6} justifyContent="center" alignItems="center">
                 {company?.RegimenSimplificado && (
                   <>
-                    {activityItems.length > 1 ? (
+                    {activityItems.length > 1 && (
                       <Grid xs={12} sm={7} md={6} justifyContent="center">
                         <Select
+                          disabled={invoiceId > 0}
                           id="codigo-actividad-select-id"
                           label="Seleccione la Actividad Económica"
                           value={paymentInfo.activityCode.toString()}
@@ -269,45 +296,52 @@ export default function PaymentDialog({
                           {activityItems}
                         </Select>
                       </Grid>
-                    ) : (
-                      <Grid xs={12} justifyContent="center">
-                        <LabelField label="Actividad económica" value={paymentInfo.activityCode.toString()} />
-                      </Grid>
                     )}
                   </>
                 )}
-                <Grid xs={7} sm={12}>
-                  <Select
-                    id="forma-pago-select-id"
-                    label="Seleccione la forma de pago:"
-                    value={
-                      paymentInfo.paymentMethodList[0] ? paymentInfo.paymentMethodList[0].paymentId.toString() : ""
-                    }
-                    onChange={event =>
-                      dispatch(
-                        setPaymentMethodList([
-                          {
-                            paymentId: parseInt(event.target.value),
-                            description:
-                              paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                              "NO ESPECIFICADO",
-                            amount: total,
-                          },
-                        ])
-                      )
-                    }
-                  >
-                    {paymentItems}
-                  </Select>
+                <Grid xs={5} textAlign="center">
+                  <Typography>Efectivo:</Typography>
                 </Grid>
-                <Grid xs={5} sm={12}>
+                <Grid xs={7}>
                   <TextField
+                    readOnly={invoiceId > 0}
+                    numericFormat
+                    value={cashPayment}
+                    label="Monto en efectivo:"
+                    onChange={event => handlePaymentOptionChange("CASH", event.target.value)}
+                  />
+                </Grid>
+                <Grid xs={5} textAlign="center">
+                  <Typography>Tarjeta:</Typography>
+                </Grid>
+                <Grid xs={7}>
+                  <TextField
+                    readOnly={invoiceId > 0}
+                    numericFormat
+                    value={cardPayment}
+                    label="Monto en tarjeta:"
+                    onChange={event => handlePaymentOptionChange("CARD", event.target.value)}
+                  />
+                </Grid>
+                <Grid xs={5} textAlign="center">
+                  <Typography>Transferencia:</Typography>
+                </Grid>
+                <Grid xs={7}>
+                  <TextField
+                    readOnly={invoiceId > 0}
+                    numericFormat
+                    value={transferPayment}
+                    label="Monto en transferencia:"
+                    onChange={event => handlePaymentOptionChange("BANK", event.target.value)}
+                  />
+                </Grid>
+                <Grid xs={12}>
+                  <TextField
+                    readOnly={invoiceId > 0}
                     numericFormat
                     value={cashAmount.toString()}
                     label="Monto de pago:"
-                    onChange={event =>
-                      dispatch(setCashAmount(event.target.value !== "" ? parseFloat(event.target.value) : 0))
-                    }
+                    onChange={event => dispatch(setCashAmount(event.target.value))}
                   />
                 </Grid>
                 <Grid xs={12} textAlign="center">
@@ -322,7 +356,12 @@ export default function PaymentDialog({
       </DialogContent>
       <DialogActions style={{ margin: "0 20px 10px 20px", justifyContent: "center" }}>
         {invoiceId === 0 ? (
-          <Button label="Facturar" autoFocus onClick={() => generateInvoice()} />
+          <Button
+            disabled={total !== parseFloat(cashPayment) + parseFloat(cardPayment) + parseFloat(transferPayment)}
+            label="Facturar"
+            autoFocus
+            onClick={handleSbumitButtonClick}
+          />
         ) : (
           <Grid xs="auto">
             <Button label="Imprimir Factura" onClick={() => dispatch(generateInvoiceTicket({ id: invoiceId }))} />

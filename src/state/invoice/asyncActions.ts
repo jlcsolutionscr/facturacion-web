@@ -1,7 +1,7 @@
 import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getCustomerListFirstPage } from "state/customer/asyncActions";
+import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
 import {
   resetInvoice,
   resetProductDetails,
@@ -16,17 +16,26 @@ import {
   setSummary,
   setVendorId,
 } from "state/invoice/reducer";
-import { getProductListFirstPage } from "state/product/asyncActions";
-import { setCategoryList } from "state/product/reducer";
+import {
+  setCategoryList,
+  setProductList,
+  setProductListCount,
+  setProductListPage,
+  setTouchScreenProductList,
+} from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { defaultPaymentMethod } from "utils/defaults";
 import {
   generateInvoicePDF,
   generateInvoiceTicketPDF,
+  getCustomerListCount,
+  getCustomerListPerPage,
   getProcessedInvoiceListCount,
   getProcessedInvoiceListPerPage,
   getProductCategoryList,
+  getProductListCount,
+  getProductListPerPage,
   getProductsSummary,
   revokeInvoiceEntity,
   saveInvoiceEntity,
@@ -38,26 +47,47 @@ export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
-    const { token, company, companyId, vendorList } = session;
+    const { token, company, companyId, branchId, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(payload.id));
-    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
     dispatch(resetInvoice());
     dispatch(setVendorId(vendorList[0].Id));
     dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
     dispatch(setPaymentMethodList([defaultPaymentMethod]));
     try {
+      dispatch(setCustomerListPage(1));
+      const recordCount = await getCustomerListCount(token, companyId, "");
+      dispatch(setCustomerListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getCustomerListPerPage(token, companyId, 1, 7, "");
+        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
+      } else {
+        dispatch(setCustomerList([]));
+      }
       if (company?.Modalidad === 2) {
-        if (product.categoryList.length === 0) {
-          const categoryList = await getProductCategoryList(token, companyId);
-          dispatch(setCategoryList(categoryList));
-        }
-        if (product.list.length <= 8) {
-          dispatch(getProductListFirstPage({ filterText: "", includeImages: true, type: 2 }));
+        const categoryList = await getProductCategoryList(token, companyId);
+        dispatch(setCategoryList(categoryList));
+        if (product.touchScreenProductList.length <= 0) {
+          const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+          if (recordCount > 0) {
+            const newList = await getProductListPerPage(token, companyId, branchId, false, 1, recordCount, "", true, 1);
+            dispatch(setTouchScreenProductList(newList));
+          } else {
+            dispatch(setTouchScreenProductList([]));
+          }
         }
       } else {
-        dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: false, rowsPerPage: 8 }));
+        dispatch(setProductListPage(1));
+        const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+        dispatch(setProductListCount(recordCount));
+        if (recordCount > 0) {
+          const newList = await getProductListPerPage(token, companyId, branchId, false, 1, 8, "", false, 1);
+          dispatch(setProductList(newList));
+        } else {
+          dispatch(setProductList([]));
+        }
       }
+      dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());

@@ -7,7 +7,7 @@ const useStyles = makeStyles()(() => ({
   },
   container: {
     display: "flex",
-    backgroundColor: "#08415c90 ",
+    backgroundColor: "#08415c90",
     color: "#444",
     boxShadow: "2px 2px 4px #777",
     cursor: "pointer",
@@ -18,6 +18,13 @@ const useStyles = makeStyles()(() => ({
     height: "50px",
     alignItems: "center",
     justifyContent: "center",
+  },
+  disabled: {
+    opacity: 0.7,
+    cursor: "default",
+  },
+  selected: {
+    backgroundColor: "#82b9d3 !important",
   },
   active: {
     backgroundColor: "#08415c !important",
@@ -50,32 +57,43 @@ const useStyles = makeStyles()(() => ({
 interface PointOfServiceCardProps {
   title: string;
   active: boolean;
+  selected: boolean;
   edit: () => void;
+  disabled?: boolean;
 }
 
-export default function PointOfServiceCard({ title, active, edit }: PointOfServiceCardProps) {
+export default function PointOfServiceCard({
+  title,
+  active,
+  selected,
+  edit,
+  disabled = false,
+}: PointOfServiceCardProps) {
   const { classes } = useStyles();
+
+  const PointOfServiceInfo = () => (
+    <div
+      className={`${classes.container} ${disabled ? classes.disabled : ""} ${active ? classes.active : selected ? classes.selected : ""}`}
+      onClick={() => !disabled && edit()}
+    >
+      <div className={classes.title}>
+        <span>{title}</span>
+      </div>
+    </div>
+  );
 
   if (active) {
     return (
       <div className={classes.root}>
         <Badge color="info" badgeContent="1" variant="standard">
-          <div className={`${classes.container} ${active ? classes.active : ""}`} onClick={edit}>
-            <div className={classes.title}>
-              <span>{title}</span>
-            </div>
-          </div>
+          <PointOfServiceInfo />
         </Badge>
       </div>
     );
   }
   return (
     <div className={classes.root}>
-      <div className={`${classes.container} ${active ? classes.active : ""}`} onClick={edit}>
-        <div className={classes.title}>
-          <span>{title}</span>
-        </div>
-      </div>
+      <PointOfServiceInfo />
     </div>
   );
 }

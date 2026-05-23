@@ -30,8 +30,8 @@ export const getCustomerListFirstPage = createAsyncThunk(
       const recordCount = await getCustomerListCount(token, companyId, payload.filterText);
       dispatch(setCustomerListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getCustomerListPerPage(token, companyId, 1, payload.rowsPerPage - 1, payload.filterText);
-        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
+        const newList = await getCustomerListPerPage(token, companyId, 1, payload.rowsPerPage, payload.filterText);
+        dispatch(setCustomerList(newList));
       } else {
         dispatch(setCustomerList([]));
       }

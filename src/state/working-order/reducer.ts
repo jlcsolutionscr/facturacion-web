@@ -176,6 +176,7 @@ export const getCurrency = (state: RootState) => state.workingOrder.entity.curre
 export const getDeliveryDetails = (state: RootState) => state.workingOrder.entity.delivery;
 export const getWorkingOrder = (state: RootState) => state.workingOrder.entity;
 export const getWorkingOrderId = (state: RootState) => state.workingOrder.entity.id;
+export const getServicePointId = (state: RootState) => state.workingOrder.entity.servicePointId;
 export const getInvoiceId = (state: RootState) => state.workingOrder.entity.invoiceId;
 export const getStatus = (state: RootState) => state.workingOrder.entity.status;
 export const getCashAdvance = (state: RootState) => state.workingOrder.entity.cashAdvance;

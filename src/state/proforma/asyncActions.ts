@@ -1,8 +1,8 @@
 import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getCustomerListFirstPage } from "state/customer/asyncActions";
-import { getProductListFirstPage } from "state/product/asyncActions";
+import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
+import { setProductList, setProductListCount, setProductListPage } from "state/product/reducer";
 import {
   resetProductDetails,
   resetProforma,
@@ -19,6 +19,10 @@ import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
   generateProformaPDF,
+  getCustomerListCount,
+  getCustomerListPerPage,
+  getProductListCount,
+  getProductListPerPage,
   getProductsSummary,
   getProformaListCount,
   getProformaListPerPage,
@@ -32,13 +36,29 @@ export const setProformaParameters = createAsyncThunk(
   "proforma/setProformaParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { vendorList } = session;
+    const { token, companyId, branchId, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(14));
-    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
-    dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: false, rowsPerPage: 8 }));
-    dispatch(resetProforma());
     try {
+      dispatch(resetProforma());
+      dispatch(setCustomerListPage(1));
+      const customerCount = await getCustomerListCount(token, companyId, "");
+      dispatch(setCustomerListCount(customerCount));
+      if (customerCount > 0) {
+        const newList = await getCustomerListPerPage(token, companyId, 1, 7, "");
+        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
+      } else {
+        dispatch(setCustomerList([]));
+      }
+      dispatch(setProductListPage(1));
+      const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+      dispatch(setProductListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getProductListPerPage(token, companyId, branchId, false, 1, 8, "", false, 1);
+        dispatch(setProductList(newList));
+      } else {
+        dispatch(setProductList([]));
+      }
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
     } catch (error) {

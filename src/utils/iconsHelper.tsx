@@ -142,3 +142,58 @@ export const ConfigIcon = (props: IconProps) => (
     <path d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
   </SvgIcon>
 );
+
+export const SaveDiskIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="0 0 24 24" {...props}>
+    <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
+    <g id="SVGRepo_iconCarrier">
+      {" "}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"
+        fill="#FFF"
+      />{" "}
+    </g>
+  </SvgIcon>
+);
+
+export const ClearIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="-5.5 0 32 32" {...props}>
+    <path d="M2.125 13.781l7.938-7.938c0.719-0.719 1.813-0.719 2.531 0l7.688 7.688c0.719 0.719 0.719 1.844 0 2.563l-7.938 7.938c-2.813 2.813-7.375 2.813-10.219 0-2.813-2.813-2.813-7.438 0-10.25zM11.063 22.75l-7.656-7.688c-2.125 2.125-2.125 5.563 0 7.688s5.531 2.125 7.656 0z" />
+  </SvgIcon>
+);
+
+export const MoveIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="0 0 16 16" {...props}>
+    <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
+    <g id="SVGRepo_iconCarrier">
+      <g>
+        <path d="M2.69,8.47A4.83,4.83,0,0,1,7.52,3.64H12V6l3-3L12,0V2.24H7.52a6.23,6.23,0,0,0,0,12.46H8V13.3H7.52A4.84,4.84,0,0,1,2.69,8.47ZM9,9.7h6V8.3H9Zm0,5h6V13.3H9Z" />{" "}
+      </g>
+    </g>
+  </SvgIcon>
+);
+
+export const InvoiceIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="0 0 24 24" {...props}>
+    <path
+      id="secondary"
+      d="M8,7H5.5A1.5,1.5,0,0,0,4,8.5H4A1.5,1.5,0,0,0,5.5,10h1A1.5,1.5,0,0,1,8,11.5H8A1.5,1.5,0,0,1,6.5,13H4"
+      style={{ fill: "none", stroke: "#FFF", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2 }}
+    />
+    <path
+      id="secondary-2"
+      data-name="secondary"
+      d="M10,17h6m-4-4h4M6,7V6m0,8V13"
+      style={{ fill: "none", stroke: "#FFF", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2 }}
+    />
+    <path
+      id="primary"
+      d="M9,3H19a1,1,0,0,1,1,1V20a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V18"
+      style={{ fill: "none", stroke: "#FFF", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2 }}
+    />
+  </SvgIcon>
+);

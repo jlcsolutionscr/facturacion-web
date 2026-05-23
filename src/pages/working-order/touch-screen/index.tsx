@@ -13,6 +13,7 @@ import {
   revokeWorkingOrder,
   saveWorkingOrder,
   setSummaryProductList,
+  translateOrderServicePoint,
   updateDetails,
 } from "state/working-order/asyncActions";
 import {
@@ -21,6 +22,7 @@ import {
   getPaymentInfo,
   getProductDetails,
   getProductDetailsList,
+  getServicePointId,
   getWorkingOrderId,
   resetWorkingOrder,
   setActivityCode,
@@ -37,6 +39,7 @@ export default function TouchScreenWorkingOrderPage() {
 
   const permissions = useSelector(getPermissions);
   const workingOrderId = useSelector(getWorkingOrderId);
+  const servicePointId = useSelector(getServicePointId);
   const productDetails = useSelector(getProductDetails);
   const productDetailsList = useSelector(getProductDetailsList);
   const invoiceId = useSelector(getInvoiceId);
@@ -60,6 +63,7 @@ export default function TouchScreenWorkingOrderPage() {
     >
       <OrderSummary
         orderId={workingOrderId}
+        servicePointId={servicePointId}
         invoiceId={invoiceId}
         extraDetails={delivery.details}
         productDetails={productDetails}
@@ -100,6 +104,7 @@ export default function TouchScreenWorkingOrderPage() {
         setSummaryProductList={payload =>
           dispatch(setSummaryProductList({ inSummary: payload.inSummary, index: payload.index }))
         }
+        handleTranslate={newServicePointId => dispatch(translateOrderServicePoint({ id: newServicePointId }))}
       />
     </TouchScreenSalesPage>
   );

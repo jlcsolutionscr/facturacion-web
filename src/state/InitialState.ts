@@ -109,6 +109,7 @@ type ProductStateType = {
   listPage: number;
   listCount: number;
   list: CodeDescriptionType[];
+  touchScreenProductList: CodeDescriptionType[];
   productTypeList: IdDescriptionType[];
   categoryList: IdDescriptionType[];
   providerList: IdDescriptionType[];
@@ -231,6 +232,7 @@ export const productInitialState: ProductStateType = {
   listPage: 1,
   listCount: 0,
   list: [],
+  touchScreenProductList: [],
   productTypeList: [],
   categoryList: [],
   providerList: [],

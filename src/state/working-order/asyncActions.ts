@@ -1,9 +1,14 @@
 import { CustomerDetailsType, WorkingOrderProductDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getCustomerListFirstPage } from "state/customer/asyncActions";
-import { getProductListFirstPage } from "state/product/asyncActions";
-import { setCategoryList } from "state/product/reducer";
+import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
+import {
+  setCategoryList,
+  setProductList,
+  setProductListCount,
+  setProductListPage,
+  setTouchScreenProductList,
+} from "state/product/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import {
@@ -31,8 +36,12 @@ import { defaultCustomerDetails, defaultServicePoint } from "utils/defaults";
 import {
   generateWorkingOrderPDF,
   generateWorkingOrderTicketPDF,
+  getCustomerListCount,
+  getCustomerListPerPage,
   getPrintingTickets,
   getProductCategoryList,
+  getProductListCount,
+  getProductListPerPage,
   getProductsSummary,
   getServicePointEntity,
   getServicePointList as getServicePointListRequest,
@@ -53,13 +62,29 @@ export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { company, vendorList } = session;
+    const { token, company, companyId, branchId, vendorList } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
-    dispatch(getCustomerListFirstPage({ filterText: "", rowsPerPage: 8 }));
-    dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: false, rowsPerPage: 8 }));
-    dispatch(resetWorkingOrder());
     try {
+      dispatch(resetWorkingOrder());
+      dispatch(setCustomerListPage(1));
+      const customerCount = await getCustomerListCount(token, companyId, "");
+      dispatch(setCustomerListCount(customerCount));
+      if (customerCount > 0) {
+        const newList = await getCustomerListPerPage(token, companyId, 1, 7, "");
+        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
+      } else {
+        dispatch(setCustomerList([]));
+      }
+      dispatch(setProductListPage(1));
+      const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+      dispatch(setProductListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getProductListPerPage(token, companyId, branchId, false, 1, 8, "", false, 1);
+        dispatch(setProductList(newList));
+      } else {
+        dispatch(setProductList([]));
+      }
       dispatch(setCustomerDetails(defaultCustomerDetails));
       dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
@@ -460,8 +485,14 @@ export const getServicePointList = createAsyncThunk(
     dispatch(setActiveSection(11));
     try {
       const servicePointList = await getServicePointListRequest(token, companyId, branchId, payload.activeFilter, "");
-      if (product.list.length <= 8) {
-        dispatch(getProductListFirstPage({ filterText: "", type: 2, includeImages: true }));
+      if (product.touchScreenProductList.length <= 0) {
+        const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+        if (recordCount > 0) {
+          const newList = await getProductListPerPage(token, companyId, branchId, false, 1, recordCount, "", true, 1);
+          dispatch(setTouchScreenProductList(newList));
+        } else {
+          dispatch(setTouchScreenProductList([]));
+        }
       }
       dispatch(setServicePointList(servicePointList));
       dispatch(stopLoader());
@@ -477,7 +508,6 @@ export const getServicePointMaintenance = createAsyncThunk(
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
-    ``;
     dispatch(startLoader());
     try {
       const servicePointList = await getServicePointListRequest(token, companyId, branchId, false, "");
@@ -591,6 +621,49 @@ export const setSummaryProductList = createAsyncThunk(
     );
     dispatch(setProductDetailsList(updatedProductList));
     dispatch(setSummary(summary));
+  }
+);
+
+export const translateOrderServicePoint = createAsyncThunk(
+  "working-order/translateOrderServicePoint",
+  async (payload: { id: number }, { getState, dispatch }) => {
+    const { session, workingOrder } = getState() as RootState;
+    const { token } = session;
+    const { entity } = workingOrder;
+    dispatch(startLoader());
+    try {
+      const oldServicePointEntity = await getServicePointEntity(token, entity.servicePointId);
+      const newServicePointEntity = await getServicePointEntity(token, payload.id);
+      await saveServicePointEntity(token, { ...oldServicePointEntity, IdOrden: 0 });
+      await saveServicePointEntity(token, { ...newServicePointEntity, IdOrden: entity.id });
+      dispatch(setWorkingOrder({ ...entity, servicePointId: payload.id }));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const refreshTouchScreenProductList = createAsyncThunk(
+  "working-order/refreshTouchScreenProductList",
+  async (_payload, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, branchId, companyId } = session;
+    dispatch(startLoader());
+    try {
+      const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+      if (recordCount > 0) {
+        const newList = await getProductListPerPage(token, companyId, branchId, false, 1, recordCount, "", true, 1);
+        dispatch(setTouchScreenProductList(newList));
+      } else {
+        dispatch(setTouchScreenProductList([]));
+      }
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
   }
 );
 
