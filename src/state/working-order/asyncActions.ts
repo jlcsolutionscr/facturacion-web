@@ -447,11 +447,30 @@ export const openWorkingOrder = createAsyncThunk(
   "working-order/openWorkingOrder",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, vendorList, company } = session;
+    const { token, vendorList, company, companyId, branchId } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     try {
       const entity = await getWorkingOrderEntity(token, payload.id);
+      dispatch(resetWorkingOrder());
+      dispatch(setCustomerListPage(1));
+      const customerCount = await getCustomerListCount(token, companyId, "");
+      dispatch(setCustomerListCount(customerCount));
+      if (customerCount > 0) {
+        const newList = await getCustomerListPerPage(token, companyId, 1, 7, "");
+        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
+      } else {
+        dispatch(setCustomerList([]));
+      }
+      dispatch(setProductListPage(1));
+      const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+      dispatch(setProductListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getProductListPerPage(token, companyId, branchId, false, 1, 8, "", false, 1);
+        dispatch(setProductList(newList));
+      } else {
+        dispatch(setProductList([]));
+      }
       const { workingOrder, paymentInfo } = parseWorkingOrderEntity(entity, company, 0);
       dispatch(setWorkingOrder(workingOrder));
       dispatch(updatePaymentInfo(paymentInfo));
