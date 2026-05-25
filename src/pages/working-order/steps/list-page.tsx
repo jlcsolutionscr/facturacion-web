@@ -9,6 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
+import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import {
   generatePDF,
@@ -75,6 +76,9 @@ export default function WorkingOrderListPage() {
   const listPage = useSelector(getWorkingOrderListPage);
   const listCount = useSelector(getWorkingOrderListCount);
   const list = useSelector(getWorkingOrderList);
+  const permissions = useSelector(getPermissions);
+
+  const revokeRoleEnabled = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
 
   const containeRef = useRef<HTMLDivElement>(null);
 
@@ -149,7 +153,7 @@ export default function WorkingOrderListPage() {
     ),
     action4: (
       <IconButton
-        disabled={row.Anulando}
+        disabled={row.Anulando || !revokeRoleEnabled}
         className={classes.icon}
         color="secondary"
         component="span"

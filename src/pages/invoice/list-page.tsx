@@ -86,7 +86,7 @@ export default function InvoiceListPage() {
   const list = useSelector(getInvoiceList);
   const permissions = useSelector(getPermissions);
 
-  const revokeInvoices = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
+  const revokeRoleEnabled = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
 
   const containeRef = useRef<HTMLDivElement>(null);
 
@@ -150,7 +150,7 @@ export default function InvoiceListPage() {
     ),
     action3: (
       <IconButton
-        disabled={row.Anulando || !revokeInvoices}
+        disabled={row.Anulando || !revokeRoleEnabled}
         className={classes.icon}
         color="secondary"
         component="span"

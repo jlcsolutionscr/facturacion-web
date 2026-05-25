@@ -19,6 +19,7 @@ import {
   setProformaParameters,
 } from "state/proforma/asyncActions";
 import { getProformaList, getProformaListCount, getProformaListPage } from "state/proforma/reducer";
+import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, EmailIcon } from "utils/iconsHelper";
@@ -94,6 +95,9 @@ export default function ProformaListPage() {
   const listPage = useSelector(getProformaListPage);
   const listCount = useSelector(getProformaListCount);
   const list = useSelector(getProformaList);
+  const permissions = useSelector(getPermissions);
+
+  const revokeRoleEnabled = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
 
   const containeRef = useRef<HTMLDivElement>(null);
 
@@ -164,7 +168,7 @@ export default function ProformaListPage() {
     ),
     action3: (
       <IconButton
-        disabled={row.Anulando}
+        disabled={row.Anulando || !revokeRoleEnabled}
         className={classes.icon}
         color="secondary"
         component="span"

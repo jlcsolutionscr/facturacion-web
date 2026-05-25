@@ -1,6 +1,6 @@
 import { Button, Select } from "jlc-component-library";
 import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { CompanyType, IdDescriptionType, PaymentInfoType } from "types/domain";
 import Grid from "@mui/material/Grid";
@@ -8,6 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
+import { getPermissions } from "state/session/reducer";
 import { generateInvoice, generateWorkingOrderTicket, saveWorkingOrder } from "state/working-order/asyncActions";
 import {
   resetWorkingOrder,
@@ -100,6 +101,10 @@ export default function OrderSummary({
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
+
+  const permissions = useSelector(getPermissions);
+
+  const generateInvoiceEnabled = permissions.filter(role => [1, 203].includes(role.IdRole)).length > 0;
 
   useEffect(() => {
     if (value === 3) myRef.current?.scrollTo(0, 0);
@@ -195,7 +200,7 @@ export default function OrderSummary({
             </Grid>
           </Grid>
         </Grid>
-        {invoiceId === 0 && (
+        {invoiceId === 0 && generateInvoiceEnabled && (
           <>
             {activityItems.length > 1 && (
               <Grid item xs={12} className={classes.centered}>
@@ -275,7 +280,8 @@ export default function OrderSummary({
           </Grid>
           {paymentInfo.totalSaved === paymentInfo.summary.total &&
             paymentInfo.summary.total > 0 &&
-            status === ORDER_STATUS.READY && (
+            status === ORDER_STATUS.READY &&
+            generateInvoiceEnabled && (
               <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
                 <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
               </Grid>
