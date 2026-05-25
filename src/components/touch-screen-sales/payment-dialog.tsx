@@ -1,5 +1,5 @@
 import { Button, ListDropDown, ListDropdownOnChangeEventType, Select, TextField } from "jlc-component-library";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { IdDescriptionType, PaymentInfoType, PaymentMethodType, WorkingOrderProductDetailsType } from "types/domain";
@@ -90,6 +90,12 @@ export default function PaymentDialog({
   const customerListCount = useSelector(getCustomerListCount);
   const customerListPage = useSelector(getCustomerListPage);
   const customerList = useSelector(getCustomerList);
+
+  useEffect(() => {
+    setCashPayment(paymentInfo.summary.total.toString());
+    setCardPayment("0");
+    setTransferPayment("0");
+  }, [paymentInfo.summary.total]);
 
   const handleOnFilterChange = (event: ListDropdownOnChangeEventType) => {
     setFilterText(event.target.value);

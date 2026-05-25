@@ -1,4 +1,4 @@
-import { CustomerDetailsType, WorkingOrderProductDetailsType } from "types/domain";
+import { CustomerDetailsType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
@@ -140,25 +140,15 @@ export const addDetails = createAsyncThunk(
         !["0", ""].includes(newProduct.price)
       ) {
         try {
-          let newProducts: WorkingOrderProductDetailsType[] = [];
-          const index = productDetailsList.findIndex(
-            item => item.id === newProduct.id && item.price === newProduct.price
-          );
-          if (index >= 0) {
-            newProducts = [
-              ...productDetailsList.slice(0, index),
-              {
-                ...newProduct,
-                paid: false,
-                inSummary: true,
-                orderId: productDetailsList[index].orderId,
-                quantity: (parseFloat(productDetailsList[index].quantity) + parseFloat(newProduct.quantity)).toString(),
-              },
-              ...productDetailsList.slice(index + 1),
-            ];
-          } else {
-            newProducts = [...productDetailsList, { ...newProduct, paid: false, inSummary: true, orderId: 0 }];
-          }
+          const newProducts = [
+            ...productDetailsList,
+            {
+              ...newProduct,
+              paid: false,
+              inSummary: true,
+              orderId: 0,
+            },
+          ];
           dispatch(setProductDetailsList(newProducts));
           const summary = getProductsSummary(
             newProducts.filter(product => !product.paid && product.inSummary),

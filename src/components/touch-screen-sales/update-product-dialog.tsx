@@ -48,15 +48,8 @@ export default function UpdateProductDialog({
                 onChange={event => setProductDetails({ ...productDetails, additionalInformation: event.target.value })}
               />
             </Grid>
-
             <Grid xs={3}>
-              <TextField
-                label="Cantidad"
-                id="Cantidad"
-                value={productDetails.quantity}
-                numericFormat
-                onChange={event => setProductDetails({ ...productDetails, quantity: event.target.value })}
-              />
+              <LabelField label="Cantidad" id="Cantidad" value={productDetails.quantity} />
             </Grid>
             <Grid xs={6}>
               <TextField
