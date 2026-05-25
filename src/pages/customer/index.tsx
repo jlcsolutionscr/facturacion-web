@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 
 import { saveCustomer, validateCustomerIdentifier } from "state/customer/asyncActions";
 import { getCustomer, getPriceTypeList, setCustomer, setCustomerAttribute } from "state/customer/reducer";
+import { getCompanyIsSimplified } from "state/session/reducer";
 import { getExonerationNameList, getExonerationTypeList, getIdTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { defaultCustomer } from "utils/defaults";
@@ -55,6 +56,7 @@ export default function CustomerPage() {
   const exonerationTypeList = useSelector(getExonerationTypeList);
   const exonerationNameList = useSelector(getExonerationNameList);
   const customer = useSelector(getCustomer);
+  const isSimplified = useSelector(getCompanyIsSimplified);
 
   const idTypeItems = idTypeList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -78,15 +80,19 @@ export default function CustomerPage() {
   ));
   let disabled = true;
   if (customer != null) {
-    disabled =
-      customer.Identificacion === "" ||
-      customer.Nombre === "" ||
-      customer.Direccion === "" ||
-      customer.Telefono === "" ||
-      customer.CorreoElectronico === "" ||
-      customer.IdTipoPrecio === null ||
-      customer.IdTipoExoneracion === null ||
-      (customer.CodigoActividad.length > 0 && customer.CodigoActividad.length < 6);
+    if (isSimplified) {
+      disabled = customer.Identificacion === "" || customer.Nombre === "";
+    } else {
+      disabled =
+        customer.Identificacion === "" ||
+        customer.Nombre === "" ||
+        customer.Direccion === "" ||
+        customer.Telefono === "" ||
+        customer.CorreoElectronico === "" ||
+        customer.IdTipoPrecio === null ||
+        customer.IdTipoExoneracion === null ||
+        (customer.CodigoActividad.length > 0 && customer.CodigoActividad.length < 6);
+    }
   }
   const handlePaste = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -181,11 +187,17 @@ export default function CustomerPage() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField required id="Direccion" value={customer.Direccion} label="Dirección" onChange={handleChange} />
+            <TextField
+              required={!isSimplified}
+              id="Direccion"
+              value={customer.Direccion}
+              label="Dirección"
+              onChange={handleChange}
+            />
           </Grid>
           <Grid item xs={6} sm={4}>
             <TextField
-              required
+              required={!isSimplified}
               id="Telefono"
               value={customer.Telefono}
               label="Teléfono"
@@ -194,21 +206,14 @@ export default function CustomerPage() {
             />
           </Grid>
           <Grid item xs={6} sm={4}>
-            <TextField
-              required
-              id="Celular"
-              value={customer.Celular}
-              label="Celular"
-              numericFormat
-              onChange={handleChange}
-            />
+            <TextField id="Celular" value={customer.Celular} label="Celular" numericFormat onChange={handleChange} />
           </Grid>
           <Grid item xs={6} sm={4}>
             <TextField id="Fax" value={customer.Fax} label="Fax" numericFormat onChange={handleChange} />
           </Grid>
           <Grid item xs={12} sm={9}>
             <TextField
-              required
+              required={!isSimplified}
               id="CorreoElectronico"
               value={customer.CorreoElectronico}
               label="Correo electrónico"

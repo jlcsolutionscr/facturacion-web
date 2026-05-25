@@ -17,6 +17,7 @@ import {
   revokeInvoice,
 } from "state/invoice/asyncActions";
 import { getInvoiceList, getInvoiceListCount, getInvoiceListPage } from "state/invoice/reducer";
+import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
@@ -83,6 +84,9 @@ export default function InvoiceListPage() {
   const listPage = useSelector(getInvoiceListPage);
   const listCount = useSelector(getInvoiceListCount);
   const list = useSelector(getInvoiceList);
+  const permissions = useSelector(getPermissions);
+
+  const revokeInvoices = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
 
   const containeRef = useRef<HTMLDivElement>(null);
 
@@ -146,7 +150,7 @@ export default function InvoiceListPage() {
     ),
     action3: (
       <IconButton
-        disabled={row.Anulando}
+        disabled={row.Anulando || !revokeInvoices}
         className={classes.icon}
         color="secondary"
         component="span"
