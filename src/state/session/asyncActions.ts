@@ -7,6 +7,9 @@ import {
   login,
   logout,
   setCashCloseEntity,
+  setCashCloseList,
+  setCashCloseListCount,
+  setCashCloseListPage,
   setIsCashCloseSaved,
   setProcessingToken,
   setProcessingTokenMessage,
@@ -27,7 +30,10 @@ import {
   abortCashCloseProcess as abortCashCloseProcessRequest,
   authorizeUserEmail as authorizeUserEmailRequest,
   generateCashClosePDF as generateCashClosePDFRequest,
-  getCashCloseDetails as getCashCloseDetailsRequest,
+  generateCashCloseDetails as getCashCloseDetailsRequest,
+  getCashCloseEntity,
+  getCashCloseListCount,
+  getCashCloseListPerPage,
   getVendorList,
   requestUserLogin,
   requestUserPasswordReset,
@@ -37,7 +43,12 @@ import {
   updateUserEmail,
   validateProcessingToken as validateProcessingTokenRequest,
 } from "utils/domainHelper";
-import { clearSessionFromStorage, getErrorMessage, writeSessionToStorage } from "utils/utilities";
+import {
+  clearSessionFromStorage,
+  convertToDateTimeString,
+  getErrorMessage,
+  writeSessionToStorage,
+} from "utils/utilities";
 
 type SessionCompanyType = CompanyType & {
   ListadoTipoIdentificacion: IdDescriptionType[];
@@ -212,15 +223,18 @@ export const authorizeUserEmail = createAsyncThunk(
   }
 );
 
-export const getCashCloseDetails = createAsyncThunk(
-  "session/getCashCloseDetails",
+export const generateCashCloseDetails = createAsyncThunk(
+  "session/generateCashCloseDetails",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const cashCloseData = await getCashCloseDetailsRequest(token, companyId, branchId);
-      dispatch(setCashCloseEntity(cashCloseData));
+      const cashCloseEntity = await getCashCloseDetailsRequest(token, companyId, branchId);
+      if (cashCloseEntity !== null) {
+        cashCloseEntity.FechaCierre = convertToDateTimeString(new Date(), true);
+        dispatch(setCashCloseEntity({ entity: cashCloseEntity, id: 0, isSaved: false }));
+      }
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
@@ -268,13 +282,78 @@ export const abortCashCloseProcess = createAsyncThunk(
 );
 
 export const generateCashClosePDF = createAsyncThunk(
-  "invoice/generatePDF",
+  "session/generateCashClosePDF",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
     const { token, cashCloseId } = session;
     dispatch(startLoader());
     try {
       await generateCashClosePDFRequest(token, cashCloseId);
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getCashCloseListFirstPage = createAsyncThunk(
+  "session/getCashCloseListFirstPage",
+  async (payload: { rowsPerPage: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    dispatch(startLoader());
+    try {
+      dispatch(setCashCloseListPage(1));
+      const recordCount = await getCashCloseListCount(token, companyId, branchId);
+      dispatch(setCashCloseListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getCashCloseListPerPage(token, companyId, branchId, 1, payload.rowsPerPage);
+        dispatch(setCashCloseList(newList));
+      } else {
+        dispatch(setCashCloseList([]));
+      }
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getCashCloseListByPageNumber = createAsyncThunk(
+  "session/getCashCloseListByPageNumber",
+  async (payload: { pageNumber: number; rowsPerPage: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId, branchId } = session;
+    dispatch(startLoader());
+    try {
+      const newList = await getCashCloseListPerPage(
+        token,
+        companyId,
+        branchId,
+        payload.pageNumber,
+        payload.rowsPerPage
+      );
+      dispatch(setCashCloseListPage(payload.pageNumber));
+      dispatch(setCashCloseList(newList));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const getCashCloseDetails = createAsyncThunk(
+  "session/getCashCloseDetails",
+  async (payload: { id: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token } = session;
+    dispatch(startLoader());
+    try {
+      const cashCloseEntity = await getCashCloseEntity(token, payload.id);
+      dispatch(setCashCloseEntity({ entity: cashCloseEntity, id: cashCloseEntity.IdCierre, isSaved: true }));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

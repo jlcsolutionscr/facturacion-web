@@ -10,7 +10,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import { generateCashClosePDF, getCashCloseDetails, saveCashCloseDetails } from "state/session/asyncActions";
+import {
+  generateCashCloseDetails,
+  generateCashClosePDF,
+  getCashCloseDetails,
+  saveCashCloseDetails,
+} from "state/session/asyncActions";
 import {
   getCashCloseEntity,
   getCompanyMode,
@@ -56,11 +61,13 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-type RevokeOrderDialogProps = {
+type CashClosingDialogProps = {
+  isNew: boolean;
+  id: number;
   onDialogClose: () => void;
 };
 
-export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogProps) {
+export default function CashClosingDialog({ isNew, id, onDialogClose }: CashClosingDialogProps) {
   const [widthdrawalOptions, setWidthdrawalOptions] = useState(true);
   const { classes } = useStyles();
   const dispatch = useDispatch();
@@ -76,8 +83,14 @@ export default function RevokeOrderDialog({ onDialogClose }: RevokeOrderDialogPr
   const cxpPayments = companyRoles.filter(role => [1, 301].includes(role.IdRole)).length > 0;
 
   useEffect(() => {
-    dispatch(getCashCloseDetails());
-  }, [dispatch]);
+    if (isNew) {
+      dispatch(generateCashCloseDetails());
+    } else {
+      if (id > 0) {
+        dispatch(getCashCloseDetails({ id: id }));
+      }
+    }
+  }, [dispatch, id, isNew]);
 
   const handleCheckboxChange = () => {
     setWidthdrawalOptions(!widthdrawalOptions);

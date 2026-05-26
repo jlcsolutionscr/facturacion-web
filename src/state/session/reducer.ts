@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { sessionInitialState } from "state/InitialState";
 import { RootState } from "state/store";
-import { convertToDateTimeString } from "utils/utilities";
 
 export const sessionSlice = createSlice({
   name: "session",
@@ -60,11 +59,9 @@ export const sessionSlice = createSlice({
       state.processingTokenMessage = action.payload;
     },
     setCashCloseEntity: (state, action) => {
-      state.cashCloseEntity = action.payload;
-      if (state.cashCloseEntity !== null) {
-        state.cashCloseEntity.FechaCierre = convertToDateTimeString(new Date(), true);
-        state.isCashCloseSaved = false;
-      }
+      state.cashCloseEntity = action.payload.entity;
+      state.cashCloseId = action.payload.id;
+      state.isCashCloseSaved = action.payload.isSaved;
     },
     setCashCloseMethod: (state, action) => {
       const entity = state.cashCloseEntity;
@@ -94,6 +91,15 @@ export const sessionSlice = createSlice({
       state.cashCloseId = action.payload.cashCloseId;
       state.isCashCloseSaved = action.payload.isSaved;
     },
+    setCashCloseListPage: (state, action) => {
+      state.cashCloseListPage = action.payload;
+    },
+    setCashCloseListCount: (state, action) => {
+      state.cashCloseListCount = action.payload;
+    },
+    setCashCloseList: (state, action) => {
+      state.cashCloseList = action.payload;
+    },
   },
 });
 
@@ -109,6 +115,9 @@ export const {
   setCashCloseEntity,
   setCashCloseMethod,
   setIsCashCloseSaved,
+  setCashCloseListPage,
+  setCashCloseListCount,
+  setCashCloseList,
 } = sessionSlice.actions;
 
 export const getAuthenticated = (state: RootState) => state.session.authenticated;
@@ -130,4 +139,7 @@ export const getProcessingTokenMessage = (state: RootState) => state.session.pro
 export const getCashCloseEntity = (state: RootState) => state.session.cashCloseEntity;
 export const getIsCashCloseSaved = (state: RootState) => state.session.isCashCloseSaved;
 export const getCashCloseId = (state: RootState) => state.session.cashCloseId;
+export const getCashCloseListPage = (state: RootState) => state.session.cashCloseListPage;
+export const getCashCloseListCount = (state: RootState) => state.session.cashCloseListCount;
+export const getCashCloseList = (state: RootState) => state.session.cashCloseList;
 export default sessionSlice.reducer;

@@ -1212,7 +1212,7 @@ export async function getProformaListPerPage(
   return response;
 }
 
-export async function getCashCloseDetails(token: string, companyId: number, branchId: number) {
+export async function generateCashCloseDetails(token: string, companyId: number, branchId: number) {
   const data =
     "{NombreMetodo: 'GenerarDatosCierreCaja', Parametros: {IdEmpresa: " +
     companyId +
@@ -1246,6 +1246,45 @@ export async function generateCashClosePDF(token: string, cashCloseId: number) {
     const pdfUrl = URL.createObjectURL(file);
     window.open(pdfUrl);
   }
+}
+
+export async function getCashCloseListCount(token: string, companyId: number, branchId: number) {
+  const data =
+    "{NombreMetodo: 'ObtenerTotalListaCierreCaja', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return response;
+}
+
+export async function getCashCloseListPerPage(
+  token: string,
+  companyId: number,
+  branchId: number,
+  pageNumber: number,
+  rowPerPage: number
+) {
+  const data =
+    "{NombreMetodo: 'ObtenerListadoCierreCaja', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdSucursal: " +
+    branchId +
+    ", NumeroPagina: " +
+    pageNumber +
+    ", FilasPorPagina: " +
+    rowPerPage +
+    "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (response === null) return [];
+  return response;
+}
+
+export async function getCashCloseEntity(token: string, cashCloseId: number) {
+  const data = "{NombreMetodo: 'ObtenerCierreCaja', Parametros: {IdCierre: " + cashCloseId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return response;
 }
 
 export async function getPrintingTickets(

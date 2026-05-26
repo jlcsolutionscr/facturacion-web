@@ -6,6 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import BannerImage from "assets/img/home-background.webp";
 import Header from "components/header-bar";
 import CashCloseDialogPage from "pages/cash-close-dialog-page";
+import CashClosingListPage from "pages/cash-closing/list-page";
 import CategoryPage from "pages/category";
 import CategoryLisPage from "pages/category/list-page";
 import CompanyPage from "pages/company";
@@ -61,7 +62,7 @@ interface HomePageProps {
 }
 
 export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePageProps) {
-  const [isCashCloseDialogOpen, setIsCashCloseDialogOpen] = useState(false);
+  const [isCashCloseDialogOpen, setIsCashCloseDialogOpen] = useState({ new: false, open: false, id: 0 });
   const { classes } = useStyles();
   const containeRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
@@ -80,8 +81,8 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
   }, [activeSection]);
 
   const handleCashCloseDialogCancel = () => {
-    if (!isCashClosedSaved) dispatch(abortCashCloseProcess());
-    setIsCashCloseDialogOpen(false);
+    if (isCashCloseDialogOpen.new && !isCashClosedSaved) dispatch(abortCashCloseProcess());
+    setIsCashCloseDialogOpen({ new: false, open: false, id: 0 });
   };
 
   return (
@@ -113,9 +114,14 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 19 && <ServicePointPage />}
         {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 && <PrinterServiceConfig />}
+        {activeSection === 22 && <CashClosingListPage setIsCashCloseDialogOpen={setIsCashCloseDialogOpen} />}
       </div>
-      <Dialog id="revoke-dialog" onClose={handleCashCloseDialogCancel} open={isCashCloseDialogOpen}>
-        <CashCloseDialogPage onDialogClose={handleCashCloseDialogCancel} />
+      <Dialog id="revoke-dialog" onClose={handleCashCloseDialogCancel} open={isCashCloseDialogOpen.open}>
+        <CashCloseDialogPage
+          isNew={isCashCloseDialogOpen.new}
+          id={isCashCloseDialogOpen.id}
+          onDialogClose={handleCashCloseDialogCancel}
+        />
       </Dialog>
     </div>
   );

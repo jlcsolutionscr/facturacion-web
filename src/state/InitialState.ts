@@ -77,6 +77,9 @@ type SessionStateType = {
   cashCloseEntity: CashCloseType | null;
   isCashCloseSaved: boolean;
   cashCloseId: number;
+  cashCloseListPage: number;
+  cashCloseListCount: number;
+  cashCloseList: IdDescriptionType[];
 };
 
 type CompanyStateType = {
@@ -200,6 +203,9 @@ export const sessionInitialState: SessionStateType = {
   cashCloseEntity: null,
   isCashCloseSaved: false,
   cashCloseId: 0,
+  cashCloseListPage: 1,
+  cashCloseListCount: 0,
+  cashCloseList: [],
 };
 
 export const companyInitialState: CompanyStateType = {

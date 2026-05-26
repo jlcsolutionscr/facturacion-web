@@ -122,7 +122,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface HeaderProps {
-  setIsCashCloseDialogOpen: (value: boolean) => void;
+  setIsCashCloseDialogOpen: (value: { new: boolean; open: boolean; id: number }) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
 }
@@ -173,7 +173,7 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
             className={classes.cashClose}
             aria-label="Procesar el cierre de efectivo"
             component="span"
-            onClick={() => setIsCashCloseDialogOpen(true)}
+            onClick={() => setIsCashCloseDialogOpen({ new: true, open: true, id: 0 })}
           >
             <CashierIcon className={classes.icon} />
           </IconButton>

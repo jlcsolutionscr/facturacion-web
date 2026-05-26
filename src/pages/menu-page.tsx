@@ -114,6 +114,7 @@ export default function MenuPage() {
   const generateProforma = permissions.filter(role => [1, 200].includes(role.IdRole)).length > 0;
   const generateWorkingOrder = permissions.filter(role => [1, 201].includes(role.IdRole)).length > 0;
   const switchBrand = permissions.filter(role => [1, 2, 48].includes(role.IdRole)).length > 0;
+  const isCashCloseEnabled = permissions.filter(role => [1, 53].includes(role.IdRole)).length > 0;
 
   const branchItems = branchList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -242,8 +243,12 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
-            <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
-              Reportes
+            <Button
+              disabled={!isCashCloseEnabled}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(22))}
+            >
+              Histórico de Cierres
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
@@ -253,6 +258,11 @@ export default function MenuPage() {
               onClick={() => dispatch(setReceiptParameters({ id: 7 }))}
             >
               Registrar Compra
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
+            <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
+              Reportes
             </Button>
           </Grid>
         </Grid>
