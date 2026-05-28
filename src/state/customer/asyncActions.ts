@@ -12,6 +12,7 @@ import { FORM_TYPE } from "utils/constants";
 import { defaultCustomer, defaultCustomerDetails } from "utils/defaults";
 import {
   getCustomerByIdentifier,
+  getCustomerData,
   getCustomerEntity,
   getCustomerListCount,
   getCustomerListPerPage,
@@ -111,12 +112,20 @@ export const validateCustomerIdentifier = createAsyncThunk(
         dispatch(setCustomer(customer));
         dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
       } else {
+        let customerName = defaultCustomer.Nombre;
+        try {
+          const customerData = await getCustomerData(payload.identifier);
+          customerName = customerData.name;
+        } catch {
+          // NO OP
+        }
         dispatch(
           setCustomer({
             ...defaultCustomer,
             IdEmpresa: companyId,
             IdTipoIdentificacion: payload.idType,
             Identificacion: payload.identifier,
+            Nombre: customerName,
           })
         );
       }
