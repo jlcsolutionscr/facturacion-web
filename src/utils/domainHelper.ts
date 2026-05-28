@@ -271,12 +271,14 @@ export async function getCustomerData(id: string) {
   } else {
     const data = await response.json();
     if (data) {
-      const list = data.actividades.map((actividad: { codigo: string; descripcion: string }) => {
-        return {
-          Llave: actividad.codigo,
-          Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
-        };
-      });
+      const list: { Llave: string; Descripcion: string }[] = data.actividades.map(
+        (actividad: { codigo: string; descripcion: string }) => {
+          return {
+            Llave: actividad.codigo,
+            Descripcion: `${actividad.codigo} - ${actividad.descripcion}`,
+          };
+        }
+      );
       return { name: data.nombre, economicActivityList: list };
     } else {
       throw new Error("Datos no encontrados en el Ministerio de Hacienda");

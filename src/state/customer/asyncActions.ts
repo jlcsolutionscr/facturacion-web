@@ -100,35 +100,61 @@ export const validateCustomerIdentifier = createAsyncThunk(
   "customer/validateCustomerIdentifier",
   async (payload: { idType: number; identifier: string }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, companyId } = session;
+    const { token, company, companyId } = session;
     if (
       (payload.idType === 0 && payload.identifier.length === 9) ||
       (payload.idType === 1 && payload.identifier.length === 10) ||
       (payload.idType > 1 && payload.identifier.length >= 11)
     ) {
       dispatch(startLoader());
+      let customerName = defaultCustomer.Nombre;
+      let economicActivityCode = "";
+      const alertMessage = { message: "", type: "INFO" };
       const customer: CustomerEntityType = await getCustomerByIdentifier(token, companyId, payload.identifier);
       if (customer?.IdCliente > 0) {
         dispatch(setCustomer(customer));
-        dispatch(setMessage({ message: "Ya existe un cliente con la identificación ingresada. . ." }));
-      } else {
-        let customerName = defaultCustomer.Nombre;
-        try {
-          const customerData = await getCustomerData(payload.identifier);
-          customerName = customerData.name;
-        } catch {
-          // NO OP
-        }
-        dispatch(
-          setCustomer({
-            ...defaultCustomer,
-            IdEmpresa: companyId,
-            IdTipoIdentificacion: payload.idType,
-            Identificacion: payload.identifier,
-            Nombre: customerName,
-          })
-        );
+        alertMessage.message =
+          "Ya existe un cliente con la identificación ingresada. Por favor verifique la información. . .";
       }
+      try {
+        const customerData = await getCustomerData(payload.identifier);
+        customerName = customerData.name;
+        if (!company?.RegimenSimplificado) {
+          if (customerData.economicActivityList.length === 0) {
+            alertMessage.message = "El cliente no posee ninguna actividad económica activa registrada en Hacienda. . .";
+            alertMessage.type = "ERROR";
+          } else if (customerData.economicActivityList.length === 1) {
+            economicActivityCode = customerData.economicActivityList[0].Llave;
+            alertMessage.message = "Identificación validada satisfactoriamente. . .";
+          } else {
+            let economicActivityCodes = "";
+            customerData.economicActivityList.forEach(activity => {
+              if (economicActivityCodes !== "") economicActivityCodes += ", ";
+              economicActivityCodes += activity.Llave;
+            });
+            alertMessage.message =
+              "El cliente posee las siguientes actividades económicas: " +
+              economicActivityCodes +
+              ". Ingrese la actividad correspondiente.";
+          }
+        } else {
+          alertMessage.message = "Identificación validada satisfactoriamente. . .";
+        }
+      } catch {
+        alertMessage.message = "No se logró obtener información de Hacienda para la identificación ingresada. . .";
+        alertMessage.type = "ERROR";
+      }
+      dispatch(
+        setCustomer({
+          ...defaultCustomer,
+          IdEmpresa: companyId,
+          IdTipoIdentificacion: payload.idType,
+          Identificacion: payload.identifier,
+          Nombre: customerName,
+          CodigoActividad: economicActivityCode,
+        })
+      );
+      if (alertMessage.message !== "") dispatch(setMessage(alertMessage));
       dispatch(stopLoader());
     }
   }
