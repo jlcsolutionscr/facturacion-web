@@ -1,4 +1,4 @@
-import { TextField } from "jlc-component-library";
+import { TextField, TextFieldOnChangeEventType } from "jlc-component-library";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -45,7 +45,7 @@ interface ProductListProps {
 }
 
 export default function ProductList({ disabledAddProduct, addDetails, value }: ProductListProps) {
-  const [category, setCategory] = useState(-1);
+  const [category, setCategory] = useState<number>(-1);
   const [filterText, setFilterText] = useState("");
   const { classes } = useStyles();
   const dispatch = useDispatch();
@@ -64,8 +64,19 @@ export default function ProductList({ disabledAddProduct, addDetails, value }: P
     setFilterText("");
   };
 
+  const handleFilterTextChange = (event: TextFieldOnChangeEventType) => {
+    setFilterText(event.target.value);
+    setCategory(-1);
+  };
+
   const rows = productList
-    .filter(product => category === -1 || product.IdLinea === category)
+    .filter(product =>
+      category === -1
+        ? filterText !== ""
+          ? product.Descripcion.toUpperCase().includes(filterText.toUpperCase())
+          : true
+        : product.IdLinea === category
+    )
     .map(row => (
       <Grid key={row.Id} height="fit-content">
         <ProductCard
@@ -77,17 +88,17 @@ export default function ProductList({ disabledAddProduct, addDetails, value }: P
       </Grid>
     ));
 
-  const categories = categoryList
-    .filter(category =>
-      filterText !== "" ? category.Descripcion.toUpperCase().startsWith(filterText.toUpperCase()) : true
-    )
-    .map(category => (
-      <Button sx={{ maxWidth: "150px" }} key={category.Id} onClick={() => handleCateboryButtonClick(category.Id)}>
-        <Typography variant="body2" noWrap>
-          {category.Descripcion}
-        </Typography>
-      </Button>
-    ));
+  const categories = categoryList.map(elm => (
+    <Button
+      sx={{ maxWidth: "150px", backgroundColor: elm.Id === category ? "primary.dark" : "primary.main" }}
+      key={elm.Id}
+      onClick={() => handleCateboryButtonClick(elm.Id)}
+    >
+      <Typography variant="body2" noWrap>
+        {elm.Descripcion}
+      </Typography>
+    </Button>
+  ));
 
   return (
     <Grid width="100%" container ref={myRef} justifyContent="center" spacing={1}>
@@ -104,13 +115,13 @@ export default function ProductList({ disabledAddProduct, addDetails, value }: P
           >
             <RefreshIcon className={classes.icon} />
           </Button>
-          <TextField
-            sx={{ width: "100px" }}
-            label="Filtrar"
-            value={filterText}
-            onChange={event => setFilterText(event.target.value)}
-          />
-          <Button onClick={() => handleCateboryButtonClick(-1)}>TODOS</Button>
+          <TextField sx={{ width: "100px" }} label="Filtrar" value={filterText} onChange={handleFilterTextChange} />
+          <Button
+            sx={{ backgroundColor: -1 === category ? "primary.dark" : "primary.main" }}
+            onClick={() => handleCateboryButtonClick(-1)}
+          >
+            TODOS
+          </Button>
           {categories}
         </ButtonGroup>
       </Grid>

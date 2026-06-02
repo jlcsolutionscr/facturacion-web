@@ -274,7 +274,7 @@ export default function OrderSummary({
             <Grid key={`${row.id}-${index}`} container xs={12}>
               <Grid xs={9}>
                 <Typography overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
-                  {row.description}
+                  {` ${row.description} - ${row.additionalInformation} `}
                 </Typography>
               </Grid>
               <Grid xs={3} textAlign="end">
