@@ -16,13 +16,7 @@ import {
   getCashCloseDetails,
   saveCashCloseDetails,
 } from "state/session/asyncActions";
-import {
-  getCashCloseEntity,
-  getCompanyMode,
-  getCompanyRoles,
-  getIsCashCloseSaved,
-  setCashCloseMethod,
-} from "state/session/reducer";
+import { getCashCloseEntity, getCompanyMode, getIsCashCloseSaved, setCashCloseMethod } from "state/session/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -74,13 +68,7 @@ export default function CashClosingDialog({ isNew, id, onDialogClose }: CashClos
 
   const cashCloseDetails = useSelector(getCashCloseEntity);
   const isCashClosedSaved = useSelector(getIsCashCloseSaved);
-  const companyRoles = useSelector(getCompanyRoles);
   const companyMode = useSelector(getCompanyMode);
-
-  const generateWorkingOrder = companyRoles.filter(role => [1, 201].includes(role.IdRole)).length > 0;
-  const generateLayaway = companyRoles.filter(role => [1, 202].includes(role.IdRole)).length > 0;
-  const cxcPayments = companyRoles.filter(role => [1, 300].includes(role.IdRole)).length > 0;
-  const cxpPayments = companyRoles.filter(role => [1, 301].includes(role.IdRole)).length > 0;
 
   useEffect(() => {
     if (isNew) {
@@ -145,19 +133,15 @@ export default function CashClosingDialog({ isNew, id, onDialogClose }: CashClos
                 <Grid xs={12}>
                   <Typography className={classes.summaryTitle}>DETALLE DE INGRESOS</Typography>
                 </Grid>
-                {generateLayaway && (
-                  <>
-                    <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Adelanto de apartados:</Typography>
-                    </Grid>
-                    <Grid xs={4} className={classes.columnRight}>
-                      <Typography className={classes.summaryRow}>
-                        {formatCurrency(cashCloseDetails.AdelantosApartadoEfectivo)}
-                      </Typography>
-                    </Grid>
-                  </>
-                )}
-                {generateWorkingOrder && companyMode === 1 && (
+                <Grid xs={8}>
+                  <Typography className={classes.summaryRow}>Adelanto de apartados:</Typography>
+                </Grid>
+                <Grid xs={4} className={classes.columnRight}>
+                  <Typography className={classes.summaryRow}>
+                    {formatCurrency(cashCloseDetails.AdelantosApartadoEfectivo)}
+                  </Typography>
+                </Grid>
+                {companyMode === 1 && (
                   <>
                     <Grid xs={8}>
                       <Typography className={classes.summaryRow}>Adelanto de ordenes de servicio:</Typography>
@@ -169,18 +153,14 @@ export default function CashClosingDialog({ isNew, id, onDialogClose }: CashClos
                     </Grid>
                   </>
                 )}
-                {cxcPayments && (
-                  <>
-                    <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Pagos a CxC en efectivo:</Typography>
-                    </Grid>
-                    <Grid xs={4} className={classes.columnRight}>
-                      <Typography className={classes.summaryRow}>
-                        {formatCurrency(cashCloseDetails.PagosCxCEfectivo)}
-                      </Typography>
-                    </Grid>
-                  </>
-                )}
+                <Grid xs={8}>
+                  <Typography className={classes.summaryRow}>Pagos a CxC en efectivo:</Typography>
+                </Grid>
+                <Grid xs={4} className={classes.columnRight}>
+                  <Typography className={classes.summaryRow}>
+                    {formatCurrency(cashCloseDetails.PagosCxCEfectivo)}
+                  </Typography>
+                </Grid>
                 <Grid xs={8}>
                   <Typography className={classes.summaryRow}>Ventas en efectivo:</Typography>
                 </Grid>
@@ -216,18 +196,14 @@ export default function CashClosingDialog({ isNew, id, onDialogClose }: CashClos
                     {formatCurrency(cashCloseDetails.EgresosEfectivo)}
                   </Typography>
                 </Grid>
-                {cxpPayments && (
-                  <>
-                    <Grid xs={8}>
-                      <Typography className={classes.summaryRow}>Pagos a CxP en efectivo:</Typography>
-                    </Grid>
-                    <Grid xs={4} className={classes.columnRight}>
-                      <Typography className={classes.summaryRow}>
-                        {formatCurrency(cashCloseDetails.PagosCxPEfectivo)}
-                      </Typography>
-                    </Grid>
-                  </>
-                )}
+                <Grid xs={8}>
+                  <Typography className={classes.summaryRow}>Pagos a CxP en efectivo:</Typography>
+                </Grid>
+                <Grid xs={4} className={classes.columnRight}>
+                  <Typography className={classes.summaryRow}>
+                    {formatCurrency(cashCloseDetails.PagosCxPEfectivo)}
+                  </Typography>
+                </Grid>
                 <Grid xs={8}>
                   <Typography sx={{ fontWeight: "700" }} className={classes.summaryRow}>
                     Efectivo para iniciar el siguiente cierre:
