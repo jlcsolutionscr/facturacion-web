@@ -1316,7 +1316,7 @@ export async function updatePrintedTickets(token: string, ticketId: number) {
     "{NombreMetodo: 'ActualizarEstadoTiqueteOrdenServicio', Parametros: {IdTiquete: " +
     ticketId +
     ", Impreso: 'false'}}";
-  await post(APP_URL + "/ejecutarconsulta", token, data);
+  await post(APP_URL + "/ejecutar", token, data);
 }
 
 export async function printPendingTickets(tickets: any, printerServerAddress: string) {
