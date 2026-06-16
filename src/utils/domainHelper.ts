@@ -1311,6 +1311,14 @@ export async function getPrintingTickets(
   return response;
 }
 
+export async function updatePrintedTickets(token: string, ticketId: number) {
+  const data =
+    "{NombreMetodo: 'ActualizarEstadoTiqueteOrdenServicio', Parametros: {IdTiquete: " +
+    ticketId +
+    ", Impreso: 'false'}}";
+  await post(APP_URL + "/ejecutarconsulta", token, data);
+}
+
 export async function printPendingTickets(tickets: any, printerServerAddress: string) {
   return new Promise((resolve, reject) => {
     const promiseParams = [];

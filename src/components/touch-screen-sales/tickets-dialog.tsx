@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import { DialogStatus, DialogType } from "./order-summary";
 import {
   getPrintingTicketList as getPrintingTicketListAction,
-  printWorkingOrderTicket,
+  updateWorkingOrderTicket,
 } from "state/working-order/asyncActions";
 import { getPrintingTicketList } from "state/working-order/reducer";
 import { PrinterIcon } from "utils/iconsHelper";
@@ -58,7 +58,7 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
         className={classes.icon}
         color="primary"
         component="span"
-        onClick={() => dispatch(printWorkingOrderTicket({ ticketId: row.IdTiquete }))}
+        onClick={() => dispatch(updateWorkingOrderTicket({ ticketId: row.IdTiquete }))}
       >
         <PrinterIcon className={classes.printerIcon} />
       </IconButton>
