@@ -100,6 +100,12 @@ const workingOrderSlice = createSlice({
     setPrintingTicketList: (state, action) => {
       state.printingTicketList = action.payload;
     },
+    setPrintingTicketStatus: (state, action) => {
+      state.printingTicketList = state.printingTicketList.map(ticket => ({
+        ...ticket,
+        Impreso: ticket.IdTiquete === action.payload.id ? action.payload.status : ticket.Impreso,
+      }));
+    },
     setServicePointEntity: (state, action) => {
       state.servicePointEntity = action.payload;
     },
@@ -161,6 +167,7 @@ export const {
   resetWorkingOrder,
   setServicePointId,
   setPrintingTicketList,
+  setPrintingTicketStatus,
   setServicePointEntity,
   setServicePointAttribute,
   updatePaymentInfo,

@@ -18,6 +18,7 @@ import {
   setCustomerDetails,
   setInvoiceId,
   setPrintingTicketList,
+  setPrintingTicketStatus,
   setProductDetailsList,
   setServicePointEntity,
   setServicePointId,
@@ -263,12 +264,13 @@ export const saveWorkingOrder = createAsyncThunk(
       dispatch(setWorkingOrder(savedEntity));
       dispatch(updatePaymentInfo({ ...paymentInfo, totalSaved }));
       dispatch(setStatus(ORDER_STATUS.READY));
-      let message = {
-        message: "Transacción completada satisfactoriamente",
-        type: "INFO",
-      };
       dispatch(stopLoader());
-      dispatch(setMessage(message));
+      dispatch(
+        setMessage({
+          message: "Transacción completada satisfactoriamente",
+          type: "INFO",
+        })
+      );
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
@@ -305,6 +307,7 @@ export const updateWorkingOrderTicket = createAsyncThunk(
     dispatch(startLoader());
     try {
       await updatePrintedTickets(session.token, payload.ticketId);
+      dispatch(setPrintingTicketStatus({ id: payload.ticketId, status: false }));
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }

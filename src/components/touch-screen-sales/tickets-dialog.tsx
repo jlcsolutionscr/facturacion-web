@@ -68,7 +68,7 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
   const columns = [
     { field: "id", headerName: "Id", width: "50px" },
     { field: "description", width: "300px", headerName: "Nombre" },
-    { field: "printer", width: "100px", headerName: "Impresora" },
+    { field: "printer", width: "100px", headerName: "Categoria" },
     { field: "printed", width: "50px", headerName: "Impreso" },
     { field: "action1", headerName: "" },
   ];
