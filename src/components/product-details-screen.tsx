@@ -212,13 +212,7 @@ export default function StepTwoScreen({
                   height: "auto",
                 }}
               >
-                <IconButton
-                  className={classes.outerButton}
-                  color="primary"
-                  disabled={!buttonEnabled}
-                  component="span"
-                  onClick={() => addDetails()}
-                >
+                <IconButton className={classes.outerButton} color="primary" disabled={!buttonEnabled} component="span">
                   <AddCircleIcon />
                 </IconButton>
               </button>

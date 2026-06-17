@@ -55,7 +55,7 @@ import {
   saveWorkingOrderEntity,
   updatePrintedTickets,
 } from "utils/domainHelper";
-import { getNewProductItem } from "utils/store/product";
+import { getCustomerPrice, getNewProductItem } from "utils/store/product";
 import { parseWorkingOrderEntity } from "utils/store/working-order";
 import { getErrorMessage } from "utils/utilities";
 
@@ -118,47 +118,68 @@ export const selectCustomer = createAsyncThunk(
 export const addDetails = createAsyncThunk(
   "working-order/addDetails",
   async (payload: { id?: number }, { getState, dispatch }) => {
-    const { session, workingOrder, ui } = getState() as RootState;
+    const { session, workingOrder, ui, product } = getState() as RootState;
     const { company, branchId, token } = session;
     const { entity, paymentInfo } = workingOrder;
     const { productDetails, productDetailsList } = entity;
     const { customerDetails, totalSaved } = paymentInfo;
     if (company) {
-      if (payload.id) dispatch(startLoader());
-      const newProduct = await getNewProductItem(
-        token,
-        branchId,
-        customerDetails.priceTypeId,
-        productDetails,
-        ui.taxTypeList,
-        payload.id
-      );
-      if (payload.id) dispatch(stopLoader());
-      if (
-        newProduct.id !== 0 &&
-        newProduct.description !== "" &&
-        !["0", ""].includes(newProduct.quantity) &&
-        !["0", ""].includes(newProduct.price)
-      ) {
-        try {
-          const newProducts = [
-            ...productDetailsList,
-            {
-              ...newProduct,
-              paid: false,
-              inSummary: true,
-              orderId: 0,
-            },
-          ];
-          dispatch(setProductDetailsList(newProducts));
-          const summary = getProductsSummary(
-            newProducts.filter(product => !product.paid && product.inSummary),
-            customerDetails.exonerationPercentage
-          );
-          dispatch(setSummary({ ...summary, totalSaved }));
-          dispatch(resetProductDetails());
-        } catch (error) {
-          dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      let newProduct = null;
+      if (company?.Modalidad === 1) {
+        if (payload.id) dispatch(startLoader());
+        newProduct = await getNewProductItem(
+          token,
+          branchId,
+          customerDetails.priceTypeId,
+          productDetails,
+          ui.taxTypeList,
+          payload.id
+        );
+      } else {
+        const productItem = product.touchScreenProductList.find(item => item.Id === payload.id);
+        if (productItem) {
+          const { price, taxRate } = getCustomerPrice(customerDetails.priceTypeId, productItem, ui.taxTypeList);
+          newProduct = {
+            id: productItem.Id,
+            quantity: "1",
+            description: productItem.Descripcion,
+            price: price.toString(),
+            taxRate: taxRate,
+            code: productItem.Codigo,
+            additionalInformation: "",
+            unit: "UND",
+            costPrice: 0,
+            disccountRate: 0,
+          };
+        }
+      }
+      if (newProduct) {
+        if (
+          newProduct.id !== 0 &&
+          newProduct.description !== "" &&
+          !["0", ""].includes(newProduct.quantity) &&
+          !["0", ""].includes(newProduct.price)
+        ) {
+          try {
+            const newProducts = [
+              ...productDetailsList,
+              {
+                ...newProduct,
+                paid: false,
+                inSummary: true,
+                orderId: 0,
+              },
+            ];
+            dispatch(setProductDetailsList(newProducts));
+            const summary = getProductsSummary(
+              newProducts.filter(product => !product.paid && product.inSummary),
+              customerDetails.exonerationPercentage
+            );
+            dispatch(setSummary({ ...summary, totalSaved }));
+            dispatch(resetProductDetails());
+          } catch (error) {
+            dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+          }
         }
       }
     }

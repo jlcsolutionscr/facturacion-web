@@ -40,7 +40,7 @@ import {
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
-import { getNewProductItem } from "utils/store/product";
+import { getCustomerPrice, getNewProductItem } from "utils/store/product";
 import { getErrorMessage } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
@@ -113,21 +113,43 @@ export const selectCustomer = createAsyncThunk(
 export const addDetails = createAsyncThunk(
   "invoice/addDetails",
   async (payload: { id?: number }, { getState, dispatch }) => {
-    const { session, invoice, ui } = getState() as RootState;
+    const { session, invoice, ui, product } = getState() as RootState;
     const { token, company, branchId } = session;
     const { customerDetails, productDetails, productDetailsList } = invoice.entity;
     if (company) {
-      if (payload.id) dispatch(startLoader());
-      const newProduct = await getNewProductItem(
-        token,
-        branchId,
-        customerDetails.priceTypeId,
-        productDetails,
-        ui.taxTypeList,
-        payload.id
-      );
+      let newProduct = null;
+      if (company?.Modalidad === 1) {
+        if (payload.id) dispatch(startLoader());
+        newProduct = await getNewProductItem(
+          token,
+          branchId,
+          customerDetails.priceTypeId,
+          productDetails,
+          ui.taxTypeList,
+          payload.id
+        );
+        if (payload.id) dispatch(stopLoader());
+      } else {
+        const productItem = product.touchScreenProductList.find(item => item.Id === payload.id);
+        if (productItem) {
+          const { price, taxRate } = getCustomerPrice(customerDetails.priceTypeId, productItem, ui.taxTypeList);
+          newProduct = {
+            id: productItem.Id,
+            quantity: "1",
+            description: productItem.Descripcion,
+            price: price.toString(),
+            taxRate: taxRate,
+            code: productItem.Codigo,
+            additionalInformation: "",
+            unit: "UND",
+            costPrice: 0,
+            disccountRate: 0,
+          };
+        }
+      }
       if (payload.id) dispatch(stopLoader());
       if (
+        newProduct &&
         newProduct.id !== 0 &&
         newProduct.description !== "" &&
         !["0", ""].includes(newProduct.quantity) &&

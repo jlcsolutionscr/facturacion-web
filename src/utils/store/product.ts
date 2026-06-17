@@ -36,7 +36,7 @@ export async function getNewProductItem(
   };
 }
 
-function getCustomerPrice(
+export function getCustomerPrice(
   customerPriceType: number,
   product: CodeDescriptionType,
   taxRateTypeList: IdDescriptionValueType[]
