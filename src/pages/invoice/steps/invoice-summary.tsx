@@ -6,7 +6,6 @@ import { CompanyType, IdDescriptionType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
 
 import { generateInvoiceTicket, saveInvoice } from "state/invoice/asyncActions";
 import {
@@ -255,10 +254,7 @@ export default function InvoiceSummary({
             <Grid item xs={12} className={classes.centered}>
               <InputLabel className={classes.summaryTitle}>DESGLOSE DE PAGO</InputLabel>
             </Grid>
-            <Grid item xs={4.7}>
-              <Typography>Efectivo:</Typography>
-            </Grid>
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <TextField
                 readOnly={successful}
                 numericFormat
@@ -268,10 +264,7 @@ export default function InvoiceSummary({
                 onChange={event => handlePaymentOptionChange("CASH", event.target.value)}
               />
             </Grid>
-            <Grid item xs={4.7}>
-              <Typography>Tarjeta:</Typography>
-            </Grid>
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <TextField
                 readOnly={successful}
                 numericFormat
@@ -281,10 +274,7 @@ export default function InvoiceSummary({
                 onChange={event => handlePaymentOptionChange("CARD", event.target.value)}
               />
             </Grid>
-            <Grid item xs={4.7}>
-              <Typography>Transferencia:</Typography>
-            </Grid>
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <TextField
                 readOnly={successful}
                 numericFormat
