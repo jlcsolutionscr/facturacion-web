@@ -17,6 +17,7 @@ export async function getNewProductItem(
     product = {
       ...product,
       id: productEntity.IdProducto,
+      code: productEntity.Codigo,
       description: productEntity.Descripcion,
       price: price.toString(),
       taxRate: taxRate,

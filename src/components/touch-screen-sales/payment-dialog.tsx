@@ -314,6 +314,7 @@ export default function PaymentDialog({
                     numericFormat
                     value={cashPayment}
                     label="Monto en efectivo:"
+                    onBlur={() => cashPayment === "" && setCashPayment("0")}
                     onChange={event => handlePaymentOptionChange("CASH", event.target.value)}
                   />
                 </Grid>
@@ -326,6 +327,7 @@ export default function PaymentDialog({
                     numericFormat
                     value={cardPayment}
                     label="Monto en tarjeta:"
+                    onBlur={() => cardPayment === "" && setCardPayment("0")}
                     onChange={event => handlePaymentOptionChange("CARD", event.target.value)}
                   />
                 </Grid>
@@ -338,6 +340,7 @@ export default function PaymentDialog({
                     numericFormat
                     value={transferPayment}
                     label="Monto en transferencia:"
+                    onBlur={() => transferPayment === "" && setTransferPayment("0")}
                     onChange={event => handlePaymentOptionChange("BANK", event.target.value)}
                   />
                 </Grid>

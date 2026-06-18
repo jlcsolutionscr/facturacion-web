@@ -17,7 +17,6 @@ import {
   getCurrency,
   getCustomerDetails,
   getInvoiceId,
-  getPaymentMethodList,
   getProductDetails,
   getProductDetailsList,
   getSuccessful,
@@ -89,7 +88,6 @@ export default function InvoicePage() {
   const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
   const activityCode = useSelector(getActivityCode);
-  const paymentDetails = useSelector(getPaymentMethodList);
   const vendorId = useSelector(getVendorId);
   const comment = useSelector(getComment);
   const currency = useSelector(getCurrency);
@@ -149,7 +147,6 @@ export default function InvoicePage() {
         company={company}
         summary={summary}
         activityCode={activityCode}
-        paymentDetails={paymentDetails}
         vendorId={vendorId}
         currency={currency}
         comment={comment}

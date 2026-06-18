@@ -147,6 +147,7 @@ export const validateCustomerIdentifier = createAsyncThunk(
       dispatch(
         setCustomer({
           ...defaultCustomer,
+          ...customer,
           IdEmpresa: companyId,
           IdTipoIdentificacion: payload.idType,
           Identificacion: payload.identifier,

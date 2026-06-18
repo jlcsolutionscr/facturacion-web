@@ -1,11 +1,12 @@
 import { Button, Select, TextField } from "jlc-component-library";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "tss-react/mui";
-import { CompanyType, IdDescriptionType, PaymentMethodType, SummaryType } from "types/domain";
+import { CompanyType, IdDescriptionType, SummaryType } from "types/domain";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
 
 import { generateInvoiceTicket, saveInvoice } from "state/invoice/asyncActions";
 import {
@@ -71,7 +72,6 @@ interface InvoiceSummaryProps {
   company: CompanyType | null;
   summary: SummaryType;
   activityCode: number;
-  paymentDetails: PaymentMethodType[];
   vendorId: number;
   currency: number;
   comment: string;
@@ -88,7 +88,6 @@ export default function InvoiceSummary({
   company,
   summary,
   activityCode,
-  paymentDetails,
   vendorId,
   currency,
   comment,
@@ -98,6 +97,10 @@ export default function InvoiceSummary({
   className,
 }: InvoiceSummaryProps) {
   const { classes } = useStyles();
+  const [cashPayment, setCashPayment] = useState<string>(summary.total.toString());
+  const [cardPayment, setCardPayment] = useState("0");
+  const [transferPayment, setTransferPayment] = useState("0");
+
   const dispatch = useDispatch();
   const myRef = useRef<HTMLDivElement>(null);
 
@@ -107,19 +110,55 @@ export default function InvoiceSummary({
     if (value === 2) myRef.current?.scrollTo(0, 0);
   }, [value]);
 
-  const buttonDisabled = total === 0;
-  const paymentMethods: { id: number; description: string }[] = [
-    { id: 1, description: "EFECTIVO" },
-    { id: 2, description: "TARJETA" },
-    { id: 3, description: "CHEQUE" },
-    { id: 4, description: "TRANSFERENCIA" },
-  ];
-  const paymentItems = paymentMethods.map(item => (
-    <MenuItem key={item.id} value={item.id}>
-      {item.description}
-    </MenuItem>
-  ));
-  const handleOnPress = () => {
+  useEffect(() => {
+    setCashPayment(summary.total.toString());
+    setCardPayment("0");
+    setTransferPayment("0");
+  }, [summary.total]);
+
+  const handleOnPrintButton = () => {
+    invoiceId && dispatch(generateInvoiceTicket({ id: invoiceId }));
+  };
+
+  const handlePaymentOptionChange = (type: string, value: string) => {
+    const floatValue = value === "" ? 0 : parseFloat(value);
+    if (type === "CASH") {
+      setCashPayment(value);
+      setCardPayment((total - floatValue).toString());
+      setTransferPayment("0");
+    } else if (type === "CARD") {
+      setCardPayment(value);
+      setTransferPayment((total - parseFloat(cashPayment) - floatValue).toString());
+    } else {
+      if (floatValue === 0) setCashPayment(total.toString());
+      setTransferPayment(value);
+    }
+  };
+
+  const handleSbumitButton = () => {
+    const paymentList = [];
+    if (cashPayment !== "0") {
+      paymentList.push({
+        paymentId: 1,
+        description: "EFECTIVO",
+        amount: parseFloat(cashPayment),
+      });
+    }
+    if (cardPayment !== "0") {
+      paymentList.push({
+        paymentId: 2,
+        description: "TARJETA",
+        amount: parseFloat(cardPayment),
+      });
+    }
+    if (transferPayment !== "0") {
+      paymentList.push({
+        paymentId: 4,
+        description: "TRANSFERENCIA",
+        amount: parseFloat(transferPayment),
+      });
+    }
+    setPaymentMethodList(paymentList);
     if (!successful) {
       dispatch(saveInvoice());
     } else {
@@ -129,9 +168,7 @@ export default function InvoiceSummary({
       setValue(0);
     }
   };
-  const handleOnPrintButton = () => {
-    invoiceId && dispatch(generateInvoiceTicket({ id: invoiceId }));
-  };
+
   const activityItems = company
     ? company.ActividadEconomicaEmpresa.map(item => (
         <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
@@ -139,11 +176,15 @@ export default function InvoiceSummary({
         </MenuItem>
       ))
     : [];
+
   const vendorItems = vendorList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
       {item.Descripcion}
     </MenuItem>
   ));
+
+  const buttonDisabled = total === 0;
+
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
@@ -167,18 +208,6 @@ export default function InvoiceSummary({
                   onChange={event => dispatch(setActivityCode(event.target.value))}
                 >
                   {activityItems}
-                </Select>
-              </Grid>
-            )}
-            {vendorItems.length > 1 && (
-              <Grid item xs={12}>
-                <Select
-                  id="id-vendedor-select-id"
-                  label="Seleccione el Vendedor"
-                  value={vendorId > 0 ? vendorId.toString() : ""}
-                  onChange={event => dispatch(setVendorId(event.target.value))}
-                >
-                  {vendorItems}
                 </Select>
               </Grid>
             )}
@@ -223,28 +252,47 @@ export default function InvoiceSummary({
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Select
-                disabled={successful}
-                id="forma-pago-select-id"
-                label="Seleccione la forma de pago:"
-                value={paymentDetails[0].paymentId.toString()}
-                onChange={event =>
-                  dispatch(
-                    setPaymentMethodList([
-                      {
-                        paymentId: event.target.value,
-                        description:
-                          paymentMethods.find(method => method.id === parseInt(event.target.value))?.description ??
-                          "NO ESPECIFICADO",
-                        amount: total,
-                      },
-                    ])
-                  )
-                }
-              >
-                {paymentItems}
-              </Select>
+            <Grid item xs={12} className={classes.centered}>
+              <InputLabel className={classes.summaryTitle}>DESGLOSE DE PAGO</InputLabel>
+            </Grid>
+            <Grid item xs={4.7}>
+              <Typography>Efectivo:</Typography>
+            </Grid>
+            <Grid item xs={7}>
+              <TextField
+                readOnly={successful}
+                numericFormat
+                value={cashPayment}
+                label="Monto en efectivo:"
+                onBlur={() => cashPayment === "" && setCashPayment("0")}
+                onChange={event => handlePaymentOptionChange("CASH", event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={4.7}>
+              <Typography>Tarjeta:</Typography>
+            </Grid>
+            <Grid item xs={7}>
+              <TextField
+                readOnly={successful}
+                numericFormat
+                value={cardPayment}
+                label="Monto en tarjeta:"
+                onBlur={() => cardPayment === "" && setCardPayment("0")}
+                onChange={event => handlePaymentOptionChange("CARD", event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={4.7}>
+              <Typography>Transferencia:</Typography>
+            </Grid>
+            <Grid item xs={7}>
+              <TextField
+                readOnly={successful}
+                numericFormat
+                value={transferPayment}
+                label="Monto en transferencia:"
+                onBlur={() => transferPayment === "" && setTransferPayment("0")}
+                onChange={event => handlePaymentOptionChange("BANK", event.target.value)}
+              />
             </Grid>
             <Grid item xs={12} className={classes.centered}>
               <Select
@@ -258,12 +306,24 @@ export default function InvoiceSummary({
                 <MenuItem value={2}>DOLARES</MenuItem>
               </Select>
             </Grid>
+            {vendorItems.length > 1 && (
+              <Grid item xs={12}>
+                <Select
+                  id="id-vendedor-select-id"
+                  label="Seleccione el Vendedor"
+                  value={vendorId > 0 ? vendorId.toString() : ""}
+                  onChange={event => dispatch(setVendorId(event.target.value))}
+                >
+                  {vendorItems}
+                </Select>
+              </Grid>
+            )}
             <Grid item container xs={12} gap={1} justifyContent="center">
               <Grid item>
                 <Button
                   disabled={buttonDisabled}
                   label={successful ? "Nueva factura" : "Guardar"}
-                  onClick={handleOnPress}
+                  onClick={handleSbumitButton}
                 />
               </Grid>
               {successful && (
