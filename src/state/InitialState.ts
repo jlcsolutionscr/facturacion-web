@@ -178,7 +178,7 @@ export const uiInitialState: UIStateType = {
   exonerationNameList: [],
   message: "",
   messageType: "ERROR",
-  printerServerAddress: readyKeyFromStorage(STORAGE_TICKET_PRINTER_SERVER_NAME) ?? "",
+  printerServerAddress: readyKeyFromStorage(STORAGE_TICKET_PRINTER_SERVER_NAME) ?? "ws://127.0.0.1:40213/",
   localPrinting: readyKeyFromStorage(STORAGE_LOCAL_PRINTING) ?? false,
 };
 

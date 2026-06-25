@@ -2,10 +2,18 @@ import { Button, TextField } from "jlc-component-library";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import { getPrinterServerAddress, setActiveSection, setPrinterServerAddress } from "state/ui/reducer";
+import {
+  getLocalPrinting,
+  getPrinterServerAddress,
+  setActiveSection,
+  setLocalPrinting,
+  setPrinterServerAddress,
+} from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 
 const useStyles = makeStyles()(theme => ({
@@ -47,6 +55,7 @@ export default function CompanyPage() {
 
   const dispatch = useDispatch();
   const printerServerAddress = useSelector(getPrinterServerAddress);
+  const localPrinting = useSelector(getLocalPrinting);
 
   return (
     <Box className={classes.root}>
@@ -64,6 +73,21 @@ export default function CompanyPage() {
               label="Dirección del servidor"
               autoComplete="off"
               onChange={e => dispatch(setPrinterServerAddress(e.target.value))}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              componentsProps={{
+                typography: { variant: "body1", color: "text.primary" },
+              }}
+              control={
+                <Checkbox
+                  checked={localPrinting}
+                  onChange={() => dispatch(setLocalPrinting(!localPrinting))}
+                  name="cierreRetiroEfectivo"
+                />
+              }
+              label="Impresión de ordenes local:"
             />
           </Grid>
         </Grid>
