@@ -8,8 +8,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 
 import { DialogStatus, DialogType } from "./order-summary";
+import { getLocalPrinting } from "state/ui/reducer";
 import {
   getPrintingTicketList as getPrintingTicketListAction,
+  printWorkingOrderTicket,
   updateWorkingOrderTicket,
 } from "state/working-order/asyncActions";
 import { getPrintingTicketList } from "state/working-order/reducer";
@@ -43,10 +45,19 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const printingTicketsList = useSelector(getPrintingTicketList);
+  const localPrinting = useSelector(getLocalPrinting);
 
   useEffect(() => {
     dispatch(getPrintingTicketListAction());
   }, [dispatch]);
+
+  const handlePrintingAction = (id: number) => {
+    if (localPrinting) {
+      dispatch(printWorkingOrderTicket({ ticketId: id }));
+    } else {
+      dispatch(updateWorkingOrderTicket({ ticketId: id }));
+    }
+  };
 
   const rows = printingTicketsList.map(row => ({
     id: row.IdTiquete,
@@ -58,7 +69,7 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
         className={classes.icon}
         color="primary"
         component="span"
-        onClick={() => dispatch(updateWorkingOrderTicket({ ticketId: row.IdTiquete }))}
+        onClick={() => handlePrintingAction(row.IdTiquete)}
       >
         <PrinterIcon className={classes.printerIcon} />
       </IconButton>

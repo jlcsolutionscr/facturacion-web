@@ -1,7 +1,7 @@
 import { startAppListening } from "state/listener-middleware";
 import { login } from "state/session/reducer";
-import { setPrinterServerAddress } from "state/ui/reducer";
-import { STORAGE_TICKET_PRINTER_SERVER_ADDRESS } from "utils/constants";
+import { setLocalPrinting, setPrinterServerAddress } from "state/ui/reducer";
+import { STORAGE_LOCAL_PRINTING, STORAGE_TICKET_PRINTER_SERVER_ADDRESS } from "utils/constants";
 import { LOGIN_INPUT_ID, writeKeyToStorage } from "utils/utilities";
 
 export default function setupListeners() {
@@ -10,6 +10,12 @@ export default function setupListeners() {
     actionCreator: setPrinterServerAddress,
     effect: ({ payload }) => {
       writeKeyToStorage(STORAGE_TICKET_PRINTER_SERVER_ADDRESS, payload);
+    },
+  });
+  startAppListening({
+    actionCreator: setLocalPrinting,
+    effect: ({ payload }) => {
+      writeKeyToStorage(STORAGE_LOCAL_PRINTING, payload);
     },
   });
   startAppListening({

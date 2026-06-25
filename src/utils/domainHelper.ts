@@ -1415,7 +1415,7 @@ function sentBytesToWSPrinter(base64: string, printerServerAddress: string, prin
       };
       socket.send(JSON.stringify(message));
       socket.close(1000, "Work complete");
-      const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticketId;
+      const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticketId + "&status=impreso";
       get(APP_URL + queryUrl, "");
       resolve("Success!");
     };

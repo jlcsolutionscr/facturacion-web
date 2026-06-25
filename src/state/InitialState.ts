@@ -23,7 +23,7 @@ import {
   WorkingOrderType,
 } from "types/domain";
 
-import { STORAGE_TICKET_PRINTER_SERVER_ADDRESS } from "utils/constants";
+import { STORAGE_LOCAL_PRINTING, STORAGE_TICKET_PRINTER_SERVER_NAME } from "utils/constants";
 import {
   defaultBranch,
   defaultCategory,
@@ -53,6 +53,7 @@ type UIStateType = {
   message: string;
   messageType: string;
   printerServerAddress: string;
+  localPrinting: boolean;
 };
 
 type SessionStateType = {
@@ -177,7 +178,8 @@ export const uiInitialState: UIStateType = {
   exonerationNameList: [],
   message: "",
   messageType: "ERROR",
-  printerServerAddress: readyKeyFromStorage(STORAGE_TICKET_PRINTER_SERVER_ADDRESS) ?? "",
+  printerServerAddress: readyKeyFromStorage(STORAGE_TICKET_PRINTER_SERVER_NAME) ?? "",
+  localPrinting: readyKeyFromStorage(STORAGE_LOCAL_PRINTING) ?? false,
 };
 
 export const sessionInitialState: SessionStateType = {

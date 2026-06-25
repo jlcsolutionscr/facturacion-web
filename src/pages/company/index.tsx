@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
@@ -25,7 +27,7 @@ import {
   setLogo,
 } from "state/company/reducer";
 import { updateCantonList, updateDistritoList } from "state/ui/asyncActions";
-import { getCantonList, getDistritoList, setActiveSection } from "state/ui/reducer";
+import { getCantonList, getDistritoList, getLocalPrinting, setActiveSection, setLocalPrinting } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 import { convertToDateString } from "utils/utilities";
@@ -79,6 +81,7 @@ export default function CompanyPage() {
   const cantonList = useSelector(getCantonList);
   const distritoList = useSelector(getDistritoList);
   const economicActivityList = useSelector(getAvailableEconomicActivityList);
+  const localPrinting = useSelector(getLocalPrinting);
 
   useEffect(() => {
     if (economicActivityList.length > 0) setActivityCode(economicActivityList[0].Llave);
@@ -365,6 +368,21 @@ export default function CompanyPage() {
               label="Monto de Cierre en Efectivo"
               numericFormat
               onChange={handleBranchChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              componentsProps={{
+                typography: { variant: "body1", color: "text.primary" },
+              }}
+              control={
+                <Checkbox
+                  checked={localPrinting}
+                  onChange={() => dispatch(setLocalPrinting(!localPrinting))}
+                  name="cierreRetiroEfectivo"
+                />
+              }
+              label="Impresión de ordenes local:"
             />
           </Grid>
           <Grid item xs={8} md={6} lg={4}>

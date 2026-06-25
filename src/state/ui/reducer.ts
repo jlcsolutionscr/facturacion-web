@@ -43,6 +43,9 @@ const uiSlice = createSlice({
     setPrinterServerAddress: (state, action) => {
       state.printerServerAddress = action.payload;
     },
+    setLocalPrinting: (state, action) => {
+      state.localPrinting = action.payload;
+    },
   },
 });
 
@@ -58,6 +61,7 @@ export const {
   setExonerationNameList,
   setIdTypeList,
   setPrinterServerAddress,
+  setLocalPrinting,
 } = uiSlice.actions;
 
 export const getIsLoaderOpen = (state: RootState) => state.ui.isLoaderOpen;
@@ -76,5 +80,6 @@ export const getExonerationTypeList = (state: RootState) => state.ui.exoneration
 export const getExonerationNameList = (state: RootState) => state.ui.exonerationNameList;
 export const getIdTypeList = (state: RootState) => state.ui.idTypeList;
 export const getPrinterServerAddress = (state: RootState) => state.ui.printerServerAddress;
+export const getLocalPrinting = (state: RootState) => state.ui.localPrinting;
 
 export default uiSlice.reducer;

@@ -15,4 +15,5 @@ export const TRANSITION_ANIMATION =
 export const STORAGE_TICKET_LOOKUP_FOR_NAME = "ticketLookupForName";
 export const STORAGE_TICKET_PRINTER_SERVER_TYPE = "ticketPrinterServerType";
 export const STORAGE_TICKET_PRINTER_SERVER_ADDRESS = "TicketPrinterServerAddress";
+export const STORAGE_LOCAL_PRINTING = "JLC-LocalPrinting";
 export const STORAGE_TICKET_PRINTER_SERVER_NAME = "TicketPrinterServerName";
