@@ -1,5 +1,6 @@
 import { useWindowSize } from "jlc-component-library";
 import { useState } from "react";
+import { ErrorBoundary, getErrorMessage } from "react-error-boundary";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Slide from "@mui/material/Slide";
@@ -54,7 +55,17 @@ function RoutingPage() {
   const component = !authenticated ? (
     <LoginPage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
   ) : (
-    <HomePage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
+    <ErrorBoundary
+      fallbackRender={({ error, resetErrorBoundary }) => (
+        <div role="alert">
+          <p>Something went wrong:</p>
+          <pre>{getErrorMessage(error)}</pre>
+          <button onClick={resetErrorBoundary}>Try again</button>
+        </div>
+      )}
+    >
+      <HomePage width={width} isDarkMode={isDarkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
+    </ErrorBoundary>
   );
 
   return (
