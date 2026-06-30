@@ -20,8 +20,9 @@ import { filterCustomerList, getCustomerListByPageNumber } from "state/customer/
 import { getCustomerList, getCustomerListCount, getCustomerListPage } from "state/customer/reducer";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { getCompany } from "state/session/reducer";
+import { setMessage } from "state/ui/reducer";
 import { resetPaymentInfo } from "state/working-order/reducer";
-import { formatCurrency, roundNumber } from "utils/utilities";
+import { formatCurrency, getErrorMessage, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   summaryTitle: {
@@ -134,44 +135,49 @@ export default function PaymentDialog({
 
   const handlePaymentOptionChange = (type: string, value: string) => {
     const floatValue = value === "" ? 0 : parseFloat(value);
+    const cashPaymentValue = cashPayment === "" ? 0 : parseFloat(cashPayment);
     if (type === "CASH") {
       setCashPayment(value);
       setCardPayment((total - floatValue).toString());
       setTransferPayment("0");
     } else if (type === "CARD") {
       setCardPayment(value);
-      setTransferPayment((total - parseFloat(cashPayment) - floatValue).toString());
+      setTransferPayment((total - cashPaymentValue - floatValue).toString());
     } else {
       if (floatValue === 0) setCashPayment(total.toString());
       setTransferPayment(value);
     }
   };
 
-  const handleSbumitButtonClick = () => {
-    const paymentList = [];
-    if (cashPayment !== "0") {
-      paymentList.push({
-        paymentId: 1,
-        description: "EFECTIVO",
-        amount: parseFloat(cashPayment),
-      });
+  const handleSubmitButtonClick = () => {
+    try {
+      const paymentList = [];
+      if (cashPayment !== "" && parseFloat(cashPayment) > 0) {
+        paymentList.push({
+          paymentId: 1,
+          description: "EFECTIVO",
+          amount: parseFloat(cashPayment),
+        });
+      }
+      if (cardPayment !== "" && parseFloat(cardPayment) > 0) {
+        paymentList.push({
+          paymentId: 2,
+          description: "TARJETA",
+          amount: parseFloat(cardPayment),
+        });
+      }
+      if (transferPayment !== "" && parseFloat(transferPayment) > 0) {
+        paymentList.push({
+          paymentId: 4,
+          description: "TRANSFERENCIA",
+          amount: parseFloat(transferPayment),
+        });
+      }
+      setPaymentMethodList(paymentList);
+      generateInvoice();
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
-    if (cardPayment !== "0") {
-      paymentList.push({
-        paymentId: 2,
-        description: "TARJETA",
-        amount: parseFloat(cardPayment),
-      });
-    }
-    if (transferPayment !== "0") {
-      paymentList.push({
-        paymentId: 4,
-        description: "TRANSFERENCIA",
-        amount: parseFloat(transferPayment),
-      });
-    }
-    setPaymentMethodList(paymentList);
-    generateInvoice();
   };
 
   return (
@@ -369,7 +375,7 @@ export default function PaymentDialog({
             disabled={total !== parseFloat(cashPayment) + parseFloat(cardPayment) + parseFloat(transferPayment)}
             label="Facturar"
             autoFocus
-            onClick={handleSbumitButtonClick}
+            onClick={handleSubmitButtonClick}
           />
         ) : (
           <Grid xs="auto">
