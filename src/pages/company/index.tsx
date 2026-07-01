@@ -249,7 +249,7 @@ export default function CompanyPage() {
           <Grid item xs={12}>
             <TextField required id="Direccion" value={company.Direccion} label="Dirección" onChange={handleChange} />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={6} sm={company?.TipoContrato < 4 ? 3 : 4}>
             <TextField
               required
               id="Telefono1"
@@ -259,7 +259,7 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={6} sm={company?.TipoContrato < 4 ? 3 : 4}>
             <TextField
               id="Telefono2"
               value={company.Telefono2}
@@ -268,13 +268,22 @@ export default function CompanyPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={company?.TipoContrato < 4 ? 6 : 12} sm={company?.TipoContrato < 4 ? 3 : 4}>
             <LabelField
               id="FechaVence"
               value={company?.FechaVence ? convertToDateString(company.FechaVence) : ""}
               label="Fecha vencimiento plan"
             />
           </Grid>
+          {company?.TipoContrato < 4 && (
+            <Grid item xs={6} sm={3}>
+              <LabelField
+                id="Documentos disponibles"
+                value={company.CantidadDisponible.toString()}
+                label="Documentos disponibles"
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <TextField
               required
@@ -338,7 +347,7 @@ export default function CompanyPage() {
               onChange={handleBranchChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
             <TextField
               required
               id="CorreoElectronico"
@@ -347,7 +356,7 @@ export default function CompanyPage() {
               onChange={handleBranchChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={6} md={3}>
             <TextField
               required
               id="Telefono"
@@ -357,7 +366,7 @@ export default function CompanyPage() {
               onChange={handleBranchChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={6} md={3}>
             <TextField
               required
               id="MontoCierreEfectivo"
