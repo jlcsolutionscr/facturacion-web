@@ -142,11 +142,18 @@ export type ProductType = {
   Activo: boolean;
 };
 
+export type BranchPerCategoryType = {
+  IdEmpresa: number;
+  IdLinea: number;
+  IdSucursal: number;
+};
+
 export type CategoryType = {
   IdEmpresa: number;
   IdLinea: number;
   Descripcion: string;
   ImpresoraTiquete: string;
+  LineaPorSucursal: BranchPerCategoryType[];
 };
 
 export type DetalleProductoType = {

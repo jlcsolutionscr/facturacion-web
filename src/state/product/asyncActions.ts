@@ -313,6 +313,11 @@ export const openCategory = createAsyncThunk(
       };
       if (payload.id) {
         category = await getCategoryEntity(token, payload.id);
+        category.LineaPorSucursal = category.LineaPorSucursal.map(branch => ({
+          IdEmpresa: branch.IdEmpresa,
+          IdLinea: branch.IdLinea,
+          IdSucursal: branch.IdSucursal,
+        }));
       }
       dispatch(setCategory(category));
       dispatch(stopLoader());

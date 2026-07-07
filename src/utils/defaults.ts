@@ -172,6 +172,7 @@ export const defaultCategory: CategoryType = {
   IdEmpresa: 0,
   Descripcion: "",
   ImpresoraTiquete: "",
+  LineaPorSucursal: [],
 };
 
 export const defaultInvoice: InvoiceType = {

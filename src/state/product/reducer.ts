@@ -32,6 +32,18 @@ const productSlice = createSlice({
     setCategoryList: (state, action) => {
       state.categoryList = action.payload;
     },
+    removeBranchFromCategory: (state, action) => {
+      state.categoryEntity.LineaPorSucursal = state.categoryEntity.LineaPorSucursal.filter(
+        branch => branch.IdSucursal !== action.payload
+      );
+    },
+    addBranchToCategory: (state, action) => {
+      state.categoryEntity.LineaPorSucursal.push({
+        IdEmpresa: state.categoryEntity.IdEmpresa,
+        IdLinea: state.categoryEntity.IdLinea,
+        IdSucursal: action.payload,
+      });
+    },
     setProviderList: (state, action) => {
       state.providerList = action.payload;
     },
@@ -71,6 +83,8 @@ export const {
   setClasificationList,
   setProductAttribute,
   setCategoryAttribute,
+  removeBranchFromCategory,
+  addBranchToCategory,
 } = productSlice.actions;
 
 export const getProductListPage = (state: RootState) => state.product.listPage;

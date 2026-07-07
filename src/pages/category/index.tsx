@@ -1,14 +1,29 @@
-import { Button, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
+import { Button, LabelField, Select, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
 import { saveCategory } from "state/product/asyncActions";
-import { getCategory, setCategoryAttribute } from "state/product/reducer";
+import {
+  addBranchToCategory,
+  getCategory,
+  removeBranchFromCategory,
+  setCategoryAttribute,
+} from "state/product/reducer";
+import { getBranchList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
+import { AddCircleIcon, RemoveCircleIcon } from "utils/iconsHelper";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -37,6 +52,12 @@ const useStyles = makeStyles()(theme => ({
     padding: "5px",
     scrollbarWidth: "thin",
   },
+  innerButton: {
+    padding: "0px",
+  },
+  outerButton: {
+    padding: "8px",
+  },
   footer: {
     display: "flex",
     height: "50px",
@@ -46,8 +67,16 @@ const useStyles = makeStyles()(theme => ({
 
 export default function CategoryPage() {
   const { classes } = useStyles();
+  const [branchId, setBranchId] = useState(0);
   const dispatch = useDispatch();
   const category = useSelector(getCategory);
+  const branchList = useSelector(getBranchList);
+
+  useEffect(() => {
+    if (branchList.length > 0) {
+      setBranchId(branchList[0].Id);
+    }
+  }, [branchList]);
 
   const handleChange = (event: TextFieldOnChangeEventType) => {
     dispatch(
@@ -57,6 +86,12 @@ export default function CategoryPage() {
       })
     );
   };
+
+  const branchItems = branchList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const disabled = category === null || category.Descripcion === "";
 
@@ -77,6 +112,77 @@ export default function CategoryPage() {
               label="Descripción"
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={10}>
+            {branchList.length > 1 ? (
+              <Select
+                id="sucursal-select-id"
+                label="Seleccione la sucursal:"
+                value={branchId.toString()}
+                onChange={event => dispatch(setBranchId(parseInt(event.target.value)))}
+              >
+                {branchItems}
+              </Select>
+            ) : (
+              <LabelField
+                label="Sucursal:"
+                value={
+                  branchList.length > 0 ? branchList.find(branch => branch.Id === branchId)?.Descripcion || "" : ""
+                }
+              />
+            )}
+          </Grid>
+          <Grid item xs={2}>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                margin: "auto",
+                padding: "0",
+                width: "auto",
+                height: "auto",
+              }}
+            >
+              <IconButton
+                className={classes.outerButton}
+                color="primary"
+                disabled={category.LineaPorSucursal.some(b => b.IdSucursal === branchId)}
+                component="span"
+                onClick={() => dispatch(addBranchToCategory(branchId))}
+              >
+                <AddCircleIcon />
+              </IconButton>
+            </button>
+          </Grid>
+          <Grid container style={{ overflowY: "auto" }}>
+            <Grid item xs={12}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="right">Nombre Sucursal</TableCell>
+                    <TableCell align="right"> - </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {category.LineaPorSucursal.map(row => (
+                    <TableRow key={row.IdSucursal}>
+                      <TableCell>{branchList.find(b => b.Id === row.IdSucursal)?.Descripcion || ""}</TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          className={classes.innerButton}
+                          color="secondary"
+                          component="span"
+                          onClick={() => dispatch(removeBranchFromCategory(row.IdSucursal))}
+                        >
+                          <RemoveCircleIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
