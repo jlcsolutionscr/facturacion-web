@@ -140,6 +140,7 @@ export const defaultProductDetails: ProductDetailsType = {
   price: "0",
   costPrice: 0,
   disccountRate: 0,
+  isService: false,
 };
 
 export const defaultProduct: ProductType = {
@@ -171,6 +172,7 @@ export const defaultCategory: CategoryType = {
   IdLinea: 0,
   IdEmpresa: 0,
   Descripcion: "",
+  Tipo: 1,
   ImpresoraTiquete: "",
   LineaPorSucursal: [],
 };

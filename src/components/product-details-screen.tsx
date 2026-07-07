@@ -92,6 +92,7 @@ export default function StepTwoScreen({
   const dispatch = useDispatch();
 
   const [filterType, setFilterType] = useState(2);
+  const [priceChanged, setPriceChanged] = useState(false);
   const [filter, setFilter] = useState("");
   const myRef = useRef<HTMLDivElement>(null);
 
@@ -121,6 +122,15 @@ export default function StepTwoScreen({
     dispatch(filterProductList({ filterText: "", type: newFilterType, rowsPerPage: ROWS_PER_PRODUCT }));
   };
 
+  const handleAddDetails = () => {
+    if (priceChanged && productDetails.isService) {
+      const newPrice = parseFloat(productDetails.price) * (1 + productDetails.taxRate / 100);
+      setProductDetails("price", newPrice.toFixed(2));
+    }
+    addDetails();
+    setPriceChanged(false);
+  };
+
   const isDescriptionChangeEnabled = permissions.filter(role => [1, 50].includes(role.IdRole)).length > 0;
   const isPriceChangeEnabled = permissions.filter(role => [1, 52].includes(role.IdRole)).length > 0;
   const products = productList.map(item => ({
@@ -141,7 +151,7 @@ export default function StepTwoScreen({
         <form
           noValidate
           onSubmit={ev => {
-            addDetails();
+            handleAddDetails();
             ev.preventDefault();
           }}
         >
@@ -197,7 +207,10 @@ export default function StepTwoScreen({
                 label="Precio"
                 value={productDetails.price}
                 numericFormat
-                onChange={event => setProductDetails("price", event.target.value)}
+                onChange={event => {
+                  setProductDetails("price", event.target.value);
+                  setPriceChanged(true);
+                }}
               />
             </Grid>
             <Grid item xs={2}>

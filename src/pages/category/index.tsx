@@ -17,6 +17,7 @@ import { saveCategory } from "state/product/asyncActions";
 import {
   addBranchToCategory,
   getCategory,
+  getProductTypeList,
   removeBranchFromCategory,
   setCategoryAttribute,
 } from "state/product/reducer";
@@ -71,6 +72,7 @@ export default function CategoryPage() {
   const dispatch = useDispatch();
   const category = useSelector(getCategory);
   const branchList = useSelector(getBranchList);
+  const productTypeList = useSelector(getProductTypeList);
 
   useEffect(() => {
     if (branchList.length > 0) {
@@ -86,6 +88,12 @@ export default function CategoryPage() {
       })
     );
   };
+
+  const productTypes = productTypeList.map(item => (
+    <MenuItem key={item.Id} value={item.Id}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const branchItems = branchList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -113,7 +121,17 @@ export default function CategoryPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={4}>
+            <Select
+              id="tipo-select-id"
+              label="Seleccione el tipo de producto"
+              value={category.Tipo.toString()}
+              onChange={event => dispatch(setCategoryAttribute({ attribute: "Tipo", value: event.target.value }))}
+            >
+              {productTypes}
+            </Select>
+          </Grid>
+          <Grid item xs={6}>
             {branchList.length > 1 ? (
               <Select
                 id="sucursal-select-id"

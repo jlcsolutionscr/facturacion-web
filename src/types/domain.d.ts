@@ -152,6 +152,7 @@ export type CategoryType = {
   IdEmpresa: number;
   IdLinea: number;
   Descripcion: string;
+  Tipo: number;
   ImpresoraTiquete: string;
   LineaPorSucursal: BranchPerCategoryType[];
 };
@@ -238,6 +239,7 @@ export type ProductDetailsType = {
   price: string;
   costPrice: number;
   disccountRate: number;
+  isService: boolean;
 };
 
 type PaymentMethodType = {

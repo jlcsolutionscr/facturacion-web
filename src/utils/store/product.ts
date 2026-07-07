@@ -21,6 +21,7 @@ export async function getNewProductItem(
       description: productEntity.Descripcion,
       price: price.toString(),
       taxRate: taxRate,
+      isService: productEntity.EsServicio,
     };
   }
   return {
@@ -34,6 +35,7 @@ export async function getNewProductItem(
     price: product.price,
     costPrice: product.costPrice,
     disccountRate: product.disccountRate,
+    isService: product.isService,
   };
 }
 

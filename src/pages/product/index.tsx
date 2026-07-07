@@ -102,7 +102,6 @@ export default function ProductPage() {
   const imageFileRef = useRef<HTMLInputElement>(null);
 
   const product = useSelector(getProduct);
-  const productTypeList = useSelector(getProductTypeList);
   const categoryList = useSelector(getCategoryList);
   const clasificationList = useSelector(getClasificationList);
   const taxTypeList = useSelector(getTaxTypeList);
@@ -118,12 +117,6 @@ export default function ProductPage() {
     setUntaxPrice4(calculatePrice(product.PrecioVenta4, product.IdImpuesto));
     setUntaxPrice5(calculatePrice(product.PrecioVenta5, product.IdImpuesto));
   }, [product, taxTypeList]);
-
-  const productTypes = productTypeList.map(item => (
-    <MenuItem key={item.Id} value={item.Id}>
-      {item.Descripcion}
-    </MenuItem>
-  ));
 
   const categories = categoryList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -269,16 +262,6 @@ export default function ProductPage() {
       </Box>
       <Box className={classes.content}>
         <Grid container spacing={{ xs: 1, sm: 2 }}>
-          <Grid item xs={12} sm={6}>
-            <Select
-              id="tipo-select-id"
-              label="Seleccione el tipo de producto"
-              value={product.Tipo.toString()}
-              onChange={event => dispatch(setProductAttribute({ attribute: "Tipo", value: event.target.value }))}
-            >
-              {productTypes}
-            </Select>
-          </Grid>
           <Grid item xs={12} sm={6}>
             <Select
               id="id-linea-select-id"
