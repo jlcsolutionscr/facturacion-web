@@ -107,6 +107,7 @@ export const addDetails = createAsyncThunk("proforma/addDetails", async (_payloa
         price: productDetails.price,
         costPrice: productDetails.costPrice,
         disccountRate: productDetails.disccountRate,
+        isService: productDetails.isService,
       };
       const index = productDetailsList.findIndex(
         item => item.id === productDetails.id && item.price === productDetails.price

@@ -144,6 +144,7 @@ export const addDetails = createAsyncThunk(
             unit: "UND",
             costPrice: 0,
             disccountRate: 0,
+            isService: false,
           };
         }
       }

@@ -10,13 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { getPermissions } from "state/session/reducer";
 import { generateInvoice, generateWorkingOrderTicket, saveWorkingOrder } from "state/working-order/asyncActions";
-import {
-  resetWorkingOrder,
-  setActivityCode,
-  setCurrency,
-  setPaymentMethodList,
-  setVendorId,
-} from "state/working-order/reducer";
+import { resetWorkingOrder, setActivityCode, setPaymentMethodList, setVendorId } from "state/working-order/reducer";
 import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
@@ -73,7 +67,6 @@ interface OrderSummaryProps {
   company: CompanyType | null;
   paymentInfo: PaymentInfoType;
   vendorId: number;
-  currency: number;
   workingOrderId: number;
   vendorList: IdDescriptionType[];
   cashAdvance: number;
@@ -89,7 +82,6 @@ export default function OrderSummary({
   company,
   paymentInfo,
   vendorId,
-  currency,
   workingOrderId,
   vendorList,
   cashAdvance,
@@ -251,19 +243,6 @@ export default function OrderSummary({
                   }
                 >
                   {paymentItems}
-                </Select>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} className={classes.centered}>
-              <Grid item xs={10} sm={6} md={4}>
-                <Select
-                  id="currenty-type-select-id"
-                  label="Seleccione la moneda de la transacción"
-                  value={currency.toString()}
-                  onChange={event => dispatch(setCurrency(event.target.value))}
-                >
-                  <MenuItem value={1}>COLONES</MenuItem>
-                  <MenuItem value={2}>DOLARES</MenuItem>
                 </Select>
               </Grid>
             </Grid>

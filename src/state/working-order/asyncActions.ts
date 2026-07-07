@@ -151,6 +151,7 @@ export const addDetails = createAsyncThunk(
             unit: "UND",
             costPrice: 0,
             disccountRate: 0,
+            isService: false,
           };
         }
       }
@@ -720,7 +721,7 @@ export const generateInvoice = createAsyncThunk(
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
     const { servicePointList, entity, paymentInfo } = workingOrder;
-    const { id, vendorId, currency, servicePointId, productDetailsList } = entity;
+    const { id, vendorId, servicePointId, productDetailsList } = entity;
     const { customerDetails, totalSaved, totalPaid, activityCode, summary, paymentMethodList } = paymentInfo;
     dispatch(startLoader());
     try {
@@ -734,7 +735,7 @@ export const generateInvoice = createAsyncThunk(
         branchId,
         activityCode,
         paymentMethodList,
-        currency,
+        1,
         vendorId,
         id,
         customerDetails,

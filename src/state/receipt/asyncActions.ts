@@ -93,6 +93,7 @@ export const addDetails = createAsyncThunk("receipt/addDetails", async (_payload
         price: productDetails.price,
         costPrice: 0,
         disccountRate: 0,
+        isService: false,
       };
       const newProducts = [...productDetailsList, item];
       dispatch(setProductDetailsList(newProducts));

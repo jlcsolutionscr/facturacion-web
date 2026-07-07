@@ -1,4 +1,4 @@
-import { Button, LabelField, Select, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
+import { Button, Select, TextField, type TextFieldOnChangeEventType } from "jlc-component-library";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
@@ -112,7 +112,7 @@ export default function CategoryPage() {
       </Box>
       <Box className={classes.content}>
         <Grid container spacing={{ xs: 1, sm: 2 }}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               required
               id="Descripcion"
@@ -121,7 +121,7 @@ export default function CategoryPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={6}>
             <Select
               id="tipo-select-id"
               label="Seleccione el tipo de producto"
@@ -131,62 +131,57 @@ export default function CategoryPage() {
               {productTypes}
             </Select>
           </Grid>
-          <Grid item xs={6}>
-            {branchList.length > 1 ? (
-              <Select
-                id="sucursal-select-id"
-                label="Seleccione la sucursal:"
-                value={branchId.toString()}
-                onChange={event => dispatch(setBranchId(parseInt(event.target.value)))}
-              >
-                {branchItems}
-              </Select>
-            ) : (
-              <LabelField
-                label="Sucursal:"
-                value={
-                  branchList.length > 0 ? branchList.find(branch => branch.Id === branchId)?.Descripcion || "" : ""
-                }
-              />
-            )}
-          </Grid>
-          <Grid item xs={2}>
-            <button
-              type="submit"
-              style={{
-                backgroundColor: "transparent",
-                border: "none",
-                margin: "auto",
-                padding: "0",
-                width: "auto",
-                height: "auto",
-              }}
-            >
-              <IconButton
-                className={classes.outerButton}
-                color="primary"
-                disabled={category.LineaPorSucursal.some(b => b.IdSucursal === branchId)}
-                component="span"
-                onClick={() => dispatch(addBranchToCategory(branchId))}
-              >
-                <AddCircleIcon />
-              </IconButton>
-            </button>
-          </Grid>
-          <Grid container style={{ overflowY: "auto" }}>
+          {branchList.length > 1 && (
+            <Grid item container spacing={{ xs: 1, sm: 2 }} alignItems="center">
+              <Grid item xs={10} md={11}>
+                <Select
+                  id="sucursal-select-id"
+                  label="Seleccione la sucursal:"
+                  value={branchId.toString()}
+                  onChange={event => dispatch(setBranchId(parseInt(event.target.value)))}
+                >
+                  {branchItems}
+                </Select>
+              </Grid>
+              <Grid item xs={2} md={1}>
+                <button
+                  type="submit"
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    margin: "auto",
+                    padding: "0",
+                    width: "auto",
+                    height: "auto",
+                  }}
+                >
+                  <IconButton
+                    className={classes.outerButton}
+                    color="primary"
+                    disabled={category.LineaPorSucursal.some(b => b.IdSucursal === branchId)}
+                    component="span"
+                    onClick={() => dispatch(addBranchToCategory(branchId))}
+                  >
+                    <AddCircleIcon />
+                  </IconButton>
+                </button>
+              </Grid>
+            </Grid>
+          )}
+          <Grid item container style={{ overflowY: "auto" }}>
             <Grid item xs={12}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="right">Nombre Sucursal</TableCell>
-                    <TableCell align="right"> - </TableCell>
+                    <TableCell align="left">Sucursales asignadas</TableCell>
+                    <TableCell align="center"> - </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {category.LineaPorSucursal.map(row => (
                     <TableRow key={row.IdSucursal}>
                       <TableCell>{branchList.find(b => b.Id === row.IdSucursal)?.Descripcion || ""}</TableCell>
-                      <TableCell align="right">
+                      <TableCell align="center">
                         <IconButton
                           className={classes.innerButton}
                           color="secondary"

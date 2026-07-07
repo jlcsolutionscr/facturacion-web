@@ -205,7 +205,6 @@ export const defaultWorkingOrder: WorkingOrderType = {
   productDetails: defaultProductDetails,
   productDetailsList: [],
   vendorId: 0,
-  currency: 1,
   delivery: {
     phone: "",
     address: "",

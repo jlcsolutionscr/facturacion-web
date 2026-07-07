@@ -18,7 +18,6 @@ import { setActiveSection } from "state/ui/reducer";
 import { addDetails, removeDetails } from "state/working-order/asyncActions";
 import {
   getCashAdvance,
-  getCurrency,
   getCustomerDetails,
   getDeliveryDetails,
   getInvoiceId,
@@ -97,7 +96,6 @@ export default function WorkingOrderPage() {
   const company = useSelector(getCompany);
   const paymentInfo = useSelector(getPaymentInfo);
   const vendorId = useSelector(getVendorId);
-  const currency = useSelector(getCurrency);
   const workingOrderId = useSelector(getWorkingOrderId);
   const vendorList = useSelector(getVendorList);
   const cashAdvance = useSelector(getCashAdvance);
@@ -161,7 +159,6 @@ export default function WorkingOrderPage() {
         vendorId={vendorId}
         workingOrderId={workingOrderId}
         vendorList={vendorList}
-        currency={currency}
         cashAdvance={cashAdvance}
         status={status}
         invoiceId={invoiceId}

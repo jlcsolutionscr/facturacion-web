@@ -47,6 +47,7 @@ export function parseWorkingOrderEntity(entity: any, company: CompanyType | null
       disccountRate: 0,
       paid: item.Pagado,
       inSummary: item.Pagado ? false : true,
+      isService: item.Producto.EsServicio,
     };
     productDetailsList.push(orderItem);
     const total = parseFloat(orderItem.quantity) * parseFloat(orderItem.price);
@@ -68,7 +69,6 @@ export function parseWorkingOrderEntity(entity: any, company: CompanyType | null
     productDetails: defaultProductDetails,
     productDetailsList,
     vendorId: entity.IdVendedor,
-    currency: entity.IdTipoMoneda,
     delivery: {
       phone: entity.Telefono,
       address: entity.Direccion,

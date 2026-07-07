@@ -42,6 +42,7 @@ export type CodeDescriptionType = {
   PrecioVenta4: number;
   PrecioVenta5: number;
   Imagen: string;
+  EsServicio: boolean;
 };
 
 export type EconomicActivityType = {
@@ -171,6 +172,7 @@ export type DetalleProductoType = {
   Pagado: boolean;
   Producto: {
     PrecioCosto: number;
+    EsServicio: boolean;
   };
 };
 
@@ -302,7 +304,6 @@ export type WorkingOrderType = {
   productDetailsList: WorkingOrderProductDetailsType[];
   cashAdvance: number;
   vendorId: number;
-  currency: number;
   delivery: DeliveryType;
 };
 

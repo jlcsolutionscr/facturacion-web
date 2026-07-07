@@ -21,17 +21,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
 import { filterClasificationList, saveProduct, validateProductCode } from "state/product/asyncActions";
-import {
-  getCategoryList,
-  getClasificationList,
-  getProduct,
-  getProductTypeList,
-  setProductAttribute,
-} from "state/product/reducer";
+import { getCategoryList, getClasificationList, getProduct, setProductAttribute } from "state/product/reducer";
 import { getTaxTypeList, setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
 import { AddCircleIcon, SearchIcon } from "utils/iconsHelper";
-import { getDescriptionFromRateId, getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
+import { getIdFromRateValue, getTaxeRateFromId, roundNumber } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -262,7 +256,7 @@ export default function ProductPage() {
       </Box>
       <Box className={classes.content}>
         <Grid container spacing={{ xs: 1, sm: 2 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <Select
               id="id-linea-select-id"
               label="Seleccione la línea del producto"
@@ -284,7 +278,7 @@ export default function ProductPage() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={10} sm={6}>
+          <Grid item xs={8}>
             <TextField
               required
               id="CodigoClasificacion"
@@ -294,7 +288,7 @@ export default function ProductPage() {
               onChange={event => dispatch(validateProductCode({ code: event.target.value }))}
             />
           </Grid>
-          <Grid item xs={2} sm={1}>
+          <Grid item xs={1}>
             <IconButton
               className={classes.icon}
               aria-label="upload picture"
@@ -304,12 +298,8 @@ export default function ProductPage() {
               <SearchIcon />
             </IconButton>
           </Grid>
-          <Grid item xs={12} sm={5}>
-            <LabelField
-              id="TasaIva"
-              value={getDescriptionFromRateId(taxTypeList, product.IdImpuesto)}
-              label="Tasa del IVA"
-            />
+          <Grid item xs={3}>
+            <LabelField id="TasaIva" value={`${product.IdImpuesto}%`} label="Tasa del IVA" />
           </Grid>
           <Grid item xs={12}>
             <TextField

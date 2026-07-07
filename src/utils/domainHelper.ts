@@ -796,7 +796,6 @@ export async function saveWorkingOrderEntity(
     IdOrden: order.id,
     ConsecOrdenServicio: order?.consecutive,
     IdUsuario: userId,
-    IdTipoMoneda: order.currency,
     IdCliente: paymentInfo.customerDetails.id,
     NombreCliente: paymentInfo.customerDetails.name,
     Fecha: workingOrderDate,
