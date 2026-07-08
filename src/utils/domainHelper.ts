@@ -253,7 +253,7 @@ export async function getCustomerData(id: string) {
   const controller = new AbortController();
   const signal = controller.signal;
 
-  // Set a timeout of 5 seconds
+  // Set a timeout of 5 seconds to prevent the request from hanging indefinitely
   const timeoutId = setTimeout(() => {
     controller.abort();
   }, 5000);
