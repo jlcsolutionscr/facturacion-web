@@ -100,6 +100,8 @@ export default function ProductPage() {
   const clasificationList = useSelector(getClasificationList);
   const taxTypeList = useSelector(getTaxTypeList);
 
+  const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
+
   useEffect(() => {
     const calculatePrice = (value: number, taxId: number) => {
       const taxRate = getTaxeRateFromId(taxTypeList, taxId);
@@ -148,7 +150,6 @@ export default function ProductPage() {
   };
 
   const handleUntaxPriceChange = (event: TextFieldOnChangeEventType) => {
-    const taxRate = getTaxeRateFromId(taxTypeList, product.IdImpuesto);
     const taxPrice = roundNumber(getTaxedPrice(parseFloat(event.target.value), taxRate), 2);
     switch (event.target.id) {
       case "untaxPrice1":
@@ -299,7 +300,7 @@ export default function ProductPage() {
             </IconButton>
           </Grid>
           <Grid item xs={3}>
-            <LabelField id="TasaIva" value={`${product.IdImpuesto}%`} label="Tasa del IVA" />
+            <LabelField id="TasaIva" value={`${taxRate}%`} label="Tasa del IVA" />
           </Grid>
           <Grid item xs={12}>
             <TextField

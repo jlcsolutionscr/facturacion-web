@@ -1324,7 +1324,7 @@ export async function printPendingTickets(tickets: any, printerServerAddress: st
     for (let i = 0; i < tickets.length; i++) {
       let result: any;
       const ticket = tickets[i];
-      const ticketLines = JSON.parse(ticket.DetalleTiqueteOrdenServicio);
+      const ticketLines = JSON.parse(ticket.DetalleTiqueteDespachoMercancia);
       const lines = ticketLines.map((line: { Descripcion: string; Valor: number }) => [
         line.Descripcion,
         formatCurrency(line.Valor),

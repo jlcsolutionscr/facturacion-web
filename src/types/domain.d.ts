@@ -396,7 +396,7 @@ export type PrintingTicketType = {
   Etiqueta: string;
   Descripcion: string;
   Impresora: string;
-  DetalleTiqueteOrdenServicio: string;
+  DetalleTiqueteDespachoMercancia: string;
   Impreso: boolean;
 };
 

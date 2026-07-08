@@ -61,7 +61,7 @@ export default function TicketsDialog({ setDialogStatus }: TicketsDialogProps) {
 
   const rows = printingTicketsList.map(row => ({
     id: row.IdTiquete,
-    description: row.DetalleTiqueteOrdenServicio,
+    description: row.DetalleTiqueteDespachoMercancia,
     printer: row.Impresora,
     printed: row.Impreso ? "Sí" : "No",
     action1: (
