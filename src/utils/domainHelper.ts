@@ -726,7 +726,7 @@ export async function saveInvoiceEntity(
 
 export async function revokeInvoiceEntity(token: string, invoiceId: number, idUser: number) {
   const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + invoiceId + ", IdUsuario: " + idUser + "}}";
-  await post(APP_URL + "/ejecutar", token, data);
+  await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
 }
 
 export async function getProcessedInvoiceListCount(token: string, companyId: number, branchId: number) {
