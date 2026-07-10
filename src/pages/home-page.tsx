@@ -11,6 +11,7 @@ import CategoryPage from "pages/category";
 import CategoryLisPage from "pages/category/list-page";
 import CompanyPage from "pages/company";
 import CustomerPage from "pages/customer";
+import CustomerCreditNote from "pages/customer-credit-note";
 import CustomerListPage from "pages/customer/list-page";
 import DocumentListPage from "pages/document";
 import InvoicePage from "pages/invoice";
@@ -115,6 +116,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 20 && <ReportsPage />}
         {activeSection === 21 && <PrinterServiceConfig />}
         {activeSection === 22 && <CashClosingListPage setIsCashCloseDialogOpen={setIsCashCloseDialogOpen} />}
+        {activeSection === 23 && <CustomerCreditNote />}
       </div>
       <Dialog id="revoke-dialog" onClose={handleCashCloseDialogCancel} open={isCashCloseDialogOpen.open}>
         <CashCloseDialogPage

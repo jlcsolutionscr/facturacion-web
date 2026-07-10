@@ -291,6 +291,14 @@ export type InvoiceType = {
   successful: boolean;
 };
 
+export type CreditNoteType = {
+  creditNoteId: number;
+  date: string;
+  totalAmount: number;
+  balance: number;
+  details: string;
+};
+
 export type WorkingOrderProductDetailsType = ProductDetailsType & {
   paid: boolean;
   inSummary: boolean;
@@ -385,6 +393,7 @@ export type CashCloseType = {
   LiquidacionTarjeta: number;
   VentasCredito: number;
   ComprasCredito: number;
+  NotasCreditoCliente: number;
   EfectivoCierreSiguiente: number;
   RetiroEfectivo: number;
   FondoCierre: number;

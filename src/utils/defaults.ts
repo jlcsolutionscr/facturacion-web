@@ -2,6 +2,7 @@ import {
   BranchType,
   CategoryType,
   CompanyType,
+  CreditNoteType,
   CustomerDetailsType,
   CustomerEntityType,
   InvoiceType,
@@ -196,6 +197,14 @@ export const defaultInvoice: InvoiceType = {
   successful: false,
   cashAdvance: 0,
   currency: 1,
+};
+
+export const defaultCreditNote: CreditNoteType = {
+  creditNoteId: 0,
+  date: "",
+  totalAmount: 0,
+  balance: 0,
+  details: "",
 };
 
 export const defaultWorkingOrder: WorkingOrderType = {

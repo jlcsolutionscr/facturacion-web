@@ -261,6 +261,15 @@ export default function MenuPage() {
             </Button>
           </Grid>
           <Grid item xs={5} sm={3}>
+            <Button
+              disabled={!generateReceipt}
+              className={classes.button}
+              onClick={() => dispatch(setActiveSection(23))}
+            >
+              Notas de crédito
+            </Button>
+          </Grid>
+          <Grid item xs={5} sm={3}>
             <Button disabled={!reportingMenu} className={classes.button} onClick={() => dispatch(setActiveSection(20))}>
               Reportes
             </Button>

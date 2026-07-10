@@ -5,6 +5,7 @@ import {
   CodeDescriptionType,
   CompanyType,
   CredentialsType,
+  CreditNoteType,
   CustomerEntityType,
   DeviceType,
   IdDescriptionTaxType,
@@ -29,6 +30,7 @@ import {
   defaultCategory,
   defaultCompany,
   defaultCredentials,
+  defaultCreditNote,
   defaultCustomer,
   defaultInvoice,
   defaultPaymentInfo,
@@ -124,6 +126,7 @@ type ProductStateType = {
 
 type InvoiceStateType = {
   entity: InvoiceType;
+  creditNoteEntity: CreditNoteType;
   listPage: number;
   listCount: number;
   list: InvoiceEntityType[];
@@ -252,6 +255,7 @@ export const productInitialState: ProductStateType = {
 
 export const invoiceInitialState: InvoiceStateType = {
   entity: defaultInvoice,
+  creditNoteEntity: defaultCreditNote,
   listPage: 1,
   listCount: 0,
   list: [],

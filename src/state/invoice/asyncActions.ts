@@ -6,6 +6,7 @@ import {
   resetInvoice,
   resetProductDetails,
   setActivityCode,
+  setCreditNote,
   setCustomerDetails,
   setInvoiceList,
   setInvoiceListCount,
@@ -30,6 +31,7 @@ import { defaultPaymentMethod } from "utils/defaults";
 import {
   generateInvoicePDF,
   generateInvoiceTicketPDF,
+  getCreditNote,
   getCustomerListCount,
   getCustomerListPerPage,
   getPaymentBankId,
@@ -301,6 +303,37 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
     dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
   }
 });
+
+export const getCreditNoteById = createAsyncThunk(
+  "invoice/getCreditNoteById",
+  async (payload: { id: number }, { getState, dispatch }) => {
+    const { session } = getState() as RootState;
+    const { token, companyId } = session;
+    dispatch(startLoader());
+    try {
+      const creditNote = await getCreditNote(token, companyId, payload.id);
+      if (creditNote !== null) {
+        dispatch(
+          setCreditNote({
+            creditNoteId: creditNote.IdNotaCredito,
+            date: creditNote.Fecha,
+            totalAmount: creditNote.MontoOriginal,
+            balance: creditNote.Saldo,
+            details: creditNote.Detalles,
+          })
+        );
+      } else {
+        dispatch(
+          setMessage({ message: "No existen registros de la nota de crédito para el id proporcionado!", type: "ERROR" })
+        );
+      }
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
 
 export const getInvoiceListFirstPage = createAsyncThunk(
   "invoice/getInvoiceListFirstPage",

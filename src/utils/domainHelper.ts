@@ -575,6 +575,18 @@ export async function getServicePointEntity(token: string, id: number) {
   return servicePoint;
 }
 
+export async function getCreditNote(token: string, companyId: number, creditNoteId: number) {
+  const data =
+    "{NombreMetodo: 'ObtenerNotaCreditoCliente', Parametros: {IdEmpresa: " +
+    companyId +
+    ", IdNotaCredito: " +
+    creditNoteId +
+    "}}";
+  const creditNote = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (creditNote === null) return null;
+  return creditNote;
+}
+
 export function getProductsSummary(products: ProductDetailsType[], exonerationPercentage: number) {
   let taxed = 0;
   let exonerated = 0;

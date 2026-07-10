@@ -77,6 +77,9 @@ const invoiceSlice = createSlice({
     resetInvoice: state => {
       state.entity = { ...defaultInvoice, vendorId: state.entity.vendorId, activityCode: state.entity.activityCode };
     },
+    setCreditNote: (state, action) => {
+      state.creditNoteEntity = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(logout, () => {
@@ -106,6 +109,7 @@ export const {
   setInvoiceListCount,
   setInvoiceList,
   resetInvoice,
+  setCreditNote,
 } = invoiceSlice.actions;
 
 export const getInvoiceId = (state: RootState) => state.invoice.entity.invoiceId;
@@ -122,5 +126,6 @@ export const getSuccessful = (state: RootState) => state.invoice.entity.successf
 export const getInvoiceListPage = (state: RootState) => state.invoice.listPage;
 export const getInvoiceListCount = (state: RootState) => state.invoice.listCount;
 export const getInvoiceList = (state: RootState) => state.invoice.list;
+export const getCreditNote = (state: RootState) => state.invoice.creditNoteEntity;
 
 export default invoiceSlice.reducer;
