@@ -142,6 +142,7 @@ export default function WorkingOrderPage() {
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         stepDisabled={invoiceId > 0}
+        isPriceIncludingTaxes={company.PrecioVentaIncluyeIVA}
         getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))

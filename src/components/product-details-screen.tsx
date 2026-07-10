@@ -65,6 +65,7 @@ interface StepTwoScreenProps {
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
   stepDisabled: boolean;
+  isPriceIncludingTaxes: boolean;
   getProductDetails: (id: number) => void;
   addDetails: () => void;
   removeDetails: (pos: number) => void;
@@ -82,6 +83,7 @@ export default function StepTwoScreen({
   productDetails,
   productDetailsList,
   stepDisabled,
+  isPriceIncludingTaxes,
   getProductDetails,
   addDetails,
   removeDetails,
@@ -123,7 +125,7 @@ export default function StepTwoScreen({
   };
 
   const handleAddDetails = () => {
-    if (priceChanged && productDetails.isService) {
+    if (priceChanged && productDetails.isService && isPriceIncludingTaxes) {
       const newPrice = parseFloat(productDetails.price) * (1 + productDetails.taxRate / 100);
       setProductDetails("price", newPrice.toFixed(2));
     }

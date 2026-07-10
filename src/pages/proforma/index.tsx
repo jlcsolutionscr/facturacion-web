@@ -25,7 +25,7 @@ import {
   setCustomerAttribute,
   setProductDetails,
 } from "state/proforma/reducer";
-import { getPermissions, getVendorList } from "state/session/reducer";
+import { getCompany, getPermissions, getVendorList } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { FORM_TYPE, TRANSITION_ANIMATION } from "utils/constants";
 import { BackArrowIcon } from "utils/iconsHelper";
@@ -82,6 +82,7 @@ export default function ProformaPage() {
   const productDetails = useSelector(getProductDetails);
   const productList = useSelector(getProductList);
   const productDetailsList = useSelector(getProductDetailsList);
+  const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
   const vendorId = useSelector(getVendorId);
   const currency = useSelector(getCurrency);
@@ -128,6 +129,7 @@ export default function ProformaPage() {
         productDetails={productDetails}
         productDetailsList={productDetailsList}
         stepDisabled={successful}
+        isPriceIncludingTaxes={company.PrecioVentaIncluyeIVA}
         getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
         setProductDetails={(attribute: string, value: number | string) =>
           dispatch(setProductDetails({ ...productDetails, [attribute]: value }))
