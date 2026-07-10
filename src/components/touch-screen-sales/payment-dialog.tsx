@@ -155,6 +155,7 @@ export default function PaymentDialog({
       if (cashPayment !== "" && parseFloat(cashPayment) > 0) {
         paymentList.push({
           paymentId: 1,
+          bankId: 0,
           description: "EFECTIVO",
           amount: parseFloat(cashPayment),
         });
@@ -162,6 +163,7 @@ export default function PaymentDialog({
       if (cardPayment !== "" && parseFloat(cardPayment) > 0) {
         paymentList.push({
           paymentId: 2,
+          bankId: 0,
           description: "TARJETA",
           amount: parseFloat(cardPayment),
         });
@@ -169,6 +171,7 @@ export default function PaymentDialog({
       if (transferPayment !== "" && parseFloat(transferPayment) > 0) {
         paymentList.push({
           paymentId: 4,
+          bankId: 0,
           description: "TRANSFERENCIA",
           amount: parseFloat(transferPayment),
         });

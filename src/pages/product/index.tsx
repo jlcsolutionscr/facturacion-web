@@ -460,7 +460,7 @@ export default function ProductPage() {
                 marginY: "20px",
               }}
             >
-              {product.Imagen !== "" && (
+              {product.Imagen !== "" && product.Imagen !== null && (
                 <Box
                   sx={{ width: "auto", height: "auto" }}
                   component="img"

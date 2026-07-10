@@ -535,7 +535,7 @@ export async function getExonerationTypeList(token: string) {
 
 export async function getPaymentBankId(token: string, companyId: number, paymentMethod: number) {
   let data;
-  if (paymentMethod === 1 || paymentMethod === 2) {
+  if (paymentMethod === 2) {
     data = "{NombreMetodo: 'ObtenerListadoBancoAdquiriente', Parametros: {IdEmpresa: " + companyId + "}}";
   } else {
     data = "{NombreMetodo: 'ObtenerListadoCuentasBanco', Parametros: {IdEmpresa: " + companyId + "}}";
@@ -637,7 +637,6 @@ export async function saveInvoiceEntity(
   if (currency === 2) {
     dollarExchange = await getDollarExchangeValue();
   }
-  const bankId = await getPaymentBankId(token, companyId, paymentMethodList[0].paymentId);
   const invoiceDetails: DetalleFacturaType[] = [];
   productDetailsList.forEach(item => {
     const priceNoTaxes = roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3);
@@ -665,12 +664,10 @@ export async function saveInvoiceEntity(
     IdConsecutivo: 0,
     IdFactura: 0,
     IdFormaPago: item.paymentId,
-    IdTipoMoneda: currency,
-    IdCuentaBanco: bankId,
+    IdReferencia: item.bankId,
     TipoTarjeta: "",
     NroMovimiento: "",
-    MontoLocal: item.amount,
-    TipoDeCambio: dollarExchange,
+    MontoLocal: item.amount * dollarExchange,
   }));
   const invoiceDate = convertToDateTimeString(new Date());
   const invoice = {

@@ -85,6 +85,9 @@ export type CompanyType = {
   Contabiliza: boolean;
   AutoCompletaProducto: boolean;
   RegimenSimplificado: boolean;
+  PrecioVentaIncluyeIVA: boolean;
+  ImprimeTiqueteAlFacturar: boolean;
+  HabilitaFacturacionMonedaExtranjera: boolean;
   PermiteFacturar: boolean;
   RecepcionGastos: boolean;
   AsignaVendedorPorDefecto: boolean;
@@ -246,6 +249,7 @@ export type ProductDetailsType = {
 
 type PaymentMethodType = {
   paymentId: number;
+  bankId: number;
   description: string;
   amount: number;
 };

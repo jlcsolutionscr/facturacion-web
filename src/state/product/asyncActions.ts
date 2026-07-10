@@ -246,7 +246,11 @@ export const saveProduct = createAsyncThunk("product/saveProduct", async (_paylo
   const { entity } = product;
   dispatch(startLoader());
   try {
-    const productEntity = { ...entity, IdEmpresa: companyId };
+    const productEntity = {
+      ...entity,
+      Imagen: entity.Imagen !== null && entity.Imagen !== "" ? entity.Imagen : "",
+      IdEmpresa: companyId,
+    };
     await saveProductEntity(token, productEntity);
     dispatch(
       setMessage({

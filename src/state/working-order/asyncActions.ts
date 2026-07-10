@@ -39,6 +39,7 @@ import {
   generateWorkingOrderTicketPDF,
   getCustomerListCount,
   getCustomerListPerPage,
+  getPaymentBankId,
   getPrintingTickets,
   getProductCategoryList,
   getProductListCount,
@@ -725,6 +726,18 @@ export const generateInvoice = createAsyncThunk(
     const { customerDetails, totalSaved, totalPaid, activityCode, summary, paymentMethodList } = paymentInfo;
     dispatch(startLoader());
     try {
+      for (let i = 0; i < paymentMethodList.length; i++) {
+        const payment = paymentMethodList[i];
+        let bankId = 0;
+        if (payment.paymentId > 1) {
+          bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+          if (bankId == null) {
+            throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el tipo de pago");
+          } else {
+            paymentMethodList[i].bankId = bankId;
+          }
+        }
+      }
       const summaryProductList = productDetailsList.filter(product => !product.paid && product.inSummary);
       const newTotal = totalPaid + summary.total;
       const closeOrder = newTotal === totalSaved;

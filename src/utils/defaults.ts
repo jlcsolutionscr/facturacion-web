@@ -46,6 +46,9 @@ export const defaultCompany: CompanyType = {
   RecepcionGastos: true,
   AsignaVendedorPorDefecto: false,
   IngresaPagoCliente: false,
+  PrecioVentaIncluyeIVA: false,
+  ImprimeTiqueteAlFacturar: false,
+  HabilitaFacturacionMonedaExtranjera: false,
   MontoRedondeoDescuento: 0,
   LeyendaFactura: "",
   LeyendaProforma: "",
@@ -125,6 +128,7 @@ export const defaultCustomer: CustomerEntityType = {
 
 export const defaultPaymentMethod: PaymentMethodType = {
   paymentId: 1,
+  bankId: 0,
   description: "EFECTIVO",
   amount: 0,
 };

@@ -62,7 +62,7 @@ type SessionStateType = {
   userCode: string;
   currencyType: number;
   companyId: number;
-  company: CompanyType | null;
+  company: CompanyType;
   device: DeviceType;
   branchList: IdDescriptionType[];
   branchId: number;
@@ -188,7 +188,7 @@ export const sessionInitialState: SessionStateType = {
   userCode: "",
   currencyType: 1,
   companyId: 0,
-  company: null,
+  company: defaultCompany,
   device: { lineWidth: 80 },
   branchList: [],
   branchId: 1,

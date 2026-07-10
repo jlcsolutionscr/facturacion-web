@@ -68,7 +68,7 @@ interface InvoiceSummaryProps {
   index: number;
   value: number;
   invoiceId: number | null;
-  company: CompanyType | null;
+  company: CompanyType;
   summary: SummaryType;
   activityCode: number;
   vendorId: number;
@@ -139,6 +139,7 @@ export default function InvoiceSummary({
     if (cashPayment !== "0") {
       paymentList.push({
         paymentId: 1,
+        bankId: 0,
         description: "EFECTIVO",
         amount: parseFloat(cashPayment),
       });
@@ -146,6 +147,7 @@ export default function InvoiceSummary({
     if (cardPayment !== "0") {
       paymentList.push({
         paymentId: 2,
+        bankId: 0,
         description: "TARJETA",
         amount: parseFloat(cardPayment),
       });
@@ -153,6 +155,7 @@ export default function InvoiceSummary({
     if (transferPayment !== "0") {
       paymentList.push({
         paymentId: 4,
+        bankId: 0,
         description: "TRANSFERENCIA",
         amount: parseFloat(transferPayment),
       });
@@ -163,18 +166,16 @@ export default function InvoiceSummary({
     } else {
       dispatch(resetInvoice());
       dispatch(setVendorId(vendorList[0].Id));
-      dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+      dispatch(setActivityCode(company.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       setValue(0);
     }
   };
 
-  const activityItems = company
-    ? company.ActividadEconomicaEmpresa.map(item => (
-        <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-          {item.Descripcion}
-        </MenuItem>
-      ))
-    : [];
+  const activityItems = company.ActividadEconomicaEmpresa.map(item => (
+    <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
+      {item.Descripcion}
+    </MenuItem>
+  ));
 
   const vendorItems = vendorList.map(item => (
     <MenuItem key={item.Id} value={item.Id}>
@@ -284,18 +285,20 @@ export default function InvoiceSummary({
                 onChange={event => handlePaymentOptionChange("BANK", event.target.value)}
               />
             </Grid>
-            <Grid item xs={12} className={classes.centered}>
-              <Select
-                disabled={successful}
-                id="currenty-type-select-id"
-                label="Seleccione la moneda de la transacción"
-                value={currency.toString()}
-                onChange={event => dispatch(setCurrency(event.target.value))}
-              >
-                <MenuItem value={1}>COLONES</MenuItem>
-                <MenuItem value={2}>DOLARES</MenuItem>
-              </Select>
-            </Grid>
+            {company.HabilitaFacturacionMonedaExtranjera && (
+              <Grid item xs={12} className={classes.centered}>
+                <Select
+                  disabled={successful}
+                  id="currenty-type-select-id"
+                  label="Seleccione la moneda de la transacción"
+                  value={currency.toString()}
+                  onChange={event => dispatch(setCurrency(event.target.value))}
+                >
+                  <MenuItem value={1}>COLONES</MenuItem>
+                  <MenuItem value={2}>DOLARES</MenuItem>
+                </Select>
+              </Grid>
+            )}
             {vendorItems.length > 1 && (
               <Grid item xs={12}>
                 <Select
