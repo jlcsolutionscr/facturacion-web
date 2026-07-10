@@ -87,7 +87,7 @@ export default function TouchScreenWorkingOrderPage() {
         updateProductDetailsList={value => dispatch(updateDetails({ pos: value }))}
         handleProductRemove={value => dispatch(removeDetails({ pos: value }))}
         handleSave={() => dispatch(saveWorkingOrder())}
-        generateInvoice={() => dispatch(generateInvoice())}
+        generateInvoice={paymentList => dispatch(generateInvoice({ paymentList: paymentList }))}
         handleClose={handleClosing}
         setExtraDetails={value =>
           dispatch(

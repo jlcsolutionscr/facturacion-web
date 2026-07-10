@@ -262,7 +262,10 @@ export default function OrderSummary({
             status === ORDER_STATUS.READY &&
             generateInvoiceEnabled && (
               <Grid item xs={12} sm="auto" display="flex" justifyContent="center">
-                <Button label="Facturar" onClick={() => dispatch(generateInvoice())} />
+                <Button
+                  label="Facturar"
+                  onClick={() => dispatch(generateInvoice({ paymentList: paymentInfo.paymentMethodList }))}
+                />
               </Grid>
             )}
           {paymentInfo.totalSaved === paymentInfo.summary.total && (invoiceId > 0 || workingOrderId > 0) && (
