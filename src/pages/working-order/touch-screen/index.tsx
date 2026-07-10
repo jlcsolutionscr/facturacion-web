@@ -29,7 +29,6 @@ import {
   setCashAmount,
   setCustomerAttribute,
   setDeliveryAttribute,
-  setPaymentMethodList,
   setProductDetails,
 } from "state/working-order/reducer";
 import { FORM_TYPE } from "utils/constants";
@@ -83,7 +82,6 @@ export default function TouchScreenWorkingOrderPage() {
         getCustomerDetails={customerId => dispatch(getCustomerDetailsAction({ id: customerId, type: FORM_TYPE.ORDER }))}
         setCustomerAttribute={attribute => dispatch(setCustomerAttribute(attribute))}
         setActivityCode={value => dispatch(setActivityCode(value))}
-        setPaymentMethodList={list => dispatch(setPaymentMethodList(list))}
         setCashAmount={value => dispatch(setCashAmount(value))}
         setProductDetails={details => dispatch(setProductDetails(details))}
         updateProductDetailsList={value => dispatch(updateDetails({ pos: value }))}

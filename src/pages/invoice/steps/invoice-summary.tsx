@@ -8,14 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import { generateInvoiceTicket, saveInvoice } from "state/invoice/asyncActions";
-import {
-  resetInvoice,
-  setActivityCode,
-  setComment,
-  setCurrency,
-  setPaymentMethodList,
-  setVendorId,
-} from "state/invoice/reducer";
+import { resetInvoice, setActivityCode, setComment, setCurrency, setVendorId } from "state/invoice/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -160,9 +153,8 @@ export default function InvoiceSummary({
         amount: parseFloat(transferPayment),
       });
     }
-    setPaymentMethodList(paymentList);
     if (!successful) {
-      dispatch(saveInvoice());
+      dispatch(saveInvoice({ paymentList: paymentList }));
     } else {
       dispatch(resetInvoice());
       dispatch(setVendorId(vendorList[0].Id));

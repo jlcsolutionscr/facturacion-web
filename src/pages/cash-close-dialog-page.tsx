@@ -288,17 +288,6 @@ export default function CashClosingDialog({ isNew, id, onDialogClose }: CashClos
                     )}
                   </Typography>
                 </Grid>
-                <Grid xs={12}>
-                  <Typography className={classes.summaryTitle}>DETALLE DE REVERSIONES</Typography>
-                </Grid>
-                <Grid xs={8}>
-                  <Typography className={classes.summaryRow}>Total de notas de crédito emitidas</Typography>
-                </Grid>
-                <Grid xs={4} className={classes.columnRight}>
-                  <Typography className={classes.summaryRow}>
-                    {formatCurrency(cashCloseDetails.NotasCreditoCliente)}
-                  </Typography>
-                </Grid>
               </>
             )}
           </Grid>

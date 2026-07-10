@@ -393,7 +393,6 @@ export type CashCloseType = {
   LiquidacionTarjeta: number;
   VentasCredito: number;
   ComprasCredito: number;
-  NotasCreditoCliente: number;
   EfectivoCierreSiguiente: number;
   RetiroEfectivo: number;
   FondoCierre: number;
