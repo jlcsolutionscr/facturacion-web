@@ -17,7 +17,6 @@ import {
   setActivityCode,
   setCashAmount,
   setCustomerAttribute,
-  setPaymentMethodList,
   setProductDetails,
 } from "state/invoice/reducer";
 import { getPermissions } from "state/session/reducer";
@@ -82,12 +81,11 @@ export default function TouchScreenWorkingOrderPage() {
         }
         setCustomerAttribute={attribute => dispatch(setCustomerAttribute(attribute))}
         setActivityCode={value => dispatch(setActivityCode(value))}
-        setPaymentMethodList={list => dispatch(setPaymentMethodList(list))}
         setCashAmount={value => dispatch(setCashAmount(value))}
         setProductDetails={details => dispatch(setProductDetails(details))}
         updateProductDetailsList={value => dispatch(updateDetails({ pos: value }))}
         handleProductRemove={value => dispatch(removeDetails({ pos: value }))}
-        generateInvoice={() => dispatch(saveInvoice())}
+        generateInvoice={paymentList => dispatch(saveInvoice({ paymentList: paymentList }))}
         handleReset={() => dispatch(resetInvoice())}
         handleRevoke={() => dispatch(revokeInvoice({ id: invoiceId }))}
         handleClose={handleInvoiceClose}

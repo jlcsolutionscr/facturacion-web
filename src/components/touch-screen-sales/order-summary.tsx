@@ -86,14 +86,13 @@ interface OrderSummaryProps {
   getCustomerDetails: (customerId: number) => void;
   setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
   setActivityCode: (value: string) => void;
-  setPaymentMethodList: (list: PaymentMethodType[]) => void;
   setCashAmount: (value: string) => void;
   setProductDetails: (value: ProductDetailsType) => void;
   updateProductDetailsList: (value: number) => void;
   handleProductRemove: (value: number) => void;
   handleReset: () => void;
   handleRevoke: () => void;
-  generateInvoice: () => void;
+  generateInvoice: (paymentList: PaymentMethodType[]) => void;
   handleClose: () => void;
   isSplitMode?: boolean;
   value?: number;
@@ -131,7 +130,6 @@ export default function OrderSummary({
   resetButtonEnabled,
   getCustomerDetails,
   setCustomerAttribute,
-  setPaymentMethodList,
   setActivityCode,
   setCashAmount,
   setProductDetails,
@@ -354,7 +352,6 @@ export default function OrderSummary({
             getCustomerDetails={getCustomerDetails}
             setCustomerAttribute={setCustomerAttribute}
             setActivityCode={setActivityCode}
-            setPaymentMethodList={setPaymentMethodList}
             setCashAmount={setCashAmount}
             generateInvoice={generateInvoice}
             setDialogStatus={setDialogStatus}

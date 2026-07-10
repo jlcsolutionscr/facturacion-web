@@ -1,4 +1,4 @@
-import { CustomerDetailsType } from "types/domain";
+import { CustomerDetailsType, PaymentMethodType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
@@ -236,71 +236,73 @@ export const removeDetails = createAsyncThunk(
   }
 );
 
-export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_payload, { getState, dispatch }) => {
-  const { session, invoice } = getState() as RootState;
-  const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
-  const { activityCode, paymentMethodList, vendorId, customerDetails, productDetailsList, summary, comment, currency } =
-    invoice.entity;
+export const saveInvoice = createAsyncThunk(
+  "invoice/saveInvoice",
+  async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
+    const { session, invoice } = getState() as RootState;
+    const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
+    const { activityCode, vendorId, customerDetails, productDetailsList, summary, comment, currency } = invoice.entity;
 
-  dispatch(startLoader());
-  try {
-    const paymentDetailsList = [];
-    for (let i = 0; i < paymentMethodList.length; i++) {
-      const payment = paymentMethodList[i];
-      paymentDetailsList.push({ ...payment });
-      let bankId = 0;
-      if (payment.paymentId > 1) {
-        if (payment.paymentId === 2) {
-          if (creditCardBankId === 0) {
-            bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-            if (bankId == null)
-              throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
-            dispatch(setCreditCardBankId(bankId));
+    dispatch(startLoader());
+    try {
+      const paymentDetailsList = [];
+      for (let i = 0; i < payload.paymentList.length; i++) {
+        const payment = payload.paymentList[i];
+        paymentDetailsList.push({ ...payment });
+        let bankId = 0;
+        if (payment.paymentId > 1) {
+          if (payment.paymentId === 2) {
+            if (creditCardBankId === 0) {
+              bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+              if (bankId == null)
+                throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
+              dispatch(setCreditCardBankId(bankId));
+            } else {
+              bankId = creditCardBankId;
+            }
           } else {
-            bankId = creditCardBankId;
+            if (transferBankId === 0) {
+              bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+              if (bankId == null)
+                throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!");
+              dispatch(setTransferBankId(bankId));
+            } else {
+              bankId = transferBankId;
+            }
           }
-        } else {
-          if (transferBankId === 0) {
-            bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-            if (bankId == null)
-              throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!");
-            dispatch(setTransferBankId(bankId));
-          } else {
-            bankId = transferBankId;
-          }
+          paymentDetailsList[i].bankId = bankId;
         }
-        paymentDetailsList[i].bankId = bankId;
       }
+      const ids = await saveInvoiceEntity(
+        token,
+        userId,
+        companyId,
+        branchId,
+        activityCode,
+        paymentDetailsList,
+        currency,
+        vendorId,
+        0,
+        customerDetails,
+        productDetailsList,
+        summary,
+        comment,
+        false
+      );
+      dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));
+      dispatch(
+        setMessage({
+          message: "Transacción completada satisfactoriamente",
+          type: "INFO",
+        })
+      );
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(stopLoader());
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
-    const ids = await saveInvoiceEntity(
-      token,
-      userId,
-      companyId,
-      branchId,
-      activityCode,
-      paymentDetailsList,
-      currency,
-      vendorId,
-      0,
-      customerDetails,
-      productDetailsList,
-      summary,
-      comment,
-      false
-    );
-    dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));
-    dispatch(
-      setMessage({
-        message: "Transacción completada satisfactoriamente",
-        type: "INFO",
-      })
-    );
-    dispatch(stopLoader());
-  } catch (error) {
-    dispatch(stopLoader());
-    dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
   }
-});
+);
 
 export const getInvoiceListFirstPage = createAsyncThunk(
   "invoice/getInvoiceListFirstPage",

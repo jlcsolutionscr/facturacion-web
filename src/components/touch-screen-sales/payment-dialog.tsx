@@ -53,9 +53,8 @@ type PaymentDialogProps = {
   getCustomerDetails: (customerId: number) => void;
   setCustomerAttribute: (attribute: { attribute: string; value: string }) => void;
   setActivityCode: (value: string) => void;
-  setPaymentMethodList: (list: PaymentMethodType[]) => void;
   setCashAmount: (value: string) => void;
-  generateInvoice: () => void;
+  generateInvoice: (list: PaymentMethodType[]) => void;
   setDialogStatus: (value: DialogStatus) => void;
   setSplitPayment: (value: boolean) => void;
   handleClose: () => void;
@@ -71,7 +70,6 @@ export default function PaymentDialog({
   getCustomerDetails,
   setCustomerAttribute,
   setActivityCode,
-  setPaymentMethodList,
   setCashAmount,
   generateInvoice,
   setDialogStatus,
@@ -176,8 +174,7 @@ export default function PaymentDialog({
           amount: parseFloat(transferPayment),
         });
       }
-      setPaymentMethodList(paymentList);
-      generateInvoice();
+      generateInvoice(paymentList);
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
     }
