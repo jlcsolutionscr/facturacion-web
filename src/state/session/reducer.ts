@@ -43,6 +43,12 @@ export const sessionSlice = createSlice({
     setBranchId: (state, action) => {
       state.branchId = action.payload;
     },
+    setCreditCardBankId: (state, action) => {
+      state.creditCardBankId = action.payload;
+    },
+    setTransferBankId: (state, action) => {
+      state.transferBankId = action.payload;
+    },
     setPrinter: (state, action) => {
       state.printer = action.payload;
     },
@@ -105,6 +111,8 @@ export const {
   logout,
   setCompany,
   setBranchId,
+  setCreditCardBankId,
+  setTransferBankId,
   setPrinter,
   setVendorList,
   setProcessingToken,
@@ -125,6 +133,8 @@ export const getUserId = (state: RootState) => state.session.userId;
 export const getUserCode = (state: RootState) => state.session.userCode;
 export const getCompanyId = (state: RootState) => state.session.companyId;
 export const getBranchId = (state: RootState) => state.session.branchId;
+export const getCreditCardBankId = (state: RootState) => state.session.creditCardBankId;
+export const getTransferBankId = (state: RootState) => state.session.transferBankId;
 export const getPrinter = (state: RootState) => state.session.printer;
 export const getVendorList = (state: RootState) => state.session.vendorList;
 export const getPermissions = (state: RootState) => state.session.permissions;

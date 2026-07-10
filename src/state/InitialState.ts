@@ -67,6 +67,8 @@ type SessionStateType = {
   branchList: IdDescriptionType[];
   branchId: number;
   terminalId: number;
+  creditCardBankId: number;
+  transferBankId: number;
   reportList: { IdReporte: number; NombreReporte: string }[];
   vendorList: IdDescriptionType[];
   permissions: PermissionType[];
@@ -193,6 +195,8 @@ export const sessionInitialState: SessionStateType = {
   branchList: [],
   branchId: 1,
   terminalId: 1,
+  creditCardBankId: 0,
+  transferBankId: 0,
   reportList: [],
   vendorList: [],
   permissions: [],

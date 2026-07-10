@@ -23,6 +23,7 @@ import {
   setProductListPage,
   setTouchScreenProductList,
 } from "state/product/reducer";
+import { setCreditCardBankId, setTransferBankId } from "state/session/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
 import { defaultPaymentMethod } from "utils/defaults";
@@ -237,22 +238,38 @@ export const removeDetails = createAsyncThunk(
 
 export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_payload, { getState, dispatch }) => {
   const { session, invoice } = getState() as RootState;
-  const { token, userId, branchId, companyId } = session;
+  const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
   const { activityCode, paymentMethodList, vendorId, customerDetails, productDetailsList, summary, comment, currency } =
     invoice.entity;
 
   dispatch(startLoader());
   try {
+    const paymentDetailsList = [];
     for (let i = 0; i < paymentMethodList.length; i++) {
       const payment = paymentMethodList[i];
+      paymentDetailsList.push({ ...payment });
       let bankId = 0;
       if (payment.paymentId > 1) {
-        bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-        if (bankId == null) {
-          throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el tipo de pago");
+        if (payment.paymentId === 2) {
+          if (creditCardBankId === 0) {
+            bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+            if (bankId == null)
+              throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
+            dispatch(setCreditCardBankId(bankId));
+          } else {
+            bankId = creditCardBankId;
+          }
         } else {
-          paymentMethodList[i].bankId = bankId;
+          if (transferBankId === 0) {
+            bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+            if (bankId == null)
+              throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!");
+            dispatch(setTransferBankId(bankId));
+          } else {
+            bankId = transferBankId;
+          }
         }
+        paymentDetailsList[i].bankId = bankId;
       }
     }
     const ids = await saveInvoiceEntity(
@@ -261,7 +278,7 @@ export const saveInvoice = createAsyncThunk("invoice/saveInvoice", async (_paylo
       companyId,
       branchId,
       activityCode,
-      paymentMethodList,
+      paymentDetailsList,
       currency,
       vendorId,
       0,
