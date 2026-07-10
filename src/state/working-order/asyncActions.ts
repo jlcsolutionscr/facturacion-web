@@ -1,4 +1,4 @@
-import { CustomerDetailsType } from "types/domain";
+import { CustomerDetailsType, PaymentMethodType } from "types/domain";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setCustomerList, setCustomerListCount, setCustomerListPage } from "state/customer/reducer";
@@ -719,17 +719,17 @@ export const refreshTouchScreenProductList = createAsyncThunk(
 
 export const generateInvoice = createAsyncThunk(
   "working-order/generateInvoice",
-  async (_payload, { getState, dispatch }) => {
+  async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
     const { servicePointList, entity, paymentInfo } = workingOrder;
     const { id, vendorId, servicePointId, productDetailsList } = entity;
-    const { customerDetails, totalSaved, totalPaid, activityCode, summary, paymentMethodList } = paymentInfo;
+    const { customerDetails, totalSaved, totalPaid, activityCode, summary } = paymentInfo;
     dispatch(startLoader());
     try {
       const paymentDetailsList = [];
-      for (let i = 0; i < paymentMethodList.length; i++) {
-        const payment = paymentMethodList[i];
+      for (let i = 0; i < payload.paymentList.length; i++) {
+        const payment = payload.paymentList[i];
         paymentDetailsList.push({ ...payment });
         let bankId = 0;
         if (payment.paymentId > 1) {
