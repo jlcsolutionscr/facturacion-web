@@ -21,6 +21,7 @@ import {
 } from "types/domain";
 
 import {
+  addEntryToLogger,
   convertToDateTimeString,
   encryptString,
   formatCurrency,
@@ -28,12 +29,16 @@ import {
   getWithResponse,
   post,
   postWithResponse,
+  readyKeyFromStorage,
   roundNumber,
 } from "./utilities";
+import { IS_LOGGER_ENABLED } from "utils/constants";
 
 const SERVICE_URL = import.meta.env.VITE_APP_SERVER_URL;
 const HACIENDA_SERVER_URL = import.meta.env.VITE_HACIENDA_SERVER_URL;
 const APP_URL = `${SERVICE_URL}/puntoventa`;
+
+const isLoggingEnabled = readyKeyFromStorage(IS_LOGGER_ENABLED) || false;
 
 type DetalleFacturaType = {
   IdFactura: number;
@@ -645,8 +650,10 @@ export async function saveInvoiceEntity(
   comment: string,
   closeOrder: boolean
 ) {
+  if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity started");
   let dollarExchange = 1;
   if (currency === 2) {
+    if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity getting dollar exchange value");
     dollarExchange = await getDollarExchangeValue();
   }
   const invoiceDetails: DetalleFacturaType[] = [];
@@ -724,8 +731,10 @@ export async function saveInvoiceEntity(
     DetalleFactura: invoiceDetails,
     DesglosePagoFactura: invoicePayments,
   };
+  if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity sending 'AgregarFactura' request");
   const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}";
   const ids = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity response obtained");
   const references = ids.split("-");
   return {
     id: references[0],
@@ -1011,13 +1020,19 @@ export async function generateWorkingOrderPDF(token: string, orderId: number) {
 }
 
 export async function generateInvoiceTicketPDF(token: string, invoiceId: number) {
+  if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF started");
   const data = "{NombreMetodo: 'GenerarTiqueteFacturaPDF', Parametros: {IdFactura: " + invoiceId + ", LargoLinea: 80}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF response obtained");
   if (response.length > 0) {
+    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF converting response to byteArray");
     const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
     const file = new Blob([byteArray], { type: "application/pdf" });
+    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF creating pdfURL");
     const pdfUrl = URL.createObjectURL(file);
+    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF opening pdf in new windows");
     window.open(pdfUrl);
+    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF completed");
   }
 }
 

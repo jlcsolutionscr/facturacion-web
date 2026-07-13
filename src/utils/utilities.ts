@@ -5,6 +5,8 @@ import { IdDescriptionValueType } from "types/domain";
 import * as XLSX from "xlsx";
 import { parse } from "date-fns";
 
+import { LOGGER_ENTRIES } from "utils/constants";
+
 type HeaderType = {
   Accept: string;
   "Content-Type": string;
@@ -247,4 +249,13 @@ export function parseStringToNumber(value: string) {
   return value !== "" ? parseFloat(value) : "";
 }
 
-export const LOGIN_INPUT_ID = "JLC:login-input-id";
+export function addEntryToLogger(entry: string) {
+  const storageData = readyKeyFromStorage(LOGGER_ENTRIES);
+  let logEntries = [];
+  if (storageData) {
+    logEntries = storageData;
+  }
+  if (logEntries.length > 500) logEntries.shift();
+  logEntries.push(`${entry}: ${new Date().toLocaleString()}`);
+  writeKeyToStorage(LOGGER_ENTRIES, logEntries);
+}

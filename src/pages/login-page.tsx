@@ -28,7 +28,8 @@ import {
   validateProcessingToken,
 } from "state/session/asyncActions";
 import { getProcessingToken, getProcessingTokenMessage } from "state/session/reducer";
-import { LOGIN_INPUT_ID, readSessionFromStorage, readyKeyFromStorage } from "utils/utilities";
+import { LOGIN_INPUT_ID } from "utils/constants";
+import { readSessionFromStorage, readyKeyFromStorage } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
