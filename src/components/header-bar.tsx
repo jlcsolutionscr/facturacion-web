@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import IconButton from "@mui/material/IconButton";
@@ -7,16 +8,38 @@ import Typography from "@mui/material/Typography";
 import LogoDarkImage from "assets/img/company-logo-dark.webp";
 import { userLogout } from "state/session/asyncActions";
 import { getCompany, getPermissions, getUserId } from "state/session/reducer";
-import { setActiveSection } from "state/ui/reducer";
-import { TRANSITION_ANIMATION } from "utils/constants";
-import { CashierIcon, ConfigIcon, DarkModeIcon, LightModeIcon, LogOutIcon } from "utils/iconsHelper";
+import { getActiveSection, setActiveSection } from "state/ui/reducer";
+import { IS_LOGGER_ENABLED, TRANSITION_ANIMATION } from "utils/constants";
+import {
+  CashierIcon,
+  CheckBoxIcon,
+  ConfigIcon,
+  DarkModeIcon,
+  LightModeIcon,
+  LogOutIcon,
+  UnCheckBoxIcon,
+  ViewListIcon,
+} from "utils/iconsHelper";
+import { readyKeyFromStorage, writeKeyToStorage } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
   header: {
     backgroundImage: "linear-gradient(to bottom, rgba(8, 65, 92, 0.6), rgba(8, 65, 92, 0.9), rgba(8, 65, 92, 1))",
     height: "100px",
   },
+  loggerConfig: {
+    position: "absolute",
+    top: "10px",
+    right: "96px",
+    zIndex: 2,
+  },
   printerConfig: {
+    position: "absolute",
+    top: "10px",
+    right: "52px",
+    zIndex: 2,
+  },
+  sendLogs: {
     position: "absolute",
     top: "10px",
     right: "8px",
@@ -121,6 +144,8 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
+const LOGGER_STATUS = readyKeyFromStorage(IS_LOGGER_ENABLED) || false;
+
 interface HeaderProps {
   setIsCashCloseDialogOpen: (value: { new: boolean; open: boolean; id: number }) => void;
   isDarkMode: boolean;
@@ -129,10 +154,12 @@ interface HeaderProps {
 
 export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDarkMode }: HeaderProps) {
   const { classes } = useStyles();
+  const [isLoggerEnabled, setIsLoggerEnabled] = useState(LOGGER_STATUS);
   const dispatch = useDispatch();
   const company = useSelector(getCompany);
   const userId = useSelector(getUserId);
   const permissions = useSelector(getPermissions);
+  const activeSection = useSelector(getActiveSection);
 
   const isCashCloseEnabled = permissions.filter(role => [1, 53].includes(role.IdRole)).length > 0;
 
@@ -156,6 +183,22 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
   return (
     <div className={classes.header}>
       {userId === 1 && (
+        <Tooltip title="Habilitar el registros de auditoría" aria-label="Habilitar registros de trazabilidad">
+          <IconButton
+            className={classes.loggerConfig}
+            aria-label="loggerIcon"
+            component="span"
+            onClick={() => {
+              const newValue = !isLoggerEnabled;
+              setIsLoggerEnabled(newValue);
+              writeKeyToStorage(IS_LOGGER_ENABLED, newValue);
+            }}
+          >
+            {isLoggerEnabled ? <CheckBoxIcon /> : <UnCheckBoxIcon />}
+          </IconButton>
+        </Tooltip>
+      )}
+      {userId === 1 && (
         <Tooltip title="Configuración de servidor de impresión" aria-label="configuración del servidor de impresión">
           <IconButton
             className={classes.printerConfig}
@@ -164,6 +207,18 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
             onClick={() => dispatch(setActiveSection(21))}
           >
             <ConfigIcon className={classes.printerIcon} />
+          </IconButton>
+        </Tooltip>
+      )}
+      {activeSection === 0 && (
+        <Tooltip title="Mostrar registros de eventos" aria-label="Mostrar registros de eventos">
+          <IconButton
+            className={classes.sendLogs}
+            aria-label="Send events icon"
+            component="span"
+            onClick={() => dispatch(setActiveSection(24))}
+          >
+            <ViewListIcon />
           </IconButton>
         </Tooltip>
       )}

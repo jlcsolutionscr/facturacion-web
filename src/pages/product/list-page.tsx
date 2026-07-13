@@ -100,11 +100,11 @@ export default function ProductListPage() {
 
   const { classes } = useStyles();
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 192;
+    if (containerRef.current) {
+      const height = containerRef.current.offsetHeight - 192;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerPage(rowsPerPage);
       dispatch(
@@ -162,7 +162,7 @@ export default function ProductListPage() {
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={10} sm={10.5} md={11}>
           <TextField

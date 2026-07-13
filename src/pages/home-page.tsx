@@ -16,6 +16,7 @@ import CustomerListPage from "pages/customer/list-page";
 import DocumentListPage from "pages/document";
 import InvoicePage from "pages/invoice";
 import InvoiceListPage from "pages/invoice/list-page";
+import LoggerEventViewer from "pages/logger-event-viewer";
 import MenuPage from "pages/menu-page";
 import ServicePointPage from "pages/point-of-service";
 import ServicePointListPage from "pages/point-of-service/list-page";
@@ -65,7 +66,7 @@ interface HomePageProps {
 export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePageProps) {
   const [isCashCloseDialogOpen, setIsCashCloseDialogOpen] = useState({ new: false, open: false, id: 0 });
   const { classes } = useStyles();
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
 
   const activeSection = useSelector(getActiveSection);
@@ -78,7 +79,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
   }, [dispatch]);
 
   useEffect(() => {
-    containeRef.current?.scrollTo(0, 0);
+    containerRef.current?.scrollTo(0, 0);
   }, [activeSection]);
 
   const handleCashCloseDialogCancel = () => {
@@ -93,7 +94,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         toggleDarkMode={toggleDarkMode}
         setIsCashCloseDialogOpen={setIsCashCloseDialogOpen}
       />
-      <div ref={containeRef} className={classes.body}>
+      <div ref={containerRef} className={classes.body}>
         {activeSection === 0 && <MenuPage />}
         {activeSection === 1 && <CompanyPage />}
         {activeSection === 2 && <UserPage />}
@@ -117,6 +118,7 @@ export default function HomePage({ width, isDarkMode, toggleDarkMode }: HomePage
         {activeSection === 21 && <PrinterServiceConfig />}
         {activeSection === 22 && <CashClosingListPage setIsCashCloseDialogOpen={setIsCashCloseDialogOpen} />}
         {activeSection === 23 && <CustomerCreditNote />}
+        {activeSection === 24 && <LoggerEventViewer />}
       </div>
       <Dialog id="revoke-dialog" onClose={handleCashCloseDialogCancel} open={isCashCloseDialogOpen.open}>
         <CashCloseDialogPage

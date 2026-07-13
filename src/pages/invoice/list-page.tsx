@@ -88,11 +88,11 @@ export default function InvoiceListPage() {
 
   const revokeRoleEnabled = permissions.filter(role => [1, 49].includes(role.IdRole)).length > 0;
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 123;
+    if (containerRef.current) {
+      const height = containerRef.current.offsetHeight - 123;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerPage(rowsPerPage);
       dispatch(
@@ -173,7 +173,7 @@ export default function InvoiceListPage() {
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader

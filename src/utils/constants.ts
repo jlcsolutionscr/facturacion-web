@@ -15,3 +15,5 @@ export const TRANSITION_ANIMATION =
 export const STORAGE_TICKET_PRINTER_SERVER_ADDRESS = "JLC-TicketPrinterServerAddress";
 export const STORAGE_LOCAL_PRINTING = "JLC-LocalPrinting";
 export const STORAGE_TICKET_PRINTER_SERVER_NAME = "TicketPrinterServerName";
+export const IS_LOGGER_ENABLED = "JLC-logging-enabled";
+export const LOGGER_ENTRIES = "JLC-log-entries";

@@ -203,3 +203,27 @@ export const ArrowDropDownIcon = (props: IconProps) => (
     <path d="M18.813 11.406l-7.906 9.906c-0.75 0.906-1.906 0.906-2.625 0l-7.906-9.906c-0.75-0.938-0.375-1.656 0.781-1.656h16.875c1.188 0 1.531 0.719 0.781 1.656z"></path>
   </SvgIcon>
 );
+
+export const CheckBoxIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="0 0 32 32" {...props}>
+    <path fill="#FFF" d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4ZM6,26V6H26V26Z" />
+    <polygon fill="#FFF" points="14 21.5 9 16.54 10.59 15 14 18.35 21.41 11 23 12.58 14 21.5" />
+    <rect fill="none" id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" width="32" height="32" />
+  </SvgIcon>
+);
+
+export const UnCheckBoxIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="0 0 32 32" {...props}>
+    <path fill="#FFF" d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4ZM6,26V6H26V26Z" />
+    <rect fill="none" data-name="&lt;Transparent Rectangle&gt;" width="32" height="32" />
+  </SvgIcon>
+);
+
+export const ViewListIcon = (props: IconProps) => (
+  <SvgIcon width="800px" height="800px" viewBox="0 0 16 16" {...props}>
+    <path
+      fill="#FFF"
+      d="m 13.5 2.007812 s 0.5 0.222657 0.5 0.5 v 0.988282 c 0 0.273437 -0.5 0.5 -0.5 0.5 h -1 s -0.5 -0.226563 -0.5 -0.5 v -0.988282 c 0 -0.277343 0.5 -0.5 0.5 -0.5 z m -4 0 c 0.277344 0 0.5 0.222657 0.5 0.5 v 0.988282 c 0 0.273437 -0.222656 0.5 -0.5 0.5 h -8 c -0.277344 0 -0.5 -0.226563 -0.5 -0.5 v -0.988282 c 0 -0.277343 0.222656 -0.5 0.5 -0.5 z m 4 5 s 0.5 0.222657 0.5 0.5 v 0.988282 c 0 0.273437 -0.5 0.5 -0.5 0.5 h -1 s -0.5 -0.226563 -0.5 -0.5 v -0.988282 c 0 -0.277343 0.5 -0.5 0.5 -0.5 z m -4 0 s 0.5 0.222657 0.5 0.5 v 0.988282 c 0 0.273437 -0.222656 0.5 -0.5 0.5 h -8 c -0.277344 0 -0.5 -0.226563 -0.5 -0.5 v -0.988282 c 0 -0.277343 0.5 -0.5 0.5 -0.5 z m 4 5 c 0.277344 0 0.5 0.222657 0.5 0.5 v 0.988282 c 0 0.273437 -0.5 0.5 -0.5 0.5 h -1 s -0.5 -0.226563 -0.5 -0.5 v -0.988282 c 0 -0.277343 0.222656 -0.5 0.5 -0.5 z m -4 0 c 0.277344 0 0.5 0.222657 0.5 0.5 v 0.988282 c 0 0.273437 -0.222656 0.5 -0.5 0.5 h -8 c -0.277344 0 -0.5 -0.226563 -0.5 -0.5 v -0.988282 c 0 -0.277343 0.222656 -0.5 0.5 -0.5 z m 0 0"
+    />
+  </SvgIcon>
+);

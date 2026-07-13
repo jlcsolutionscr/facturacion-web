@@ -91,11 +91,11 @@ export default function CustomerListPage() {
   const { classes } = useStyles();
   const [filter, setFilter] = useState("");
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 192;
+    if (containerRef.current) {
+      const height = containerRef.current.offsetHeight - 192;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerCustomer(rowsPerPage);
       dispatch(
@@ -144,7 +144,7 @@ export default function CustomerListPage() {
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
           <TextField id="text-filter-id" value={filter} label="Filtro por nombre" onChange={handleOnFilterChange} />

@@ -86,11 +86,11 @@ export default function CashClosingListPage({ setIsCashCloseDialogOpen }: CashCl
 
   const { classes } = useStyles();
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 123;
+    if (containerRef.current) {
+      const height = containerRef.current.offsetHeight - 123;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerCustomer(rowsPerPage);
       dispatch(
@@ -123,7 +123,7 @@ export default function CashClosingListPage({ setIsCashCloseDialogOpen }: CashCl
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader

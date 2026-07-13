@@ -83,10 +83,10 @@ export default function CategoryListPage() {
 
   const { classes } = useStyles();
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
+    if (containerRef.current) {
       dispatch(getCategoryListAction());
     }
   }, [dispatch]);
@@ -119,7 +119,7 @@ export default function CategoryListPage() {
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
           <TextField id="text-filter-id" value={filter} label="Filtro por nombre" onChange={handleOnFilterChange} />

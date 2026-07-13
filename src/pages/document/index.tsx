@@ -92,11 +92,11 @@ export default function DocumentListPage() {
   const list = useSelector(getDocumentList);
   const details = useSelector(getDocumentDetails);
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
-      const height = containeRef.current.offsetHeight - 123;
+    if (containerRef.current) {
+      const height = containerRef.current.offsetHeight - 123;
       const rowsPerPage = Math.floor(height / 35);
       setRowsPerPage(rowsPerPage);
       dispatch(getDocumentListFirstPage({ rowsPerPage }));
@@ -228,7 +228,7 @@ export default function DocumentListPage() {
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <div className={classes.dataContainer}>
         <DataGrid
           showHeader

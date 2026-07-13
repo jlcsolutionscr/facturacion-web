@@ -229,7 +229,7 @@ export function clearSessionFromStorage() {
   window.sessionStorage.removeItem("session");
 }
 
-export function writeKeyToStorage(key: string, data: object) {
+export function writeKeyToStorage(key: string, data: any) {
   window.localStorage.setItem(key, JSON.stringify(data));
 }
 

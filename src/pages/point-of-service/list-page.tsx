@@ -83,10 +83,10 @@ export default function ServicePointListPage() {
 
   const { classes } = useStyles();
 
-  const containeRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containeRef.current) {
+    if (containerRef.current) {
       dispatch(getServicePointMaintenance());
     }
   }, [dispatch]);
@@ -119,7 +119,7 @@ export default function ServicePointListPage() {
   ];
 
   return (
-    <div className={classes.root} ref={containeRef}>
+    <div className={classes.root} ref={containerRef}>
       <Grid className={classes.filterContainer} container spacing={2}>
         <Grid item xs={12}>
           <TextField
