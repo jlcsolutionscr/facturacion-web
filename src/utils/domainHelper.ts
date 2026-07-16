@@ -620,8 +620,8 @@ export function getProductsSummary(products: ProductDetailsType[], exonerationPe
       exempt += subtotal;
     }
   });
-  subTotal = taxed + exonerated + exempt;
-  total = subTotal + taxes;
+  subTotal = roundNumber(taxed + exonerated + exempt, 2);
+  total = roundNumber(subTotal + taxes, 2);
   return {
     taxed: roundNumber(taxed, 2),
     exonerated: roundNumber(exonerated, 2),
