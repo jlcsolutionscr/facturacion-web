@@ -601,20 +601,18 @@ export function getProductsSummary(products: ProductDetailsType[], exonerationPe
   let total = 0;
   const totalCost = 0;
   products.forEach(item => {
-    const priceNoTaxes = roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3);
-    const subtotal = priceNoTaxes * parseFloat(item.quantity);
+    const price = parseFloat(item.price);
+    const quantity = parseFloat(item.quantity);
+    const priceNoTaxes = roundNumber(price / (1 + item.taxRate / 100), 2);
+    const subtotal = priceNoTaxes * quantity;
     if (item.taxRate > 0) {
-      let taxesAmount = (subtotal * item.taxRate) / 100;
-      let taxedAmount = subtotal;
+      taxed += subtotal;
+      let taxesAmount = roundNumber(price - priceNoTaxes, 2) * quantity;
       if (exonerationPercentage > 0) {
         const taxedRate = Math.max(item.taxRate - exonerationPercentage, 0);
-        const exoneratedRate = item.taxRate - taxedRate;
-        taxedAmount = roundNumber((subtotal * taxedRate) / item.taxRate, 2);
-        const exoneratedAmount = roundNumber((subtotal * exoneratedRate) / item.taxRate, 2);
-        taxesAmount = roundNumber((taxedAmount * item.taxRate) / 100, 2);
-        exonerated += exoneratedAmount;
+        taxesAmount = roundNumber(price * (taxedRate / 100), 2) * quantity;
+        exonerated += roundNumber(price * (exonerationPercentage / 100), 2) * quantity;
       }
-      taxed += taxedAmount;
       taxes += taxesAmount;
     } else {
       exempt += subtotal;
@@ -1025,13 +1023,9 @@ export async function generateInvoiceTicketPDF(token: string, invoiceId: number)
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF response obtained");
   if (response.length > 0) {
-    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF converting response to byteArray");
-    const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
-    const file = new Blob([byteArray], { type: "application/pdf" });
-    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF creating pdfURL");
-    const pdfUrl = URL.createObjectURL(file);
-    if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF opening pdf in new windows");
-    window.open(pdfUrl);
+    if (isLoggingEnabled) addEntryToLogger("sending invoice to local printer");
+    const intentUrl = `rawbt:data:application/pdf;base64,${response}`;
+    window.location.href = intentUrl;
     if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF completed");
   }
 }
@@ -1406,9 +1400,11 @@ export async function printPendingTickets(tickets: any, printerServerAddress: st
         ticketId: ticket.IdTiquete,
       });
     }
-    const printingPromises = promiseParams.map(param =>
-      sentBytesToWSPrinter(param.data, param.address, param.printer, param.ticketId)
-    );
+    const printingPromises = promiseParams.map(param => {
+      sentBytesToWSPrinter(param.data, param.address, param.printer);
+      const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + param.ticketId + "&status=impreso";
+      get(APP_URL + queryUrl, "");
+    });
     return Promise.all(printingPromises)
       .then(() => {
         resolve("Finished");
@@ -1419,7 +1415,7 @@ export async function printPendingTickets(tickets: any, printerServerAddress: st
   });
 }
 
-function sentBytesToWSPrinter(base64: string, printerServerAddress: string, printerName: string, ticketId: number) {
+function sentBytesToWSPrinter(base64: string, printerServerAddress: string, printerName: string) {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(printerServerAddress);
     socket.onerror = function (error) {
@@ -1438,8 +1434,6 @@ function sentBytesToWSPrinter(base64: string, printerServerAddress: string, prin
       };
       socket.send(JSON.stringify(message));
       socket.close(1000, "Work complete");
-      const queryUrl = "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + ticketId + "&status=impreso";
-      get(APP_URL + queryUrl, "");
       resolve("Success!");
     };
   });
