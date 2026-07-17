@@ -601,20 +601,18 @@ export function getProductsSummary(products: ProductDetailsType[], exonerationPe
   let total = 0;
   const totalCost = 0;
   products.forEach(item => {
-    const priceNoTaxes = roundNumber(parseFloat(item.price) / (1 + item.taxRate / 100), 3);
-    const subtotal = priceNoTaxes * parseFloat(item.quantity);
+    const price = parseFloat(item.price);
+    const quantity = parseFloat(item.quantity);
+    const priceNoTaxes = roundNumber(price / (1 + item.taxRate / 100), 2);
+    const subtotal = priceNoTaxes * quantity;
     if (item.taxRate > 0) {
-      let taxesAmount = (subtotal * item.taxRate) / 100;
-      let taxedAmount = subtotal;
+      taxed += subtotal;
+      let taxesAmount = roundNumber(price - priceNoTaxes, 2) * quantity;
       if (exonerationPercentage > 0) {
         const taxedRate = Math.max(item.taxRate - exonerationPercentage, 0);
-        const exoneratedRate = item.taxRate - taxedRate;
-        taxedAmount = roundNumber((subtotal * taxedRate) / item.taxRate, 2);
-        const exoneratedAmount = roundNumber((subtotal * exoneratedRate) / item.taxRate, 2);
-        taxesAmount = roundNumber((taxedAmount * item.taxRate) / 100, 2);
-        exonerated += exoneratedAmount;
+        taxesAmount = roundNumber(price * (taxedRate / 100), 2) * quantity;
+        exonerated += roundNumber(price * (exonerationPercentage / 100), 2) * quantity;
       }
-      taxed += taxedAmount;
       taxes += taxesAmount;
     } else {
       exempt += subtotal;
