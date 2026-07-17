@@ -252,7 +252,7 @@ export const removeDetails = createAsyncThunk(
 export const saveWorkingOrder = createAsyncThunk(
   "working-order/saveWorkingOrder",
   async (_payload, { getState, dispatch }) => {
-    const { session, workingOrder, ui } = getState() as RootState;
+    const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId } = session;
     const { entity, paymentInfo, servicePointList } = workingOrder;
     dispatch(startLoader());
@@ -289,31 +289,13 @@ export const saveWorkingOrder = createAsyncThunk(
       dispatch(setWorkingOrder(savedEntity));
       dispatch(updatePaymentInfo({ ...paymentInfo, totalSaved }));
       dispatch(setStatus(ORDER_STATUS.READY));
-      let message = {
-        message: "Transacción completada satisfactoriamente",
-        type: "INFO",
-      };
-      if (ui.localPrinting && savedEntity.servicePointId > 0 && savedEntity.id > 0 && ui.printerServerAddress !== "") {
-        try {
-          const pendingTickets = await getPrintingTickets(
-            session.token,
-            session.companyId,
-            session.branchId,
-            entity.id,
-            true
-          );
-          if (pendingTickets.length > 0) {
-            await printPendingTickets(pendingTickets, ui.printerServerAddress);
-          }
-        } catch {
-          message = {
-            message: "No se logró imprimir los tiquetes de la orden. Por favor intente la reimpresión",
-            type: "ERROR",
-          };
-        }
-      }
       dispatch(stopLoader());
-      dispatch(setMessage(message));
+      dispatch(
+        setMessage({
+          message: "Transacción completada satisfactoriamente",
+          type: "INFO",
+        })
+      );
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
       dispatch(stopLoader());
