@@ -40,7 +40,7 @@ import {
   defaultServicePoint,
   defaultWorkingOrder,
 } from "utils/defaults";
-import { readyKeyFromStorage } from "utils/utilities";
+import { isAndroidSystem, readyKeyFromStorage } from "utils/utilities";
 
 type UIStateType = {
   isLoaderOpen: boolean;
@@ -54,6 +54,7 @@ type UIStateType = {
   exonerationNameList: IdDescriptionValueType[];
   message: string;
   messageType: string;
+  isAndroid: boolean;
   printerServerAddress: string;
   localPrinting: boolean;
 };
@@ -183,6 +184,7 @@ export const uiInitialState: UIStateType = {
   exonerationNameList: [],
   message: "",
   messageType: "ERROR",
+  isAndroid: isAndroidSystem(),
   printerServerAddress: readyKeyFromStorage(STORAGE_TICKET_PRINTER_SERVER_NAME) || "ws://127.0.0.1:40213/",
   localPrinting: readyKeyFromStorage(STORAGE_LOCAL_PRINTING) || false,
 };

@@ -1017,15 +1017,22 @@ export async function generateWorkingOrderPDF(token: string, orderId: number) {
   }
 }
 
-export async function generateInvoiceTicketPDF(token: string, invoiceId: number) {
+export async function generateInvoiceTicketPDF(token: string, invoiceId: number, isAndroid: boolean) {
   if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF started");
   const data = "{NombreMetodo: 'GenerarTiqueteFacturaPDF', Parametros: {IdFactura: " + invoiceId + ", LargoLinea: 80}}";
   const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
   if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF response obtained");
   if (response.length > 0) {
     if (isLoggingEnabled) addEntryToLogger("sending invoice to local printer");
-    const intentUrl = `rawbt:data:application/pdf;base64,${response}`;
-    window.location.href = intentUrl;
+    if (isAndroid) {
+      const intentUrl = `rawbt:data:application/pdf;base64,${response}`;
+      window.location.href = intentUrl;
+    } else {
+      const byteArray = Uint8Array.from(atob(response), c => c.charCodeAt(0));
+      const file = new Blob([byteArray], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(file);
+      window.open(pdfUrl);
+    }
     if (isLoggingEnabled) addEntryToLogger("generateInvoiceTicketPDF completed");
   }
 }
