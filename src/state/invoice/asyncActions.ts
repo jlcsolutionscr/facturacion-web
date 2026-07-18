@@ -428,11 +428,11 @@ export const generatePDF = createAsyncThunk(
 export const generateInvoiceTicket = createAsyncThunk(
   "invoice/generateInvoiceTicket",
   async (payload: { id: number; ref?: string }, { getState, dispatch }) => {
-    const { session } = getState() as RootState;
+    const { session, ui } = getState() as RootState;
     const { token } = session;
     dispatch(startLoader());
     try {
-      await generateInvoiceTicketPDF(token, payload.id);
+      await generateInvoiceTicketPDF(token, payload.id, ui.isAndroid);
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

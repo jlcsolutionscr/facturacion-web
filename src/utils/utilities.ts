@@ -259,3 +259,11 @@ export function addEntryToLogger(entry: string) {
   logEntries.push(`${entry}: ${new Date().toLocaleString()}`);
   writeKeyToStorage(LOGGER_ENTRIES, logEntries);
 }
+
+export function isAndroidSystem() {
+  const userAgent = navigator.userAgent || navigator.vendor;
+  if (/android/i.test(userAgent)) {
+    return true;
+  }
+  return false;
+}

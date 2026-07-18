@@ -210,18 +210,17 @@ export default function Header({ setIsCashCloseDialogOpen, isDarkMode, toggleDar
           </IconButton>
         </Tooltip>
       )}
-      {activeSection === 0 && (
-        <Tooltip title="Mostrar registros de eventos" aria-label="Mostrar registros de eventos">
-          <IconButton
-            className={classes.sendLogs}
-            aria-label="Send events icon"
-            component="span"
-            onClick={() => dispatch(setActiveSection(24))}
-          >
-            <ViewListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Tooltip title="Mostrar registros de eventos" aria-label="Mostrar registros de eventos">
+        <IconButton
+          disabled={activeSection === 24}
+          className={classes.sendLogs}
+          aria-label="Send events icon"
+          component="span"
+          onClick={() => dispatch(setActiveSection(24))}
+        >
+          <ViewListIcon />
+        </IconButton>
+      </Tooltip>
       {isCashCloseEnabled && (
         <Tooltip title="Procesar el cierre de efectivo" aria-label="Procesar el cierre de efectivo">
           <IconButton
