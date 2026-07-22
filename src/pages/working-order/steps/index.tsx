@@ -25,7 +25,6 @@ import {
   getProductDetails,
   getProductDetailsList,
   getStatus,
-  getVendorId,
   getWorkingOrderId,
   setCustomerAttribute,
   setProductDetails,
@@ -95,7 +94,6 @@ export default function WorkingOrderPage() {
   const delivery = useSelector(getDeliveryDetails);
   const company = useSelector(getCompany);
   const paymentInfo = useSelector(getPaymentInfo);
-  const vendorId = useSelector(getVendorId);
   const workingOrderId = useSelector(getWorkingOrderId);
   const vendorList = useSelector(getVendorList);
   const cashAdvance = useSelector(getCashAdvance);
@@ -157,7 +155,6 @@ export default function WorkingOrderPage() {
         index={3}
         company={company}
         paymentInfo={paymentInfo}
-        vendorId={vendorId}
         workingOrderId={workingOrderId}
         vendorList={vendorList}
         cashAdvance={cashAdvance}

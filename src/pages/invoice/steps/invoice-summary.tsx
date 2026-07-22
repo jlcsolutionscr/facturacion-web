@@ -8,7 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import { generateInvoiceTicket, saveInvoice } from "state/invoice/asyncActions";
-import { resetInvoice, setActivityCode, setComment, setCurrency, setVendorId } from "state/invoice/reducer";
+import { resetInvoice, setActivityCode, setComment, setCurrency } from "state/invoice/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -64,7 +64,6 @@ interface InvoiceSummaryProps {
   company: CompanyType;
   summary: SummaryType;
   activityCode: number;
-  vendorId: number;
   currency: number;
   comment: string;
   vendorList: IdDescriptionType[];
@@ -80,10 +79,8 @@ export default function InvoiceSummary({
   company,
   summary,
   activityCode,
-  vendorId,
   currency,
   comment,
-  vendorList,
   successful,
   setValue,
   className,
@@ -157,7 +154,6 @@ export default function InvoiceSummary({
       dispatch(saveInvoice({ paymentList: paymentList }));
     } else {
       dispatch(resetInvoice());
-      dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       setValue(0);
     }
@@ -165,12 +161,6 @@ export default function InvoiceSummary({
 
   const activityItems = company.ActividadEconomicaEmpresa.map(item => (
     <MenuItem key={item.CodigoActividad} value={item.CodigoActividad}>
-      {item.Descripcion}
-    </MenuItem>
-  ));
-
-  const vendorItems = vendorList.map(item => (
-    <MenuItem key={item.Id} value={item.Id}>
       {item.Descripcion}
     </MenuItem>
   ));
@@ -288,18 +278,6 @@ export default function InvoiceSummary({
                 >
                   <MenuItem value={1}>COLONES</MenuItem>
                   <MenuItem value={2}>DOLARES</MenuItem>
-                </Select>
-              </Grid>
-            )}
-            {vendorItems.length > 1 && (
-              <Grid item xs={12}>
-                <Select
-                  id="id-vendedor-select-id"
-                  label="Seleccione el Vendedor"
-                  value={vendorId > 0 ? vendorId.toString() : ""}
-                  onChange={event => dispatch(setVendorId(event.target.value))}
-                >
-                  {vendorItems}
                 </Select>
               </Grid>
             )}

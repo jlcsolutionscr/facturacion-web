@@ -13,7 +13,6 @@ import {
   setProformaListPage,
   setSuccessful,
   setSummary,
-  setVendorId,
 } from "state/proforma/reducer";
 import { RootState } from "state/store";
 import { setActiveSection, setMessage, startLoader, stopLoader } from "state/ui/reducer";
@@ -36,7 +35,7 @@ export const setProformaParameters = createAsyncThunk(
   "proforma/setProformaParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, companyId, branchId, vendorList } = session;
+    const { token, companyId, branchId } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(14));
     try {
@@ -59,7 +58,6 @@ export const setProformaParameters = createAsyncThunk(
       } else {
         dispatch(setProductList([]));
       }
-      dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

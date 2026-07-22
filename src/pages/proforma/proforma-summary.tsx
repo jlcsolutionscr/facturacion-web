@@ -9,7 +9,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import { saveProforma } from "state/proforma/asyncActions";
-import { resetProforma, setComment, setCurrency, setVendorId } from "state/proforma/reducer";
+import { resetProforma, setComment, setCurrency } from "state/proforma/reducer";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -62,7 +62,6 @@ interface ProformaSummaryProps {
   index: number;
   value: number;
   summary: SummaryType;
-  vendorId: number;
   currency: number;
   comment: string;
   vendorList: IdDescriptionType[];
@@ -75,10 +74,8 @@ export default function ProformaSummary({
   index,
   value,
   summary,
-  vendorId,
   currency,
   comment,
-  vendorList,
   successful,
   setValue,
   className,
@@ -93,12 +90,6 @@ export default function ProformaSummary({
 
   const { taxed, exonerated, exempt, subTotal, taxes, total } = summary;
   const buttonDisabled = total === 0;
-
-  const vendorItems = vendorList.map(item => (
-    <MenuItem key={item.Id} value={item.Id}>
-      {item.Descripcion}
-    </MenuItem>
-  ));
 
   const handleOnPress = () => {
     if (!successful) {
@@ -121,20 +112,6 @@ export default function ProformaSummary({
             onChange={event => dispatch(setComment(event.target.value))}
           />
         </Grid>
-        {vendorItems.length > 1 && (
-          <Grid item xs={12} className={classes.centered}>
-            <Grid item xs={10} sm={6} md={4}>
-              <Select
-                id="id-vendedor-select-id"
-                label="Seleccione el Vendedor"
-                value={vendorId.toString()}
-                onChange={event => dispatch(setVendorId(event.target.value))}
-              >
-                {vendorItems}
-              </Select>
-            </Grid>
-          </Grid>
-        )}
         <Grid item xs={12}>
           <Grid item xs={11} sm={6} md={5} className={`${classes.summary} ${classes.centered}`}>
             <Typography className={classes.summaryTitle}>RESUMEN DE PROFORMA</Typography>

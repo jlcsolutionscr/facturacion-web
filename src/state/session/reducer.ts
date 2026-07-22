@@ -52,9 +52,6 @@ export const sessionSlice = createSlice({
     setPrinter: (state, action) => {
       state.printer = action.payload;
     },
-    setVendorList: (state, action) => {
-      state.vendorList = action.payload;
-    },
     setProcessingToken: (state, action) => {
       state.processingToken = { type: action.payload.type, id: action.payload.id };
     },
@@ -114,7 +111,6 @@ export const {
   setCreditCardBankId,
   setTransferBankId,
   setPrinter,
-  setVendorList,
   setProcessingToken,
   setProcessingTokenMessage,
   setCashCloseEntity,

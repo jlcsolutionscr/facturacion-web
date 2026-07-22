@@ -39,9 +39,6 @@ const proformaSlice = createSlice({
     setSummary: (state, action) => {
       state.entity.summary = action.payload;
     },
-    setVendorId: (state, action) => {
-      state.entity.vendorId = action.payload;
-    },
     setCurrency: (state, action) => {
       state.entity.currency = action.payload;
     },
@@ -83,7 +80,6 @@ export const {
   resetProductDetails,
   setProductDetailsList,
   setSummary,
-  setVendorId,
   setCurrency,
   setComment,
   setSuccessful,
@@ -98,7 +94,6 @@ export const getCustomerDetails = (state: RootState) => state.proforma.entity.cu
 export const getProductDetails = (state: RootState) => state.proforma.entity.productDetails;
 export const getProductDetailsList = (state: RootState) => state.proforma.entity.productDetailsList;
 export const getSummary = (state: RootState) => state.proforma.entity.summary;
-export const getVendorId = (state: RootState) => state.proforma.entity.vendorId;
 export const getCurrency = (state: RootState) => state.proforma.entity.currency;
 export const getComment = (state: RootState) => state.proforma.entity.comment;
 export const getSuccessful = (state: RootState) => state.proforma.entity.successful;

@@ -45,7 +45,6 @@ export const defaultCompany: CompanyType = {
   AutoCompletaProducto: false,
   PermiteFacturar: true,
   RecepcionGastos: true,
-  AsignaVendedorPorDefecto: false,
   IngresaPagoCliente: false,
   PrecioVentaIncluyeIVA: false,
   ImprimeTiqueteAlFacturar: false,
@@ -191,7 +190,6 @@ export const defaultInvoice: InvoiceType = {
   productDetails: defaultProductDetails,
   productDetailsList: [],
   paymentMethodList: [defaultPaymentMethod],
-  vendorId: 0,
   summary: defaultSummary,
   comment: "",
   successful: false,
@@ -217,7 +215,6 @@ export const defaultWorkingOrder: WorkingOrderType = {
   status: ORDER_STATUS.READY,
   productDetails: defaultProductDetails,
   productDetailsList: [],
-  vendorId: 0,
   delivery: {
     phone: "",
     address: "",
@@ -274,7 +271,6 @@ export const defaultProforma: ProformaType = {
   customerDetails: defaultCustomerDetails,
   productDetails: defaultProductDetails,
   productDetailsList: [],
-  vendorId: 0,
   currency: 1,
   summary: {
     taxed: 0,

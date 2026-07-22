@@ -13,7 +13,6 @@ import {
   setIsCashCloseSaved,
   setProcessingToken,
   setProcessingTokenMessage,
-  setVendorList,
 } from "state/session/reducer";
 import { RootState } from "state/store";
 import {
@@ -34,7 +33,6 @@ import {
   getCashCloseEntity,
   getCashCloseListCount,
   getCashCloseListPerPage,
-  getVendorList,
   requestUserLogin,
   requestUserPasswordReset,
   resetUserPassword as resetUserPasswordRequest,
@@ -65,8 +63,6 @@ export const userLogin = createAsyncThunk(
     dispatch(startLoader());
     try {
       const company = await requestUserLogin(payload.username, payload.password, payload.id);
-      const vendorList = await getVendorList(company.Usuario.Token, company.IdEmpresa);
-      dispatch(setVendorList(vendorList));
       dispatch(login(company));
       dispatch(setIdTypeList(company.ListadoTipoIdentificacion));
       dispatch(setTaxTypeList(company.ListadoTipoImpuesto));
@@ -99,8 +95,6 @@ export const restoreSession = createAsyncThunk(
   async (payload: SessionCompanyType, { dispatch }) => {
     dispatch(startLoader());
     try {
-      const vendorList = await getVendorList(payload.Usuario.Token, payload.IdEmpresa);
-      dispatch(setVendorList(vendorList));
       dispatch(login(payload));
       dispatch(setIdTypeList(payload.ListadoTipoIdentificacion));
       dispatch(setTaxTypeList(payload.ListadoTipoImpuesto));

@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { generateInvoiceTicket } from "state/invoice/asyncActions";
 import { getPermissions } from "state/session/reducer";
 import { generateInvoice, generateWorkingOrderTicket, saveWorkingOrder } from "state/working-order/asyncActions";
-import { resetWorkingOrder, setActivityCode, setPaymentMethodList, setVendorId } from "state/working-order/reducer";
+import { resetWorkingOrder, setActivityCode, setPaymentMethodList } from "state/working-order/reducer";
 import { ORDER_STATUS, TRANSITION_ANIMATION } from "utils/constants";
 import { formatCurrency } from "utils/utilities";
 
@@ -66,7 +66,6 @@ interface OrderSummaryProps {
   value: number;
   company: CompanyType | null;
   paymentInfo: PaymentInfoType;
-  vendorId: number;
   workingOrderId: number;
   vendorList: IdDescriptionType[];
   cashAdvance: number;
@@ -81,9 +80,7 @@ export default function OrderSummary({
   index,
   company,
   paymentInfo,
-  vendorId,
   workingOrderId,
-  vendorList,
   cashAdvance,
   status,
   invoiceId,
@@ -135,11 +132,7 @@ export default function OrderSummary({
         </MenuItem>
       ))
     : [];
-  const vendorItems = vendorList.map(item => (
-    <MenuItem key={item.Id} value={item.Id}>
-      {item.Descripcion}
-    </MenuItem>
-  ));
+
   return (
     <div ref={myRef} className={`${classes.container} ${className}`} hidden={value !== index}>
       <Grid container spacing={2}>
@@ -204,20 +197,6 @@ export default function OrderSummary({
                     onChange={event => dispatch(setActivityCode(event.target.value))}
                   >
                     {activityItems}
-                  </Select>
-                </Grid>
-              </Grid>
-            )}
-            {vendorItems.length > 1 && (
-              <Grid item xs={12} className={classes.centered}>
-                <Grid item xs={10} sm={6} md={4}>
-                  <Select
-                    id="id-vendedor-select-id"
-                    label="Seleccione el Vendedor"
-                    value={vendorId.toString()}
-                    onChange={event => dispatch(setVendorId(event.target.value))}
-                  >
-                    {vendorItems}
                   </Select>
                 </Grid>
               </Grid>

@@ -51,9 +51,6 @@ const invoiceSlice = createSlice({
     setPaymentMethodList: (state, action) => {
       state.entity.paymentMethodList = action.payload;
     },
-    setVendorId: (state, action) => {
-      state.entity.vendorId = action.payload;
-    },
     setComment: (state, action) => {
       state.entity.comment = action.payload;
     },
@@ -75,7 +72,7 @@ const invoiceSlice = createSlice({
       state.list = action.payload;
     },
     resetInvoice: state => {
-      state.entity = { ...defaultInvoice, vendorId: state.entity.vendorId, activityCode: state.entity.activityCode };
+      state.entity = { ...defaultInvoice, activityCode: state.entity.activityCode };
     },
     setCreditNote: (state, action) => {
       state.creditNoteEntity = action.payload;
@@ -101,7 +98,6 @@ export const {
   setCashAmount,
   setActivityCode,
   setPaymentMethodList,
-  setVendorId,
   setComment,
   setCurrency,
   setSuccessful,
@@ -119,7 +115,6 @@ export const getProductDetailsList = (state: RootState) => state.invoice.entity.
 export const getSummary = (state: RootState) => state.invoice.entity.summary;
 export const getActivityCode = (state: RootState) => state.invoice.entity.activityCode;
 export const getPaymentMethodList = (state: RootState) => state.invoice.entity.paymentMethodList;
-export const getVendorId = (state: RootState) => state.invoice.entity.vendorId;
 export const getComment = (state: RootState) => state.invoice.entity.comment;
 export const getCurrency = (state: RootState) => state.invoice.entity.currency;
 export const getSuccessful = (state: RootState) => state.invoice.entity.successful;

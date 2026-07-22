@@ -21,7 +21,6 @@ import {
   getProductDetailsList,
   getSuccessful,
   getSummary,
-  getVendorId,
   setCustomerAttribute,
   setProductDetails,
 } from "state/proforma/reducer";
@@ -84,7 +83,6 @@ export default function ProformaPage() {
   const productDetailsList = useSelector(getProductDetailsList);
   const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
-  const vendorId = useSelector(getVendorId);
   const currency = useSelector(getCurrency);
   const comment = useSelector(getComment);
   const successful = useSelector(getSuccessful);
@@ -141,7 +139,6 @@ export default function ProformaPage() {
         className={classes.tab}
         value={value}
         summary={summary}
-        vendorId={vendorId}
         currency={currency}
         comment={comment}
         vendorList={vendorList}

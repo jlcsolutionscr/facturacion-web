@@ -90,7 +90,6 @@ export type CompanyType = {
   HabilitaFacturacionMonedaExtranjera: boolean;
   PermiteFacturar: boolean;
   RecepcionGastos: boolean;
-  AsignaVendedorPorDefecto: boolean;
   IngresaPagoCliente: boolean;
   CorreoNotificacion: string;
   MontoRedondeoDescuento: number;
@@ -283,7 +282,6 @@ export type InvoiceType = {
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
   paymentMethodList: PaymentMethodType[];
-  vendorId: number;
   summary: SummaryType;
   comment: string;
   cashAdvance: number;
@@ -315,7 +313,6 @@ export type WorkingOrderType = {
   productDetails: ProductDetailsType;
   productDetailsList: WorkingOrderProductDetailsType[];
   cashAdvance: number;
-  vendorId: number;
   delivery: DeliveryType;
 };
 
@@ -356,7 +353,6 @@ export type ProformaType = {
   customerDetails: CustomerDetailsType;
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
-  vendorId: number;
   currency: number;
   summary: SummaryType;
   comment: string;

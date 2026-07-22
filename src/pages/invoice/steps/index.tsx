@@ -21,7 +21,6 @@ import {
   getProductDetailsList,
   getSuccessful,
   getSummary,
-  getVendorId,
   setCustomerAttribute,
   setProductDetails,
 } from "state/invoice/reducer";
@@ -88,7 +87,6 @@ export default function InvoicePage() {
   const company = useSelector(getCompany);
   const summary = useSelector(getSummary);
   const activityCode = useSelector(getActivityCode);
-  const vendorId = useSelector(getVendorId);
   const comment = useSelector(getComment);
   const currency = useSelector(getCurrency);
   const successful = useSelector(getSuccessful);
@@ -148,7 +146,6 @@ export default function InvoicePage() {
         company={company}
         summary={summary}
         activityCode={activityCode}
-        vendorId={vendorId}
         currency={currency}
         comment={comment}
         vendorList={vendorList}

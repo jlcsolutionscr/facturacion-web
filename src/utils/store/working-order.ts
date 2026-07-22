@@ -68,7 +68,6 @@ export function parseWorkingOrderEntity(entity: any, company: CompanyType | null
     status: ORDER_STATUS.READY,
     productDetails: defaultProductDetails,
     productDetailsList,
-    vendorId: entity.IdVendedor,
     delivery: {
       phone: entity.Telefono,
       address: entity.Direccion,

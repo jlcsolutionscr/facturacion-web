@@ -316,13 +316,6 @@ export async function getBranchList(token: string, companyId: number) {
   return response;
 }
 
-export async function getVendorList(token: string, companyId: number) {
-  const data = "{NombreMetodo: 'ObtenerListadoVendedores', Parametros: {IdEmpresa: " + companyId + "}}";
-  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (response === null) return [];
-  return response;
-}
-
 export async function getReportData(
   token: string,
   reportName: string,
@@ -643,7 +636,6 @@ export async function saveInvoiceEntity(
   activityCode: number,
   paymentMethodList: PaymentMethodType[],
   currency: number,
-  vendorId: number,
   orderId: number,
   customerDetails: CustomerDetailsType,
   productDetailsList: ProductDetailsType[],
@@ -707,7 +699,6 @@ export async function saveInvoiceEntity(
     Fecha: invoiceDate,
     Telefono: customerDetails.phoneNumber,
     TextoAdicional: comment,
-    IdVendedor: vendorId,
     Excento: summary.exempt,
     Gravado: summary.taxed,
     Exonerado: summary.exonerated,
@@ -818,7 +809,6 @@ export async function saveWorkingOrderEntity(
     IdCliente: paymentInfo.customerDetails.id,
     NombreCliente: paymentInfo.customerDetails.name,
     Fecha: workingOrderDate,
-    IdVendedor: order.vendorId,
     Telefono: order.delivery.phone,
     Direccion: order.delivery.address,
     Descripcion: order.delivery.description,
@@ -1141,7 +1131,7 @@ export async function saveProformaEntity(
   branchId: number,
   entity: ProformaType
 ) {
-  const { vendorId, currency, customerDetails, productDetailsList, summary, comment } = entity;
+  const { currency, customerDetails, productDetailsList, summary, comment } = entity;
   const proformaDetails: DetalleProformaType[] = [];
   productDetailsList.forEach(item => {
     const detail = {
@@ -1170,7 +1160,6 @@ export async function saveProformaEntity(
     Fecha: proformaDate,
     TextoAdicional: comment,
     Telefono: "",
-    IdVendedor: vendorId,
     Excento: summary.exempt,
     Gravado: summary.taxed,
     Exonerado: summary.exonerated,

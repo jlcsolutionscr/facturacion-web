@@ -26,7 +26,6 @@ import {
   setServicePointList,
   setStatus,
   setSummary,
-  setVendorId,
   setWorkingOrder,
   setWorkingOrderList,
   setWorkingOrderListCount,
@@ -66,7 +65,7 @@ export const setWorkingOrderParameters = createAsyncThunk(
   "working-order/setWorkingOrderParameters",
   async (_payload, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, company, companyId, branchId, vendorList } = session;
+    const { token, company, companyId, branchId } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     try {
@@ -90,7 +89,6 @@ export const setWorkingOrderParameters = createAsyncThunk(
         dispatch(setProductList([]));
       }
       dispatch(setCustomerDetails(defaultCustomerDetails));
-      dispatch(setVendorId(vendorList[0].Id));
       dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
       dispatch(stopLoader());
     } catch (error) {
@@ -470,7 +468,7 @@ export const openWorkingOrder = createAsyncThunk(
   "working-order/openWorkingOrder",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session } = getState() as RootState;
-    const { token, vendorList, company, companyId, branchId } = session;
+    const { token, company, companyId, branchId } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
     try {
@@ -498,7 +496,6 @@ export const openWorkingOrder = createAsyncThunk(
       dispatch(setWorkingOrder(workingOrder));
       dispatch(updatePaymentInfo(paymentInfo));
       dispatch(setServicePointId(0));
-      dispatch(setVendorId(vendorList[0].Id));
       dispatch(setStatus(ORDER_STATUS.READY));
       dispatch(stopLoader());
     } catch (error) {
@@ -606,7 +603,7 @@ export const openServicePoint = createAsyncThunk(
   "working-order/openServicePoint",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
-    const { token, vendorList, company, companyId } = session;
+    const { token, company, companyId } = session;
     const { categoryList } = product;
     dispatch(startLoader());
     dispatch(setActiveSection(15));
@@ -624,7 +621,6 @@ export const openServicePoint = createAsyncThunk(
         dispatch(updatePaymentInfo(paymentInfo));
       }
       dispatch(setServicePointId(servicePoint.IdPunto));
-      dispatch(setVendorId(vendorList[0].Id));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
@@ -705,7 +701,7 @@ export const generateInvoice = createAsyncThunk(
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
     const { servicePointList, entity, paymentInfo } = workingOrder;
-    const { id, vendorId, servicePointId, productDetailsList } = entity;
+    const { id, servicePointId, productDetailsList } = entity;
     const { customerDetails, totalSaved, totalPaid, activityCode, summary } = paymentInfo;
     dispatch(startLoader());
     try {
@@ -748,7 +744,6 @@ export const generateInvoice = createAsyncThunk(
         activityCode,
         paymentDetailsList,
         1,
-        vendorId,
         id,
         customerDetails,
         summaryProductList,

@@ -15,7 +15,6 @@ import {
   setProductDetailsList,
   setSuccessful,
   setSummary,
-  setVendorId,
 } from "state/invoice/reducer";
 import {
   setCategoryList,
@@ -51,11 +50,10 @@ export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
   async (payload: { id: number }, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
-    const { token, company, companyId, branchId, vendorList } = session;
+    const { token, company, companyId, branchId } = session;
     dispatch(startLoader());
     dispatch(setActiveSection(payload.id));
     dispatch(resetInvoice());
-    dispatch(setVendorId(vendorList[0].Id));
     dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
     dispatch(setPaymentMethodList([defaultPaymentMethod]));
     try {
@@ -243,7 +241,7 @@ export const saveInvoice = createAsyncThunk(
   async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
     const { session, invoice } = getState() as RootState;
     const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
-    const { activityCode, vendorId, customerDetails, productDetailsList, summary, comment, currency } = invoice.entity;
+    const { activityCode, customerDetails, productDetailsList, summary, comment, currency } = invoice.entity;
 
     dispatch(startLoader());
     try {
@@ -283,7 +281,6 @@ export const saveInvoice = createAsyncThunk(
         activityCode,
         paymentDetailsList,
         currency,
-        vendorId,
         0,
         customerDetails,
         productDetailsList,
