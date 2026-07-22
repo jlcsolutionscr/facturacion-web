@@ -127,9 +127,8 @@ export default function InvoiceSummary({
   };
 
   const handleSubmitButton = () => {
-    let paymentList = [];
+    const paymentList = [];
     if (!company.HabilitaPreFactura) {
-      paymentList = [];
       if (cashPayment !== "0") {
         paymentList.push({
           paymentId: 1,

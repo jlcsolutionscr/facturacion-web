@@ -674,8 +674,8 @@ export async function saveInvoiceEntity(
       invoiceDetails.push(detail);
     }
   });
-  let invoicePayments: DetallePagoType[] | null = null;
-  if (paymentMethodList) {
+  let invoicePayments: DetallePagoType[] = [];
+  if (closeInvoice) {
     invoicePayments = paymentMethodList.map(item => ({
       IdConsecutivo: 0,
       IdFactura: invoiceId,

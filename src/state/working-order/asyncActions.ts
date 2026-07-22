@@ -699,43 +699,40 @@ export const generateInvoice = createAsyncThunk(
   "working-order/generateInvoice",
   async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
-    const { token, company, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
+    const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
     const { servicePointList, entity, paymentInfo } = workingOrder;
     const { id, servicePointId, productDetailsList } = entity;
     const { customerDetails, totalSaved, totalPaid, activityCode, summary } = paymentInfo;
     dispatch(startLoader());
     try {
-      let paymentDetailsList = [];
-      if (!company.HabilitaPreFactura && payload.paymentList) {
-        paymentDetailsList = [];
-        for (let i = 0; i < payload.paymentList.length; i++) {
-          const payment = payload.paymentList[i];
-          paymentDetailsList.push({ ...payment });
-          let bankId = 0;
-          if (payment.paymentId > 1) {
-            if (payment.paymentId === 2) {
-              if (creditCardBankId === 0) {
-                bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-                if (bankId == null)
-                  throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
-                dispatch(setCreditCardBankId(bankId));
-              } else {
-                bankId = creditCardBankId;
-              }
+      const paymentDetailsList = [];
+      if (payload.paymentList.length === 0)
+        throw new Error("No se indica el desglose del pago de la factura. Por favor verifique la información!");
+      for (let i = 0; i < payload.paymentList.length; i++) {
+        const payment = payload.paymentList[i];
+        paymentDetailsList.push({ ...payment });
+        let bankId = 0;
+        if (payment.paymentId > 1) {
+          if (payment.paymentId === 2) {
+            if (creditCardBankId === 0) {
+              bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+              if (bankId == null)
+                throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
+              dispatch(setCreditCardBankId(bankId));
             } else {
-              if (transferBankId === 0) {
-                bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-                if (bankId == null)
-                  throw new Error(
-                    "La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!"
-                  );
-                dispatch(setTransferBankId(bankId));
-              } else {
-                bankId = transferBankId;
-              }
+              bankId = creditCardBankId;
             }
-            paymentDetailsList[i].bankId = bankId;
+          } else {
+            if (transferBankId === 0) {
+              bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+              if (bankId == null)
+                throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!");
+              dispatch(setTransferBankId(bankId));
+            } else {
+              bankId = transferBankId;
+            }
           }
+          paymentDetailsList[i].bankId = bankId;
         }
       }
       const summaryProductList = productDetailsList.filter(product => !product.paid && product.inSummary);
@@ -756,10 +753,9 @@ export const generateInvoice = createAsyncThunk(
         summaryProductList,
         summary,
         "",
-        !company.HabilitaPreFactura,
+        true,
         closeOrder
       );
-
       dispatch(setInvoiceId({ id: references.id, amount: newTotal }));
       if (closeOrder) {
         dispatch(setStatus(ORDER_STATUS.CONVERTED));
