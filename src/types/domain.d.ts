@@ -59,6 +59,7 @@ export type InvoiceEntityType = {
   Impuesto: number;
   Total: number;
   Anulando: boolean;
+  PendientePago: boolean;
 };
 
 export type DeviceType = {
@@ -174,6 +175,7 @@ export type DetalleProductoType = {
   Cantidad: number;
   Pagado: boolean;
   Producto: {
+    Codigo: string;
     PrecioCosto: number;
     EsServicio: boolean;
   };

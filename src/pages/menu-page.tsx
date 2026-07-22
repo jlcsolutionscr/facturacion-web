@@ -194,7 +194,7 @@ export default function MenuPage() {
               disabled={!generateInvoicePermission}
               className={classes.button}
               onClick={() => {
-                dispatch(setInvoiceParameters({ id: 6 }));
+                dispatch(setInvoiceParameters());
               }}
             >
               Facturación

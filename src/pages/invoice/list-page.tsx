@@ -14,13 +14,14 @@ import {
   generatePDF,
   getInvoiceListByPageNumber,
   getInvoiceListFirstPage,
+  openInvoice,
   revokeInvoice,
 } from "state/invoice/asyncActions";
 import { getInvoiceList, getInvoiceListCount, getInvoiceListPage } from "state/invoice/reducer";
 import { getPermissions } from "state/session/reducer";
 import { setActiveSection } from "state/ui/reducer";
 import { TRANSITION_ANIMATION } from "utils/constants";
-import { DeleteIcon, DownloadPdfIcon, PrinterIcon } from "utils/iconsHelper";
+import { DeleteIcon, DownloadPdfIcon, EditIcon, PrinterIcon } from "utils/iconsHelper";
 import { formatCurrency } from "utils/utilities";
 
 const useStyles = makeStyles()(theme => ({
@@ -103,8 +104,9 @@ export default function InvoiceListPage() {
     }
   }, [dispatch]);
 
-  const printReceipt = (id: number) => {
-    dispatch(generateInvoiceTicket({ id }));
+  const handleAction1Click = (id: number, pending: boolean) => {
+    if (pending) dispatch(openInvoice({ id }));
+    else dispatch(generateInvoiceTicket({ id }));
   };
 
   const handlePdfButtonClick = (id: number, ref: number) => {
@@ -132,14 +134,14 @@ export default function InvoiceListPage() {
         disabled={row.Anulando}
         className={classes.icon}
         component="span"
-        onClick={() => printReceipt(row.IdFactura)}
+        onClick={() => handleAction1Click(row.IdFactura, row.PendientePago)}
       >
-        <PrinterIcon className={classes.icon} />
+        {row.PendientePago ? <EditIcon className={classes.icon} /> : <PrinterIcon className={classes.icon} />}
       </IconButton>
     ),
     action2: (
       <IconButton
-        disabled={row.Anulando}
+        disabled={row.Anulando || row.PendientePago}
         className={classes.icon}
         color="primary"
         component="span"

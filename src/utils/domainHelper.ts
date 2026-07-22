@@ -631,6 +631,8 @@ export function getProductsSummary(products: ProductDetailsType[], exonerationPe
 
 export async function saveInvoiceEntity(
   token: string,
+  invoiceId: number,
+  consecutive: number,
   userId: number,
   companyId: number,
   branchId: number,
@@ -644,10 +646,8 @@ export async function saveInvoiceEntity(
   comment: string,
   closeOrder: boolean
 ) {
-  if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity started");
   let dollarExchange = 1;
   if (currency === 2) {
-    if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity getting dollar exchange value");
     dollarExchange = await getDollarExchangeValue();
   }
   const invoiceDetails: DetalleFacturaType[] = [];
@@ -660,7 +660,7 @@ export async function saveInvoiceEntity(
       invoiceDetails[index].Cantidad += parseFloat(item.quantity);
     } else {
       const detail = {
-        IdFactura: 0,
+        IdFactura: invoiceId,
         IdProducto: item.id,
         Descripcion: item.description,
         Cantidad: parseFloat(item.quantity),
@@ -677,7 +677,7 @@ export async function saveInvoiceEntity(
   if (paymentMethodList) {
     invoicePayments = paymentMethodList.map(item => ({
       IdConsecutivo: 0,
-      IdFactura: 0,
+      IdFactura: invoiceId,
       IdFormaPago: item.paymentId,
       IdReferencia: item.bankId,
       TipoTarjeta: "",
@@ -687,7 +687,7 @@ export async function saveInvoiceEntity(
   }
   const invoiceDate = convertToDateTimeString(new Date());
   const invoice = {
-    IdFactura: 0,
+    IdFactura: invoiceId,
     IdEmpresa: companyId,
     IdSucursal: branchId,
     IdTerminal: 1,
@@ -727,10 +727,20 @@ export async function saveInvoiceEntity(
     DetalleFactura: invoiceDetails,
     DesglosePagoFactura: invoicePayments,
   };
-  if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity sending 'AgregarFactura' request");
-  const data = "{NombreMetodo: 'AgregarFactura', Entidad: " + JSON.stringify(invoice) + "}";
+  const data =
+    "{NombreMetodo: '" +
+    (invoiceId > 0 ? "ActualizarFactura" : "AgregarFactura") +
+    "', Entidad: " +
+    JSON.stringify(invoice) +
+    "}";
+  if (invoiceId > 0) {
+    await post(APP_URL + "/ejecutar", token, data);
+    return {
+      id: invoiceId,
+      consecutive: consecutive,
+    };
+  }
   const ids = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
-  if (isLoggingEnabled) addEntryToLogger("saveInvoiceEntity response obtained");
   const references = ids.split("-");
   return {
     id: references[0],
@@ -738,12 +748,18 @@ export async function saveInvoiceEntity(
   };
 }
 
+export async function getInvoiceEntity(token: string, invoiceId: number) {
+  const data = "{NombreMetodo: 'ObtenerFactura', Parametros: {IdFactura: " + invoiceId + "}}";
+  const response = await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
+  return response;
+}
+
 export async function revokeInvoiceEntity(token: string, invoiceId: number, idUser: number) {
   const data = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + invoiceId + ", IdUsuario: " + idUser + "}}";
   await postWithResponse(APP_URL + "/ejecutarconsulta", token, data);
 }
 
-export async function getProcessedInvoiceListCount(token: string, companyId: number, branchId: number) {
+export async function getInvoiceEntityListCount(token: string, companyId: number, branchId: number) {
   const data =
     "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " +
     companyId +
@@ -754,7 +770,7 @@ export async function getProcessedInvoiceListCount(token: string, companyId: num
   return response;
 }
 
-export async function getProcessedInvoiceListPerPage(
+export async function getInvoiceEntityListPerPage(
   token: string,
   companyId: number,
   branchId: number,

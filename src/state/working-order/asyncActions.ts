@@ -743,6 +743,8 @@ export const generateInvoice = createAsyncThunk(
       const closeOrder = newTotal === totalSaved;
       const references = await saveInvoiceEntity(
         token,
+        0,
+        0,
         userId,
         companyId,
         branchId,

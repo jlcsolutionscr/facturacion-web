@@ -8,6 +8,7 @@ import {
   setActivityCode,
   setCreditNote,
   setCustomerDetails,
+  setInvoice,
   setInvoiceList,
   setInvoiceListCount,
   setInvoiceListPage,
@@ -33,9 +34,10 @@ import {
   getCreditNote,
   getCustomerListCount,
   getCustomerListPerPage,
+  getInvoiceEntity,
+  getInvoiceEntityListCount,
+  getInvoiceEntityListPerPage,
   getPaymentBankId,
-  getProcessedInvoiceListCount,
-  getProcessedInvoiceListPerPage,
   getProductCategoryList,
   getProductListCount,
   getProductListPerPage,
@@ -43,16 +45,17 @@ import {
   revokeInvoiceEntity,
   saveInvoiceEntity,
 } from "utils/domainHelper";
+import { parseInvoiceEntity } from "utils/store/invoice";
 import { getCustomerPrice, getNewProductItem } from "utils/store/product";
 import { getErrorMessage } from "utils/utilities";
 
 export const setInvoiceParameters = createAsyncThunk(
   "invoice/setInvoiceParameters",
-  async (payload: { id: number }, { getState, dispatch }) => {
+  async (_payload, { getState, dispatch }) => {
     const { session, product } = getState() as RootState;
     const { token, company, companyId, branchId } = session;
     dispatch(startLoader());
-    dispatch(setActiveSection(payload.id));
+    dispatch(setActiveSection(6));
     dispatch(resetInvoice());
     dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
     dispatch(setPaymentMethodList([defaultPaymentMethod]));
@@ -241,8 +244,8 @@ export const saveInvoice = createAsyncThunk(
   async (payload: { paymentList: PaymentMethodType[] | null }, { getState, dispatch }) => {
     const { session, invoice } = getState() as RootState;
     const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
-    const { activityCode, customerDetails, productDetailsList, summary, comment, currency } = invoice.entity;
-
+    const { invoiceId, consecutive, activityCode, customerDetails, productDetailsList, summary, comment, currency } =
+      invoice.entity;
     dispatch(startLoader());
     try {
       let paymentDetailsList = null;
@@ -280,6 +283,8 @@ export const saveInvoice = createAsyncThunk(
       }
       const ids = await saveInvoiceEntity(
         token,
+        invoiceId,
+        consecutive,
         userId,
         companyId,
         branchId,
@@ -347,10 +352,10 @@ export const getInvoiceListFirstPage = createAsyncThunk(
     dispatch(startLoader());
     try {
       dispatch(setInvoiceListPage(1));
-      const recordCount = await getProcessedInvoiceListCount(token, companyId, branchId);
+      const recordCount = await getInvoiceEntityListCount(token, companyId, branchId);
       dispatch(setInvoiceListCount(recordCount));
       if (recordCount > 0) {
-        const newList = await getProcessedInvoiceListPerPage(token, companyId, branchId, 1, payload.rowsPerPage);
+        const newList = await getInvoiceEntityListPerPage(token, companyId, branchId, 1, payload.rowsPerPage);
         dispatch(setInvoiceList(newList));
       } else {
         dispatch(setInvoiceList([]));
@@ -370,7 +375,7 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
     const { token, companyId, branchId } = session;
     dispatch(startLoader());
     try {
-      const newList = await getProcessedInvoiceListPerPage(
+      const newList = await getInvoiceEntityListPerPage(
         token,
         companyId,
         branchId,
@@ -379,6 +384,61 @@ export const getInvoiceListByPageNumber = createAsyncThunk(
       );
       dispatch(setInvoiceListPage(payload.pageNumber));
       dispatch(setInvoiceList(newList));
+      dispatch(stopLoader());
+    } catch (error) {
+      dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));
+      dispatch(stopLoader());
+    }
+  }
+);
+
+export const openInvoice = createAsyncThunk(
+  "invoice/revokeInvoice",
+  async (payload: { id: number; rowsPerPage?: number }, { getState, dispatch }) => {
+    const { session, product } = getState() as RootState;
+    const { token, company, companyId, branchId } = session;
+    dispatch(startLoader());
+    dispatch(setActiveSection(6));
+    const entity = await getInvoiceEntity(token, payload.id);
+    dispatch(resetInvoice());
+    dispatch(setCustomerListPage(1));
+    dispatch(setActivityCode(company?.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+    dispatch(setPaymentMethodList([defaultPaymentMethod]));
+    try {
+      dispatch(setCustomerListPage(1));
+      const recordCount = await getCustomerListCount(token, companyId, "");
+      dispatch(setCustomerListCount(recordCount));
+      if (recordCount > 0) {
+        const newList = await getCustomerListPerPage(token, companyId, 1, 7, "");
+        dispatch(setCustomerList([{ Id: 1, Descripcion: "CLIENTE DE CONTADO" }, ...newList]));
+      } else {
+        dispatch(setCustomerList([]));
+      }
+      if (company?.Modalidad === 2) {
+        const categoryList = await getProductCategoryList(token, companyId);
+        dispatch(setCategoryList(categoryList));
+        if (product.touchScreenProductList.length <= 0) {
+          const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+          if (recordCount > 0) {
+            const newList = await getProductListPerPage(token, companyId, branchId, false, 1, recordCount, "", true, 1);
+            dispatch(setTouchScreenProductList(newList));
+          } else {
+            dispatch(setTouchScreenProductList([]));
+          }
+        }
+      } else {
+        dispatch(setProductListPage(1));
+        const recordCount = await getProductListCount(token, companyId, branchId, false, "", 1);
+        dispatch(setProductListCount(recordCount));
+        if (recordCount > 0) {
+          const newList = await getProductListPerPage(token, companyId, branchId, false, 1, 8, "", false, 1);
+          dispatch(setProductList(newList));
+        } else {
+          dispatch(setProductList([]));
+        }
+      }
+      const { invoice } = parseInvoiceEntity(entity);
+      dispatch(setInvoice(invoice));
       dispatch(stopLoader());
     } catch (error) {
       dispatch(setMessage({ message: getErrorMessage(error), type: "ERROR" }));

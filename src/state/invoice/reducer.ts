@@ -9,6 +9,9 @@ const invoiceSlice = createSlice({
   name: "invoice",
   initialState: invoiceInitialState,
   reducers: {
+    setInvoice: (state, action) => {
+      state.entity = action.payload;
+    },
     setCustomerDetails: (state, action) => {
       state.entity.customerDetails = action.payload;
     },
@@ -86,6 +89,7 @@ const invoiceSlice = createSlice({
 });
 
 export const {
+  setInvoice,
   setCustomerDetails,
   setCustomerAttribute,
   setProductDetails,
