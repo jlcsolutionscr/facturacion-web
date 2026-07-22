@@ -241,15 +241,15 @@ export const removeDetails = createAsyncThunk(
 
 export const saveInvoice = createAsyncThunk(
   "invoice/saveInvoice",
-  async (payload: { paymentList: PaymentMethodType[] | null }, { getState, dispatch }) => {
+  async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
     const { session, invoice } = getState() as RootState;
-    const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
+    const { token, company, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
     const { invoiceId, consecutive, activityCode, customerDetails, productDetailsList, summary, comment, currency } =
       invoice.entity;
     dispatch(startLoader());
     try {
-      let paymentDetailsList = null;
-      if (payload.paymentList) {
+      let paymentDetailsList = [];
+      if (!company.HabilitaPreFactura) {
         paymentDetailsList = [];
         for (let i = 0; i < payload.paymentList.length; i++) {
           const payment = payload.paymentList[i];
@@ -296,6 +296,7 @@ export const saveInvoice = createAsyncThunk(
         productDetailsList,
         summary,
         comment,
+        !company.HabilitaPreFactura,
         false
       );
       dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));

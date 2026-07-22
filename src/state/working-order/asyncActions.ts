@@ -697,16 +697,16 @@ export const refreshTouchScreenProductList = createAsyncThunk(
 
 export const generateInvoice = createAsyncThunk(
   "working-order/generateInvoice",
-  async (payload: { paymentList: PaymentMethodType[] | null }, { getState, dispatch }) => {
+  async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
-    const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
+    const { token, company, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
     const { servicePointList, entity, paymentInfo } = workingOrder;
     const { id, servicePointId, productDetailsList } = entity;
     const { customerDetails, totalSaved, totalPaid, activityCode, summary } = paymentInfo;
     dispatch(startLoader());
     try {
-      let paymentDetailsList = null;
-      if (payload.paymentList) {
+      let paymentDetailsList = [];
+      if (!company.HabilitaPreFactura && payload.paymentList) {
         paymentDetailsList = [];
         for (let i = 0; i < payload.paymentList.length; i++) {
           const payment = payload.paymentList[i];
@@ -756,6 +756,7 @@ export const generateInvoice = createAsyncThunk(
         summaryProductList,
         summary,
         "",
+        !company.HabilitaPreFactura,
         closeOrder
       );
 

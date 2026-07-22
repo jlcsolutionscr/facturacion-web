@@ -637,13 +637,14 @@ export async function saveInvoiceEntity(
   companyId: number,
   branchId: number,
   activityCode: number,
-  paymentMethodList: PaymentMethodType[] | null,
+  paymentMethodList: PaymentMethodType[],
   currency: number,
   orderId: number,
   customerDetails: CustomerDetailsType,
   productDetailsList: ProductDetailsType[],
   summary: SummaryType,
   comment: string,
+  closeInvoice: boolean,
   closeOrder: boolean
 ) {
   let dollarExchange = 1;
@@ -688,6 +689,7 @@ export async function saveInvoiceEntity(
   const invoiceDate = convertToDateTimeString(new Date());
   const invoice = {
     IdFactura: invoiceId,
+    ConsecFactura: consecutive,
     IdEmpresa: companyId,
     IdSucursal: branchId,
     IdTerminal: 1,
@@ -708,7 +710,7 @@ export async function saveInvoiceEntity(
     Exonerado: summary.exonerated,
     Descuento: 0,
     Impuesto: summary.taxes,
-    MontoPagado: paymentMethodList ? summary.cashAmount : 0,
+    MontoPagado: closeInvoice ? summary.cashAmount : 0,
     MontoAdelanto: 0,
     TotalCosto: summary.totalCost,
     IdTipoExoneracion: customerDetails.exonerationType,
@@ -723,6 +725,7 @@ export async function saveInvoiceEntity(
     IdMovBanco: 0,
     IdOrdenServicio: orderId,
     CerrarOrdenServicio: closeOrder,
+    PendientePago: !closeInvoice,
     IdProforma: 0,
     DetalleFactura: invoiceDetails,
     DesglosePagoFactura: invoicePayments,
