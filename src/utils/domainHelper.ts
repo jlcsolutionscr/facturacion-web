@@ -9,6 +9,7 @@ import {
   CredentialsType,
   CustomerDetailsType,
   CustomerEntityType,
+  DetallePagoType,
   PaymentInfoType,
   PaymentMethodType,
   ProductDetailsType,
@@ -634,7 +635,7 @@ export async function saveInvoiceEntity(
   companyId: number,
   branchId: number,
   activityCode: number,
-  paymentMethodList: PaymentMethodType[],
+  paymentMethodList: PaymentMethodType[] | null,
   currency: number,
   orderId: number,
   customerDetails: CustomerDetailsType,
@@ -672,15 +673,18 @@ export async function saveInvoiceEntity(
       invoiceDetails.push(detail);
     }
   });
-  const invoicePayments = paymentMethodList.map(item => ({
-    IdConsecutivo: 0,
-    IdFactura: 0,
-    IdFormaPago: item.paymentId,
-    IdReferencia: item.bankId,
-    TipoTarjeta: "",
-    NroMovimiento: "",
-    MontoLocal: item.amount * dollarExchange,
-  }));
+  let invoicePayments: DetallePagoType[] | null = null;
+  if (paymentMethodList) {
+    invoicePayments = paymentMethodList.map(item => ({
+      IdConsecutivo: 0,
+      IdFactura: 0,
+      IdFormaPago: item.paymentId,
+      IdReferencia: item.bankId,
+      TipoTarjeta: "",
+      NroMovimiento: "",
+      MontoLocal: item.amount * dollarExchange,
+    }));
+  }
   const invoiceDate = convertToDateTimeString(new Date());
   const invoice = {
     IdFactura: 0,
@@ -704,7 +708,7 @@ export async function saveInvoiceEntity(
     Exonerado: summary.exonerated,
     Descuento: 0,
     Impuesto: summary.taxes,
-    MontoPagado: summary.cashAmount,
+    MontoPagado: paymentMethodList ? summary.cashAmount : 0,
     MontoAdelanto: 0,
     TotalCosto: summary.totalCost,
     IdTipoExoneracion: customerDetails.exonerationType,

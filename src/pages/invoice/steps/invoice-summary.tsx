@@ -124,31 +124,34 @@ export default function InvoiceSummary({
     }
   };
 
-  const handleSbumitButton = () => {
-    const paymentList = [];
-    if (cashPayment !== "0") {
-      paymentList.push({
-        paymentId: 1,
-        bankId: 0,
-        description: "EFECTIVO",
-        amount: parseFloat(cashPayment),
-      });
-    }
-    if (cardPayment !== "0") {
-      paymentList.push({
-        paymentId: 2,
-        bankId: 0,
-        description: "TARJETA",
-        amount: parseFloat(cardPayment),
-      });
-    }
-    if (transferPayment !== "0") {
-      paymentList.push({
-        paymentId: 4,
-        bankId: 0,
-        description: "TRANSFERENCIA",
-        amount: parseFloat(transferPayment),
-      });
+  const handleSubmitButton = () => {
+    let paymentList = null;
+    if (!company.HabilitaPreFactura) {
+      paymentList = [];
+      if (cashPayment !== "0") {
+        paymentList.push({
+          paymentId: 1,
+          bankId: 0,
+          description: "EFECTIVO",
+          amount: parseFloat(cashPayment),
+        });
+      }
+      if (cardPayment !== "0") {
+        paymentList.push({
+          paymentId: 2,
+          bankId: 0,
+          description: "TARJETA",
+          amount: parseFloat(cardPayment),
+        });
+      }
+      if (transferPayment !== "0") {
+        paymentList.push({
+          paymentId: 4,
+          bankId: 0,
+          description: "TRANSFERENCIA",
+          amount: parseFloat(transferPayment),
+        });
+      }
     }
     if (!successful) {
       dispatch(saveInvoice({ paymentList: paymentList }));
@@ -234,39 +237,43 @@ export default function InvoiceSummary({
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} className={classes.centered}>
-              <InputLabel className={classes.summaryTitle}>DESGLOSE DE PAGO</InputLabel>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                readOnly={successful}
-                numericFormat
-                value={cashPayment}
-                label="Monto en efectivo:"
-                onBlur={() => cashPayment === "" && setCashPayment("0")}
-                onChange={event => handlePaymentOptionChange("CASH", event.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                readOnly={successful}
-                numericFormat
-                value={cardPayment}
-                label="Monto en tarjeta:"
-                onBlur={() => cardPayment === "" && setCardPayment("0")}
-                onChange={event => handlePaymentOptionChange("CARD", event.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                readOnly={successful}
-                numericFormat
-                value={transferPayment}
-                label="Monto en transferencia:"
-                onBlur={() => transferPayment === "" && setTransferPayment("0")}
-                onChange={event => handlePaymentOptionChange("BANK", event.target.value)}
-              />
-            </Grid>
+            {!company.HabilitaPreFactura && (
+              <Grid item container gap={1} xs={12}>
+                <Grid item xs={12} className={classes.centered}>
+                  <InputLabel className={classes.summaryTitle}>DESGLOSE DE PAGO</InputLabel>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    readOnly={successful}
+                    numericFormat
+                    value={cashPayment}
+                    label="Monto en efectivo:"
+                    onBlur={() => cashPayment === "" && setCashPayment("0")}
+                    onChange={event => handlePaymentOptionChange("CASH", event.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    readOnly={successful}
+                    numericFormat
+                    value={cardPayment}
+                    label="Monto en tarjeta:"
+                    onBlur={() => cardPayment === "" && setCardPayment("0")}
+                    onChange={event => handlePaymentOptionChange("CARD", event.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    readOnly={successful}
+                    numericFormat
+                    value={transferPayment}
+                    label="Monto en transferencia:"
+                    onBlur={() => transferPayment === "" && setTransferPayment("0")}
+                    onChange={event => handlePaymentOptionChange("BANK", event.target.value)}
+                  />
+                </Grid>
+              </Grid>
+            )}
             {company.HabilitaFacturacionMonedaExtranjera && (
               <Grid item xs={12} className={classes.centered}>
                 <Select
@@ -286,10 +293,10 @@ export default function InvoiceSummary({
                 <Button
                   disabled={buttonDisabled}
                   label={successful ? "Nueva factura" : "Guardar"}
-                  onClick={handleSbumitButton}
+                  onClick={handleSubmitButton}
                 />
               </Grid>
-              {successful && (
+              {!company.HabilitaPreFactura && successful && (
                 <Grid item>
                   <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
                 </Grid>

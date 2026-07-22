@@ -90,6 +90,7 @@ export type CompanyType = {
   HabilitaFacturacionMonedaExtranjera: boolean;
   PermiteFacturar: boolean;
   RecepcionGastos: boolean;
+  HabilitaPreFactura: boolean;
   IngresaPagoCliente: boolean;
   CorreoNotificacion: string;
   MontoRedondeoDescuento: number;
@@ -182,12 +183,10 @@ export type DetallePagoType = {
   IdConsecutivo: number;
   IdFactura: number;
   IdFormaPago: number;
-  IdTipoMoneda: number;
-  IdCuentaBanco: number;
+  IdReferencia: number;
   TipoTarjeta: string;
   NroMovimiento: string;
   MontoLocal: number;
-  TipoDeCambio: number;
 };
 
 export type CustomerEntityType = {

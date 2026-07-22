@@ -49,6 +49,7 @@ export const defaultCompany: CompanyType = {
   PrecioVentaIncluyeIVA: false,
   ImprimeTiqueteAlFacturar: false,
   HabilitaFacturacionMonedaExtranjera: false,
+  HabilitaPreFactura: false,
   MontoRedondeoDescuento: 0,
   LeyendaFactura: "",
   LeyendaProforma: "",

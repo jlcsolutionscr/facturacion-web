@@ -697,7 +697,7 @@ export const refreshTouchScreenProductList = createAsyncThunk(
 
 export const generateInvoice = createAsyncThunk(
   "working-order/generateInvoice",
-  async (payload: { paymentList: PaymentMethodType[] }, { getState, dispatch }) => {
+  async (payload: { paymentList: PaymentMethodType[] | null }, { getState, dispatch }) => {
     const { session, workingOrder } = getState() as RootState;
     const { token, userId, branchId, companyId, creditCardBankId, transferBankId } = session;
     const { servicePointList, entity, paymentInfo } = workingOrder;
@@ -705,32 +705,37 @@ export const generateInvoice = createAsyncThunk(
     const { customerDetails, totalSaved, totalPaid, activityCode, summary } = paymentInfo;
     dispatch(startLoader());
     try {
-      const paymentDetailsList = [];
-      for (let i = 0; i < payload.paymentList.length; i++) {
-        const payment = payload.paymentList[i];
-        paymentDetailsList.push({ ...payment });
-        let bankId = 0;
-        if (payment.paymentId > 1) {
-          if (payment.paymentId === 2) {
-            if (creditCardBankId === 0) {
-              bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-              if (bankId == null)
-                throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
-              dispatch(setCreditCardBankId(bankId));
+      let paymentDetailsList = null;
+      if (payload.paymentList) {
+        paymentDetailsList = [];
+        for (let i = 0; i < payload.paymentList.length; i++) {
+          const payment = payload.paymentList[i];
+          paymentDetailsList.push({ ...payment });
+          let bankId = 0;
+          if (payment.paymentId > 1) {
+            if (payment.paymentId === 2) {
+              if (creditCardBankId === 0) {
+                bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+                if (bankId == null)
+                  throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con tarjeta!");
+                dispatch(setCreditCardBankId(bankId));
+              } else {
+                bankId = creditCardBankId;
+              }
             } else {
-              bankId = creditCardBankId;
+              if (transferBankId === 0) {
+                bankId = await getPaymentBankId(token, companyId, payment.paymentId);
+                if (bankId == null)
+                  throw new Error(
+                    "La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!"
+                  );
+                dispatch(setTransferBankId(bankId));
+              } else {
+                bankId = transferBankId;
+              }
             }
-          } else {
-            if (transferBankId === 0) {
-              bankId = await getPaymentBankId(token, companyId, payment.paymentId);
-              if (bankId == null)
-                throw new Error("La empresa no tiene parametrizada la cuenta bancaría para el pago con transferencia!");
-              dispatch(setTransferBankId(bankId));
-            } else {
-              bankId = transferBankId;
-            }
+            paymentDetailsList[i].bankId = bankId;
           }
-          paymentDetailsList[i].bankId = bankId;
         }
       }
       const summaryProductList = productDetailsList.filter(product => !product.paid && product.inSummary);
