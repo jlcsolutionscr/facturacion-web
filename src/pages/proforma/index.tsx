@@ -112,7 +112,7 @@ export default function ProformaPage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={successful}
+        editingEnabled={!successful}
         getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
@@ -126,7 +126,7 @@ export default function ProformaPage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={successful}
+        editingEnabled={!successful}
         isPriceIncludingTaxes={company.PrecioVentaIncluyeIVA}
         getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.PROFORMA }))}
         setProductDetails={(attribute: string, value: number | string) =>

@@ -60,14 +60,15 @@ const useStyles = makeStyles()(theme => ({
 interface InvoiceSummaryProps {
   index: number;
   value: number;
-  invoiceId: number | null;
+  invoiceId: number;
+  invoicePaid: boolean;
   company: CompanyType;
   summary: SummaryType;
   activityCode: number;
   currency: number;
   comment: string;
   vendorList: IdDescriptionType[];
-  successful: boolean;
+  editingEnabled: boolean;
   setValue: (value: number) => void;
   className?: string;
 }
@@ -76,12 +77,13 @@ export default function InvoiceSummary({
   index,
   value,
   invoiceId,
+  invoicePaid,
   company,
   summary,
   activityCode,
   currency,
   comment,
-  successful,
+  editingEnabled,
   setValue,
   className,
 }: InvoiceSummaryProps) {
@@ -153,13 +155,13 @@ export default function InvoiceSummary({
         });
       }
     }
-    if (!successful) {
-      dispatch(saveInvoice({ paymentList: paymentList }));
-    } else {
-      dispatch(resetInvoice());
-      dispatch(setActivityCode(company.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
-      setValue(0);
-    }
+    dispatch(saveInvoice({ paymentList: paymentList }));
+  };
+
+  const handleResetInvoice = () => {
+    dispatch(resetInvoice());
+    dispatch(setActivityCode(company.ActividadEconomicaEmpresa[0]?.CodigoActividad ?? 0));
+    setValue(0);
   };
 
   const activityItems = company.ActividadEconomicaEmpresa.map(item => (
@@ -175,7 +177,7 @@ export default function InvoiceSummary({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
-            disabled={successful}
+            disabled={!editingEnabled}
             label="Observaciones"
             id="Observacion"
             value={comment}
@@ -244,7 +246,7 @@ export default function InvoiceSummary({
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    readOnly={successful}
+                    readOnly={invoicePaid}
                     numericFormat
                     value={cashPayment}
                     label="Monto en efectivo:"
@@ -254,7 +256,7 @@ export default function InvoiceSummary({
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    readOnly={successful}
+                    readOnly={invoicePaid}
                     numericFormat
                     value={cardPayment}
                     label="Monto en tarjeta:"
@@ -264,7 +266,7 @@ export default function InvoiceSummary({
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    readOnly={successful}
+                    readOnly={invoicePaid}
                     numericFormat
                     value={transferPayment}
                     label="Monto en transferencia:"
@@ -277,7 +279,7 @@ export default function InvoiceSummary({
             {company.HabilitaFacturacionMonedaExtranjera && (
               <Grid item xs={12} className={classes.centered}>
                 <Select
-                  disabled={successful}
+                  disabled={!editingEnabled}
                   id="currenty-type-select-id"
                   label="Seleccione la moneda de la transacción"
                   value={currency.toString()}
@@ -289,16 +291,28 @@ export default function InvoiceSummary({
               </Grid>
             )}
             <Grid item container xs={12} gap={1} justifyContent="center">
-              <Grid item>
-                <Button
-                  disabled={buttonDisabled}
-                  label={successful ? "Nueva factura" : "Guardar"}
-                  onClick={handleSubmitButton}
-                />
-              </Grid>
-              {!company.HabilitaPreFactura && successful && (
+              {!company.HabilitaPreFactura && !invoicePaid && (
                 <Grid item>
-                  <Button disabled={buttonDisabled} label="Imprimir" onClick={handleOnPrintButton} />
+                  <Button disabled={invoicePaid || buttonDisabled} label="Facturar" onClick={handleSubmitButton} />
+                </Grid>
+              )}
+              {company.HabilitaPreFactura && (
+                <Grid item>
+                  <Button
+                    disabled={buttonDisabled}
+                    label={invoiceId === 0 ? "Guardar" : "Actualizar"}
+                    onClick={handleSubmitButton}
+                  />
+                </Grid>
+              )}
+              {invoiceId > 0 && (
+                <Grid item>
+                  <Button disabled={buttonDisabled} label="Nueva Factura" onClick={handleResetInvoice} />
+                </Grid>
+              )}
+              {invoiceId > 0 && invoicePaid && (
+                <Grid item>
+                  <Button label="Imprimir" onClick={handleOnPrintButton} />
                 </Grid>
               )}
             </Grid>

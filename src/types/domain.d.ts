@@ -287,7 +287,7 @@ export type InvoiceType = {
   comment: string;
   cashAdvance: number;
   currency: number;
-  successful: boolean;
+  paid: boolean;
 };
 
 export type CreditNoteType = {

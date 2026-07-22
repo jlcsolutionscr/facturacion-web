@@ -53,7 +53,7 @@ export function parseInvoiceEntity(entity: any) {
     summary,
     comment: entity.TextoAdicional,
     currency: entity.IdTipoMoneda,
-    successful: false,
+    paid: !entity.PendientePago,
   };
   return { invoice };
 }

@@ -37,7 +37,7 @@ interface StepOneScreenProps {
   customerListCount: number;
   customerListPage: number;
   customerList: IdDescriptionType[];
-  listDisabled: boolean;
+  editingEnabled: boolean;
   getCustomerDetails: (id: number) => void;
   setCustomerName: (value: string) => void;
   className?: string;
@@ -50,7 +50,7 @@ export default function StepOneScreen({
   customerListCount,
   customerListPage,
   customerList,
-  listDisabled,
+  editingEnabled,
   getCustomerDetails,
   setCustomerName,
   className,
@@ -91,7 +91,7 @@ export default function StepOneScreen({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ListDropDown
-            disabled={listDisabled}
+            disabled={!editingEnabled}
             label="Seleccione un cliente"
             page={customerListPage - 1}
             rowsCount={customerListCount}
@@ -106,7 +106,7 @@ export default function StepOneScreen({
         <Grid item xs={12}>
           <TextField
             required
-            readOnly={listDisabled || customer.id !== 1}
+            readOnly={!editingEnabled || customer.id !== 1}
             value={customer.name}
             label="Nombre del cliente"
             onChange={event => setCustomerName(event.target.value)}

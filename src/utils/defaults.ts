@@ -193,9 +193,9 @@ export const defaultInvoice: InvoiceType = {
   paymentMethodList: [defaultPaymentMethod],
   summary: defaultSummary,
   comment: "",
-  successful: false,
   cashAdvance: 0,
   currency: 1,
+  paid: false,
 };
 
 export const defaultCreditNote: CreditNoteType = {

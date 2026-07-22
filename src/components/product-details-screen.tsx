@@ -64,7 +64,7 @@ interface StepTwoScreenProps {
   productList: CodeDescriptionType[];
   productDetails: ProductDetailsType;
   productDetailsList: ProductDetailsType[];
-  stepDisabled: boolean;
+  editingEnabled: boolean;
   isPriceIncludingTaxes: boolean;
   getProductDetails: (id: number) => void;
   addDetails: () => void;
@@ -82,7 +82,7 @@ export default function StepTwoScreen({
   productList,
   productDetails,
   productDetailsList,
-  stepDisabled,
+  editingEnabled,
   isPriceIncludingTaxes,
   getProductDetails,
   addDetails,
@@ -144,7 +144,7 @@ export default function StepTwoScreen({
     productDetails.description !== "" &&
     !["0", ""].includes(productDetails.quantity) &&
     !["0", ""].includes(productDetails.price) &&
-    stepDisabled === false;
+    editingEnabled;
   const display = value !== index ? "none" : "flex";
 
   return (
@@ -160,7 +160,7 @@ export default function StepTwoScreen({
           <Grid container spacing={2}>
             <Grid item xs={10} sm={10.5} md={11}>
               <ListDropDown
-                disabled={stepDisabled}
+                disabled={!editingEnabled}
                 label="Seleccione un producto"
                 page={productListPage - 1}
                 rowsCount={productListCount}
@@ -186,7 +186,7 @@ export default function StepTwoScreen({
             </Grid>
             <Grid item xs={12}>
               <TextField
-                disabled={stepDisabled || !isDescriptionChangeEnabled}
+                disabled={!editingEnabled || !isDescriptionChangeEnabled}
                 label="Descripción"
                 id="Descripcion"
                 value={productDetails.description}
@@ -195,7 +195,7 @@ export default function StepTwoScreen({
             </Grid>
             <Grid item xs={3}>
               <TextField
-                disabled={stepDisabled}
+                disabled={!editingEnabled}
                 label="Cantidad"
                 id="Cantidad"
                 value={productDetails.quantity}
@@ -205,7 +205,7 @@ export default function StepTwoScreen({
             </Grid>
             <Grid item xs={6}>
               <TextField
-                disabled={stepDisabled || !isPriceChangeEnabled}
+                disabled={!editingEnabled || !isPriceChangeEnabled}
                 label="Precio"
                 value={productDetails.price}
                 numericFormat
@@ -259,6 +259,7 @@ export default function StepTwoScreen({
                           className={classes.innerButton}
                           color="secondary"
                           component="span"
+                          disabled={!editingEnabled}
                           onClick={() => removeDetails(index)}
                         >
                           <RemoveCircleIcon />

@@ -125,7 +125,7 @@ export default function WorkingOrderPage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={invoiceId > 0}
+        editingEnabled={invoiceId === 0}
         getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
@@ -139,7 +139,7 @@ export default function WorkingOrderPage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={invoiceId > 0}
+        editingEnabled={invoiceId === 0}
         isPriceIncludingTaxes={company.PrecioVentaIncluyeIVA}
         getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.ORDER }))}
         setProductDetails={(attribute: string, value: number | string) =>

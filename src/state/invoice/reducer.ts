@@ -60,10 +60,10 @@ const invoiceSlice = createSlice({
     setCurrency: (state, action) => {
       state.entity.currency = action.payload;
     },
-    setSuccessful: (state, action) => {
+    setInvoiceIds: (state, action) => {
       state.entity.invoiceId = action.payload.id;
       state.entity.consecutive = action.payload.consecutive;
-      state.entity.successful = action.payload.success;
+      state.entity.paid = action.payload.paid;
     },
     setInvoiceListPage: (state, action) => {
       state.listPage = action.payload;
@@ -104,7 +104,7 @@ export const {
   setPaymentMethodList,
   setComment,
   setCurrency,
-  setSuccessful,
+  setInvoiceIds,
   setInvoiceListPage,
   setInvoiceListCount,
   setInvoiceList,
@@ -113,6 +113,7 @@ export const {
 } = invoiceSlice.actions;
 
 export const getInvoiceId = (state: RootState) => state.invoice.entity.invoiceId;
+export const getInvoicePaid = (state: RootState) => state.invoice.entity.paid;
 export const getCustomerDetails = (state: RootState) => state.invoice.entity.customerDetails;
 export const getProductDetails = (state: RootState) => state.invoice.entity.productDetails;
 export const getProductDetailsList = (state: RootState) => state.invoice.entity.productDetailsList;
@@ -121,7 +122,6 @@ export const getActivityCode = (state: RootState) => state.invoice.entity.activi
 export const getPaymentMethodList = (state: RootState) => state.invoice.entity.paymentMethodList;
 export const getComment = (state: RootState) => state.invoice.entity.comment;
 export const getCurrency = (state: RootState) => state.invoice.entity.currency;
-export const getSuccessful = (state: RootState) => state.invoice.entity.successful;
 export const getInvoiceListPage = (state: RootState) => state.invoice.listPage;
 export const getInvoiceListCount = (state: RootState) => state.invoice.listCount;
 export const getInvoiceList = (state: RootState) => state.invoice.list;

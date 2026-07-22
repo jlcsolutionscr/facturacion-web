@@ -9,12 +9,12 @@ import {
   setCreditNote,
   setCustomerDetails,
   setInvoice,
+  setInvoiceIds,
   setInvoiceList,
   setInvoiceListCount,
   setInvoiceListPage,
   setPaymentMethodList,
   setProductDetailsList,
-  setSuccessful,
   setSummary,
 } from "state/invoice/reducer";
 import {
@@ -299,7 +299,7 @@ export const saveInvoice = createAsyncThunk(
         !company.HabilitaPreFactura,
         false
       );
-      dispatch(setSuccessful({ id: ids.id, consecutive: ids.consecutive, success: true }));
+      dispatch(setInvoiceIds({ id: ids.id, consecutive: ids.consecutive, paid: !company.HabilitaPreFactura }));
       dispatch(
         setMessage({
           message: "Transacción completada satisfactoriamente",

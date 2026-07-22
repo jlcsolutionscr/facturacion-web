@@ -17,9 +17,9 @@ import {
   getCurrency,
   getCustomerDetails,
   getInvoiceId,
+  getInvoicePaid,
   getProductDetails,
   getProductDetailsList,
-  getSuccessful,
   getSummary,
   setCustomerAttribute,
   setProductDetails,
@@ -89,12 +89,14 @@ export default function InvoicePage() {
   const activityCode = useSelector(getActivityCode);
   const comment = useSelector(getComment);
   const currency = useSelector(getCurrency);
-  const successful = useSelector(getSuccessful);
   const vendorList = useSelector(getVendorList);
+  const invoicePaid = useSelector(getInvoicePaid);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const editingEnabled = company.HabilitaPreFactura || invoiceId === 0;
 
   return (
     <div className={classes.container}>
@@ -116,7 +118,7 @@ export default function InvoicePage() {
         customerListCount={customerListCount}
         customerListPage={customerListPage}
         customerList={customerList}
-        listDisabled={successful}
+        editingEnabled={editingEnabled}
         getCustomerDetails={(id: number) => dispatch(getCustomerDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
         setCustomerName={(value: string) => dispatch(setCustomerAttribute({ attribute: "name", value }))}
       />
@@ -130,7 +132,7 @@ export default function InvoicePage() {
         productList={productList}
         productDetails={productDetails}
         productDetailsList={productDetailsList}
-        stepDisabled={successful}
+        editingEnabled={editingEnabled}
         isPriceIncludingTaxes={company.PrecioVentaIncluyeIVA}
         getProductDetails={(id: number) => dispatch(getProductDetailsAction({ id, type: FORM_TYPE.INVOICE }))}
         setProductDetails={(attribute: string, value: number | string) =>
@@ -143,13 +145,14 @@ export default function InvoicePage() {
         className={classes.tab}
         value={value}
         invoiceId={invoiceId}
+        invoicePaid={invoicePaid}
         company={company}
         summary={summary}
         activityCode={activityCode}
         currency={currency}
         comment={comment}
         vendorList={vendorList}
-        successful={successful}
+        editingEnabled={editingEnabled}
         setValue={setValue}
         index={2}
       />
